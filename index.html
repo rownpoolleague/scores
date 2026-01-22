@@ -1,11 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>League Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>League Main Menu</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('logo-placeholder.png'); /* replace with your logo */
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 60%;
+            background-attachment: fixed;
+            background-color: #111; /* fallback color */
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.65);
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+
+        .menu-container {
+            max-width: 500px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .menu-button {
+            display: block;
+            text-align: center;
+            padding: 18px;
+            background: #1e90ff;
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .menu-button:hover {
+            background: #0f70d1;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>League Form Placeholder</h1>
-    <p>If you see this online, hosting works.</p>
+    <div class="overlay">
+        <h1>League Main Menu</h1>
+
+        <div class="menu-container">
+            <a class="menu-button" href="schedule.html">Schedule</a>
+            <a class="menu-button" href="keepscore.html">Keep Score</a>
+            <a class="menu-button" href="rosters.html">Rosters</a>
+        </div>
+    </div>
 </body>
 </html>
