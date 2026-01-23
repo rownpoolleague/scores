@@ -199,6 +199,21 @@
         opponentSelect.addEventListener('change', function () {
             updateRoster(opponentSelect, opponentRosterDiv);
         });
+        let lagWinnerFilled = false;
+
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("playerName")) {
+        const name = e.target.getAttribute("data-player");
+
+        if (!lagWinnerFilled) {
+            document.getElementById("lagWinner").value = name;
+            lagWinnerFilled = true;
+        } else {
+            document.getElementById("lagLoser").value = name;
+            lagWinnerFilled = false;
+        }
+    }
+});
     </script>
 
 </body>
