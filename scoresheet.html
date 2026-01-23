@@ -102,6 +102,12 @@
 
     </div>
 
+    <!-- MATCH INNINGS (shared) -->
+    <div style="text-align: center; margin-top: 30px;">
+        <label for="matchInnings"><strong>Innings:</strong></label><br>
+        <input type="number" id="matchInnings" min="0" style="width: 120px;">
+    </div>
+
     <!-- PLAYER STATS -->
     <div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;">
 
@@ -117,9 +123,6 @@
 
             <label>Losses:</label><br>
             <input type="number" id="pA_losses" min="0" style="width: 80px;"><br>
-
-            <label>Innings:</label><br>
-            <input type="number" id="pA_innings" min="0" style="width: 80px;"><br>
 
             <label>Safeties:</label><br>
             <input type="number" id="pA_safeties" min="0" style="width: 80px;"><br>
@@ -143,9 +146,6 @@
 
             <label>Losses:</label><br>
             <input type="number" id="pB_losses" min="0" style="width: 80px;"><br>
-
-            <label>Innings:</label><br>
-            <input type="number" id="pB_innings" min="0" style="width: 80px;"><br>
 
             <label>Safeties:</label><br>
             <input type="number" id="pB_safeties" min="0" style="width: 80px;"><br>
@@ -401,11 +401,11 @@
             const data = {
                 lagWinner: document.getElementById("lagWinner").value,
                 lagLoser: document.getElementById("lagLoser").value,
+                matchInnings: document.getElementById("matchInnings").value,
                 pA: {
                     handicap: document.getElementById("pA_hc").value,
                     wins: document.getElementById("pA_wins").value,
                     losses: document.getElementById("pA_losses").value,
-                    innings: document.getElementById("pA_innings").value,
                     safeties: document.getElementById("pA_safeties").value,
                     e8: document.getElementById("pA_e8").value,
                     br: document.getElementById("pA_br").value
@@ -414,7 +414,6 @@
                     handicap: document.getElementById("pB_hc").value,
                     wins: document.getElementById("pB_wins").value,
                     losses: document.getElementById("pB_losses").value,
-                    innings: document.getElementById("pB_innings").value,
                     safeties: document.getElementById("pB_safeties").value,
                     e8: document.getElementById("pB_e8").value,
                     br: document.getElementById("pB_br").value
@@ -429,6 +428,7 @@
             document.getElementById("lagWinner").value = "";
             document.getElementById("lagLoser").value = "";
             document.getElementById("matchWinner").value = "";
+            document.getElementById("matchInnings").value = "";
             lagWinnerFilled = false;
         });
     </script>
