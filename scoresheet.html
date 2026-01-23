@@ -421,7 +421,14 @@
                 matchWinner: document.getElementById("matchWinner").value
             };
 
-            console.log("Match logged:", data);
+            fetch("https://script.google.com/macros/s/AKfycby_IMkVArgnzRd_iTBi42hxunh0lQg_-0cMjanZ97gTF6EWqTgjLag3RzYRokN6b-Nb/exec", {
+    method: "POST",
+    contentType: "application/json",
+    body: JSON.stringify(data)
+})
+.then(r => r.text())
+.then(t => console.log("Logged to Google Sheet:", t))
+.catch(err => console.error("Error:", err));
 
             // Clear everything under rosters for next match
             document.querySelectorAll("input[type='number']").forEach(el => el.value = "");
