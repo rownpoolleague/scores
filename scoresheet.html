@@ -187,7 +187,9 @@
                 rosterDiv.textContent = "";
                 return;
             }
-            rosterDiv.textContent = rosters[teamName].join("\n");
+            rosterDiv.innerHTML = rosters[teamName]
+    .map(player => `<div class="playerName" data-player="${player}">${player}</div>`)
+    .join("");
         }
 
         teamSelect.addEventListener('change', function () {
