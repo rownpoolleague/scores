@@ -1,38 +1,194 @@
-<div style="display: flex; justify-content: center; gap: 40px; margin-top: 40px;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scoresheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+        }
+        .block {
+            text-align: left;
+        }
+        .roster-box {
+            margin-top: 10px;
+            padding: 8px 10px;
+            border: 1px solid #000;
+            min-width: 220px;
+            min-height: 80px;
+            font-size: 14px;
+            white-space: pre-line;
+        }
+        label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
 
-    <!-- TEAM DROPDOWN -->
-    <div>
-        <label for="team">Team:</label><br>
-        <select id="team" name="team" required>
-            <option value="">-- Select Your Team --</option>
-            <option value="Halfway Crooks">Halfway Crooks</option>
-            <option value="Haters Welcome">Haters Welcome</option>
-            <option value="Lynn's Amigos">Lynn's Amigos</option>
-            <option value="Rackless Behavior">Rackless Behavior</option>
-            <option value="Dirty Ballers">Dirty Ballers</option>
-            <option value="8 on Break">8 on Break</option>
-            <option value="Five Amigos">Five Amigos</option>
-            <option value="Frank's Pizza">Frank's Pizza</option>
-            <option value="Killer Instinct">Killer Instinct</option>
-            <option value="Pete's Bunch">Pete's Bunch</option>
-        </select>
+    <div class="row">
+
+        <!-- TEAM BLOCK -->
+        <div class="block">
+            <label for="team">Team:</label><br>
+            <select id="team" name="team" required>
+                <option value="">-- Select Your Team --</option>
+                <option value="Halfway Crooks">Halfway Crooks</option>
+                <option value="Haters Welcome">Haters Welcome</option>
+                <option value="Lynn's Amigos">Lynn's Amigos</option>
+                <option value="Rackless Behavior">Rackless Behavior</option>
+                <option value="Dirty Ballers">Dirty Ballers</option>
+                <option value="8 on Break">8 on Break</option>
+                <option value="Five Amigos">Five Amigos</option>
+                <option value="Frank's Pizza">Frank's Pizza</option>
+                <option value="Killer Instinct">Killer Instinct</option>
+                <option value="Pete's Bunch">Pete's Bunch</option>
+            </select>
+
+            <div id="teamRoster" class="roster-box"></div>
+        </div>
+
+        <!-- OPPONENT BLOCK -->
+        <div class="block">
+            <label for="opponent">Opponent:</label><br>
+            <select id="opponent" name="opponent" required>
+                <option value="">-- Select Opponent --</option>
+                <option value="Halfway Crooks">Halfway Crooks</option>
+                <option value="Haters Welcome">Haters Welcome</option>
+                <option value="Lynn's Amigos">Lynn's Amigos</option>
+                <option value="Rackless Behavior">Rackless Behavior</option>
+                <option value="Dirty Ballers">Dirty Ballers</option>
+                <option value="8 on Break">8 on Break</option>
+                <option value="Five Amigos">Five Amigos</option>
+                <option value="Frank's Pizza">Frank's Pizza</option>
+                <option value="Killer Instinct">Killer Instinct</option>
+                <option value="Pete's Bunch">Pete's Bunch</option>
+            </select>
+
+            <div id="opponentRoster" class="roster-box"></div>
+        </div>
+
     </div>
 
-    <!-- OPPONENT DROPDOWN -->
-    <div>
-        <label for="opponent">Opponent:</label><br>
-        <select id="opponent" name="opponent" required>
-            <option value="">-- Select Opponent --</option>
-            <option value="Halfway Crooks">Halfway Crooks</option>
-            <option value="Haters Welcome">Haters Welcome</option>
-            <option value="Lynn's Amigos">Lynn's Amigos</option>
-            <option value="Rackless Behavior">Rackless Behavior</option>
-            <option value="Dirty Ballers">Dirty Ballers</option>
-            <option value="8 on Break">8 on Break</option>
-            <option value="Five Amigos">Five Amigos</option>
-            <option value="Frank's Pizza">Frank's Pizza</option>
-            <option value="Killer Instinct">Killer Instinct</option>
-            <option value="Pete's Bunch">Pete's Bunch</option>
+    <script>
+        const rosters = {
+            "Halfway Crooks": [
+                "Dan Foster",
+                "Tony Perelli",
+                "Don Young",
+                "Don Rak",
+                "Yani Marinopoulos",
+                "Brooke Bridges",
+                "Jeremie Ketner",
+                "Tony Guthrie"
+            ],
+            "Haters Welcome": [
+                "Randy Rycraft",
+                "Joe Neal",
+                "Jennifer Wagner",
+                "Jim Czenk",
+                "Phil Nelson",
+                "Pam Neal",
+                "Greg Wood",
+                "Brett Boger"
+            ],
+            "Lynn's Amigos": [
+                "Francisco Ibarra",
+                "Noe Castaña",
+                "Luis Asavedo",
+                "Rico Urvina",
+                "Tomas Ramirez",
+                "Enrique Meza"
+            ],
+            "Rackless Behavior": [
+                "Jim Nevin",
+                "Larry Casper",
+                "Harnaik Lal",
+                "Freddy Izguerra",
+                "Tom Nevin",
+                "Doug Misner"
+            ],
+            "Dirty Ballers": [
+                "Rocky Oiler Sr.",
+                "Kevin Pattenaude",
+                "Ron Gonzalez",
+                "Javier Mauricio",
+                "Peggy Wood",
+                "Joey Sanchez",
+                "John Schoiber"
+            ],
+            "8 on Break": [
+                "Doc Halek",
+                "Juergen Jackert",
+                "Danny Plowman",
+                "John Amrein",
+                "Kevin Ward",
+                "Shawn Mcbride",
+                "Don Murphy",
+                "Kenny Esposito"
+            ],
+            "Five Amigos": [
+                "Francisco Tinaje",
+                "Sergio Sanchez",
+                "Mario Orenday",
+                "Felipe Ochoa",
+                "Jeronimo Ramire",
+                "Kevin Joyner",
+                "Tony Perez"
+            ],
+            "Frank's Pizza": [
+                "Jose Gonzalez"
+            ],
+            "Killer Instinct": [
+                "Mike Uhlean",
+                "Doug Andrus",
+                "Jim Berger",
+                "Shawn Vitolka",
+                "Mike Zbonski Jr.",
+                "Luke Valenzuela",
+                "Samantha Komm"
+            ],
+            "Pete's Bunch": [
+                "Tom Schroeder",
+                "Chuck Harding",
+                "Dan Schroeder",
+                "Rob Zwart",
+                "Pete Steele",
+                "Buster Fuller"
+            ]
+        };
+
+        const teamSelect = document.getElementById('team');
+        const opponentSelect = document.getElementById('opponent');
+        const teamRosterDiv = document.getElementById('teamRoster');
+        const opponentRosterDiv = document.getElementById('opponentRoster');
+
+        function updateRoster(selectElement, rosterDiv) {
+            const teamName = selectElement.value;
+            if (!teamName || !rosters[teamName]) {
+                rosterDiv.textContent = "";
+                return;
+            }
+            rosterDiv.textContent = rosters[teamName].join("\n");
+        }
+
+        teamSelect.addEventListener('change', function () {
+            updateRoster(teamSelect, teamRosterDiv);
+        });
+
+        opponentSelect.addEventListener('change', function () {
+            updateRoster(opponentSelect, opponentRosterDiv);
+        });
+    </script>
+
+</body>
+</html>
         </select>
     </div>
 
