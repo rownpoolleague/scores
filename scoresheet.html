@@ -390,8 +390,10 @@
         document.querySelectorAll("#pA_wins, #pB_wins, #pA_hc, #pB_hc")
             .forEach(el => el.addEventListener("input", updateMatchWinner));
 
-        // Submit button logic
-        document.getElementById("submitMatch").addEventListener("click", function () {
+        <!-- SUBMIT BUTTON -->
+    <div style="text-align: center; margin-top: 30px;">
+        <button id="submitMatch" style="padding: 10px 20px; font-size: 16px;">Submit Match</button>
+    </div>
 
             const data = {
                 lagWinner: document.getElementById("lagWinner").value,
