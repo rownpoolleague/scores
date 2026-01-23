@@ -420,7 +420,7 @@
                 },
                 matchWinner: document.getElementById("matchWinner").value
             };
-
+console.log("DATA SENT:", JSON.stringify(data, null, 2));
             fetch("https://script.google.com/macros/s/AKfycbzLppwbBHu7hBsj8gBbKJNhRdwCZsjs6AyFqaGghebp7sWKDcf1SUm4FQmJEH-vPoMP/exec", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
