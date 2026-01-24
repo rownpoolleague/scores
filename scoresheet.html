@@ -243,7 +243,7 @@ document.getElementById("submitMatch").addEventListener("click", function(e){
 
     console.log("DATA SENT:", JSON.stringify(data,null,2));
 
-    fetch("https://script.google.com/macros/s/AKfycbwWOTwAndAJHHhJXbwbofafiIy-KMhYmUYTtOQR3FxyjDItb51aOihb9iwPytmcm8RE/exec",{
+    fetch("https://script.google.com/macros/s/AKfycbx1tYC3Q14Bj8UedCkGn7044TB85kSGttmA5kA6ODMZtL-DBE9942BmS5Be-jeOEUk2/exec",{
         method:"POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
