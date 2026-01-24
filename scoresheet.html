@@ -396,8 +396,8 @@
             .forEach(el => el.addEventListener("input", updateMatchWinner));
 
         // Submit button logic
-        document.getElementById("submitMatch").addEventListener("click", function () {
-
+       document.getElementById("submitMatch").addEventListener("click", function (e) {
+    e.stopPropagation();  // ← THIS stops the double-fire
             const data = {
                 lagWinner: document.getElementById("lagWinner").value,
                 lagLoser: document.getElementById("lagLoser").value,
