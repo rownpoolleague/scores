@@ -61,6 +61,11 @@
         text-align: right;
         color: #fff; /* white text for black background */
     }
+        .center-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 </style>
 </head>
 <body>
@@ -104,14 +109,15 @@
 </div>
 
 <div style="display:flex;justify-content:center;gap:40px;margin-top:30px;">
-    <div class="block">
-        <label>    Lag Winner:</label><br>
-        <input id="lagWinner" readonly>
-    </div>
-    <div class="block">
-        <label>Lag Loser:</label><br>
-        <input id="lagLoser" readonly>
-    </div>
+    <div class="block center-label">
+    <label>Lag Winner:</label>
+    <input id="lagWinner" readonly>
+</div>
+
+<div class="block center-label">
+    <label>Lag Loser:</label>
+    <input id="lagLoser" readonly>
+</div>
 </div>
 
 <div style="text-align:center;margin-top:30px;">
