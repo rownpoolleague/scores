@@ -116,10 +116,10 @@
 <div style="text-align:center;margin-top:30px;">
     <label>Innings:</label><br>
 
-    <div class="innings-wrapper">
+   <div class="innings-wrapper">
         <button type="button" class="btn-minus" onclick="changeInnings(-1)">−</button>
         <input type="number" id="matchInnings" value="0" min="0">
-        <button type="button" class="btn-plus" onclick="changeInnings(1)">+</button>
+         <button type="button" class="btn-plus" onclick="changeInnings(1)">+</button>
     </div>
 </div>
 
@@ -259,6 +259,13 @@ submitMatch.onclick=()=>{
         body:JSON.stringify(data)
     }).then(()=>document.querySelectorAll("input").forEach(i=>i.value=""));
 };
+    function changeInnings(amount) {
+    const input = document.getElementById("matchInnings");
+    let value = parseInt(input.value) || 0;
+    value += amount;
+    if (value < 0) value = 0;
+    input.value = value;
+}
 </script>
 </body>
 </html>
