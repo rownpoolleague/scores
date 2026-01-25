@@ -42,6 +42,18 @@ input[type="number"] {
     border-radius: 4px;       /* optional: cleaner look */
     margin-bottom: 6px;       /* spacing between inputs */
 }
+.stat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.stat-row label {
+    width: 70px;
+    text-align: right;
+    color: #fff; /* white text for black background */
+}        
 </style>
 </head>
 <body>
@@ -106,22 +118,66 @@ input[type="number"] {
 </div>
 
 <div style="display:flex;justify-content:center;gap:60px;margin-top:40px;">
+
     <div class="block">
-        <h3>Player A</h3>
-        <input id="pA_hc" type="number"><br>
-        <input id="pA_wins" type="number"><br>
-        <input id="pA_losses" type="number"><br>
-        <input id="pA_safeties" type="number"><br>
-        <input id="pA_e8" type="number"><br>
-        <input id="pA_br" type="number"><br>
+        <h3>Lag Winner</h3>
+
+        <div class="stat-row">
+            <label>HC:</label>
+            <input id="pA_hc" type="number">
+        </div>
+
+        <div class="stat-row">
+            <label>Wins:</label>
+            <input id="pA_wins" type="number">
+        </div>
+
+        <div class="stat-row">
+            <label>Losses:</label>
+            <input id="pA_losses" type="number">
+        </div>
+
+        <div class="stat-row">
+            <label>Safeties:</label>
+            <input id="pA_safeties" type="number">
+        </div>
+
+        <div class="stat-row">
+            <label>8B:</label>
+            <input id="pA_e8" type="number">
+        </div>
+
+        <div class="stat-row">
+            <label>B+R:</label>
+            <input id="pA_br" type="number">
+        </div>
     </div>
+
+
     <div class="block">
-        <h3>Player B</h3>
-        <input id="pB_hc" type="number"><br>
-        <input id="pB_safeties" type="number"><br>
-        <input id="pB_e8" type="number"><br>
-        <input id="pB_br" type="number"><br>
+        <h3>Lag Loser</h3>
+
+        <div class="stat-row">
+            <label>HC:</label>
+            <input id="pB_hc" type="number">
+        </div>
+
+        <div class="stat-row">
+            <label>Safeties:</label>
+            <input id="pB_safeties" type="number">
+        </div>
+
+        <div class="stat-row">
+            <label>8B:</label>
+            <input id="pB_e8" type="number">
+        </div>
+
+        <div class="stat-row">
+            <label>B+R:</label>
+            <input id="pB_br" type="number">
+        </div>
     </div>
+
 </div>
 
 <div style="text-align:center;margin-top:30px;">
