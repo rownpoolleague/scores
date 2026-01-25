@@ -1,268 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Scoresheet</title>
-<style>
-body { font-family: Arial, sans-serif; }
-.row { display: flex; justify-content: center; gap: 40px; margin-top: 40px; }
-.block { text-align: left; }
-.roster-box {
-    margin-top: 10px;
-    padding: 8px 10px;
-    border: 1px solid #000;
-    min-width: 220px;
-    min-height: 80px;
-    font-size: 14px;
-    white-space: pre-line;
-}
-label { font-weight: bold; }
-.playerName { cursor: pointer; padding: 2px 0; }
-.playerName:hover { background-color: #e0e0e0; }
-h3 { margin-bottom: 8px; margin-top: 0; }
-</style>
+    <meta charset="UTF-8">
+    <title>Scoresheet</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .row { display: flex; justify-content: center; gap: 40px; margin-top: 40px; }
+        .block { text-align: left; }
+        .roster-box {
+            margin-top: 10px;
+            padding: 8px 10px;
+            border: 1px solid #000;
+            min-width: 220px;
+            min-height: 80px;
+            font-size: 14px;
+            white-space: pre-line;
+        }
+        label { font-weight: bold; }
+        .playerName { cursor: pointer; padding: 2px 0; }
+        .playerName:hover { background-color: #e0e0e0; }
+        h3 { margin: 0 0 8px 0; }
+    </style>
 </head>
 <body>
 
 <div class="row">
-<!-- TEAM BLOCK -->
-<div class="block">
-<label for="team">Team:</label><br>
-<select id="team" name="team" required>
-<option value="">-- Select Your Team --</option>
-<option value="Halfway Crooks">Halfway Crooks</option>
-<option value="Haters Welcome">Haters Welcome</option>
-<option value="Lynn's Amigos">Lynn's Amigos</option>
-<option value="Rackless Behavior">Rackless Behavior</option>
-<option value="Dirty Ballers">Dirty Ballers</option>
-<option value="8 on Break">8 on Break</option>
-<option value="Five Amigos">Five Amigos</option>
-<option value="Frank's Pizza">Frank's Pizza</option>
-<option value="Killer Instinct">Killer Instinct</option>
-<option value="Pete's Bunch">Pete's Bunch</option>
-</select>
-<div id="teamRoster" class="roster-box"></div>
+    <div class="block">
+        <label>Team:</label><br>
+        <select id="team">
+            <option value="">-- Select Your Team --</option>
+            <option>Halfway Crooks</option>
+            <option>Haters Welcome</option>
+            <option>Lynn's Amigos</option>
+            <option>Rackless Behavior</option>
+            <option>Dirty Ballers</option>
+            <option>8 on Break</option>
+            <option>Five Amigos</option>
+            <option>Frank's Pizza</option>
+            <option>Killer Instinct</option>
+            <option>Pete's Bunch</option>
+        </select>
+        <div id="teamRoster" class="roster-box"></div>
+    </div>
+
+    <div class="block">
+        <label>Opponent:</label><br>
+        <select id="opponent">
+            <option value="">-- Select Opponent --</option>
+            <option>Halfway Crooks</option>
+            <option>Haters Welcome</option>
+            <option>Lynn's Amigos</option>
+            <option>Rackless Behavior</option>
+            <option>Dirty Ballers</option>
+            <option>8 on Break</option>
+            <option>Five Amigos</option>
+            <option>Frank's Pizza</option>
+            <option>Killer Instinct</option>
+            <option>Pete's Bunch</option>
+        </select>
+        <div id="opponentRoster" class="roster-box"></div>
+    </div>
 </div>
 
-<!-- OPPONENT BLOCK -->
-<div class="block">
-<label for="opponent">Opponent:</label><br>
-<select id="opponent" name="opponent" required>
-<option value="">-- Select Opponent --</option>
-<option value="Halfway Crooks">Halfway Crooks</option>
-<option value="Haters Welcome">Haters Welcome</option>
-<option value="Lynn's Amigos">Lynn's Amigos</option>
-<option value="Rackless Behavior">Rackless Behavior</option>
-<option value="Dirty Ballers">Dirty Ballers</option>
-<option value="8 on Break">8 on Break</option>
-<option value="Five Amigos">Five Amigos</option>
-<option value="Frank's Pizza">Frank's Pizza</option>
-<option value="Killer Instinct">Killer Instinct</option>
-<option value="Pete's Bunch">Pete's Bunch</option>
-</select>
-<div id="opponentRoster" class="roster-box"></div>
-</div>
+<div style="display:flex;justify-content:center;gap:40px;margin-top:30px;">
+    <div class="block">
+        <label>Lag Winner:</label><br>
+        <input id="lagWinner" readonly>
+    </div>
+    <div class="block">
+        <label>Lag Loser:</label><br>
+        <input id="lagLoser" readonly>
+    </div>
 </div>
 
-<!-- LAG WINNER / LOSER -->
-<div style="display: flex; justify-content: center; gap: 40px; margin-top: 30px;">
-<div class="block">
-<label for="lagWinner">Lag Winner:</label><br>
-<input type="text" id="lagWinner" name="lagWinner" readonly style="width: 200px;">
-</div>
-<div class="block">
-<label for="lagLoser">Lag Loser:</label><br>
-<input type="text" id="lagLoser" name="lagLoser" readonly style="width: 200px;">
-</div>
+<div style="text-align:center;margin-top:30px;">
+    <label>Innings:</label><br>
+    <input type="number" id="matchInnings">
 </div>
 
-<!-- MATCH INNINGS -->
-<div style="text-align: center; margin-top: 30px;">
-<label for="matchInnings"><strong>Innings:</strong></label><br>
-<input type="number" id="matchInnings" min="0" style="width: 60px;">
+<div style="display:flex;justify-content:center;gap:60px;margin-top:40px;">
+    <div class="block">
+        <h3>Player A</h3>
+        <input id="pA_hc" type="number"><br>
+        <input id="pA_wins" type="number"><br>
+        <input id="pA_losses" type="number"><br>
+        <input id="pA_safeties" type="number"><br>
+        <input id="pA_e8" type="number"><br>
+        <input id="pA_br" type="number"><br>
+    </div>
+    <div class="block">
+        <h3>Player B</h3>
+        <input id="pB_hc" type="number"><br>
+        <input id="pB_wins" type="number"><br>
+        <input id="pB_losses" type="number"><br>
+        <input id="pB_safeties" type="number"><br>
+        <input id="pB_e8" type="number"><br>
+        <input id="pB_br" type="number"><br>
+    </div>
 </div>
 
-<!-- PLAYER STATS -->
-<div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;">
-<!-- PLAYER A -->
-<div class="block">
-<h3>Player A Stats</h3>
-<label>Handicap:</label><br>
-<input type="number" id="pA_hc" min="1" max="7" style="width: 80px;"><br>
-<label>Wins:</label><br>
-<input type="number" id="pA_wins" min="0" style="width: 80px;"><br>
-<label>Losses:</label><br>
-<input type="number" id="pA_losses" min="0" style="width: 80px;"><br>
-<label>Safeties:</label><br>
-<input type="number" id="pA_safeties" min="0" style="width: 80px;"><br>
-<label>8 on Break:</label><br>
-<input type="number" id="pA_e8" min="0" style="width: 80px;"><br>
-<label>Break & Run:</label><br>
-<input type="number" id="pA_br" min="0" style="width: 80px;"><br>
+<div style="text-align:center;margin-top:30px;">
+    <label>Match Winner:</label><br>
+    <input id="matchWinner" readonly>
 </div>
 
-<!-- PLAYER B -->
-<div class="block">
-<h3>Player B Stats</h3>
-<label>Handicap:</label><br>
-<input type="number" id="pB_hc" min="1" max="7" style="width: 80px;"><br>
-<label>Wins:</label><br>
-<input type="number" id="pB_wins" min="0" style="width: 80px;"><br>
-<label>Losses:</label><br>
-<input type="number" id="pB_losses" min="0" style="width: 80px;"><br>
-<label>Safeties:</label><br>
-<input type="number" id="pB_safeties" min="0" style="width: 80px;"><br>
-<label>8 on Break:</label><br>
-<input type="number" id="pB_e8" min="0" style="width: 80px;"><br>
-<label>Break & Run:</label><br>
-<input type="number" id="pB_br" min="0" style="width: 80px;"><br>
-</div>
-</div>
-
-<!-- MATCH WINNER -->
-<div style="text-align: center; margin-top: 30px;">
-<label for="matchWinner"><strong>Match Winner:</strong></label><br>
-<input type="text" id="matchWinner" readonly style="width: 250px;">
-</div>
-
-<!-- SUBMIT BUTTON -->
-<div style="text-align: center; margin-top: 30px;">
-<button id="submitMatch" style="padding: 10px 20px; font-size: 16px;">Submit Match</button>
+<div style="text-align:center;margin-top:30px;">
+    <button id="submitMatch">Submit Match</button>
 </div>
 
 <script>
 const rosters = {
-"Halfway Crooks":["Dan Foster","Tony Perelli","Don Young","Don Rak","Yani Marinopoulos","Brooke Bridges","Jeremie Ketner","Tony Guthrie"],
-"Haters Welcome":["Randy Rycraft","Joe Neal","Jennifer Wagner","Jim Czenk","Phil Nelson","Pam Neal","Greg Wood","Brett Boger"],
-"Lynn's Amigos":["Francisco Ibarra","Noe Castaña","Luis Asavedo","Rico Urvina","Tomas Ramirez","Enrique Meza"],
-"Rackless Behavior":["Jim Nevin","Larry Casper","Harnaik Lal","Freddy Izguerra","Tom Nevin","Doug Misner"],
-"Dirty Ballers":["Rocky Oiler Sr.","Kevin Pattenaude","Ron Gonzalez","Javier Mauricio","Peggy Wood","Joey Sanchez","John Schoiber"],
-"8 on Break":["Doc Halek","Juergen Jackert","Danny Plowman","John Amrein","Kevin Ward","Shawn Mcbride","Don Murphy","Kenny Esposito"],
-"Five Amigos":["Francisco Tinaje","Sergio Sanchez","Mario Orenday","Felipe Ochoa","Jeronimo Ramire","Kevin Joyner","Tony Perez"],
-"Frank's Pizza":["Jose Gonzalez"],
-"Killer Instinct":["Mike Uhlean","Doug Andrus","Jim Berger","Shawn Vitolka","Mike Zbonski Jr.","Luke Valenzuela","Samantha Komm"],
-"Pete's Bunch":["Tom Schroeder","Chuck Harding","Dan Schroeder","Rob Zwart","Pete Steele","Buster Fuller"]
+    "Halfway Crooks":["Dan Foster","Tony Perelli","Don Young","Don Rak","Yani Marinopoulos","Brooke Bridges","Jeremie Ketner","Tony Guthrie"],
+    "Haters Welcome":["Randy Rycraft","Joe Neal","Jennifer Wagner","Jim Czenk","Phil Nelson","Pam Neal","Greg Wood","Brett Boger"],
+    "Lynn's Amigos":["Francisco Ibarra","Noe Castaña","Luis Asavedo","Rico Urvina","Tomas Ramirez","Enrique Meza"],
+    "Rackless Behavior":["Jim Nevin","Larry Casper","Harnaik Lal","Freddy Izguerra","Tom Nevin","Doug Misner"],
+    "Dirty Ballers":["Rocky Oiler Sr.","Kevin Pattenaude","Ron Gonzalez","Javier Mauricio","Peggy Wood","Joey Sanchez","John Schoiber"],
+    "8 on Break":["Doc Halek","Juergen Jackert","Danny Plowman","John Amrein","Kevin Ward","Shawn Mcbride","Don Murphy","Kenny Esposito"],
+    "Five Amigos":["Francisco Tinaje","Sergio Sanchez","Mario Orenday","Felipe Ochoa","Jeronimo Ramire","Kevin Joyner","Tony Perez"],
+    "Frank's Pizza":["Jose Gonzalez"],
+    "Killer Instinct":["Mike Uhlean","Doug Andrus","Jim Berger","Shawn Vitolka","Mike Zbonski Jr.","Luke Valenzuela","Samantha Komm"],
+    "Pete's Bunch":["Tom Schroeder","Chuck Harding","Dan Schroeder","Rob Zwart","Pete Steele","Buster Fuller"]
 };
 
 const playerData = {
-"Dan Foster":3,"Tony Perelli":5,"Don Young":4,"Don Rak":5,"Yani Marinopoulos":5,"Brooke Bridges":2,"Jeremie Ketner":6,"Tony Guthrie":6,
-"Randy Rycraft":4,"Joe Neal":4,"Jennifer Wagner":3,"Jim Czenk":2,"Phil Nelson":4,"Pam Neal":2,"Greg Wood":2,"Brett Boger":5,
-"Francisco Ibarra":2,"Noe Castaña":2,"Luis Asavedo":2,"Rico Urvina":3,"Tomas Ramirez":4,"Enrique Meza":2,
-"Jim Nevin":4,"Larry Casper":3,"Harnaik Lal":3,"Freddy Izguerra":5,"Tom Nevin":3,"Doug Misner":4,
-"Rocky Oiler Sr.":3,"Kevin Pattenaude":3,"Ron Gonzalez":4,"Javier Mauricio":2,"Peggy Wood":2,"Joey Sanchez":2,"John Schoiber":2,
-"Doc Halek":4,"Juergen Jackert":4,"Danny Plowman":5,"John Amrein":3,"Kevin Ward":2,"Shawn Mcbride":2,"Don Murphy":3,"Kenny Esposito":3,
-"Francisco Tinaje":4,"Sergio Sanchez":5,"Mario Orenday":4,"Felipe Ochoa":3,"Jeronimo Ramire":5,"Kevin Joyner":2,"Tony Perez":4,
-"Jose Gonzalez":3,"Mike Uhlean":5,"Doug Andrus":4,"Jim Berger":3,"Shawn Vitolka":5,"Mike Zbonski Jr.":2,"Luke Valenzuela":6,"Samantha Komm":2,
-"Tom Schroeder":4,"Chuck Harding":4,"Dan Schroeder":5,"Rob Zwart":4,"Pete Steele":2,"Buster Fuller":4
+    "Dan Foster":3,"Tony Perelli":5,"Don Young":4,"Don Rak":5,"Yani Marinopoulos":5,"Brooke Bridges":2,
+    "Jeremie Ketner":6,"Tony Guthrie":6,"Randy Rycraft":4,"Joe Neal":4,"Jennifer Wagner":3,"Jim Czenk":2,
+    "Phil Nelson":4,"Pam Neal":2,"Greg Wood":2,"Brett Boger":5,"Francisco Ibarra":2,"Noe Castaña":2,
+    "Luis Asavedo":2,"Rico Urvina":3,"Tomas Ramirez":4,"Enrique Meza":2,"Jim Nevin":4,"Larry Casper":3,
+    "Harnaik Lal":3,"Freddy Izguerra":5,"Tom Nevin":3,"Doug Misner":4,"Rocky Oiler Sr.":3,
+    "Kevin Pattenaude":3,"Ron Gonzalez":4,"Javier Mauricio":2,"Peggy Wood":2,"Joey Sanchez":2,
+    "John Schoiber":2,"Doc Halek":4,"Juergen Jackert":4,"Danny Plowman":5,"John Amrein":3,
+    "Kevin Ward":2,"Shawn Mcbride":2,"Don Murphy":3,"Kenny Esposito":3,"Francisco Tinaje":4,
+    "Sergio Sanchez":5,"Mario Orenday":4,"Felipe Ochoa":3,"Jeronimo Ramire":5,"Kevin Joyner":2,
+    "Tony Perez":4,"Jose Gonzalez":3,"Mike Uhlean":5,"Doug Andrus":4,"Jim Berger":3,
+    "Shawn Vitolka":5,"Mike Zbonski Jr.":2,"Luke Valenzuela":6,"Samantha Komm":2,
+    "Tom Schroeder":4,"Chuck Harding":4,"Dan Schroeder":5,"Rob Zwart":4,"Pete Steele":2,"Buster Fuller":4
 };
 
-const teamSelect = document.getElementById('team');
-const opponentSelect = document.getElementById('opponent');
-const teamRosterDiv = document.getElementById('teamRoster');
-const opponentRosterDiv = document.getElementById('opponentRoster');
-
-function updateRoster(selectElement, rosterDiv) {
-    const teamName = selectElement.value;
-    if (!teamName || !rosters[teamName]) {
-        rosterDiv.textContent = "";
-        return;
-    }
-    // FIXED: template string correctly
-    rosterDiv.innerHTML = rosters[teamName]
-        .map(player => `<div class="playerName" data-player="${player}">${player}</div>`)
-        .join("");
+function updateRoster(sel, div){
+    div.innerHTML = (rosters[sel.value]||[])
+        .map(p=>`<div class="playerName" data-p="${p}">${p}</div>`).join("");
 }
 
-teamSelect.addEventListener('change', () => updateRoster(teamSelect, teamRosterDiv));
-opponentSelect.addEventListener('change', () => updateRoster(opponentSelect, opponentRosterDiv));
+team.onchange=()=>updateRoster(team,teamRoster);
+opponent.onchange=()=>updateRoster(opponent,opponentRoster);
 
-let lagWinnerFilled = false;
-
-document.addEventListener("click", function(e){
+let flip=false;
+document.onclick=e=>{
     if(e.target.classList.contains("playerName")){
-        const name = e.target.getAttribute("data-player");
-        const hc = playerData[name] || "";
-        if(!lagWinnerFilled){
-            document.getElementById("lagWinner").value = name;
-            document.getElementById("pA_hc").value = hc;
-            lagWinnerFilled = true;
-        } else {
-            document.getElementById("lagLoser").value = name;
-            document.getElementById("pB_hc").value = hc;
-            lagWinnerFilled = false;
-        }
-        updateMatchWinner();
+        const n=e.target.dataset.p,hc=playerData[n];
+        if(!flip){lagWinner.value=n;pA_hc.value=hc;}
+        else{lagLoser.value=n;pB_hc.value=hc;}
+        flip=!flip;
     }
-});
+};
 
-function updateMatchWinner() {
-    const pA = document.getElementById("lagWinner").value;
-    const pB = document.getElementById("lagLoser").value;
-    const aWins = parseInt(document.getElementById("pA_wins").value)||0;
-    const bWins = parseInt(document.getElementById("pB_wins").value)||0;
-    const aHC = parseInt(document.getElementById("pA_hc").value)||0;
-    const bHC = parseInt(document.getElementById("pB_hc").value)||0;
-
-    // FIXED: match winner logic works correctly
-    if(pA && aHC>0 && aWins >= aHC){
-        document.getElementById("matchWinner").value = pA;
-    } else if(pB && bHC>0 && bWins >= bHC){
-        document.getElementById("matchWinner").value = pB;
-    } else {
-        document.getElementById("matchWinner").value = "";
-    }
-}
-
-document.querySelectorAll("#pA_wins,#pB_wins,#pA_hc,#pB_hc")
-    .forEach(el=>el.addEventListener("input", updateMatchWinner));
-
-document.getElementById("submitMatch").addEventListener("click", function(e){
-    e.stopPropagation();
-    const data = {
-        lagWinner: document.getElementById("lagWinner").value,
-        lagLoser: document.getElementById("lagLoser").value,
-        matchInnings: document.getElementById("matchInnings").value,
-        pA: {
-            handicap: document.getElementById("pA_hc").value,
-            wins: document.getElementById("pA_wins").value,
-            losses: document.getElementById("pA_losses").value,
-            safeties: document.getElementById("pA_safeties").value,
-            e8: document.getElementById("pA_e8").value,
-            br: document.getElementById("pA_br").value
-        },
-        pB: {
-            handicap: document.getElementById("pB_hc").value,
-            wins: document.getElementById("pB_wins").value,
-            losses: document.getElementById("pB_losses").value,
-            safeties: document.getElementById("pB_safeties").value,
-            e8: document.getElementById("pB_e8").value,
-            br: document.getElementById("pB_br").value
-        },
-        matchWinner: document.getElementById("matchWinner").value
+submitMatch.onclick=()=>{
+    const data={
+        team:team.value,
+        opponent:opponent.value,
+        lagWinner:lagWinner.value,
+        lagLoser:lagLoser.value,
+        matchInnings:matchInnings.value,
+        pA:{handicap:pA_hc.value,wins:pA_wins.value,losses:pA_losses.value,safeties:pA_safeties.value,e8:pA_e8.value,br:pA_br.value},
+        pB:{handicap:pB_hc.value,wins:pB_wins.value,losses:pB_losses.value,safeties:pB_safeties.value,e8:pB_e8.value,br:pB_br.value},
+        matchWinner:matchWinner.value
     };
 
-    console.log("DATA SENT:", JSON.stringify(data,null,2));
-
     fetch("https://script.google.com/macros/s/AKfycbx1tYC3Q14Bj8UedCkGn7044TB85kSGttmA5kA6ODMZtL-DBE9942BmS5Be-jeOEUk2/exec",{
-    method:"POST",
-    body: JSON.stringify(data)
-})
-
-    .then(r=>r.text())
-    .then(t=>{
-  console.log("Logged to Google Sheet:", t);
-
-  document.querySelectorAll("input[type='number']").forEach(el=>el.value="");
-  document.getElementById("lagWinner").value="";
-  document.getElementById("lagLoser").value="";
-  document.getElementById("matchWinner").value="";
-  document.getElementById("matchInnings").value="";
-  lagWinnerFilled = false;
-})
-.catch(err=>console.error("Error:",err));
-
+        method:"POST",
+        body:JSON.stringify(data)
+    }).then(()=>document.querySelectorAll("input").forEach(i=>i.value=""));
+};
 </script>
-
 </body>
 </html>
-
