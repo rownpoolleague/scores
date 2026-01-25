@@ -73,7 +73,17 @@
     font-size: inherit;
     font-family: inherit;
 }
-       
+      @media (max-width: 600px) {
+    .row {
+        flex-direction: column;
+        gap: 20px;   /* smaller gap for mobile */
+        margin-top: 20px;
+    }
+
+    .roster-box {
+        min-width: 100%;   /* prevents overflow */
+    }
+} 
 </style>
 </head>
 <body>
