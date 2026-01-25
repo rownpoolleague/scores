@@ -234,14 +234,22 @@ team.onchange=()=>updateRoster(team,teamRoster);
 opponent.onchange=()=>updateRoster(opponent,opponentRoster);
 
 let flip=false;
-document.onclick=e=>{
-    if(e.target.classList.contains("playerName")){
-        const n=e.target.dataset.p,hc=playerData[n];
-        if(!flip){lagWinner.value=n;pA_hc.value=hc;}
-        else{lagLoser.value=n;pB_hc.value=hc;}
-        flip=!flip;
+document.addEventListener("click", e => {
+    if (e.target.classList.contains("playerName")) {
+        const name = e.target.dataset.p;
+        const handicap = playerData[name];
+
+        if (!flip) {
+            lagWinner.value = name;
+            pA_hc.value = handicap;
+        } else {
+            lagLoser.value = name;
+            pB_hc.value = handicap;
+        }
+
+        flip = !flip;
     }
-};
+});
 
 submitMatch.onclick=()=>{
     const data={
