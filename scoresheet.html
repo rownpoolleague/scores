@@ -73,22 +73,37 @@
     font-size: inherit;
     font-family: inherit;
 }
-     @media (max-width: 600px) {
+    @media (max-width: 600px) {
     .row {
         flex-direction: column;
-        gap: 20px;      /* smaller gap for mobile */
+        gap: 20px;
         margin-top: 20px;
+        align-items: center;   /* center the blocks themselves */
+        text-align: center;    /* center text inside blocks */
     }
 
     .roster-box {
-        min-width: 100%; /* prevents overflow */
+        min-width: 100%;
+        text-align: center;    /* center roster text */
     }
 
     .lag-row {
-        flex-direction: column;  /* stack vertically on mobile */
-        gap: 10px;               /* reduce spacing */
-        width: 100%;             /* prevent horizontal overflow */
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
         margin-top: 20px;
+        align-items: center;   /* center the Lag Winner/Lag Loser blocks */
+        text-align: center;
+    }
+
+    .stat-row {
+        justify-content: center;  /* center labels + inputs */
+        text-align: center;
+    }
+
+    .stat-row label {
+        text-align: center;       /* center labels instead of right-align */
+        width: auto;              /* remove fixed width so they center properly */
     }
 }
 </style>
