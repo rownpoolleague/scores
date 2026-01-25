@@ -165,7 +165,7 @@ submitMatch.onclick=()=>{
         matchWinner:matchWinner.value
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbyofK1OzhrgBTdPazBMq9Y1UjepFjIGtt1sBD7DZaZiAaFdHTmMakVu-yWzWQfwG99E/exec",{
+    fetch("https://script.google.com/macros/s/AKfycbxvN0jVzJOdmibwo8bHhcuTbaCoU8tPl-_MvYY4sVJWlGcmviXydCN0lX8onwP5Rj4-/exec",{
         method:"POST",
         body:JSON.stringify(data)
     }).then(()=>document.querySelectorAll("input").forEach(i=>i.value=""));
