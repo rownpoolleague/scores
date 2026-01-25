@@ -15,17 +15,23 @@
     .row { display: flex; justify-content: center; gap: 40px; margin-top: 40px; }
     .block { text-align: left; }
 
-    .roster-box {
-        margin-top: 10px;
-        padding: 8px 10px;
-        border: 1px solid #fff;  /* White border so it shows on black */
-        min-width: 150px;
-        min-height: 80px;
-        font-size: 18px;
-        white-space: pre-line;
-        background-color: #fff;  /* White background inside the box */
-        color: #000;             /* Black text inside the box */
-    }
+   .roster-box {
+    margin-top: 10px;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    min-width: 0;
+    min-height: 0;
+    font-size: 18px;
+    white-space: pre-line;
+    background-color: transparent;
+    color: #fff; /* text white when empty */
+}
+
+.roster-box.filled {
+    border-color: #fff;
+    background-color: #fff;
+    color: #000;
+}
    label { 
         font-weight: bold; 
         color: #fff; 
@@ -275,15 +281,28 @@ const playerData = {
     "Tom Schroeder":4,"Chuck Harding":4,"Dan Schroeder":5,"Rob Zwart":4,"Pete Steele":2,"Buster Fuller":4
 };
 
-function updateRoster(sel, div){
-    div.innerHTML = (rosters[sel.value]||[])
-        .map(p=>`<div class="playerName" data-p="${p}">${p}</div>`).join("");
+function updateRoster(sel, div) {
+    const players = rosters[sel.value] || [];
+
+    if (players.length === 0) {
+        // EMPTY → remove filled class + clear box
+        div.classList.remove("filled");
+        div.innerHTML = "";
+        return;
+    }
+
+    // FILLED → add filled class + populate players
+    div.classList.add("filled");
+    div.innerHTML = players
+        .map(p => `<div class="playerName" data-p="${p}">${p}</div>`)
+        .join("");
 }
 
-team.onchange=()=>updateRoster(team,teamRoster);
-opponent.onchange=()=>updateRoster(opponent,opponentRoster);
+team.onchange = () => updateRoster(team, teamRoster);
+opponent.onchange = () => updateRoster(opponent, opponentRoster);
 
-let flip=false;
+let flip = false;
+
 document.addEventListener("click", e => {
     if (e.target.classList.contains("playerName")) {
         const name = e.target.dataset.p;
