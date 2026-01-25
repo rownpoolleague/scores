@@ -304,22 +304,41 @@ document.addEventListener("click", e => {
     }
 });
 
-submitMatch.onclick=()=>{
-    const data={
-        team:team.value,
-        opponent:opponent.value,
-        lagWinner:lagWinner.value,
-        lagLoser:lagLoser.value,
-        matchInnings:matchInnings.value,
-        pA:{handicap:pA_hc.value,wins:pA_wins.value,losses:pA_losses.value,safeties:pA_safeties.value,e8:pA_e8.value,br:pA_br.value},
-        pB:{handicap:pB_hc.value,safeties:pB_safeties.value,e8:pB_e8.value,br:pB_br.value},
-        matchWinner:matchWinner.value
+submitMatch.onclick = () => {
+    const data = {
+        team: team.value,
+        opponent: opponent.value,
+        lagWinner: lagWinner.value,
+        lagLoser: lagLoser.value,
+        matchInnings: matchInnings.value,
+        pA: {
+            handicap: pA_hc.value,
+            wins: pA_wins.value,
+            losses: pA_losses.value,
+            safeties: pA_safeties.value,
+            e8: pA_e8.value,
+            br: pA_br.value
+        },
+        pB: {
+            handicap: pB_hc.value,
+            safeties: pB_safeties.value,
+            e8: pB_e8.value,
+            br: pB_br.value
+        },
+        matchWinner: matchWinner.value
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbxvN0jVzJOdmibwo8bHhcuTbaCoU8tPl-_MvYY4sVJWlGcmviXydCN0lX8onwP5Rj4-/exec",{
-        method:"POST",
-        body:JSON.stringify(data)
-    }).then(()=>document.querySelectorAll("input").forEach(i=>i.value=""));
+    fetch("https://script.google.com/macros/s/AKfycbxvN0jVzJOdmibwo8bHhcuTbaCoU8tPl-_MvYY4sVJWlGcmviXydCN0lX8onwP5Rj4-/exec", {
+        method: "POST",
+        body: JSON.stringify(data)
+    })
+    .then(() => {
+        // Clear all inputs
+        document.querySelectorAll("input").forEach(i => i.value = "");
+
+        // Show success message
+        alert("Match submitted successfully.\nYou may now enter the next match.");
+    });
 };
     function changeInnings(amount) {
     const input = document.getElementById("matchInnings");
