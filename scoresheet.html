@@ -244,21 +244,23 @@ document.getElementById("submitMatch").addEventListener("click", function(e){
     console.log("DATA SENT:", JSON.stringify(data,null,2));
 
     fetch("https://script.google.com/macros/s/AKfycbx1tYC3Q14Bj8UedCkGn7044TB85kSGttmA5kA6ODMZtL-DBE9942BmS5Be-jeOEUk2/exec",{
-        method:"POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    })
-    .then(r=>r.text())
-    .then(t=>console.log("Logged to Google Sheet:",t))
-    .catch(err=>console.error("Error:",err));
+    method:"POST",
+    body: JSON.stringify(data)
+})
 
-    document.querySelectorAll("input[type='number']").forEach(el=>el.value="");
-    document.getElementById("lagWinner").value="";
-    document.getElementById("lagLoser").value="";
-    document.getElementById("matchWinner").value="";
-    document.getElementById("matchInnings").value="";
-    lagWinnerFilled = false;
-});
+    .then(r=>r.text())
+    .then(t=>{
+  console.log("Logged to Google Sheet:", t);
+
+  document.querySelectorAll("input[type='number']").forEach(el=>el.value="");
+  document.getElementById("lagWinner").value="";
+  document.getElementById("lagLoser").value="";
+  document.getElementById("matchWinner").value="";
+  document.getElementById("matchInnings").value="";
+  lagWinnerFilled = false;
+})
+.catch(err=>console.error("Error:",err));
+
 </script>
 
 </body>
