@@ -73,17 +73,24 @@
     font-size: inherit;
     font-family: inherit;
 }
-      @media (max-width: 600px) {
+     @media (max-width: 600px) {
     .row {
         flex-direction: column;
-        gap: 20px;   /* smaller gap for mobile */
+        gap: 20px;      /* smaller gap for mobile */
         margin-top: 20px;
     }
 
     .roster-box {
-        min-width: 100%;   /* prevents overflow */
+        min-width: 100%; /* prevents overflow */
     }
-} 
+
+    .lag-row {
+        flex-direction: column;  /* stack vertically on mobile */
+        gap: 10px;               /* reduce spacing */
+        width: 100%;             /* prevent horizontal overflow */
+        margin-top: 20px;
+    }
+}
 </style>
 </head>
 <body>
@@ -126,7 +133,7 @@
     </div>
 </div>
 
-<div style="display:flex;justify-content:center;gap:40px;margin-top:30px;">
+<div class="lag-row" style="display:flex;justify-content:center;gap:40px;margin-top:30px;">
     <div class="block center-label">
     <label>Lag Winner</label>
     <input id="lagWinner" readonly>
