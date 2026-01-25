@@ -275,6 +275,31 @@ submitMatch.onclick=()=>{
     if (value < 0) value = 0;
     input.value = value;
 }
+    function updateMatchWinner() {
+    const aWins = parseInt(pA_wins.value) || 0;
+    const aLoss = parseInt(pA_losses.value) || 0;
+
+    const aHC = parseInt(pA_hc.value) || 0;
+    const bHC = parseInt(pB_hc.value) || 0;
+
+    // Player A wins by reaching their handicap
+    if (aWins === aHC && aHC > 0) {
+        matchWinner.value = lagWinner.value;
+        return;
+    }
+
+    // Player B wins when Player A's losses reach B's handicap
+    if (aLoss === bHC && bHC > 0) {
+        matchWinner.value = lagLoser.value;
+        return;
+    }
+
+    // Otherwise no winner yet
+    matchWinner.value = "";
+}
+    [pA_wins, pA_losses, pA_hc, pB_hc].forEach(el =>
+    el.addEventListener("input", updateMatchWinner)
+);
 </script>
 </body>
 </html>
