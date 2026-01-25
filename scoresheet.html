@@ -91,8 +91,6 @@
     <div class="block">
         <h3>Player B</h3>
         <input id="pB_hc" type="number"><br>
-        <input id="pB_wins" type="number"><br>
-        <input id="pB_losses" type="number"><br>
         <input id="pB_safeties" type="number"><br>
         <input id="pB_e8" type="number"><br>
         <input id="pB_br" type="number"><br>
@@ -163,7 +161,7 @@ submitMatch.onclick=()=>{
         lagLoser:lagLoser.value,
         matchInnings:matchInnings.value,
         pA:{handicap:pA_hc.value,wins:pA_wins.value,losses:pA_losses.value,safeties:pA_safeties.value,e8:pA_e8.value,br:pA_br.value},
-        pB:{handicap:pB_hc.value,wins:pB_wins.value,losses:pB_losses.value,safeties:pB_safeties.value,e8:pB_e8.value,br:pB_br.value},
+        pB:{handicap:pB_hc.value,safeties:pB_safeties.value,e8:pB_e8.value,br:pB_br.value},
         matchWinner:matchWinner.value
     };
 
