@@ -9,6 +9,7 @@
         font-family: Arial, sans-serif;
         font-size: 18px;
         background-color: #000;   /* Black background */
+        background: linear-gradient(180deg, #000 0%, #111 100%);
         color: #fff;              /* White text everywhere else */
     }
 
@@ -24,7 +25,7 @@
         font-size: 18px;
         white-space: pre-line;
         background-color: #000;  /* White background inside the box */
-        background: linear-gradient(180deg, #000 0%, #111 100%);
+        
         color: #fff;             /* Black text inside the box */
     }
  
@@ -117,7 +118,7 @@
 </style>
 </head>
 <body>
-
+<div class="main-wrapper">
 <div class="row">
     <div class="block">
         
@@ -374,5 +375,8 @@ submitMatch.onclick = () => {
     el.addEventListener("input", updateMatchWinner)
 );
 </script>
+    </div>
+
+
 </body>
 </html>
