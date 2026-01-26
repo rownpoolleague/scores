@@ -241,9 +241,14 @@
         </div>
 
         <div class="stat-row">
-            <label>Safeties</label>
-            <input id="pB_safeties" type="number">
-        </div>
+    <label>Safeties</label>
+
+    <div class="innings-wrapper">
+        <button type="button" class="btn-minus" onclick="changePBsafeties(-1)">−</button>
+        <input id="pB_safeties" type="number" value="0" min="0">
+        <button type="button" class="btn-plus" onclick="changePBsafeties(1)">+</button>
+    </div>
+</div>
 
         <div class="stat-row">
             <label>8B</label>
@@ -392,6 +397,13 @@ submitMatch.onclick = () => {
 );
     function changeWins(amount) {
     const input = document.getElementById("pA_wins");
+    let value = parseInt(input.value) || 0;
+    value += amount;
+    if (value < 0) value = 0;
+    input.value = value;
+}
+    function changePBsafeties(amount) {
+    const input = document.getElementById("pB_safeties");
     let value = parseInt(input.value) || 0;
     value += amount;
     if (value < 0) value = 0;
