@@ -4,23 +4,12 @@
     <meta charset="UTF-8">
     <title>Scoresheet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <style>
     body {
         font-family: Arial, sans-serif;
         font-size: 18px;
-        background-color: #000;
-        background: linear-gradient(180deg, #000 0%, #111 100%);
-        color: #fff;
-    }
-
-    .main-wrapper {
-        border: 2px solid #fff;
-        padding: 20px;
-        max-width: 600px;
-        margin: 20px auto;
-        border-radius: 8px;
-        box-shadow: 0 0 20px rgba(255,255,255,0.05);
+        background-color: #000;   /* Black background */
+        color: #fff;              /* White text everywhere else */
     }
 
     .row { display: flex; justify-content: center; gap: 40px; margin-top: 40px; }
@@ -35,7 +24,6 @@
         font-size: 18px;
         white-space: pre-line;
         background-color: #000;  /* White background inside the box */
-        
         color: #fff;             /* Black text inside the box */
     }
  
@@ -86,14 +74,6 @@
     font-size: inherit;
     font-family: inherit;
 }
-          .main-wrapper {
-    border: 2px solid #444;     /* the border */
-    padding: 20px;              /* space inside the border */
-    max-width: 600px;           /* keeps layout tight */
-    margin: 20px auto;          /* centers the whole form */
-    border-radius: 8px;         /* optional rounded corners */
-    box-shadow: 0 0 20px rgba(255,255,255,0.05); /* optional soft glow */
-}
     @media (max-width: 600px) {
     .row {
         flex-direction: column;
@@ -102,10 +82,6 @@
         align-items: center;   /* center the blocks themselves */
         text-align: center;    /* center text inside blocks */
     }
-        .main-wrapper {
-    width: 95%;
-    padding: 15px;
-}
 
    .roster-box {
     min-width: 0;
@@ -134,13 +110,11 @@
         text-align: center;
         width: 70px;   /* restore fixed width */
     }
-      
 
 
 }
 </style>
 </head>
-   </div>
 <body>
 
 <div class="row">
@@ -399,8 +373,5 @@ submitMatch.onclick = () => {
     el.addEventListener("input", updateMatchWinner)
 );
 </script>
-
-
-
 </body>
 </html>
