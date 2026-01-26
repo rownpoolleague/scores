@@ -6,12 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
     body {
+        <div class="main-wrapper">
+
         font-family: Arial, sans-serif;
         font-size: 18px;
         background-color: #000;   /* Black background */
         background: linear-gradient(180deg, #000 0%, #111 100%);
         color: #fff;              /* White text everywhere else */
     }
+        .main-wrapper {
+    border: 2px solid #444;     /* the border */
+    padding: 20px;              /* space inside the border */
+    max-width: 600px;           /* keeps layout tight */
+    margin: 20px auto;          /* centers the whole form */
+    border-radius: 8px;         /* optional rounded corners */
+    box-shadow: 0 0 20px rgba(255,255,255,0.05); /* optional soft glow */
+}
 
     .row { display: flex; justify-content: center; gap: 40px; margin-top: 40px; }
     .block { text-align: left; }
@@ -92,6 +102,10 @@
         align-items: center;   /* center the blocks themselves */
         text-align: center;    /* center text inside blocks */
     }
+        .main-wrapper {
+    width: 95%;
+    padding: 15px;
+}
 
    .roster-box {
     min-width: 0;
@@ -126,6 +140,7 @@
 }
 </style>
 </head>
+   </div>
 <body>
 
 <div class="row">
