@@ -7,7 +7,7 @@
     <style>
     body {
         font-family: Arial, sans-serif;
-        font-size: 14px;
+        font-size: 18px;
         background-color: #000;   /* Black background */
         color: #fff;              /* White text everywhere else */
     }
@@ -41,7 +41,7 @@
 
     /* Stat inputs: Wins, Losses, Innings, Safeties, 8B, BR, Handicap */
     input[type="number"] {
-        width: 20px;              /* compact width */
+        width: 35px;              /* compact width */
         padding: 4px 6px;         /* comfortable but small */
         font-size: 18px;
         background-color: #fff;   /* white box */
@@ -243,11 +243,7 @@
         <div class="stat-row">
     <label>Safeties</label>
 
-    <div class="innings-wrapper">
-        <button type="button" class="btn-minus" onclick="changePBsafeties(-1)">−</button>
-        <input id="pB_safeties" type="number" value="0" min="0">
-        <button type="button" class="btn-plus" onclick="changePBsafeties(1)">+</button>
-    </div>
+    <div class="stat-row"> <label>Safeties</label> <input id="pB_safeties" type="number"> </div>
 </div>
 
         <div class="stat-row">
