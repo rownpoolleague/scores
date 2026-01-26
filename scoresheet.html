@@ -74,6 +74,14 @@
     font-size: inherit;
     font-family: inherit;
 }
+        .form-wrapper {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 2px solid #fff;   /* WHITE BORDER */
+    border-radius: 8px;       /* optional, looks nicer */
+    box-sizing: border-box;
+}
     @media (max-width: 600px) {
     .row {
         flex-direction: column;
@@ -82,7 +90,10 @@
         align-items: center;   /* center the blocks themselves */
         text-align: center;    /* center text inside blocks */
     }
-
+.form-wrapper {
+        margin: 10px;
+        padding: 15px;
+    }
    .roster-box {
     min-width: 0;
     width: auto;
@@ -116,6 +127,8 @@
 </style>
 </head>
 <body>
+<div class="form-wrapper">
+
 
 <div class="row">
     <div class="block">
@@ -373,5 +386,7 @@ submitMatch.onclick = () => {
     el.addEventListener("input", updateMatchWinner)
 );
 </script>
+    </div>
+
 </body>
 </html>
