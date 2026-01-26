@@ -201,9 +201,14 @@
         </div>
 
         <div class="stat-row">
-            <label>Wins</label>
-            <input id="pA_wins" type="number">
-        </div>
+    <label>Wins</label>
+
+    <div class="innings-wrapper">
+        <button type="button" class="btn-minus" onclick="changeWins(-1)">−</button>
+        <input id="pA_wins" type="number" value="0" min="0">
+        <button type="button" class="btn-plus" onclick="changeWins(1)">+</button>
+    </div>
+</div>
 
         <div class="stat-row">
             <label>Losses</label>
@@ -385,6 +390,13 @@ submitMatch.onclick = () => {
     [pA_wins, pA_losses, pA_hc, pB_hc].forEach(el =>
     el.addEventListener("input", updateMatchWinner)
 );
+    function changeWins(amount) {
+    const input = document.getElementById("pA_wins");
+    let value = parseInt(input.value) || 0;
+    value += amount;
+    if (value < 0) value = 0;
+    input.value = value;
+}
 </script>
     </div>
 
