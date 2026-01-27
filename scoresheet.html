@@ -213,9 +213,13 @@
 </div>
 
         <div class="stat-row">
-            <label>Losses</label>
-            <input id="pA_losses" type="number">
-        </div>
+    <label>Losses</label>
+    <div class="innings-wrapper">
+        <button type="button" class="btn-minus" onclick="changePALosses(-1)">−</button>
+        <input id="pA_losses" type="number" value="0" min="0">
+        <button type="button" class="btn-plus" onclick="changePALosses(1)">+</button>
+    </div>
+</div>
 
         <div class="stat-row">
             <label>Safeties</label>
