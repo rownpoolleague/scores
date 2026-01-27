@@ -1,152 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Scoresheet</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-    body {
-        font-family: Arial, sans-serif;
-        font-size: 18px;
-        background-color: #000;   /* Black background */
-        color: #fff;              /* White text everywhere else */
-    }
+<meta charset="UTF-8">
+<title>Scoresheet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+/* --- Styles unchanged from your version --- */
+body { font-family: Arial, sans-serif; font-size: 18px; background-color: #000; color: #fff; }
+.row { display: flex; justify-content: center; gap: 40px; margin-top: 40px; }
+.block { text-align: left; }
+.roster-box { margin-top: 10px; padding: 8px 10px; border: 1px solid #000; min-width:1px; min-height:1px; font-size:18px; white-space:pre-line; background-color:#000; color:#fff; }
+label { font-weight:bold; color:#fff; font-size:18px; }
+.playerName { cursor:pointer; padding:2px 0; }
+.playerName:hover { background-color:#333; }
+h3 { margin:0 0 8px 0; color:#fff; }
+input[type="number"] { width:35px; padding:4px 6px; font-size:18px; background-color:#fff; color:#000; border:1px solid #fff; border-radius:4px; margin-bottom:6px; text-align:center; }
+.stat-row { display:flex; flex-direction:column; align-items:center; margin-bottom:12px; }
+.stat-row label { width:auto; text-align:center; margin-bottom:4px; }
+.center-label { display:flex; flex-direction:column; align-items:center; }
+select, input, button { font-size:inherit; font-family:inherit; }
+.form-wrapper { max-width:1200px; margin:20px auto; padding:20px; border:2px solid #fff; border-radius:8px; box-sizing:border-box; }
 
-    .row { display: flex; justify-content: center; gap: 40px; margin-top: 40px; }
-    .block { text-align: left; }
-
-    .roster-box {
-        margin-top: 10px;
-        padding: 8px 10px;
-        border: 1px solid #000;
-        min-width: 1px;
-        min-height: 1px;
-        font-size: 18px;
-        white-space: pre-line;
-        background-color: #000;
-        color: #fff;
-    }
-
-    label { 
-        font-weight: bold; 
-        color: #fff; 
-        font-size: 18px;
-    }
-
-    .playerName { cursor: pointer; padding: 2px 0; }
-    .playerName:hover { background-color: #333; }
-
-    h3 { margin: 0 0 8px 0; color: #fff; }
-
-    input[type="number"] {
-        width: 35px;
-        padding: 4px 6px;
-        font-size: 18px;
-        background-color: #fff;
-        color: #000;
-        border: 1px solid #fff;
-        border-radius: 4px;
-        margin-bottom: 6px;
-        text-align: center;
-    }
-
-    .stat-row {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 12px;
-    }
-
-    .stat-row label {
-        width: auto;
-        text-align: center;
-        margin-bottom: 4px;
-    }
-
-    .center-label {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    select, input, button {
-        font-size: inherit;
-        font-family: inherit;
-    }
-
-    .form-wrapper {
-        max-width: 1200px;
-        margin: 20px auto;
-        padding: 20px;
-        border: 2px solid #fff;
-        border-radius: 8px;
-        box-sizing: border-box;
-    }
-
-    /* MOBILE STYLES */
-    @media (max-width: 600px) {
-        .row {
-            flex-direction: column;
-            gap: 20px;
-            margin-top: 20px;
-            align-items: center;
-            text-align: center;
-        }
-        .form-wrapper {
-            margin: 5px;
-            padding: 8px;
-        }
-        .roster-box {
-            min-width: 0;
-            width: auto;
-            max-width: 90%;
-            text-align: center;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .lag-row {
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-            margin-top: 20px;
-            align-items: center;
-            text-align: center;
-        }
-
-        .stat-row {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .stat-row label {
-            width: auto;
-            text-align: center;
-            margin-bottom: 4px;
-        }
-
-        /* MOBILE ONLY: vertical divider between player stats */
-        .player-stats-container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            gap: 60px;
-        }
-        .player-stats-container::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            background-color: #fff;
-            opacity: 0.7;
-            pointer-events: none;
-        }
-    }
-    </style>
+/* MOBILE STYLES */
+@media (max-width:600px) {
+.row { flex-direction:column; gap:20px; margin-top:20px; align-items:center; text-align:center; }
+.form-wrapper { margin:5px; padding:8px; }
+.roster-box { min-width:0; width:auto; max-width:90%; text-align:center; margin-left:auto; margin-right:auto; }
+.lag-row { flex-direction:column; gap:10px; width:100%; margin-top:20px; align-items:center; text-align:center; }
+.stat-row { display:flex; flex-direction:column; align-items:center; margin-bottom:12px; }
+.stat-row label { width:auto; text-align:center; margin-bottom:4px; }
+.player-stats-container { position:relative; display:flex; justify-content:center; gap:60px; }
+.player-stats-container::after { content:""; position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:2px; background-color:#fff; opacity:0.7; pointer-events:none; }
+}
+</style>
 </head>
 <body>
 <div class="form-wrapper">
@@ -168,7 +54,6 @@
         </select>
         <div id="teamRoster" class="roster-box"></div>
     </div>
-
     <div class="block">
         <select id="opponent">
             <option value="">-- Select Away Team --</option>
@@ -192,7 +77,6 @@
         <label>Lag Winner</label>
         <input id="lagWinner" readonly style="width:160px;">
     </div>
-
     <div class="block center-label">
         <label>Lag Loser</label>
         <input id="lagLoser" readonly style="width:160px;">
@@ -208,56 +92,55 @@
     </div>
 </div>
 
-<!-- WRAP PLAYER STATS IN CONTAINER FOR DIVIDER -->
 <div class="player-stats-container" style="margin-top:40px;">
     <div class="block">
         <h3>Lag Winner</h3>
         <div class="stat-row">
             <label>HC</label>
             <div class="innings-wrapper">
-                <button type="button" class="btn-minus" onclick="changePAHC(-1)">−</button>
+                <button onclick="changePAHC(-1)">−</button>
                 <input id="pA_hc" type="number" value="0" min="0">
-                <button type="button" class="btn-plus" onclick="changePAHC(1)">+</button>
+                <button onclick="changePAHC(1)">+</button>
             </div>
         </div>
         <div class="stat-row">
             <label>Wins</label>
             <div class="innings-wrapper">
-                <button type="button" class="btn-minus" onclick="changeWins(-1)">−</button>
+                <button onclick="changeWins(-1)">−</button>
                 <input id="pA_wins" type="number" value="0" min="0">
-                <button type="button" class="btn-plus" onclick="changeWins(1)">+</button>
+                <button onclick="changeWins(1)">+</button>
             </div>
         </div>
         <div class="stat-row">
             <label>Losses</label>
             <div class="innings-wrapper">
-                <button type="button" class="btn-minus" onclick="changePALosses(-1)">−</button>
+                <button onclick="changePALosses(-1)">−</button>
                 <input id="pA_losses" type="number" value="0" min="0">
-                <button type="button" class="btn-plus" onclick="changePALosses(1)">+</button>
+                <button onclick="changePALosses(1)">+</button>
             </div>
         </div>
         <div class="stat-row">
             <label>Safeties</label>
             <div class="innings-wrapper">
-                <button type="button" class="btn-minus" onclick="changePASafeties(-1)">−</button>
+                <button onclick="changePASafeties(-1)">−</button>
                 <input id="pA_safeties" type="number" value="0" min="0">
-                <button type="button" class="btn-plus" onclick="changePASafeties(1)">+</button>
+                <button onclick="changePASafeties(1)">+</button>
             </div>
         </div>
         <div class="stat-row">
             <label>8B</label>
             <div class="innings-wrapper">
-                <button type="button" class="btn-minus" onclick="changePA8B(-1)">−</button>
+                <button onclick="changePA8B(-1)">−</button>
                 <input id="pA_e8" type="number" value="0" min="0">
-                <button type="button" class="btn-plus" onclick="changePA8B(1)">+</button>
+                <button onclick="changePA8B(1)">+</button>
             </div>
         </div>
         <div class="stat-row">
             <label>B+R</label>
             <div class="innings-wrapper">
-                <button type="button" class="btn-minus" onclick="changePABR(-1)">−</button>
+                <button onclick="changePABR(-1)">−</button>
                 <input id="pA_br" type="number" value="0" min="0">
-                <button type="button" class="btn-plus" onclick="changePABR(1)">+</button>
+                <button onclick="changePABR(1)">+</button>
             </div>
         </div>
     </div>
@@ -267,33 +150,33 @@
         <div class="stat-row">
             <label>HC</label>
             <div class="innings-wrapper">
-                <button type="button" class="btn-minus" onclick="changePBHC(-1)">−</button>
+                <button onclick="changePBHC(-1)">−</button>
                 <input id="pB_hc" type="number" value="0" min="0">
-                <button type="button" class="btn-plus" onclick="changePBHC(1)">+</button>
+                <button onclick="changePBHC(1)">+</button>
             </div>
         </div>
         <div class="stat-row">
             <label>Safeties</label>
             <div class="innings-wrapper">
-                <button type="button" class="btn-minus" onclick="changePBsafeties(-1)">−</button>
+                <button onclick="changePBsafeties(-1)">−</button>
                 <input id="pB_safeties" type="number" value="0" min="0">
-                <button type="button" class="btn-plus" onclick="changePBsafeties(1)">+</button>
+                <button onclick="changePBsafeties(1)">+</button>
             </div>
         </div>
         <div class="stat-row">
             <label>8B</label>
             <div class="innings-wrapper">
-                <button type="button" class="btn-minus" onclick="changePB8B(-1)">−</button>
+                <button onclick="changePB8B(-1)">−</button>
                 <input id="pB_e8" type="number" value="0" min="0">
-                <button type="button" class="btn-plus" onclick="changePB8B(1)">+</button>
+                <button onclick="changePB8B(1)">+</button>
             </div>
         </div>
         <div class="stat-row">
             <label>B+R</label>
             <div class="innings-wrapper">
-                <button type="button" class="btn-minus" onclick="changePBBR(-1)">−</button>
+                <button onclick="changePBBR(-1)">−</button>
                 <input id="pB_br" type="number" value="0" min="0">
-                <button type="button" class="btn-plus" onclick="changePBBR(1)">+</button>
+                <button onclick="changePBBR(1)">+</button>
             </div>
         </div>
     </div>
@@ -309,24 +192,110 @@
 </div>
 
 <script>
-// YOUR JAVASCRIPT HERE (unchanged)
+// --- JavaScript to populate rosters, lag, stats, and submit ---
+
+const rosters = {
+    "Halfway Crooks":["Dan Foster","Tony Perelli","Don Young","Don Rak","Yani Marinopoulos","Brooke Bridges","Jeremie Ketner","Tony Guthrie"],
+    "Haters Welcome":["Randy Rycraft","Joe Neal","Jennifer Wagner","Jim Czenk","Phil Nelson","Pam Neal","Greg Wood","Brett Boger"],
+    "Lynn's Amigos":["Francisco Ibarra","Noe Castaña","Luis Asavedo","Rico Urvina","Tomas Ramirez","Enrique Meza"],
+    "Rackless Behavior":["Jim Nevin","Larry Casper","Harnaik Lal","Freddy Izguerra","Tom Nevin","Doug Misner","Joe Crutchfield"],
+    "Dirty Ballers":["Rocky Oiler Sr.","Kevin Pattenaude","Ron Gonzalez","Javier Mauricio","Peggy Wood","Joey Sanchez","John Schoiber"],
+    "8 on Break":["Doc Halek","Juergen Jackert","Danny Plowman","John Amrein","Kevin Ward","Shawn Mcbride","Don Murphy","Kenny Esposito"],
+    "Five Amigos":["Francisco Tinaje","Sergio Sanchez","Mario Orenday","Felipe Ochoa","Jeronimo Ramire","Kevin Joyner","Tony Perez"],
+    "Frank's Pizza":["Jose Gonzalez"],
+    "Killer Instinct":["Mike Uhlean","Doug Andrus","Jim Berger","Shawn Vitolka","Mike Zbonski Jr.","Luke Valenzuela","Samantha Kommenich"],
+    "Pete's Bunch":["Tom Schroeder","Chuck Harding","Dan Schroeder","Rob Zwart","Pete Steele","Buster Fuller"]
+};
+
+const playerData = {
+    "Dan Foster":3,"Tony Perelli":5,"Don Young":4,"Don Rak":5,"Yani Marinopoulos":5,"Brooke Bridges":2,
+    "Jeremie Ketner":6,"Tony Guthrie":6,"Randy Rycraft":4,"Joe Neal":4,"Jennifer Wagner":3,"Jim Czenk":2,
+    "Phil Nelson":4,"Pam Neal":2,"Greg Wood":2,"Brett Boger":5,"Francisco Ibarra":2,"Noe Castaña":2,
+    "Luis Asavedo":2,"Rico Urvina":3,"Tomas Ramirez":4,"Enrique Meza":2,"Jim Nevin":4,"Larry Casper":3,
+    "Harnaik Lal":3,"Freddy Izguerra":5,"Tom Nevin":3,"Doug Misner":4,"Rocky Oiler Sr.":3,
+    "Kevin Pattenaude":3,"Ron Gonzalez":4,"Javier Mauricio":2,"Peggy Wood":2,"Joey Sanchez":2,
+    "John Schoiber":2,"Doc Halek":4,"Juergen Jackert":4,"Danny Plowman":5,"John Amrein":3,
+    "Kevin Ward":2,"Shawn Mcbride":2,"Don Murphy":3,"Kenny Esposito":3,"Francisco Tinaje":4,
+    "Sergio Sanchez":5,"Mario Orenday":4,"Felipe Ochoa":3,"Jeronimo Ramire":5,"Kevin Joyner":2,
+    "Tony Perez":4,"Jose Gonzalez":3,"Mike Uhlean":5,"Doug Andrus":4,"Jim Berger":3,
+    "Shawn Vitolka":5,"Mike Zbonski Jr.":2,"Luke Valenzuela":6,"Samantha Kommenich":2,
+    "Tom Schroeder":4,"Chuck Harding":4,"Dan Schroeder":5,"Rob Zwart":4,"Pete Steele":2,"Buster Fuller":4
+};
+
+// Populate roster when team selects
+function updateRoster(sel, div){
+    div.innerHTML = (rosters[sel.value]||[]).map(p=>`<div class="playerName" data-p="${p}">${p}</div>`).join("");
+}
+
+document.getElementById("team").addEventListener("change", ()=>updateRoster(team,teamRoster));
+document.getElementById("opponent").addEventListener("change", ()=>updateRoster(opponent,opponentRoster));
+
+let flip=false;
+document.addEventListener("click", e=>{
+    if(e.target.classList.contains("playerName")){
+        const name = e.target.dataset.p;
+        const hc = playerData[name];
+        if(!flip){
+            lagWinner.value = name;
+            pA_hc.value = hc;
+        } else {
+            lagLoser.value = name;
+            pB_hc.value = hc;
+        }
+        flip = !flip;
+    }
+});
+
+// Stat increment/decrement functions
+function changeInnings(amount){ let input = matchInnings; input.value = Math.max(0,(parseInt(input.value)||0)+amount); }
+function changeWins(amount){ let input=pA_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
+function changePALosses(amount){ let input=pA_losses; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
+function changePASafeties(amount){ let input=pA_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changePA8B(amount){ let input=pA_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changePABR(amount){ let input=pA_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changePAHC(amount){ let input=pA_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
+function changePBHC(amount){ let input=pB_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changePBsafeties(amount){ let input=pB_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changePB8B(amount){ let input=pB_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changePBBR(amount){ let input=pB_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+
+// Match winner logic
+function updateMatchWinner(){
+    const aWins = parseInt(pA_wins.value)||0;
+    const aLoss = parseInt(pA_losses.value)||0;
+    const aHC = parseInt(pA_hc.value)||0;
+    const bHC = parseInt(pB_hc.value)||0;
+
+    if(aWins===aHC && aHC>0){ matchWinner.value=lagWinner.value; return; }
+    if(aLoss===bHC && bHC>0){ matchWinner.value=lagLoser.value; return; }
+    matchWinner.value="";
+}
+
+// Submit to Google Sheets
+submitMatch.onclick = ()=>{
+    const data = {
+        team:team.value,
+        opponent:opponent.value,
+        lagWinner:lagWinner.value,
+        lagLoser:lagLoser.value,
+        matchInnings:matchInnings.value,
+        pA:{ handicap:pA_hc.value, wins:pA_wins.value, losses:pA_losses.value, safeties:pA_safeties.value, e8:pA_e8.value, br:pA_br.value },
+        pB:{ handicap:pB_hc.value, safeties:pB_safeties.value, e8:pB_e8.value, br:pB_br.value },
+        matchWinner:matchWinner.value
+    };
+    fetch("https://script.google.com/macros/s/AKfycbxvN0jVzJOdmibwo8bHhcuTbaCoU8tPl-_MvYY4sVJWlGcmviXydCN0lX8onwP5Rj4-/exec",{
+        method:"POST", body:JSON.stringify(data)
+    }).then(()=>{
+        document.querySelectorAll("input").forEach(i=>i.value="");
+        alert("Match submitted successfully, You may now enter the next match.");
+    });
+};
+
 </script>
 
 </div>
 <div style="text-align:center; margin-top:40px;">
-    <button 
-        onclick="window.location.href='https://rownpoolleague.github.io/scores/'"
-        style="
-            padding: 12px 24px;
-            font-size: 20px;
-            background-color: #fff;
-            color: #000;
-            border: 2px solid #fff;
-            border-radius: 6px;
-            cursor: pointer;
-        ">
-        Main Menu
-    </button>
+    <button onclick="window.location.href='https://rownpoolleague.github.io/scores/'" style="padding:12px 24px;font-size:20px;background-color:#fff;color:#000;border:2px solid #fff;border-radius:6px;cursor:pointer;">Main Menu</button>
 </div>
 </body>
 </html>
