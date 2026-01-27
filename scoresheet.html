@@ -54,17 +54,17 @@
 
     /* MUST BE LAST — ensures labels show correctly */
     .stat-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 6px;
-    }
+    display: flex;
+    flex-direction: column;   /* label on top */
+    align-items: center;      /* center everything */
+    margin-bottom: 12px;
+}
 
-    .stat-row label {
-        width: 70px;
-        text-align: right;
-        color: #fff; /* white text for black background */
-    }
+.stat-row label {
+    width: auto;              /* no fixed width */
+    text-align: center;
+    margin-bottom: 4px;       /* spacing above input */
+}
         .center-label {
     display: flex;
     flex-direction: column;
@@ -182,7 +182,7 @@
 
 <div style="text-align:center;margin-top:30px;">
     <label>Innings</label><br>
-</div>
+
    <div class="innings-wrapper">
         <button type="button" class="btn-minus" onclick="changeInnings(-1)">−</button>
         <input type="number" id="matchInnings" value="0" min="0">
