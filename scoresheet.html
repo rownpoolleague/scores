@@ -241,9 +241,13 @@
         </div>
 
         <div class="stat-row">
-    
+    <label>Safeties</label>
 
-    <div class="stat-row"> <label>Safeties</label> <input id="pB_safeties" type="number"> </div>
+    <div class="innings-wrapper">
+        <button type="button" class="btn-minus" onclick="changePBsafeties(-1)">−</button>
+        <input id="pB_safeties" type="number" value="0" min="0">
+        <button type="button" class="btn-plus" onclick="changePBsafeties(1)">+</button>
+    </div>
 </div>
 
         <div class="stat-row">
