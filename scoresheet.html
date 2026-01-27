@@ -198,9 +198,13 @@
         <h3>Lag Winner</h3>
 
         <div class="stat-row">
-            <label>HC</label>
-            <input id="pA_hc" type="number">
-        </div>
+    <label>HC</label>
+    <div class="innings-wrapper">
+        <button type="button" class="btn-minus" onclick="changePAHC(-1)">−</button>
+        <input id="pA_hc" type="number" value="0" min="0">
+        <button type="button" class="btn-plus" onclick="changePAHC(1)">+</button>
+    </div>
+</div>
 
         <div class="stat-row">
     <label>Wins</label>
@@ -253,10 +257,14 @@
     <div class="block">
         <h3>Lag Loser</h3>
 
-        <div class="stat-row">
-            <label>HC</label>
-            <input id="pB_hc" type="number">
-        </div>
+       <div class="stat-row">
+    <label>HC</label>
+    <div class="innings-wrapper">
+        <button type="button" class="btn-minus" onclick="changePBHC(-1)">−</button>
+        <input id="pB_hc" type="number" value="0" min="0">
+        <button type="button" class="btn-plus" onclick="changePBHC(1)">+</button>
+    </div>
+</div>
 
         <div class="stat-row">
     <label>Safeties</label>
@@ -433,6 +441,54 @@ submitMatch.onclick = () => {
     let value = parseInt(input.value) || 0;
     value += amount;
     if (value < 0) value = 0;
+    input.value = value;
+}
+    function changePALosses(amount) {
+    const input = document.getElementById("pA_losses");
+    let value = parseInt(input.value) || 0;
+    value = Math.max(0, value + amount);
+    input.value = value;
+}
+    function changePASafeties(amount) {
+    const input = document.getElementById("pA_safeties");
+    let value = parseInt(input.value) || 0;
+    value = Math.max(0, value + amount);
+    input.value = value;
+}
+    function changePA8B(amount) {
+    const input = document.getElementById("pA_e8");
+    let value = parseInt(input.value) || 0;
+    value = Math.max(0, value + amount);
+    input.value = value;
+}
+    function changePABR(amount) {
+    const input = document.getElementById("pA_br");
+    let value = parseInt(input.value) || 0;
+    value = Math.max(0, value + amount);
+    input.value = value;
+}
+    function changePB8B(amount) {
+    const input = document.getElementById("pB_e8");
+    let value = parseInt(input.value) || 0;
+    value = Math.max(0, value + amount);
+    input.value = value;
+}
+    function changePBBR(amount) {
+    const input = document.getElementById("pB_br");
+    let value = parseInt(input.value) || 0;
+    value = Math.max(0, value + amount);
+    input.value = value;
+}
+    function changePAHC(amount) {
+    const input = document.getElementById("pA_hc");
+    let value = parseInt(input.value) || 0;
+    value = Math.max(0, value + amount);
+    input.value = value;
+}
+    function changePBHC(amount) {
+    const input = document.getElementById("pB_hc");
+    let value = parseInt(input.value) || 0;
+    value = Math.max(0, value + amount);
     input.value = value;
 }
 </script>
