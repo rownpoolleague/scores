@@ -429,12 +429,14 @@ submitMatch.onclick = () => {
     [pA_wins, pA_losses, pA_hc, pB_hc].forEach(el =>
     el.addEventListener("input", updateMatchWinner)
 );
-    function changeWins(amount) {
+   function changeWins(amount) {
     const input = document.getElementById("pA_wins");
     let value = parseInt(input.value) || 0;
-    value += amount;
-    if (value < 0) value = 0;
+
+    value = Math.max(0, value + amount);
     input.value = value;
+
+    updateMatchWinner();   // <-- REQUIRED
 }
     function changePBsafeties(amount) {
     const input = document.getElementById("pB_safeties");
@@ -446,8 +448,11 @@ submitMatch.onclick = () => {
     function changePALosses(amount) {
     const input = document.getElementById("pA_losses");
     let value = parseInt(input.value) || 0;
+
     value = Math.max(0, value + amount);
     input.value = value;
+
+    updateMatchWinner();   // <-- REQUIRED
 }
     function changePASafeties(amount) {
     const input = document.getElementById("pA_safeties");
