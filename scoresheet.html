@@ -54,17 +54,17 @@
 
     /* MUST BE LAST — ensures labels show correctly */
     .stat-row {
-    display: flex;
-    flex-direction: column;   /* label on top */
-    align-items: center;      /* center everything */
-    margin-bottom: 12px;
-}
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 6px;
+    }
 
-.stat-row label {
-    width: auto;              /* no fixed width */
-    text-align: center;
-    margin-bottom: 4px;       /* spacing above input */
-}
+    .stat-row label {
+        width: 70px;
+        text-align: right;
+        color: #fff; /* white text for black background */
+    }
         .center-label {
     display: flex;
     flex-direction: column;
@@ -113,14 +113,17 @@
     }
 
     .stat-row {
-        justify-content: center;  /* center labels + inputs */
-        text-align: center;
-    }
+    display: flex;
+    flex-direction: column;   /* label on top */
+    align-items: center;      /* center everything */
+    margin-bottom: 12px;
+}
 
-    .stat-row label {
-        text-align: center;
-        width: 70px;   /* restore fixed width */
-    }
+.stat-row label {
+    width: auto;              /* no fixed width */
+    text-align: center;
+    margin-bottom: 4px;       /* spacing above input */
+}
 
 
 }
@@ -210,43 +213,25 @@
     </div>
 </div>
 
-
-    <div class="stat-row">
-    <label>Losses</label>
-    <div class="innings-wrapper">
-        <button type="button" class="btn-minus" onclick="changePALosses(-1)">−</button>
-        <input id="pA_losses" type="number" value="0" min="0">
-        <button type="button" class="btn-plus" onclick="changePALosses(1)">+</button>
-    </div>
-</div>
-</div>
+        <div class="stat-row">
+            <label>Losses</label>
+            <input id="pA_losses" type="number">
+        </div>
 
         <div class="stat-row">
-    <label>Safeties</label>
-    <div class="innings-wrapper">
-        <button type="button" class="btn-minus" onclick="changePASafeties(-1)">−</button>
-        <input id="pA_safeties" type="number" value="0" min="0">
-        <button type="button" class="btn-plus" onclick="changePASafeties(1)">+</button>
-    </div>
-</div>
-
-       <div class="stat-row">
-    <label>8B</label>
-    <div class="innings-wrapper">
-        <button type="button" class="btn-minus" onclick="changePA8B(-1)">−</button>
-        <input id="pA_e8" type="number" value="0" min="0">
-        <button type="button" class="btn-plus" onclick="changePA8B(1)">+</button>
-    </div>
-</div>
+            <label>Safeties</label>
+            <input id="pA_safeties" type="number">
+        </div>
 
         <div class="stat-row">
-    <label>B+R</label>
-    <div class="innings-wrapper">
-        <button type="button" class="btn-minus" onclick="changePABR(-1)">−</button>
-        <input id="pA_br" type="number" value="0" min="0">
-        <button type="button" class="btn-plus" onclick="changePABR(1)">+</button>
-    </div>
-</div>
+            <label>8B</label>
+            <input id="pA_e8" type="number">
+        </div>
+
+        <div class="stat-row">
+            <label>B+R</label>
+            <input id="pA_br" type="number">
+        </div>
     </div>
 
 
@@ -268,23 +253,15 @@
     </div>
 </div>
 
-       <div class="stat-row">
-    <label>8B</label>
-    <div class="innings-wrapper">
-        <button type="button" class="btn-minus" onclick="changePB8B(-1)">−</button>
-        <input id="pB_e8" type="number" value="0" min="0">
-        <button type="button" class="btn-plus" onclick="changePB8B(1)">+</button>
-    </div>
-</div>
+        <div class="stat-row">
+            <label>8B</label>
+            <input id="pB_e8" type="number">
+        </div>
 
-       <div class="stat-row">
-    <label>B+R</label>
-    <div class="innings-wrapper">
-        <button type="button" class="btn-minus" onclick="changePBBR(-1)">−</button>
-        <input id="pB_br" type="number" value="0" min="0">
-        <button type="button" class="btn-plus" onclick="changePBBR(1)">+</button>
-    </div>
-</div>
+        <div class="stat-row">
+            <label>B+R</label>
+            <input id="pB_br" type="number">
+        </div>
     </div>
 
 </div>
@@ -435,39 +412,6 @@ submitMatch.onclick = () => {
     if (value < 0) value = 0;
     input.value = value;
 }
-    function changePALosses(amount) {
-    const input = document.getElementById("pA_losses");
-    let value = parseInt(input.value) || 0;
-    value = Math.max(0, value + amount);
-    input.value = value;
-}
-    function changePA8B(amount) {
-    const input = document.getElementById("pA_e8");
-    let value = parseInt(input.value) || 0;
-    value = Math.max(0, value + amount);
-    input.value = value;
-}
-    function changePABR(amount) {
-    const input = document.getElementById("pA_br");
-    let value = parseInt(input.value) || 0;
-    value = Math.max(0, value + amount);
-    input.value = value;
-}
-    function changePB8B(amount) {
-    const input = document.getElementById("pB_e8");
-    let value = parseInt(input.value) || 0;
-    value = Math.max(0, value + amount);
-    input.value = value;
-}
-    <div class="stat-row">
-    <label>B+R</label>
-    <div class="innings-wrapper">
-        <button type="button" class="btn-minus" onclick="changePBBR(-1)">−</button>
-        <input id="pB_br" type="number" value="0" min="0">
-        <button type="button" class="btn-plus" onclick="changePBBR(1)">+</button>
-    </div>
-</div>
-    
 </script>
     </div>
 
