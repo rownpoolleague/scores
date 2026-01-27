@@ -125,6 +125,20 @@
     text-align: center;
     margin-bottom: 4px;       /* spacing above input */
 }
+        .stats-row {
+        display: flex;
+        flex-direction: row;   /* keep them side-by-side on mobile */
+        position: relative;
+    }
+
+    .stats-row .block + .block {
+        border-left: 2px solid #fff;  /* the vertical divider */
+        padding-left: 20px;           /* spacing after the line */
+        margin-left: 20px;            /* spacing before the line */
+    }
+}
+
+
 
 
 }
@@ -194,7 +208,7 @@
     </div>
 </div>
 
-<div style="display:flex;justify-content:center;gap:60px;margin-top:40px;">
+<div class="stats-row" style="display:flex;justify-content:center;gap:60px;margin-top:40px;">
 
     <div class="block">
         <h3>Lag Winner</h3>
