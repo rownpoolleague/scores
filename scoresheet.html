@@ -269,14 +269,22 @@
 </div>
 
         <div class="stat-row">
-            <label>8B</label>
-            <input id="pB_e8" type="number">
-        </div>
+    <label>8B</label>
+    <div class="innings-wrapper">
+        <button type="button" class="btn-minus" onclick="changePB8B(-1)">−</button>
+        <input id="pB_e8" type="number" value="0" min="0">
+        <button type="button" class="btn-plus" onclick="changePB8B(1)">+</button>
+    </div>
+</div>
 
         <div class="stat-row">
-            <label>B+R</label>
-            <input id="pB_br" type="number">
-        </div>
+    <label>B+R</label>
+    <div class="innings-wrapper">
+        <button type="button" class="btn-minus" onclick="changePBBR(-1)">−</button>
+        <input id="pB_br" type="number" value="0" min="0">
+        <button type="button" class="btn-plus" onclick="changePBBR(1)">+</button>
+    </div>
+</div>
     </div>
 
 </div>
