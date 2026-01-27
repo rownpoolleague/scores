@@ -81,9 +81,7 @@
     border-radius: 8px;       /* optional, looks nicer */
     box-sizing: border-box;
 }
-
-}
-   @media (max-width: 600px) {
+    @media (max-width: 600px) {
     .row {
         flex-direction: column;
         gap: 20px;
@@ -91,20 +89,18 @@
         align-items: center;   /* center the blocks themselves */
         text-align: center;    /* center text inside blocks */
     }
-
-    .form-wrapper {
+.form-wrapper {
         margin: 5px;
         padding: 8px;
     }
-
-    .roster-box {
-        min-width: 0;
-        width: auto;
-        max-width: 90%;
-        text-align: center;
-        margin-left: auto;
-        margin-right: auto;
-    }
+   .roster-box {
+    min-width: 0;
+    width: auto;
+    max-width: 90%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
 
     .lag-row {
         flex-direction: column;
@@ -116,27 +112,17 @@
     }
 
     .stat-row {
-        display: flex;
-        flex-direction: column;   /* label on top */
-        align-items: center;      /* center everything */
-        margin-bottom: 12px;
-    }
-
-    .stat-row label {
-        width: auto;              /* no fixed width */
-        text-align: center;
-        margin-bottom: 4px;       /* spacing above input */
-    }
-
-    /* MOBILE-ONLY: vertical divider between Lag Winner and Lag Loser stats */
-    .stats-row .block:nth-child(2) {
-        border-left: 2px solid #fff;  /* the vertical line */
-        padding-left: 16px;           /* space after the line */
-        margin-left: 16px;            /* space before the line */
-    }
+    display: flex;
+    flex-direction: column;   /* label on top */
+    align-items: center;      /* center everything */
+    margin-bottom: 12px;
 }
 
-
+.stat-row label {
+    width: auto;              /* no fixed width */
+    text-align: center;
+    margin-bottom: 4px;       /* spacing above input */
+}
 
 
 }
@@ -206,7 +192,7 @@
     </div>
 </div>
 
-<div class="stats-row" style="display:flex;justify-content:center;gap:60px;margin-top:40px;">
+<div style="display:flex;justify-content:center;gap:60px;margin-top:40px;">
 
     <div class="block">
         <h3>Lag Winner</h3>
