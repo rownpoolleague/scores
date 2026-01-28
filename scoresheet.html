@@ -311,49 +311,6 @@ const FORM_KEY = "r-own-match-progress";
 
 // Unique storage key
 const FORM_KEY = "matchFormState";
-
-// Save all input/select/textarea values
-function saveFormState() {
-    const fields = document.querySelectorAll("input, select, textarea");
-    const state = {};
-
-    fields.forEach(f => {
-        if (f.id) {
-            state[f.id] = f.value;
-        }
-    });
-
-    localStorage.setItem(FORM_KEY, JSON.stringify(state));
-}
-
-// Restore saved values
-function restoreFormState() {
-    const saved = localStorage.getItem(FORM_KEY);
-    if (!saved) return;
-
-    const state = JSON.parse(saved);
-
-    Object.keys(state).forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.value = state[id];
-        }
-    });
-
-    // Re-run your winner logic after restoring
-    if (typeof updateMatchWinner === "function") {
-        updateMatchWinner();
-    }
-}
-
-// Watch for changes
-document.addEventListener("input", saveFormState);
-document.addEventListener("change", saveFormState);
-
-// Restore on load
-window.addEventListener("load", restoreFormState);
-
-
 </script>
 
 </div>
