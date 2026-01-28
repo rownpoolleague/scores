@@ -132,7 +132,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
             <label>8B</label>
             <div class="innings-wrapper">
                 <button onclick="changePA8B(-1)">−</button>
-                <input id="pA_e8" type="number" value="0" min="0">
+                <input id="pA_8B" type="number" value="0" min="0">
                 <button onclick="changePA8B(1)">+</button>
             </div>
         </div>
@@ -257,7 +257,7 @@ function changeInnings(amount){ let input = matchInnings; input.value = Math.max
 function changeWins(amount){ let input=pA_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
 function changePALosses(amount){ let input=pA_losses; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
 function changePASafeties(amount){ let input=pA_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changePA8B(amount){ let input=pA_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changePA8B(amount){ let input=pA_8B; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePABR(amount){ let input=pA_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePAHC(amount){ let input=pA_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
 function changePBHC(amount){ let input=pB_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
