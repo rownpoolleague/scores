@@ -309,28 +309,41 @@ submitMatch.onclick = ()=>{
 // ---------- AUTO SAVE FORM STATE ----------
 const FORM_KEY = "r-own-match-progress";
 
-// Save everything
-function saveFormState(){
+// Unique storage key
+const FORM_KEY = "matchFormState";
+
+// Save all input/select/textarea values
+function saveFormState() {
+    const fields = document.querySelectorAll("input, select, textarea");
     const state = {};
-    document.querySelectorAll("input, select").forEach(el=>{
-        if(el.id) state[el.id] = el.value;
+
+    fields.forEach(f => {
+        if (f.id) {
+            state[f.id] = f.value;
+        }
     });
+
     localStorage.setItem(FORM_KEY, JSON.stringify(state));
 }
 
-// Restore everything
-function restoreFormState(){
+// Restore saved values
+function restoreFormState() {
     const saved = localStorage.getItem(FORM_KEY);
-    if(!saved) return;
+    if (!saved) return;
 
     const state = JSON.parse(saved);
-    Object.keys(state).forEach(id=>{
+
+    Object.keys(state).forEach(id => {
         const el = document.getElementById(id);
-        if(el) el.value = state[id];
+        if (el) {
+            el.value = state[id];
+        }
     });
 
-    // Re-run winner logic + button visibility
-    updateMatchWinner();
+    // Re-run your winner logic after restoring
+    if (typeof updateMatchWinner === "function") {
+        updateMatchWinner();
+    }
 }
 
 // Watch for changes
