@@ -189,7 +189,8 @@ select, input, button { font-size:inherit; font-family:inherit; }
 </div>
 
 <div style="text-align:center;margin-top:30px;">
-    <button id="submitMatch">Submit Match</button>
+    <button id="submitMatch" style="display:none;">Submit Match</button>
+
 </div>
 
 <script>
@@ -271,9 +272,16 @@ function updateMatchWinner(){
     const aHC = parseInt(pA_hc.value)||0;
     const bHC = parseInt(pB_hc.value)||0;
 
-    if(aWins===aHC && aHC>0){ matchWinner.value=lagWinner.value; return; }
-    if(aLoss===bHC && bHC>0){ matchWinner.value=lagLoser.value; return; }
-    matchWinner.value="";
+    if(aWins === aHC && aHC > 0){
+        matchWinner.value = lagWinner.value;
+    } else if(aLoss === bHC && bHC > 0){
+        matchWinner.value = lagLoser.value;
+    } else {
+        matchWinner.value = "";
+    }
+
+    // 🔒 Show submit button ONLY when matchWinner exists
+    submitMatch.style.display = matchWinner.value ? "inline-block" : "none";
 }
 
 // Submit to Google Sheets
