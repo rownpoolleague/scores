@@ -25,10 +25,11 @@ select, input, button { font-size:inherit; font-family:inherit; }
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 12px;   /* finger-friendly */
+    padding: 4px 6px;          /* tighter vertical spacing */
     box-sizing: border-box;
+    font-size: 14px;           /* lock size so it doesn't inherit bigger text */
+    line-height: 1.2;          /* removes extra vertical gap */
 }
-
 .playerText {
     flex: 1;
     overflow: hidden;
