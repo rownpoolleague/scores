@@ -91,7 +91,8 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <button type="button" class="btn-plus" onclick="changeInnings(1)">+</button>
     </div>
 </div>
-
+<h3 id="lagWinnerHeader">Lag Winner</h3>
+<h3 id="lagLoserHeader">Lag Loser</h3>
 <div class="player-stats-container" style="margin-top:40px;">
     <div class="block">
         <h3>Lag Winner</h3>
@@ -231,17 +232,21 @@ document.getElementById("team").addEventListener("change", ()=>updateRoster(team
 document.getElementById("opponent").addEventListener("change", ()=>updateRoster(opponent,opponentRoster));
 
 let flip=false;
-document.addEventListener("click", e=>{
-    if(e.target.classList.contains("playerName")){
+document.addEventListener("click", e => {
+    if (e.target.classList.contains("playerName")) {
         const name = e.target.dataset.p;
         const hc = playerData[name];
-        if(!flip){
+
+        if (!flip) {
             lagWinner.value = name;
             pA_hc.value = hc;
+            document.getElementById("lagWinnerHeader").textContent = "Lag Winner: " + name;
         } else {
             lagLoser.value = name;
             pB_hc.value = hc;
+            document.getElementById("lagLoserHeader").textContent = "Lag Loser: " + name;
         }
+
         flip = !flip;
     }
 });
