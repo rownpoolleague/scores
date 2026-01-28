@@ -303,6 +303,43 @@ submitMatch.onclick = ()=>{
         alert("Match submitted successfully, You may now enter the next match.");
     });
 };
+    localStorage.removeItem(FORM_KEY);
+
+<script>
+// ---------- AUTO SAVE FORM STATE ----------
+const FORM_KEY = "r-own-match-progress";
+
+// Save everything
+function saveFormState(){
+    const state = {};
+    document.querySelectorAll("input, select").forEach(el=>{
+        if(el.id) state[el.id] = el.value;
+    });
+    localStorage.setItem(FORM_KEY, JSON.stringify(state));
+}
+
+// Restore everything
+function restoreFormState(){
+    const saved = localStorage.getItem(FORM_KEY);
+    if(!saved) return;
+
+    const state = JSON.parse(saved);
+    Object.keys(state).forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.value = state[id];
+    });
+
+    // Re-run winner logic + button visibility
+    updateMatchWinner();
+}
+
+// Watch for changes
+document.addEventListener("input", saveFormState);
+document.addEventListener("change", saveFormState);
+
+// Restore on load
+window.addEventListener("load", restoreFormState);
+</script>
 
 </script>
 
