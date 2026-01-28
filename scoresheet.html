@@ -9,9 +9,22 @@
 body { font-family: Arial, sans-serif; font-size: 18px; background-color: #000; color: #fff; }
 .row { display: flex; justify-content: center; gap: 40px; margin-top: 40px; }
 .block { text-align: center; }
-.roster-box { text-align: left; margin-top: 10px; padding: 8px 10px; border: 1px solid #000; min-width:1px; min-height:1px; font-size:18px; white-space:pre-line; background-color:#000; color:#fff; }
+.roster-box {
+    text-align: left;
+    margin-top: 10px;
+    padding: 4px 10px;       /* smaller padding inside box */
+    border: 1px solid #000;
+    min-width:1px;
+    min-height:1px;
+    font-size:14px;          /* match playerName font */
+    white-space: pre-line;
+    background-color:#000;
+    color:#fff;
+    line-height:1.2;         /* tight lines so names stack close */
+}
+
 label { font-weight:bold; color:#fff; font-size:18px; }
-.playerName { cursor:pointer; padding:2px 0; }
+
 .playerName:hover { background-color:#333; }
 h3 { margin:0 0 8px 0; color:#fff; }
 input[type="number"] { width:35px; padding:4px 6px; font-size:18px; background-color:#fff; color:#000; border:1px solid #fff; border-radius:4px; margin-bottom:6px; text-align:center; }
@@ -25,11 +38,13 @@ select, input, button { font-size:inherit; font-family:inherit; }
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    padding: 4px 6px;          /* tighter vertical spacing */
+    padding: 2px 6px;       /* slightly smaller top/bottom */
+    margin: 0;               /* remove default block spacing */
+    font-size: 14px;
+    line-height: 1.2;        /* tighter line spacing */
     box-sizing: border-box;
-    font-size: 14px;           /* lock size so it doesn't inherit bigger text */
-    line-height: 1.2;          /* removes extra vertical gap */
 }
+
 .playerText {
     flex: 1;
     overflow: hidden;
