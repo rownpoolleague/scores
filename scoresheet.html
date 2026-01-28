@@ -240,11 +240,11 @@ document.addEventListener("click", e => {
         if (!flip) {
             lagWinner.value = name;
             pA_hc.value = hc;
-            document.getElementById("lagWinnerHeader").textContent = "Lag Winner: " + name;
+            document.getElementById("lagWinnerHeader").textContent = name;
         } else {
             lagLoser.value = name;
             pB_hc.value = hc;
-            document.getElementById("lagLoserHeader").textContent = "Lag Loser: " + name;
+            document.getElementById("lagLoserHeader").textContent = name;
         }
 
         flip = !flip;
