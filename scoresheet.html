@@ -22,16 +22,26 @@ select, input, button { font-size:inherit; font-family:inherit; }
 .form-wrapper { max-width:1200px; margin:20px auto; padding:20px; border:2px solid #008000; border-radius:8px; box-sizing:border-box; }
 .playerName {
     display: flex;
+    width: 100%;
     justify-content: space-between;
     align-items: center;
-    padding: 4px 6px;
+    padding: 10px 12px;   /* finger-friendly */
+    box-sizing: border-box;
+}
+
+.playerText {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .playerHC {
-    font-weight: bold;
-    min-width: 20px;
+    min-width: 28px;
     text-align: right;
+    font-weight: bold;
 }
+
 
 
 /* MOBILE STYLES */
@@ -241,13 +251,14 @@ function updateRoster(sel, div){
     div.innerHTML = (rosters[sel.value] || []).map(p => {
         const hc = playerData[p] ?? "";
         return `
-            <div class="playerRow" data-p="${p}">
-                <span class="playerNameText">${p}</span>
+            <div class="playerName" data-p="${p}">
+                <span class="playerText">${p}</span>
                 <span class="playerHC">${hc}</span>
             </div>
         `;
     }).join("");
 }
+
 
 document.getElementById("team").addEventListener("change", ()=>updateRoster(team,teamRoster));
 document.getElementById("opponent").addEventListener("change", ()=>updateRoster(opponent,opponentRoster));
