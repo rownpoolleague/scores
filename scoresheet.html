@@ -20,7 +20,17 @@ input[type="number"] { width:35px; padding:4px 6px; font-size:18px; background-c
 .center-label { display:flex; flex-direction:column; align-items:center; }
 select, input, button { font-size:inherit; font-family:inherit; }
 .form-wrapper { max-width:1200px; margin:20px auto; padding:20px; border:2px solid #008000; border-radius:8px; box-sizing:border-box; }
+.playerName {
+  display: flex;           /* allow name and HC to be on same line */
+  justify-content: space-between; /* push HC to right */
+  padding: 2px 0;
+  cursor: pointer;
+}
 
+.playerName span.hc {
+  color: #aaa;             /* lighter color for HC */
+  font-weight: normal;
+}
 /* MOBILE STYLES */
 @media (max-width:600px) {
 .row { flex-direction:column; gap:20px; margin-top:20px; align-items:center; text-align:center; }
@@ -231,7 +241,13 @@ const playerData = {
 
 // Populate roster when team selects
 function updateRoster(sel, div){
-    div.innerHTML = (rosters[sel.value]||[]).map(p=>`<div class="playerName" data-p="${p}">${p}</div>`).join("");
+    div.innerHTML = (rosters[sel.value]||[]).map(p => {
+        const hc = playerData[p] || 0; // get the player's HC
+        return `<div class="playerName" data-p="${p}">
+                    <span class="name">${p}</span>
+                    <span class="hc">${hc}</span>
+                </div>`;
+    }).join("");
 }
 
 document.getElementById("team").addEventListener("change", ()=>updateRoster(team,teamRoster));
