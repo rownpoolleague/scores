@@ -20,6 +20,19 @@ input[type="number"] { width:35px; padding:4px 6px; font-size:18px; background-c
 .center-label { display:flex; flex-direction:column; align-items:center; }
 select, input, button { font-size:inherit; font-family:inherit; }
 .form-wrapper { max-width:1200px; margin:20px auto; padding:20px; border:2px solid #008000; border-radius:8px; box-sizing:border-box; }
+.playerName {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 6px;
+}
+
+.playerHC {
+    font-weight: bold;
+    min-width: 20px;
+    text-align: right;
+}
+
 
 /* MOBILE STYLES */
 @media (max-width:600px) {
@@ -225,7 +238,15 @@ const playerData = {
 
 // Populate roster when team selects
 function updateRoster(sel, div){
-    div.innerHTML = (rosters[sel.value]||[]).map(p=>`<div class="playerName" data-p="${p}">${p}</div>`).join("");
+    div.innerHTML = (rosters[sel.value] || []).map(p => {
+        const hc = playerData[p] ?? "";
+        return `
+            <div class="playerRow" data-p="${p}">
+                <span class="playerNameText">${p}</span>
+                <span class="playerHC">${hc}</span>
+            </div>
+        `;
+    }).join("");
 }
 
 document.getElementById("team").addEventListener("change", ()=>updateRoster(team,teamRoster));
