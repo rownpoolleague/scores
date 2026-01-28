@@ -94,7 +94,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
 
 <div class="player-stats-container" style="margin-top:40px;">
     <div class="block">
-        <h3 id="lagWinner"></h3>
+        <h3 id="winnerLabel"></h3>
         <div class="stat-row">
             <label>HC</label>
             <div class="innings-wrapper">
@@ -288,8 +288,9 @@ submitMatch.onclick = ()=>{
     }).then(()=>{
         document.querySelectorAll("input").forEach(i=>i.value="");
         alert("Match submitted successfully, You may now enter the next match.");
-    });
-};
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("winnerLabel").textContent = Lagwinner;
+  });
 
 </script>
 
