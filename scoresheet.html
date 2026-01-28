@@ -168,7 +168,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
             <label>8B</label>
             <div class="innings-wrapper">
                 <button onclick="changePB8B(-1)">−</button>
-                <input id="pB_e8" type="number" value="0" min="0">
+                <input id="pB_8B" type="number" value="0" min="0">
                 <button onclick="changePB8B(1)">+</button>
             </div>
         </div>
@@ -262,7 +262,7 @@ function changePABR(amount){ let input=pA_br; input.value=Math.max(0,(parseInt(i
 function changePAHC(amount){ let input=pA_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
 function changePBHC(amount){ let input=pB_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePBsafeties(amount){ let input=pB_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changePB8B(amount){ let input=pB_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changePB8B(amount){ let input=pB_8B; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePBBR(amount){ let input=pB_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 
 // Match winner logic
