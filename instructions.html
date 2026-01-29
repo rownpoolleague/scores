@@ -13,10 +13,24 @@
             line-height: 1.6;
         }
 
-        h1 {
-            text-align: center;
+        /* Added CSS for the header layout */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centers the logo and title as a group */
             margin-bottom: 30px;
         }
+
+        .logo {
+            height: 50px; /* Adjust size as needed */
+            margin-right: 15px; /* Spacing between logo and title */
+        }
+
+        h1 {
+            /* Removed previous h1 styles that conflicted with the flexbox layout */
+            margin: 0; /* Remove default margin to align properly */
+        }
+        /* End of added CSS for header layout */
 
         .section-title {
             font-size: 20px;
@@ -43,7 +57,13 @@
 </head>
 <body>
 
-<h1>Scoresheet Instructions</h1>
+<!-- Modified HTML structure for the header -->
+<div class="header-container">
+    <!-- Replace 'your_logo_filename.png' with the actual path to your logo image -->
+    <img src="white transparent.png" alt="League Logo" class="logo">
+    <h1>Scoresheet Instructions</h1>
+</div>
+<!-- End of modified HTML structure -->
 
 <div class="section-title">Live Scoresheet</div>
 <p>Use the digital scoresheet here:<br>
@@ -77,8 +97,6 @@ Press “Submit Match”. The button disables and a message appears:<br>
 “Please wait while your results are submitted…”<br>
 When complete:<br>
 “Match submitted successfully. You may now enter the next match.”</p>
-
-
 
 <a class="back-button" href="index.html">Back to Main Menu</a>
 
