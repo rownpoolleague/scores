@@ -145,7 +145,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
             <label>8B</label>
             <div class="innings-wrapper">
                 <button onclick="changePA8B(-1)">−</button>
-                <input id="pA_8B" type="number" value="0" min="0">
+                <input id="pA_b8" type="number" value="0" min="0">
                 <button onclick="changePA8B(1)">+</button>
             </div>
         </div>
@@ -161,7 +161,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
             <label>E8</label>
             <div class="innings-wrapper">
                 <button onclick="changePBE8(-1)">−</button>
-                <input id="pB_E8" type="number" value="0" min="0">
+                <input id="pA_e8" type="number" value="0" min="0">
                 <button onclick="changePBE8(1)">+</button>
             </div>
         </div>
@@ -197,7 +197,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
             <label>8B</label>
             <div class="innings-wrapper">
                 <button onclick="changePB8B(-1)">−</button>
-                <input id="pB_8B" type="number" value="0" min="0">
+                <input id="pB_b8" type="number" value="0" min="0">
                 <button onclick="changePB8B(1)">+</button>
             </div>
         </div>
@@ -212,9 +212,9 @@ select, input, button { font-size:inherit; font-family:inherit; }
       <div class="stat-row">
             <label>E8</label>
             <div class="innings-wrapper">
-                <button onclick="changePAE8(-1)">−</button>
-                <input id="pA_E8" type="number" value="0" min="0">
-                <button onclick="changePAE8(1)">+</button>
+                <button onclick="changePBE8(-1)">−</button>
+                <input id="pB_e8" type="number" value="0" min="0">
+                <button onclick="changePBE8(1)">+</button>
             </div>
         </div>
     </div>
@@ -302,16 +302,16 @@ function changeInnings(amount){ let input = matchInnings; input.value = Math.max
 function changeWinsA(amount){ let input=pA_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
 function changePALosses(amount){ let input=pA_losses; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
 function changePASafeties(amount){ let input=pA_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changePA8B(amount){ let input=pA_8B; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changePA8B(amount){ let input=pA_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePABR(amount){ let input=pA_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePAHC(amount){ let input=pA_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
 function changePBHC(amount){ let input=pB_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePBsafeties(amount){ let input=pB_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changePB8B(amount){ let input=pB_8B; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changePB8B(amount){ let input=pB_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePBBR(amount){ let input=pB_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changePAE8(amount){ let input=pA_E8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changePAE8(amount){ let input=pA_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changeWinsB(amount){ let input=pB_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
-function changePBE8(amount){ let input=pB_E8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changePBE8(amount){ let input=pB_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 // Match winner logic
 function updateMatchWinner(){
     const aWins = parseInt(pA_wins.value)||0;
@@ -338,8 +338,8 @@ submitMatch.onclick = ()=>{
         opponent:opponent.value,
         lagWinner:lagWinner.value,
         lagLoser:lagLoser.value,
-        pA:{ handicap:pA_hc.value, wins:pA_wins.value, safeties:pA_safeties.value, b8:pA_8B.value, br:pA_br.value, e8:pA_E8.value },
-        pB:{ handicap:pB_hc.value, wins:pB_wins.value, safeties:pB_safeties.value, b8:pB_e8.value, br:pB_br.value, e8:pB_E8.value },
+        pA:{ handicap:pA_hc.value, wins:pA_wins.value, safeties:pA_safeties.value, b8:pA_b8.value, br:pA_br.value, e8:pA_e8.value },
+        pB:{ handicap:pB_hc.value, wins:pB_wins.value, safeties:pB_safeties.value, b8:pB_b8.value, br:pB_br.value, e8:pB_e8.value },
         matchWinner:matchWinner.value
     };
     fetch("https://script.google.com/macros/s/AKfycbyeYfnQiubM6MJ7tJ3KHbuD9EBGJ6JyggjT9RIuswQ6EWe0x-mOIsAa50akBuC_gNPv/exec",{
