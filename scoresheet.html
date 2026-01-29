@@ -128,7 +128,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
                 <button onclick="changeWins(1)">+</button>
             </div>
         </div>
-       <div class="stat-row">
+        <div class="stat-row">
             <label>Safeties</label>
             <div class="innings-wrapper">
                 <button onclick="changePASafeties(-1)">−</button>
@@ -153,14 +153,16 @@ select, input, button { font-size:inherit; font-family:inherit; }
             </div>
         </div>
         <div class="stat-row">
-            <label>E8</label>
+            <label>B+R</label>
             <div class="innings-wrapper">
-                <button onclick="changePAE8(-1)">−</button>
-                <input id="pA_losses" type="number" value="0" min="0">
-                <button onclick="changePAE8(1)">+</button>
+                <button onclick="changePABR(-1)">−</button>
+                <input id="pA_br" type="number" value="0" min="0">
+                <button onclick="changePABR(1)">+</button>
             </div>
         </div>
-        <div class="block">
+    </div>
+
+    <div class="block">
         <h3 id="lagLoserHeader">Lag Loser</h3>
         <div class="stat-row">
             <label>HC</label>
@@ -274,7 +276,7 @@ document.addEventListener("click", e => {
 // Stat increment/decrement functions
 function changeInnings(amount){ let input = matchInnings; input.value = Math.max(0,(parseInt(input.value)||0)+amount); }
 function changeWins(amount){ let input=pA_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
-function changePAE8(amount){ let input=pA_E8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
+function changePALosses(amount){ let input=pA_losses; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
 function changePASafeties(amount){ let input=pA_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePA8B(amount){ let input=pA_8B; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePABR(amount){ let input=pA_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
