@@ -55,7 +55,7 @@
 Choose the Home Team and Away Team from the dropdown menus. Rosters load automatically.</p>
 
 <p><strong>2. Assign Lag Winner / Lag Loser</strong><br>
-Tap a player name from either roster. The system fills Lag Winner and Lag Loser automatically.</p>
+Tap a player name from either roster. The system fills Lag Winner and Lag Loser automatically. This can be changed if the wrong player is chosen.</p>
 
 <p><strong>3. Enter Total Match Innings</strong><br>
 Use the + / – buttons to adjust the total innings.</p>
@@ -65,9 +65,9 @@ Each player has the following stats:<br>
 - HC = Handicap<br>
 - Wins = Games won<br>
 - Safeties = Defensive shots<br>
-- 8B = Legal 8‑ball made<br>
-- B+R = Break and run<br>
-- E8 = Early 8‑ball</p>
+- 8B = Legal 8‑Ball made<br>
+- B+R = Break and Run<br>
+- E8 = Early 8‑Ball</p>
 
 <p><strong>5. Match Winner</strong><br>
 This field auto‑fills based on total wins.</p>
@@ -78,23 +78,7 @@ Press “Submit Match”. The button disables and a message appears:<br>
 When complete:<br>
 “Match submitted successfully. You may now enter the next match.”</p>
 
-<div class="section-title">How Submissions Work</div>
-<p>
-1. The scoresheet sends the match data to a Google Apps Script endpoint.<br>
-2. The script writes the results into the league’s master Google Sheet.<br>
-3. The button re‑enables once the server confirms the write.
-</p>
 
-<div class="section-title">Updating Rosters</div>
-<p>
-Rosters are stored in <strong>script.js</strong>.<br>
-To update:<br>
-1. Open script.js<br>
-2. Find the roster object<br>
-3. Add or remove players<br>
-4. Save and commit<br>
-Changes go live immediately.
-</p>
 
 <a class="back-button" href="index.html">Back to Main Menu</a>
 
