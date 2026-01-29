@@ -19,7 +19,15 @@ input[type="number"] { width:35px; padding:4px 6px; font-size:18px; background-c
 .stat-row label { width:auto; text-align:center; margin-bottom:4px; }
 .center-label { display:flex; flex-direction:column; align-items:center; }
 select, input, button { font-size:inherit; font-family:inherit; }
-.form-wrapper { max-width:1200px; margin:10px auto; padding:10px; border:10px solid #008000; border-radius:8px; box-sizing:border-box; }
+.form-wrapper {
+    width: 100%; /* Spans full width */
+    margin: 10px 0; /* 0 Removes side margins */
+    padding: 10px;
+    border: 10px solid #008000;
+    border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
+    box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
+}
+
 .playerName {
   display: flex;           /* allow name and HC to be on same line */
   justify-content: space-between; /* push HC to right */
