@@ -332,25 +332,65 @@ function updateMatchWinner(){
 }
 
 // Submit to Google Sheets
-submitMatch.onclick = ()=>{
+submitMatch.onclick = () => {
+
+    // Disable button immediately
+    submitMatch.disabled = true;
+    submitMatch.style.opacity = "0.5";
+    submitMatch.style.cursor = "not-allowed";
+
+    // Show waiting popup
+    alert("Please wait while your results are submitted...");
+
     const data = {
-        team:team.value,
-        opponent:opponent.value,
-        lagWinner:lagWinner.value,
-        lagLoser:lagLoser.value,
-      matchInnings:matchInnings.value,
-        pA:{ handicap:pA_hc.value, wins:pA_wins.value, safeties:pA_safeties.value, b8:pA_b8.value, br:pA_br.value, e8:pA_e8.value },
-        pB:{ handicap:pB_hc.value, wins:pB_wins.value, safeties:pB_safeties.value, b8:pB_b8.value, br:pB_br.value, e8:pB_e8.value },
-        matchWinner:matchWinner.value
+        team: team.value,
+        opponent: opponent.value,
+        lagWinner: lagWinner.value,
+        lagLoser: lagLoser.value,
+        matchInnings: matchInnings.value,
+        pA: { 
+            handicap: pA_hc.value, 
+            wins: pA_wins.value, 
+            safeties: pA_safeties.value, 
+            b8: pA_b8.value, 
+            br: pA_br.value, 
+            e8: pA_e8.value 
+        },
+        pB: { 
+            handicap: pB_hc.value, 
+            wins: pB_wins.value, 
+            safeties: pB_safeties.value, 
+            b8: pB_b8.value, 
+            br: pB_br.value, 
+            e8: pB_e8.value 
+        },
+        matchWinner: matchWinner.value
     };
-    fetch("https://script.google.com/macros/s/AKfycbyeYfnQiubM6MJ7tJ3KHbuD9EBGJ6JyggjT9RIuswQ6EWe0x-mOIsAa50akBuC_gNPv/exec",{
-        method:"POST", body:JSON.stringify(data)
-    }).then(()=>{
-        document.querySelectorAll("input").forEach(i=>i.value="");
-        alert("Match submitted successfully, You may now enter the next match.");
+
+    fetch("https://script.google.com/macros/s/AKfycbyeYfnQiubM6MJ7tJ3KHbuD9EBGJ6JyggjT9RIuswQ6EWe0x-mOIsAa50akBuC_gNPv/exec", {
+        method: "POST",
+        body: JSON.stringify(data)
+    })
+    .then(() => {
+        document.querySelectorAll("input").forEach(i => i.value = "");
+        alert("Match submitted successfully. You may now enter the next match.");
+
+        // Re-enable button
+        submitMatch.disabled = false;
+        submitMatch.style.opacity = "1";
+        submitMatch.style.cursor = "pointer";
+    })
+    .catch(() => {
+        alert("There was an error submitting the match. Please try again.");
+
+        // Re-enable button on error
+        submitMatch.disabled = false;
+        submitMatch.style.opacity = "1";
+        submitMatch.style.cursor = "pointer";
     });
 };
-    localStorage.removeItem(FORM_KEY);
+
+localStorage.removeItem(FORM_KEY);
 </script>
 
 </div>
