@@ -310,7 +310,7 @@ function changePBE8(amount){ let input=pB_E8; input.value=Math.max(0,(parseInt(i
 // Match winner logic
 function updateMatchWinner(){
     const aWins = parseInt(pA_wins.value)||0;
-    const aLoss = parseInt(pA_losses.value)||0;
+    const aLoss = parseInt(pB_wins.value)||0;
     const aHC = parseInt(pA_hc.value)||0;
     const bHC = parseInt(pB_hc.value)||0;
 
