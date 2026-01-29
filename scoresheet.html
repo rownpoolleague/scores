@@ -155,9 +155,9 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <div class="stat-row">
             <label>E8</label>
             <div class="innings-wrapper">
-                <button onclick="changePAE8(-1)">−</button>
-                <input id="pA_E8" type="number" value="0" min="0">
-                <button onclick="changePAE8(1)">+</button>
+                <button onclick="changePBE8(-1)">−</button>
+                <input id="pB_E8" type="number" value="0" min="0">
+                <button onclick="changePBE8(1)">+</button>
             </div>
         </div>
     </div>
@@ -303,6 +303,7 @@ function changePB8B(amount){ let input=pB_8B; input.value=Math.max(0,(parseInt(i
 function changePBBR(amount){ let input=pB_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePAE8(amount){ let input=pA_E8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changeWinsB(amount){ let input=pB_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
+function changePBE8(amount){ let input=pB_E8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 // Match winner logic
 function updateMatchWinner(){
     const aWins = parseInt(pA_wins.value)||0;
