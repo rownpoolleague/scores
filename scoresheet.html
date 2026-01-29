@@ -123,9 +123,9 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <div class="stat-row">
             <label>Wins</label>
             <div class="innings-wrapper">
-                <button onclick="changeWins(-1)">−</button>
+                <button onclick="changeWinsA(-1)">−</button>
                 <input id="pA_wins" type="number" value="0" min="0">
-                <button onclick="changeWins(1)">+</button>
+                <button onclick="changeWinsA(1)">+</button>
             </div>
         </div>
         <div class="stat-row">
@@ -171,6 +171,14 @@ select, input, button { font-size:inherit; font-family:inherit; }
                 <input id="pB_hc" type="number" value="0" min="0">
                 <button onclick="changePBHC(1)">+</button>
             </div>
+        </div>
+      <div class="stat-row">
+            <label>Wins</label>
+            <div class="innings-wrapper">
+                <button onclick="changeWinsB(-1)">−</button>
+                <input id="pB_wins" type="number" value="0" min="0">
+                <button onclick="changeWinsB(1)">+</button>
+               </div>
         </div>
         <div class="stat-row">
             <label>Safeties</label>
@@ -275,7 +283,7 @@ document.addEventListener("click", e => {
 
 // Stat increment/decrement functions
 function changeInnings(amount){ let input = matchInnings; input.value = Math.max(0,(parseInt(input.value)||0)+amount); }
-function changeWins(amount){ let input=pA_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
+function changeWinsA(amount){ let input=pA_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
 function changePALosses(amount){ let input=pA_losses; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
 function changePASafeties(amount){ let input=pA_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePA8B(amount){ let input=pA_8B; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
@@ -286,7 +294,7 @@ function changePBsafeties(amount){ let input=pB_safeties; input.value=Math.max(0
 function changePB8B(amount){ let input=pB_8B; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePBBR(amount){ let input=pB_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
 function changePAE8(amount){ let input=pA_E8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-
+function changeWinsB(amount){ let input=pB_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
 // Match winner logic
 function updateMatchWinner(){
     const aWins = parseInt(pA_wins.value)||0;
