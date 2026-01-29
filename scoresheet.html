@@ -331,11 +331,11 @@ submitMatch.onclick = ()=>{
         lagWinner:lagWinner.value,
         lagLoser:lagLoser.value,
         matchInnings:matchInnings.value,
-        pA:{ handicap:pA_hc.value, wins:pA_wins.value, safeties:pA_safeties.value, 8B:pA_8B.value, br:pA_br.value, E8:pA_E8.value },
-        pB:{ handicap:pB_hc.value, wins:pB_wins.value, safeties:pB_safeties.value, e8:pB_e8.value, br:pB_br.value, E8:pB_E8.value },
+        pA:{ handicap:pA_hc.value, wins:pA_wins.value, safeties:pA_safeties.value, b8:pA_8B.value, br:pA_br.value, e8:pA_E8.value },
+        pB:{ handicap:pB_hc.value, wins:pB_wins.value, safeties:pB_safeties.value, b8:pB_e8.value, br:pB_br.value, e8:pB_E8.value },
         matchWinner:matchWinner.value
     };
-    fetch("https://script.google.com/macros/s/AKfycbxvN0jVzJOdmibwo8bHhcuTbaCoU8tPl-_MvYY4sVJWlGcmviXydCN0lX8onwP5Rj4-/exec",{
+    fetch("https://script.google.com/macros/s/AKfycbyeYfnQiubM6MJ7tJ3KHbuD9EBGJ6JyggjT9RIuswQ6EWe0x-mOIsAa50akBuC_gNPv/exec",{
         method:"POST", body:JSON.stringify(data)
     }).then(()=>{
         document.querySelectorAll("input").forEach(i=>i.value="");
