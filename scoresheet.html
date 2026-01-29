@@ -61,7 +61,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
 .player-stats-container { position:relative; display:flex; justify-content:center; gap:60px; }
 .player-stats-container::after { content:""; position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:2px; background-color:#fff; opacity:0.7; pointer-events:none; }
 }
-    .back-button {
+.back-button {
     display: block;
     margin: 30px auto 0 auto;
     padding: 8px 16px;
@@ -414,7 +414,7 @@ localStorage.removeItem(FORM_KEY);
 
 </div>
 <div style="text-align:center; margin-top:40px;">
-   <a class="back-button" href="index.html">Back to Main Menu</a>
+   <div> class="back-button" href="index.html">Back to Main Menu</a><div></div>
 </div>
 </body>
 </html>
