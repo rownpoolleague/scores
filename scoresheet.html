@@ -269,25 +269,28 @@ function updateRoster(sel, div){
 document.getElementById("team").addEventListener("change", ()=>updateRoster(team,teamRoster));
 document.getElementById("opponent").addEventListener("change", ()=>updateRoster(opponent,opponentRoster));
 
-let flip=false;
+let flip = false;
+
 document.addEventListener("click", e => {
-    if (e.target.classList.contains("playerName")) {
-        const name = e.target.dataset.p;
-        const hc = playerData[name];
+    const playerDiv = e.target.closest(".playerName");
+    if (!playerDiv) return;
 
-        if (!flip) {
-            lagWinner.value = name;
-            pA_hc.value = hc;
-            document.getElementById("lagWinnerHeader").textContent = name;
-        } else {
-            lagLoser.value = name;
-            pB_hc.value = hc;
-            document.getElementById("lagLoserHeader").textContent = name;
-        }
+    const name = playerDiv.dataset.p;
+    const hc = playerData[name] || 0;
 
-        flip = !flip;
+    if (!flip) {
+        lagWinner.value = name;
+        pA_hc.value = hc;
+        document.getElementById("lagWinnerHeader").textContent = name;
+    } else {
+        lagLoser.value = name;
+        pB_hc.value = hc;
+        document.getElementById("lagLoserHeader").textContent = name;
     }
+
+    flip = !flip;
 });
+
 
 // Stat increment/decrement functions
 function changeInnings(amount){ let input = matchInnings; input.value = Math.max(0,(parseInt(input.value)||0)+amount); }
