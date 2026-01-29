@@ -400,6 +400,93 @@ submitMatch.onclick = () => {
 };
 
 localStorage.removeItem(FORM_KEY);
+    <script>
+// --- Persistent Scoresheet for R-Own Pool League ---
+
+const FORM_KEY = "scoresheetData";
+
+// Save all relevant inputs to localStorage
+function saveScoresheet() {
+    const data = {
+        team: document.getElementById("team").value,
+        opponent: document.getElementById("opponent").value,
+        lagWinner: document.getElementById("lagWinner").value,
+        lagLoser: document.getElementById("lagLoser").value,
+        matchInnings: document.getElementById("matchInnings").value,
+        matchWinner: document.getElementById("matchWinner").value,
+        pA_hc: document.getElementById("pA_hc").value,
+        pA_wins: document.getElementById("pA_wins").value,
+        pA_safeties: document.getElementById("pA_safeties").value,
+        pA_b8: document.getElementById("pA_b8").value,
+        pA_br: document.getElementById("pA_br").value,
+        pA_e8: document.getElementById("pA_e8").value,
+        pB_hc: document.getElementById("pB_hc").value,
+        pB_wins: document.getElementById("pB_wins").value,
+        pB_safeties: document.getElementById("pB_safeties").value,
+        pB_b8: document.getElementById("pB_b8").value,
+        pB_br: document.getElementById("pB_br").value,
+        pB_e8: document.getElementById("pB_e8").value
+    };
+    localStorage.setItem(FORM_KEY, JSON.stringify(data));
+}
+
+// Load saved data and populate form
+function loadScoresheet() {
+    const data = JSON.parse(localStorage.getItem(FORM_KEY) || "{}");
+    if(!data.team) return; // nothing saved
+
+    // Restore simple fields
+    document.getElementById("team").value = data.team;
+    document.getElementById("opponent").value = data.opponent;
+    document.getElementById("lagWinner").value = data.lagWinner;
+    document.getElementById("lagLoser").value = data.lagLoser;
+    document.getElementById("matchInnings").value = data.matchInnings;
+    document.getElementById("matchWinner").value = data.matchWinner;
+
+    // Restore player stats
+    document.getElementById("pA_hc").value = data.pA_hc;
+    document.getElementById("pA_wins").value = data.pA_wins;
+    document.getElementById("pA_safeties").value = data.pA_safeties;
+    document.getElementById("pA_b8").value = data.pA_b8;
+    document.getElementById("pA_br").value = data.pA_br;
+    document.getElementById("pA_e8").value = data.pA_e8;
+
+    document.getElementById("pB_hc").value = data.pB_hc;
+    document.getElementById("pB_wins").value = data.pB_wins;
+    document.getElementById("pB_safeties").value = data.pB_safeties;
+    document.getElementById("pB_b8").value = data.pB_b8;
+    document.getElementById("pB_br").value = data.pB_br;
+    document.getElementById("pB_e8").value = data.pB_e8;
+
+    // Repopulate rosters
+    updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
+    updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
+
+    // Update lag headers
+    document.getElementById("lagWinnerHeader").textContent = data.lagWinner || "Lag Winner";
+    document.getElementById("lagLoserHeader").textContent = data.lagLoser || "Lag Loser";
+
+    // Show submit button if matchWinner exists
+    submitMatch.style.display = data.matchWinner ? "inline-block" : "none";
+}
+
+// Auto-save whenever a relevant input changes
+document.querySelectorAll("#team, #opponent, #lagWinner, #lagLoser, #matchInnings, #matchWinner, #pA_hc, #pA_wins, #pA_safeties, #pA_b8, #pA_br, #pA_e8, #pB_hc, #pB_wins, #pB_safeties, #pB_b8, #pB_br, #pB_e8")
+.forEach(el => {
+    el.addEventListener("input", saveScoresheet);
+});
+
+// Also save after clicks on player names (lagWinner/loser)
+document.addEventListener("click", saveScoresheet);
+
+// Load saved data on page load
+window.addEventListener("load", loadScoresheet);
+
+// Optional: Clear storage after submit
+submitMatch.addEventListener("click", () => {
+    localStorage.removeItem(FORM_KEY);
+});
+
 </script>
 
 
