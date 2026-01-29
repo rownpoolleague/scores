@@ -50,12 +50,21 @@
     .back-button:hover {
       background-color: #ddd;
     }
+    .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table-wrap table {
+    width: 100%;
+    min-width: 600px; /* prevents squishing */
+}
   </style>
 </head>
 <body>
 
 <h1>Winter 26' Tuesday Night Schedule</h1>
-
+<div class="table-wrap">
 <table>
   <thead>
     <tr>
@@ -81,9 +90,9 @@
     <tr><td>16</td><td>5/5/2026</td><td colspan="5">Position Round</td></tr>
   </tbody>
 </table>
-
+</div>
 <div class="section-title">Standings</div>
-
+<div class="table-wrap">
 <table>
   <thead>
     <tr>
@@ -103,7 +112,7 @@
     <tr><td>8</td><td>Frank's Pizza</td><td>0</td><td>Frank's Pizza</td><td>708-389-1143</td></tr>
   </tbody>
 </table>
-
+</div>
 <a class="back-button" href="index.html">Back to Main Menu</a>
 
 </body>
