@@ -165,7 +165,7 @@ const playerData = {
 
 // Form elements
 const FORM_KEY="scoresheetData";
-const SCRIPT_URL="https://script.google.com/macros/s/AKfycbzEKI7eTOnrqfyfEkXxdC8QzUezquY11siIL2cFInXv3t8YobsPiOoQ2uWcbDXr-Cma/exec"; // Replace with Apps Script URL
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwsB0ZB4zaTIDdMs69yuukyN2evOl9nBDcGbZ33DaQd5g8WgbZ5t59tqL0v3uDfn2EHVw/exec"; // Replace with Apps Script URL
 
 const teamElem=document.getElementById("team");
 const opponentElem=document.getElementById("opponent");
@@ -253,28 +253,12 @@ submitMatch.onclick=()=>{
   submitMatch.disabled=true;
   submitMatch.style.opacity="0.5";
   alert("Submitting match...");
-  const data = {
-    team: team.value,
-    opponent: opponent.value,
-    lagWinner: lagWinner.value,
-    lagLoser: lagLoser.value,
-    matchInnings: matchInnings.value,
-    matchWinner: matchWinner.value,
-
-    pA_hc: pA_hc.value,
-    pA_wins: pA_wins.value,
-    pA_safeties: pA_safeties.value,
-    pA_b8: pA_b8.value,
-    pA_br: pA_br.value,
-    pA_e8: pA_e8.value,
-
-    pB_hc: pB_hc.value,
-    pB_wins: pB_wins.value,
-    pB_safeties: pB_safeties.value,
-    pB_b8: pB_b8.value,
-    pB_br: pB_br.value,
-    pB_e8: pB_e8.value
-};
+  const data={
+    team:team.value,opponent:opponent.value,lagWinner:lagWinner.value,lagLoser:lagLoser.value,matchInnings:matchInnings.value,
+    pA:{handicap:pA_hc.value,wins:pA_wins.value,safeties:pA_safeties.value,b8:pA_b8.value,br:pA_br.value,e8:pA_e8.value},
+    pB:{handicap:pB_hc.value,wins:pB_wins.value,safeties:pB_safeties.value,b8:pB_b8.value,br:pB_br.value,e8:pB_e8.value},
+    matchWinner:matchWinner.value
+  };
   fetch("https://script.google.com/macros/s/AKfycbyeYfnQiubM6MJ7tJ3KHbuD9EBGJ6JyggjT9RIuswQ6EWe0x-mOIsAa50akBuC_gNPv/exec",{method:"POST",body:JSON.stringify(data)})
   .then(()=>{document.querySelectorAll("input").forEach(i=>i.value="");alert("Match submitted.");submitMatch.disabled=false;submitMatch.style.opacity="1";})
   .catch(()=>{alert("Error submitting.");submitMatch.disabled=false;submitMatch.style.opacity="1";});
@@ -284,30 +268,16 @@ submitMatch.onclick=()=>{
 function transferScoresheet(){
   const data=localStorage.getItem(FORM_KEY);
   if(!data){alert("No scoresheet data");return;}
- fetch(SCRIPT_URL + "?action=save", {
-  method: "POST",
-  body: data
-})
-.then(res => res.json())   // ⬅️ THIS is the key change
-.then(result => {
-  const uid = result.id;   // ⬅️ pull ID from JSON
-
-  const url = SCRIPT_URL + "?action=load&id=" + uid;
-
-  document.getElementById("qrCode").innerHTML = "";
-  new QRCode(document.getElementById("qrCode"), {
-    text: url,
-    width: 200,
-    height: 200,
-    colorDark: "#000000",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
-  });
-
-  document.getElementById("qrPopup").style.display = "block";
-})
-.catch(err => alert("Error generating QR: " + err));
-
+  fetch("https://script.google.com/macros/s/AKfycbzEKI7eTOnrqfyfEkXxdC8QzUezquY11siIL2cFInXv3t8YobsPiOoQ2uWcbDXr-Cma/exec+"?action=save",{method:"POST",body:data})
+  .then(res=>res.text())
+  .then(uid=>{
+    const url="https://script.google.com/macros/s/AKfycbzEKI7eTOnrqfyfEkXxdC8QzUezquY11siIL2cFInXv3t8YobsPiOoQ2uWcbDXr-Cma/exec+"?action=load&id="+uid;
+    document.getElementById("qrCode").innerHTML="";
+    new QRCode(document.getElementById("qrCode"),{text:url,width:200,height:200,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});
+    document.getElementById("qrPopup").style.display="block";
+  })
+  .catch(err=>alert("Error generating QR: "+err));
+}
 function closeQR(){document.getElementById("qrPopup").style.display="none";}
 </script>
 
