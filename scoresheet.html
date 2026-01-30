@@ -447,6 +447,37 @@ window.addEventListener("DOMContentLoaded", loadScoresheet);
 submitMatch.addEventListener("click", () => {
     setTimeout(() => localStorage.removeItem(FORM_KEY), 1000);
 });
+    /* ==============================
+   SCORESHEET TRANSFER (OPTION 1)
+   ============================== */
+
+function exportScoresheet() {
+    const data = localStorage.getItem(FORM_KEY);
+    if (!data) {
+        alert("No scoresheet data to transfer.");
+        return;
+    }
+
+    prompt(
+        "Copy this code and paste it on the other phone:",
+        data
+    );
+}
+
+function importScoresheet() {
+    const code = prompt("Paste the transfer code here:");
+    if (!code) return;
+
+    try {
+        JSON.parse(code); // validate JSON
+        localStorage.setItem(FORM_KEY, code);
+        alert("Scoresheet imported. Reloading…");
+        location.reload();
+    } catch (e) {
+        alert("Invalid transfer code.");
+    }
+}
+
 
 </script>
     <div style="text-align:center; margin-top:20px;">
