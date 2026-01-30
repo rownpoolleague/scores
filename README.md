@@ -25,8 +25,10 @@ If you tap the wrong player you can still change it.
 
 3. ENTER TOTAL MATCH INNINGS
 Use the + / – buttons to adjust the total innings for the match.
+There is no need to track innings per games as hash is Determined by
+TOTAL Innings - Safeties / Wins
 
-4. ENTER PLAYER STATS
+5. ENTER PLAYER STATS
 Each player has the following tracked stats:
 - HC = Handicap
 - Wins = Games won
