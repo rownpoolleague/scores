@@ -165,7 +165,7 @@ const playerData = {
 
 // Form elements
 const FORM_KEY="scoresheetData";
-const SCRIPT_URL="YOUR_GOOGLE_SCRIPT_URL_HERE"; // Replace with Apps Script URL
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwQsVyP9EAurbJ8AFLAX0XtqzLstY3TLo-pHuvu2DLCTjrBGeFBjxLB0XruQhqSGdQdag/exec"; // Replace with Apps Script URL
 
 const teamElem=document.getElementById("team");
 const opponentElem=document.getElementById("opponent");
@@ -259,7 +259,7 @@ submitMatch.onclick=()=>{
     pB:{handicap:pB_hc.value,wins:pB_wins.value,safeties:pB_safeties.value,b8:pB_b8.value,br:pB_br.value,e8:pB_e8.value},
     matchWinner:matchWinner.value
   };
-  fetch("YOUR_GOOGLE_SCRIPT_URL_HERE",{method:"POST",body:JSON.stringify(data)})
+  fetch("https://script.google.com/macros/s/AKfycbyeYfnQiubM6MJ7tJ3KHbuD9EBGJ6JyggjT9RIuswQ6EWe0x-mOIsAa50akBuC_gNPv/exec",{method:"POST",body:JSON.stringify(data)})
   .then(()=>{document.querySelectorAll("input").forEach(i=>i.value="");alert("Match submitted.");submitMatch.disabled=false;submitMatch.style.opacity="1";})
   .catch(()=>{alert("Error submitting.");submitMatch.disabled=false;submitMatch.style.opacity="1";});
 };
