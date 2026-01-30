@@ -240,7 +240,27 @@ select, input, button { font-size:inherit; font-family:inherit; }
 </div>
 
 <script>
+function getUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  return params;
+}
 
+window.addEventListener("DOMContentLoaded", () => {
+  // Check if URL has 'data' parameter
+  const params = getUrlParams();
+  if (params.has("data")) {
+    const rawData = decodeURIComponent(params.get("data"));
+    try {
+      localStorage.setItem(FORM_KEY, rawData);
+      loadScoresheet(); // reload form with imported data
+      alert("Match data loaded from QR code.");
+    } catch (e) {
+      alert("Failed to load data from QR code.");
+    }
+  } else {
+    loadScoresheet(); // normal load
+  }
+});
 // --- JavaScript to populate rosters, lag, stats, and submit ---
     let isLoading = false;
 
@@ -474,7 +494,10 @@ function exportScoresheet() {
     alert("No scoresheet data to transfer.");
     return;
   }
-  showQRModal(data);
+  const baseUrl = "https://rownpoolleague.github.io/scores/scoresheet.html";
+  const encodedData = encodeURIComponent(data);
+  const fullUrl = `${baseUrl}?data=${encodedData}`;
+  showQRModal(fullUrl);
 }
 
 function importScoresheet() {
