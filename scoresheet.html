@@ -239,6 +239,10 @@ select, input, button { font-size:inherit; font-family:inherit; }
 </div>
 
 <script>
+    function saveNow() {
+    saveScoresheet();
+}
+
 // --- JavaScript to populate rosters, lag, stats, and submit ---
     let isLoading = false;
 
@@ -301,28 +305,28 @@ document.addEventListener("click", e => {
     } else {
         lagLoser.value = name;
         pB_hc.value = hc;
-        document.getElementById("lagLoserHeader").textContent = name;
-    }
+        document.getElementById("lagLoserHeader").textContent = name;    }
 
     flip = !flip;
+    saveNow();
 });
 
 
 // Stat increment/decrement functions
 function changeInnings(amount){ let input = matchInnings; input.value = Math.max(0,(parseInt(input.value)||0)+amount); }
-function changeWinsA(amount){ let input=pA_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
-function changePALosses(amount){ let input=pA_losses; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
-function changePASafeties(amount){ let input=pA_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changePA8B(amount){ let input=pA_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changePABR(amount){ let input=pA_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changePAHC(amount){ let input=pA_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
-function changePBHC(amount){ let input=pB_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changePBsafeties(amount){ let input=pB_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changePB8B(amount){ let input=pB_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changePBBR(amount){ let input=pB_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changePAE8(amount){ let input=pA_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
-function changeWinsB(amount){ let input=pB_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); }
-function changePBE8(amount){ let input=pB_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); }
+function changeWinsA(amount){ let input=pA_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();
+function changePALosses(amount){ let input=pA_losses; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();}
+function changePASafeties(amount){ let input=pA_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePA8B(amount){ let input=pA_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePABR(amount){ let input=pA_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePAHC(amount){ let input=pA_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();}
+function changePBHC(amount){ let input=pB_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePBsafeties(amount){ let input=pB_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePB8B(amount){ let input=pB_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePBBR(amount){ let input=pB_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePAE8(amount){ let input=pA_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changeWinsB(amount){ let input=pB_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();}
+function changePBE8(amount){ let input=pB_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
 // Match winner logic
 function updateMatchWinner(){
     const aWins = parseInt(pA_wins.value)||0;
@@ -336,6 +340,7 @@ function updateMatchWinner(){
         matchWinner.value = lagLoser.value;
     } else {
         matchWinner.value = "";
+        saveNow();
     }
 
     // 🔒 Show submit button ONLY when matchWinner exists
