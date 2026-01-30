@@ -460,6 +460,24 @@ function showExportCode() {
     transferContainer.style.display = "block";
 }
 
+const transferCode = document.getElementById("transferCode");
+const transferContainer = document.getElementById("transferContainer");
+
+function showExportCode() {
+    const data = localStorage.getItem(FORM_KEY);
+    if (!data) return alert("No scoresheet data to transfer.");
+
+const transferCode = document.getElementById("transferCode");
+const transferContainer = document.getElementById("transferContainer");
+
+function showExportCode() {
+    const data = localStorage.getItem(FORM_KEY);
+    if (!data) return alert("No scoresheet data to transfer.");
+
+    transferCode.value = data;
+    transferContainer.style.display = "block";
+}
+
 function copyTransferCode() {
     transferCode.select();
     transferCode.setSelectionRange(0, 99999);
@@ -479,6 +497,8 @@ function importFromTextarea() {
         alert("Invalid transfer code");
     }
 }
+
+
 </script>
     <div style="text-align:center; margin-top:20px;">
   <button type="button" onclick="showExportCode()">Transfer Scoresheet</button>
