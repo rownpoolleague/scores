@@ -165,7 +165,7 @@ const playerData = {
 
 // Form elements
 const FORM_KEY="scoresheetData";
-const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwn8Ta4_kuVe3JC5MLdHetspjYjoguyhGobzdbwRsaNR2rLZsHZ9S9Y8PrzmcP5Xc7gLA/exec"; // Replace with Apps Script URL
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbzEKI7eTOnrqfyfEkXxdC8QzUezquY11siIL2cFInXv3t8YobsPiOoQ2uWcbDXr-Cma/exec"; // Replace with Apps Script URL
 
 const teamElem=document.getElementById("team");
 const opponentElem=document.getElementById("opponent");
@@ -284,15 +284,30 @@ submitMatch.onclick=()=>{
 function transferScoresheet(){
   const data=localStorage.getItem(FORM_KEY);
   if(!data){alert("No scoresheet data");return;}
-  fetch(SCRIPT_URL+"?action=save",{method:"POST",body:data})
-  .then(res=>res.text())
-  .then(uid=>{
-    const url=SCRIPT_URL+"?action=load&id="+uid;
-    document.getElementById("qrCode").innerHTML="";
-    new QRCode(document.getElementById("qrCode"),{text:url,width:200,height:200,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});
-    document.getElementById("qrPopup").style.display="block";
-  })
-  .catch(err=>alert("Error generating QR: "+err));
+ fetch(SCRIPT_URL + "?action=save", {
+  method: "POST",
+  body: data
+})
+.then(res => res.json())   // ⬅️ THIS is the key change
+.then(result => {
+  const uid = result.id;   // ⬅️ pull ID from JSON
+
+  const url = SCRIPT_URL + "?action=load&id=" + uid;
+
+  document.getElementById("qrCode").innerHTML = "";
+  new QRCode(document.getElementById("qrCode"), {
+    text: url,
+    width: 200,
+    height: 200,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  document.getElementById("qrPopup").style.display = "block";
+})
+.catch(err => alert("Error generating QR: " + err));
+
 }
 function closeQR(){document.getElementById("qrPopup").style.display="none";}
 </script>
