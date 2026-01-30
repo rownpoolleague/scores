@@ -265,43 +265,19 @@ submitMatch.onclick=()=>{
 };
 
 // QR Popup
-function transferScoresheet() {
-  const data = localStorage.getItem(FORM_KEY);
-  if (!data) {
-    alert("No scoresheet data");
-    return;
-  }
-
-  fetch(SCRIPT_URL + "?action=save", { method: "POST", body: data })
-    .then(res => res.text())
-    .then(uid => {
-      uid = uid.trim(); // <-- remove any extra spaces/newlines from Apps Script
-      if (!uid) {
-        throw new Error("Empty UID returned from server");
-      }
-
-      const url = SCRIPT_URL + "?action=load&id=" + encodeURIComponent(uid);
-
-      const qrContainer = document.getElementById("qrCode");
-      if (!qrContainer) {
-        throw new Error("QR container not found in DOM");
-      }
-
-      qrContainer.innerHTML = ""; // clear previous QR
-      new QRCode(qrContainer, {
-        text: url,
-        width: 200,
-        height: 200,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-
-      document.getElementById("qrPopup").style.display = "block";
-    })
-    .catch(err => alert("Error generating QR: " + err.message));
+function transferScoresheet(){
+  const data=localStorage.getItem(FORM_KEY);
+  if(!data){alert("No scoresheet data");return;}
+  fetch(SCRIPT_URL+"?action=save",{method:"POST",body:data})
+  .then(res=>res.text())
+  .then(uid=>{
+    const url=SCRIPT_URL+"?action=load&id="+uid;
+    document.getElementById("qrCode").innerHTML="";
+    new QRCode(document.getElementById("qrCode"),{text:url,width:200,height:200,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});
+    document.getElementById("qrPopup").style.display="block";
+  })
+  .catch(err=>alert("Error generating QR: "+err));
 }
-
 function closeQR(){document.getElementById("qrPopup").style.display="none";}
 </script>
 
