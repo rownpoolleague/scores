@@ -484,13 +484,17 @@ function importFromTextarea() {
   <button type="button" onclick="showExportCode()">Transfer Scoresheet</button>
 
   <div id="transferContainer" style="display:none; margin-top:10px;">
-    <textarea id="transferCode"
+    <textarea
+      id="transferCode"
       style="width:90%; height:100px; font-size:16px;"
       placeholder="Paste transfer code here"></textarea>
     <br>
-    <button onclick="copyTransferCode()">Copy All</button>
-    <button onclick="importFromTextarea()">Import</button>
+    <button type="button" onclick="copyTransferCode()">Copy All</button>
+    <button type="button" onclick="importFromTextarea()">Import</button>
   </div>
+</div>
+
+
 </div>
 
 
