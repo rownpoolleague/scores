@@ -447,36 +447,54 @@ window.addEventListener("DOMContentLoaded", loadScoresheet);
 submitMatch.addEventListener("click", () => {
     setTimeout(() => localStorage.removeItem(FORM_KEY), 1000);
 });
-    /* ==============================
-   SCORESHEET TRANSFER (OPTION 1)
-   ============================== */
+    /* ============================== */
+  <div style="text-align:center; margin-top:20px;">
+  <button type="button" onclick="showExportCode()" style="margin-bottom:12px;">Transfer Scoresheet</button>
+  <div id="transferContainer" style="display:none; margin-top:10px;">
+    <textarea id="transferCode" readonly style="width:90%; height:100px; font-size:16px;"></textarea>
+    <br>
+    <button type="button" onclick="copyTransferCode()">Copy All</button>
+    <button type="button" onclick="importFromTextarea()">Import Scoresheet</button>
+  </div>
+</div>
 
-function exportScoresheet() {
+<script>
+function showExportCode() {
     const data = localStorage.getItem(FORM_KEY);
     if (!data) {
         alert("No scoresheet data to transfer.");
         return;
     }
-
-    prompt(
-        "Copy this code and paste it on the other phone:",
-        data
-    );
+    const container = document.getElementById('transferContainer');
+    const textarea = document.getElementById('transferCode');
+    textarea.value = data;
+    container.style.display = 'block';
 }
 
-function importScoresheet() {
-    const code = prompt("Paste the transfer code here:");
-    if (!code) return;
+function copyTransferCode() {
+    const textarea = document.getElementById('transferCode');
+    textarea.select();
+    textarea.setSelectionRange(0, 99999); // for mobile
+    navigator.clipboard.writeText(textarea.value)
+        .then(() => alert("Scoresheet copied to clipboard!"))
+        .catch(() => alert("Copy failed, please copy manually."));
+}
+
+function importFromTextarea() {
+    const textarea = document.getElementById('transferCode');
+    const code = textarea.value.trim();
+    if (!code) return alert("No code to import.");
 
     try {
-        JSON.parse(code); // validate JSON
-        localStorage.setItem(FORM_KEY, code);
-        alert("Scoresheet imported. Reloading…");
+        const parsed = JSON.parse(code); // validate JSON
+        localStorage.setItem(FORM_KEY, JSON.stringify(parsed));
+        alert("Scoresheet imported! Reloading...");
         location.reload();
     } catch (e) {
-        alert("Invalid transfer code.");
+        alert("Invalid transfer code. Make sure you copied the entire code.");
     }
 }
+</script>
 
 
 </script>
