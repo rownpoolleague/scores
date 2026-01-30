@@ -239,13 +239,12 @@ select, input, button { font-size:inherit; font-family:inherit; }
 </div>
 
 <script>
-    function saveNow() {
+{
     saveScoresheet();
 }
 
 // --- JavaScript to populate rosters, lag, stats, and submit ---
     let isLoading = false;
-
 
 const rosters = {
     "Halfway Crooks":["Dan Foster","Tony Perelli","Don Young","Don Rak","Yani Marinopoulos","Brooke Bridges","Jeremie Ketner","Tony Guthrie"],
@@ -314,7 +313,7 @@ document.addEventListener("click", e => {
 
 // Stat increment/decrement functions
 function changeInnings(amount){ let input = matchInnings; input.value = Math.max(0,(parseInt(input.value)||0)+amount); }
-function changeWinsA(amount){ let input=pA_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();
+function changeWinsA(amount){ let input=pA_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();}
 function changePALosses(amount){ let input=pA_losses; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();}
 function changePASafeties(amount){ let input=pA_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
 function changePA8B(amount){ let input=pA_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
@@ -406,6 +405,9 @@ submitMatch.onclick = () => {
     });
     };
 const FORM_KEY = "scoresheetData";
+function saveNow() {
+    saveScoresheet();
+}
 
 /* SAVE FORM STATE */
 function saveScoresheet() {
