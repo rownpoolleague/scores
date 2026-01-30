@@ -484,7 +484,7 @@ window.addEventListener("load", loadScoresheet);
 
 // Optional: Clear storage after submit
 submitMatch.addEventListener("click", () => {
-    localStorage.removeItem(FORM_KEY);
+
 });
 
 </script>
@@ -493,5 +493,58 @@ submitMatch.addEventListener("click", () => {
 <div style="text-align:center; margin-top:40px;">
    <a class="back-button" href="index.html">Back to Main Menu</a>
 </div>
+    <script>
+const FORM_KEY = "scoresheetData";
+
+/* SAVE */
+function saveScoresheet() {
+    const ids = [
+        "team","opponent","lagWinner","lagLoser","matchInnings","matchWinner",
+        "pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8",
+        "pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8"
+    ];
+
+    const data = {};
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) data[id] = el.value;
+    });
+
+    localStorage.setItem(FORM_KEY, JSON.stringify(data));
+}
+
+/* LOAD */
+function loadScoresheet() {
+    const data = JSON.parse(localStorage.getItem(FORM_KEY));
+    if (!data) return;
+
+    Object.keys(data).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = data[id];
+    });
+
+    // rebuild rosters
+    updateRoster(team, teamRoster);
+    updateRoster(opponent, opponentRoster);
+
+    lagWinnerHeader.textContent = lagWinner.value || "Lag Winner";
+    lagLoserHeader.textContent = lagLoser.value || "Lag Loser";
+
+    submitMatch.style.display = matchWinner.value ? "inline-block" : "none";
+}
+
+/* AUTO SAVE */
+document.addEventListener("input", saveScoresheet);
+document.addEventListener("click", saveScoresheet);
+
+/* LOAD ON START */
+window.addEventListener("DOMContentLoaded", loadScoresheet);
+
+/* CLEAR AFTER SUCCESSFUL SUBMIT */
+submitMatch.addEventListener("click", () => {
+    setTimeout(() => localStorage.removeItem(FORM_KEY), 1000);
+});
+</script>
+
 </body>
 </html>
