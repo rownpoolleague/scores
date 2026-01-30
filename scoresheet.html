@@ -438,7 +438,7 @@ function loadScoresheet() {
 
 /* AUTO SAVE */
 document.addEventListener("input", saveScoresheet);
-document.addEventListener("click", saveScoresheet);
+
 
 /* LOAD ON PAGE OPEN */
 window.addEventListener("DOMContentLoaded", loadScoresheet);
@@ -469,14 +469,15 @@ function importScoresheet() {
     if (!code) return;
 
     try {
-        JSON.parse(code); // validate JSON
-        localStorage.setItem(FORM_KEY, code);
+        const parsed = JSON.parse(code); // validate + normalize
+        localStorage.setItem(FORM_KEY, JSON.stringify(parsed));
         alert("Scoresheet imported. Reloading…");
         location.reload();
     } catch (e) {
         alert("Invalid transfer code.");
     }
 }
+
 
 
 </script>
