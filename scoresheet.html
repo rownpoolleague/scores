@@ -447,98 +447,49 @@ window.addEventListener("DOMContentLoaded", loadScoresheet);
 submitMatch.addEventListener("click", () => {
     setTimeout(() => localStorage.removeItem(FORM_KEY), 1000);
 });
-<!-- Include QR code library -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-
-<script>
-/* ==============================
-   QR CODE EXPORT / IMPORT
+    /* ==============================
+   SCORESHEET TRANSFER (OPTION 1)
    ============================== */
 
-function exportScoresheetQR() {
-    const data = localStorage.getItem("scoresheetData");
+function exportScoresheet() {
+    const data = localStorage.getItem(FORM_KEY);
     if (!data) {
         alert("No scoresheet data to transfer.");
         return;
     }
 
-    // Create container if it doesn't exist
-    let container = document.getElementById("qrContainer");
-    if (!container) {
-        container = document.createElement("div");
-        container.id = "qrContainer";
-        container.style.textAlign = "center";
-        container.style.marginTop = "20px";
-        document.body.appendChild(container);
+    prompt(
+        "Copy this code and paste it on the other phone:",
+        data
+    );
+}
+
+function importScoresheet() {
+    const code = prompt("Paste the transfer code here:");
+    if (!code) return;
+
+    try {
+        JSON.parse(code); // validate JSON
+        localStorage.setItem(FORM_KEY, code);
+        alert("Scoresheet imported. Reloading…");
+        location.reload();
+    } catch (e) {
+        alert("Invalid transfer code.");
     }
-
-    container.innerHTML = "<p style='color:white;'>Scan this QR code with another phone:</p>";
-    QRCode.toCanvas(container, data, { width: 250 }, function (error) {
-        if (error) console.error(error);
-    });
 }
 
-function importScoresheetQR() {
-    // Use a file input for scanning an image with a QR code
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.onchange = e => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            const img = new Image();
-            img.onload = function() {
-                const canvas = document.createElement("canvas");
-                canvas.width = img.width;
-                canvas.height = img.height;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0);
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-                // Use jsQR library for QR code scanning
-                if (!window.jsQR) {
-                    alert("Scanning requires jsQR library. Include it: https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js");
-                    return;
-                }
-
-                const code = jsQR(imageData.data, imageData.width, imageData.height);
-                if (code) {
-                    try {
-                        JSON.parse(code.data); // validate JSON
-                        localStorage.setItem("scoresheetData", code.data);
-                        alert("Scoresheet imported! Reloading…");
-                        location.reload();
-                    } catch {
-                        alert("Invalid QR code.");
-                    }
-                } else {
-                    alert("No QR code detected in the image.");
-                }
-            };
-            img.src = ev.target.result;
-        };
-        reader.readAsDataURL(file);
-    };
-    input.click();
-}
-</script>
-
-<!-- Example buttons -->
-
-</div>
 
 </script>
     <div style="text-align:center; margin-top:20px;">
-    <button type="button" onclick="exportScoresheetQR()" style="margin-bottom:12px;">
-        Generate QR Code
+    <button type="button" onclick="exportScoresheet()" style="margin-bottom:12px;">
+        Transfer Scoresheet
     </button>
     <br>
-    <button type="button" onclick="importScoresheetQR()">
-        Scan QR Code
+    <button type="button" onclick="importScoresheet()">
+        Import Scoresheet
     </button>
+</div>
+
     <a class="back-button" href="index.html">Back to Main Menu</a>
 </div>
 </body>
