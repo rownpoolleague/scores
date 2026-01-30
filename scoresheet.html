@@ -268,10 +268,10 @@ submitMatch.onclick=()=>{
 function transferScoresheet(){
   const data=localStorage.getItem(FORM_KEY);
   if(!data){alert("No scoresheet data");return;}
-  fetch("https://script.google.com/macros/s/AKfycbwsB0ZB4zaTIDdMs69yuukyN2evOl9nBDcGbZ33DaQd5g8WgbZ5t59tqL0v3uDfn2EHVw/exec+"?action=save",{method:"POST",body:data})
+  fetch(SCRIPT_URL+"?action=save",{method:"POST",body:data})
   .then(res=>res.text())
   .then(uid=>{
-    const url="https://script.google.com/macros/s/AKfycbwsB0ZB4zaTIDdMs69yuukyN2evOl9nBDcGbZ33DaQd5g8WgbZ5t59tqL0v3uDfn2EHVw/exec+"?action=load&id="+uid;
+    const url=SCRIPT_URL+"?action=load&id="+uid;
     document.getElementById("qrCode").innerHTML="";
     new QRCode(document.getElementById("qrCode"),{text:url,width:200,height:200,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});
     document.getElementById("qrPopup").style.display="block";
