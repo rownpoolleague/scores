@@ -240,6 +240,8 @@ select, input, button { font-size:inherit; font-family:inherit; }
 
 <script>
 // --- JavaScript to populate rosters, lag, stats, and submit ---
+    let isLoading = false;
+
 
 const rosters = {
     "Halfway Crooks":["Dan Foster","Tony Perelli","Don Young","Don Rak","Yani Marinopoulos","Brooke Bridges","Jeremie Ketner","Tony Guthrie"],
@@ -402,6 +404,8 @@ const FORM_KEY = "scoresheetData";
 
 /* SAVE FORM STATE */
 function saveScoresheet() {
+    if (isLoading) return;
+
     const ids = [
         "team","opponent","lagWinner","lagLoser","matchInnings","matchWinner",
         "pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8",
@@ -417,10 +421,15 @@ function saveScoresheet() {
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
 
+
 /* LOAD FORM STATE */
 function loadScoresheet() {
-    const data = JSON.parse(localStorage.getItem(FORM_KEY));
-    if (!data) return;
+    const raw = localStorage.getItem(FORM_KEY);
+    if (!raw) return;
+
+    isLoading = true;
+
+    const data = JSON.parse(raw);
 
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
@@ -433,8 +442,11 @@ function loadScoresheet() {
     lagWinnerHeader.textContent = lagWinner.value || "Lag Winner";
     lagLoserHeader.textContent = lagLoser.value || "Lag Loser";
 
-    submitMatch.style.display = matchWinner.value ? "inline-block" : "none";
+    updateMatchWinner();
+
+    isLoading = false;
 }
+
 
 /* AUTO SAVE */
 document.addEventListener("input", saveScoresheet);
