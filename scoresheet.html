@@ -419,8 +419,10 @@ function saveScoresheet() {
 
 /* LOAD FORM STATE */
 function loadScoresheet() {
-    const data = JSON.parse(localStorage.getItem(FORM_KEY));
-    if (!data) return;
+    const raw = localStorage.getItem(FORM_KEY);
+    if (!raw) return;
+
+    const data = JSON.parse(raw);
 
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
@@ -440,73 +442,57 @@ function loadScoresheet() {
 document.addEventListener("input", saveScoresheet);
 document.addEventListener("click", saveScoresheet);
 
-/* LOAD ON PAGE OPEN */
+/* LOAD ON OPEN */
 window.addEventListener("DOMContentLoaded", loadScoresheet);
 
 /* CLEAR AFTER SUBMIT */
 submitMatch.addEventListener("click", () => {
     setTimeout(() => localStorage.removeItem(FORM_KEY), 1000);
 });
-    /* ============================== */
-  <div style="text-align:center; margin-top:20px;">
-  <button type="button" onclick="showExportCode()" style="margin-bottom:12px;">Transfer Scoresheet</button>
-  <div id="transferContainer" style="display:none; margin-top:10px;">
-    <textarea id="transferCode" readonly style="width:90%; height:100px; font-size:16px;"></textarea>
-    <br>
-    <button type="button" onclick="copyTransferCode()">Copy All</button>
-    <button type="button" onclick="importFromTextarea()">Import Scoresheet</button>
-  </div>
-</div>
 
-<script>
+/* ===== TRANSFER ===== */
+
 function showExportCode() {
     const data = localStorage.getItem(FORM_KEY);
-    if (!data) {
-        alert("No scoresheet data to transfer.");
-        return;
-    }
-    const container = document.getElementById('transferContainer');
-    const textarea = document.getElementById('transferCode');
-    textarea.value = data;
-    container.style.display = 'block';
+    if (!data) return alert("No scoresheet data to transfer.");
+
+    transferCode.value = data;
+    transferContainer.style.display = "block";
 }
 
 function copyTransferCode() {
-    const textarea = document.getElementById('transferCode');
-    textarea.select();
-    textarea.setSelectionRange(0, 99999); // for mobile
-    navigator.clipboard.writeText(textarea.value)
-        .then(() => alert("Scoresheet copied to clipboard!"))
-        .catch(() => alert("Copy failed, please copy manually."));
+    transferCode.select();
+    transferCode.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(transferCode.value)
+        .then(() => alert("Copied to clipboard"));
 }
 
 function importFromTextarea() {
-    const textarea = document.getElementById('transferCode');
-    const code = textarea.value.trim();
-    if (!code) return alert("No code to import.");
+    const code = transferCode.value.trim();
+    if (!code) return alert("No code pasted");
 
     try {
-        const parsed = JSON.parse(code); // validate JSON
-        localStorage.setItem(FORM_KEY, JSON.stringify(parsed));
-        alert("Scoresheet imported! Reloading...");
+        JSON.parse(code);
+        localStorage.setItem(FORM_KEY, code);
         location.reload();
-    } catch (e) {
-        alert("Invalid transfer code. Make sure you copied the entire code.");
+    } catch {
+        alert("Invalid transfer code");
     }
 }
 </script>
-
-
-</script>
     <div style="text-align:center; margin-top:20px;">
-    <button type="button" onclick="exportScoresheet()" style="margin-bottom:12px;">
-        Transfer Scoresheet
-    </button>
+  <button type="button" onclick="showExportCode()">Transfer Scoresheet</button>
+
+  <div id="transferContainer" style="display:none; margin-top:10px;">
+    <textarea id="transferCode"
+      style="width:90%; height:100px; font-size:16px;"
+      placeholder="Paste transfer code here"></textarea>
     <br>
-    <button type="button" onclick="importScoresheet()">
-        Import Scoresheet
-    </button>
+    <button onclick="copyTransferCode()">Copy All</button>
+    <button onclick="importFromTextarea()">Import</button>
+  </div>
 </div>
+
 
     <a class="back-button" href="index.html">Back to Main Menu</a>
 </div>
