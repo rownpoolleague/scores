@@ -419,10 +419,8 @@ function saveScoresheet() {
 
 /* LOAD FORM STATE */
 function loadScoresheet() {
-    const raw = localStorage.getItem(FORM_KEY);
-    if (!raw) return;
-
-    const data = JSON.parse(raw);
+    const data = JSON.parse(localStorage.getItem(FORM_KEY));
+    if (!data) return;
 
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
@@ -442,75 +440,54 @@ function loadScoresheet() {
 document.addEventListener("input", saveScoresheet);
 document.addEventListener("click", saveScoresheet);
 
-/* LOAD ON OPEN */
+/* LOAD ON PAGE OPEN */
 window.addEventListener("DOMContentLoaded", loadScoresheet);
 
 /* CLEAR AFTER SUBMIT */
 submitMatch.addEventListener("click", () => {
     setTimeout(() => localStorage.removeItem(FORM_KEY), 1000);
 });
+    /* ==============================
+   SCORESHEET TRANSFER (OPTION 1)
+   ============================== */
 
-/* ===== TRANSFER ===== */
-
-function showExportCode() {
+function exportScoresheet() {
     const data = localStorage.getItem(FORM_KEY);
-    if (!data) return alert("No scoresheet data to transfer.");
+    if (!data) {
+        alert("No scoresheet data to transfer.");
+        return;
+    }
 
-    transferCode.value = data;
-    transferContainer.style.display = "block";
+    prompt(
+        "Copy this code and paste it on the other phone:",
+        data
+    );
 }
 
-const transferCode = document.getElementById("transferCode");
-const transferContainer = document.getElementById("transferContainer");
-
-function showExportCode() {
-    const data = localStorage.getItem(FORM_KEY);
-    if (!data) return alert("No scoresheet data to transfer.");
-
-const transferCode = document.getElementById("transferCode");
-const transferContainer = document.getElementById("transferContainer");
-
-function showExportCode() {
-    const data = localStorage.getItem(FORM_KEY);
-    if (!data) return alert("No scoresheet data to transfer.");
-
-    transferCode.value = data;
-    transferContainer.style.display = "block";
-}
-
-function copyTransferCode() {
-    transferCode.select();
-    transferCode.setSelectionRange(0, 99999);
-    navigator.clipboard.writeText(transferCode.value)
-        .then(() => alert("Copied to clipboard"));
-}
-
-function importFromTextarea() {
-    const code = transferCode.value.trim();
-    if (!code) return alert("No code pasted");
+function importScoresheet() {
+    const code = prompt("Paste the transfer code here:");
+    if (!code) return;
 
     try {
-        JSON.parse(code);
+        JSON.parse(code); // validate JSON
         localStorage.setItem(FORM_KEY, code);
+        alert("Scoresheet imported. Reloading…");
         location.reload();
-    } catch {
-        alert("Invalid transfer code");
+    } catch (e) {
+        alert("Invalid transfer code.");
     }
 }
 
 
 </script>
     <div style="text-align:center; margin-top:20px;">
-  <button type="button" onclick="showExportCode()">Transfer Scoresheet</button>
-
-  <div id="transferContainer" style="display:none; margin-top:10px;"><textarea>
-      id="transferCode"
-      style="width:90%; height:100px; font-size:16px;"
-      placeholder="Paste transfer code here"></textarea>
+    <button type="button" onclick="exportScoresheet()" style="margin-bottom:12px;">
+        Transfer Scoresheet
+    </button>
     <br>
-    <button type="button" onclick="copyTransferCode()">Copy All</button>
-    <button type="button" onclick="importFromTextarea()">Import</button>
-  </div>
+    <button type="button" onclick="importScoresheet()">
+        Import Scoresheet
+    </button>
 </div>
 
     <a class="back-button" href="index.html">Back to Main Menu</a>
