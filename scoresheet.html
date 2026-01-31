@@ -376,31 +376,31 @@ submitMatch.onclick = () => {
     alert("Please wait while your results are submitted...");
 
     const data = {
-        team: team.value,
-        opponent: opponent.value,
-        lagWinner: lagWinner.value,
-        lagLoser: lagLoser.value,
-        matchInnings: matchInnings.value,
-        pA: { 
-            handicap: pA_hc.value, 
-            wins: pA_wins.value, 
-            safeties: pA_safeties.value, 
-            b8: pA_b8.value, 
-            br: pA_br.value, 
-            e8: pA_e8.value 
-        },
-        pB: { 
-            handicap: pB_hc.value, 
-            wins: pB_wins.value, 
-            safeties: pB_safeties.value, 
-            b8: pB_b8.value, 
-            br: pB_br.value, 
-            e8: pB_e8.value,
-            
-        },
-        matchWinner: matchWinner.value
-        matchNotes: matchNotes.value
-        ;
+    team: team.value,
+    opponent: opponent.value,
+    lagWinner: lagWinner.value,
+    lagLoser: lagLoser.value,
+    matchInnings: matchInnings.value,
+    pA: {
+        handicap: pA_hc.value,
+        wins: pA_wins.value,
+        safeties: pA_safeties.value,
+        b8: pA_b8.value,
+        br: pA_br.value,
+        e8: pA_e8.value
+    },
+    pB: {
+        handicap: pB_hc.value,
+        wins: pB_wins.value,
+        safeties: pB_safeties.value,
+        b8: pB_b8.value,
+        br: pB_br.value,
+        e8: pB_e8.value
+    },
+    matchWinner: matchWinner.value,
+    matchNotes: matchNotes.value
+};
+
 
     fetch("https://script.google.com/macros/s/AKfycbxjPd21vbwaqtxnDHyiwq-232S6vxdG-t6JPd2nQrdi9bbH8EakOr4S_11jDF9uvu4/exec", {
         method: "POST",
