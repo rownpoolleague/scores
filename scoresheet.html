@@ -491,6 +491,244 @@ function saveScoresheet() {
 
     const data = {};
     ids.forEach(id => {
+        const e            <button onclick="changePBE8(-1)">−</button>
+                <input id="pB_e8" type="number" value="0" min="0">
+                <button onclick="changePBE8(1)">+</button>
+            </div>
+        </div>
+        <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach"></div>
+    </div>
+</div>
+    
+<div style="text-align:center;margin-top:30px;">
+    <label>Match Winner</label><br>
+   <input id="matchWinner" readonly style="text-align:center; width:160px;">
+</div>
+
+<div style="text-align:center;margin-top:30px;">
+    <button id="submitMatch" style="display:none;background-color:#00FF00;width:200px;height:55px;border-radius: 6px;color: #000;font-weight:bold;font-size:24px;">Submit Match</button> 
+</div>
+
+<script>
+function getUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  return params;
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  // Check if URL has 'data' parameter
+  const params = getUrlParams();
+  if (params.has("data")) {
+    const rawData = decodeURIComponent(params.get("data"));
+    try {
+      localStorage.setItem(FORM_KEY, rawData);
+      loadScoresheet(); // reload form with imported data
+      alert("Match data loaded from QR code.");
+    } catch (e) {
+      alert("Failed to load data from QR code.");
+    }
+  } else {
+    loadScoresheet(); // normal load
+  }
+});
+// --- JavaScript to populate rosters, lag, stats, and submit ---
+    let isLoading = false;
+
+const rosters = {
+    "Halfway Crooks":["Dan Foster","Tony Perelli","Don Young","Don Rak","Yani Marinopoulos","Brooke Bridges","Jeremie Ketner","Tony Guthrie"],
+    "Haters Welcome":["Randy Rycraft","Joe Neal","Jennifer Wagner","Jim Czenk","Phil Nelson","Pam Neal","Greg Wood","Brett Boger"],
+    "Lynn's Amigos":["Francisco Ibarra","Noe Castaña","Luis Asavedo","Rico Urvina","Tomas Ramirez","Enrique Meza"],
+    "Rackless Behavior":["Jim Nevin","Larry Casper","Harnaik Lal","Freddy Izguerra","Tom Nevin","Doug Misner","Joe Crutchfield","Ross Giannino"],
+    "Dirty Ballers":["Rocky Oiler Sr.","Kevin Pattenaude","Ron Gonzalez","Javier Mauricio","Peggy Wood","Joey Sanchez","John Schoiber"],
+    "8 on Break":["Doc Halek","Juergen Jackert","Danny Plowman","John Amrein","Kevin Ward","Shawn Mcbride","Don Murphy","Kenny Esposito"],
+    "Five Amigos":["Francisco Tinajero","Sergio Sanchez","Mario Orenday","Felipe Ochoa","Jeronimo Ramirez","Kevin Joyner","Tony Perez"],
+    "Frank's Pizza":["Jose Gonzalez"],
+    "Killer Instinct":["Mike Uhlean","Doug Andrus","Jim Berger","Shawn Vitolka","Mike Zbonski Jr.","Luke Valenzuela","Samantha Kommenich"],
+    "Pete's Bunch":["Tom Schroeder","Chuck Harding","Dan Schroeder","Rob Zwart","Pete Steele","Buster Fuller"]
+};
+
+const playerData = {
+    "Dan Foster":3,"Tony Perelli":5,"Don Young":3,"Don Rak":6,"Yani Marinopoulos":5,"Brooke Bridges":2,
+    "Jeremie Ketner":4,"Tony Guthrie":6,"Randy Rycraft":4,"Joe Neal":4,"Jennifer Wagner":3,"Jim Czenk":2,
+    "Phil Nelson":2,"Pam Neal":2,"Greg Wood":4,"Brett Boger":5,"Francisco Ibarra":2,"Noe Castaña":2,
+    "Luis Asavedo":2,"Rico Urvina":3,"Tomas Ramirez":4,"Enrique Meza":2,"Jim Nevin":4,"Larry Casper":3,
+    "Harnaik Lal":4,"Freddy Izguerra":5,"Joe Crutchfield":3,"Tom Nevin":3,"Doug Misner":4,"Ross Giannino":4,"Rocky Oiler Sr.":3,
+    "Kevin Pattenaude":3,"Ron Gonzalez":2,"Javier Mauricio":4,"Peggy Wood":2,"Joey Sanchez":4,
+    "John Schoiber":2,"Doc Halek":4,"Juergen Jackert":4,"Danny Plowman":5,"John Amrein":3,
+    "Kevin Ward":2,"Shawn Mcbride":2,"Don Murphy":4,"Kenny Esposito":3,"Francisco Tinajero":4,
+    "Sergio Sanchez":5,"Mario Orenday":4,"Felipe Ochoa":3,"Jeronimo Ramirez":3,"Kevin Joyner":5,
+    "Tony Perez":4,"Jose Gonzalez":3,"Mike Uhlean":5,"Doug Andrus":4,"Jim Berger":4,
+    "Shawn Vitolka":5,"Mike Zbonski Jr.":3,"Luke Valenzuela":6,"Samantha Kommenich":2,
+    "Tom Schroeder":4,"Chuck Harding":3,"Dan Schroeder":5,"Rob Zwart":4,"Pete Steele":2,"Buster Fuller":3
+};
+
+// Populate roster when team selects
+function updateRoster(sel, div){
+    div.innerHTML = (rosters[sel.value]||[]).map(p => {
+        const hc = playerData[p] || 0; // get the player's HC
+        return `<div class="playerName" data-p="${p}">
+                    <span class="name">${p}</span>
+                    <span class="hc">${hc}</span>
+                </div>`;
+    }).join("");
+}
+
+document.getElementById("team").addEventListener("change", ()=>updateRoster(team,teamRoster));
+document.getElementById("opponent").addEventListener("change", ()=>updateRoster(opponent,opponentRoster));
+
+let flip = false;
+
+document.addEventListener("click", e => {
+    const playerDiv = e.target.closest(".playerName");
+    if (!playerDiv) return;
+
+    const name = playerDiv.dataset.p;
+    const hc = playerData[name] || 0;
+
+    if (!flip) {
+        lagWinner.value = name;
+        pA_hc.value = hc;
+        document.getElementById("lagWinnerHeader").textContent = name;
+    } else {
+        lagLoser.value = name;
+        pB_hc.value = hc;
+        document.getElementById("lagLoserHeader").textContent = name;    }
+
+    flip = !flip;
+    saveNow();
+});
+
+
+// Stat increment/decrement functions
+function changeInnings(amount){ let input = matchInnings; input.value = Math.max(0,(parseInt(input.value)||0)+amount); }
+function changeWinsA(amount){let input = pA_wins;input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
+    document.getElementById('pA_coach').checked = false;
+    document.getElementById('pB_coach').checked = false;
+
+    updateMatchWinner();
+    saveNow();
+}
+function changePALosses(amount){ let input=pA_losses; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();}
+function changePASafeties(amount){ let input=pA_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePA8B(amount){ let input=pA_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePABR(amount){ let input=pA_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePAHC(amount){ let input=pA_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();}
+function changePBHC(amount){ let input=pB_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePBsafeties(amount){ let input=pB_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePB8B(amount){ let input=pB_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePBBR(amount){ let input=pB_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changePAE8(amount){ let input=pA_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+function changeWinsB(amount){let input = pB_wins;input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
+    document.getElementById('pA_coach').checked = false;
+    document.getElementById('pB_coach').checked = false;
+
+    updateMatchWinner();
+    saveNow();
+}
+function changePBE8(amount){ let input=pB_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
+// Match winner logic
+function updateMatchWinner(){
+    const aWins = parseInt(pA_wins.value)||0;
+    const aLoss = parseInt(pB_wins.value)||0;
+    const aHC = parseInt(pA_hc.value)||0;
+    const bHC = parseInt(pB_hc.value)||0;
+
+    if(aWins === aHC && aHC > 0){
+        matchWinner.value = lagWinner.value;
+    } else if(aLoss === bHC && bHC > 0){
+        matchWinner.value = lagLoser.value;
+    } else {
+        matchWinner.value = "";
+        saveNow();
+    }
+
+    // 🔒 Show submit button ONLY when matchWinner exists
+    submitMatch.style.display = matchWinner.value ? "inline-block" : "none";
+}
+
+// Submit to Google Sheets
+submitMatch.onclick = () => {
+
+    // Disable button immediately
+    submitMatch.disabled = true;
+    submitMatch.style.opacity = "0.5";
+    submitMatch.style.cursor = "not-allowed";
+
+    // Show waiting popup
+    alert("Please wait while your results are submitted...");
+
+    const data = {
+    team: team.value,
+    opponent: opponent.value,
+    lagWinner: lagWinner.value,
+    lagLoser: lagLoser.value,
+    matchInnings: matchInnings.value,
+    pA: {
+        handicap: pA_hc.value,
+        wins: pA_wins.value,
+        safeties: pA_safeties.value,
+        b8: pA_b8.value,
+        br: pA_br.value,
+        e8: pA_e8.value
+    },
+    pB: {
+        handicap: pB_hc.value,
+        wins: pB_wins.value,
+        safeties: pB_safeties.value,
+        b8: pB_b8.value,
+        br: pB_br.value,
+        e8: pB_e8.value
+    },
+    matchWinner: matchWinner.value,
+    matchNotes: matchNotes.value
+};
+
+
+    fetch("https://script.google.com/macros/s/AKfycbxjPd21vbwaqtxnDHyiwq-232S6vxdG-t6JPd2nQrdi9bbH8EakOr4S_11jDF9uvu4/exec", {
+        method: "POST",
+        body: JSON.stringify(data)
+    })
+    .then(() => {
+        document.querySelectorAll("input, textarea").forEach(el => {
+    if (el.type === "number") {
+        el.value = 0;      // numeric fields MUST be numeric
+    } else {
+        el.value = "-";    // text fields get a subtle placeholder
+    }
+});
+
+        alert("Match submitted successfully. You may now enter the next match.");
+
+       submitMatch.style.display = "none";
+    })
+    .catch(() => {
+        alert("There was an error submitting the match. Please try again.");
+
+        // Re-enable button on error
+        submitMatch.disabled = false;
+        submitMatch.style.opacity = "1";
+        submitMatch.style.cursor = "pointer";
+    });
+    };
+const FORM_KEY = "scoresheetData";
+function saveNow() {
+    saveScoresheet();
+}
+
+/* SAVE FORM STATE */
+function saveScoresheet() {
+    if (isLoading) return;
+
+    const ids = [
+  "team","opponent","lagWinner","lagLoser","matchInnings","matchWinner",
+  "pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8",
+  "pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8",
+  "matchNotes"
+];
+
+
+    const data = {};
+    ids.forEach(id => {
         const el = document.getElementById(id);
         if (el) data[id] = el.value;
     });
