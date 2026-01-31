@@ -483,7 +483,13 @@ function loadScoresheet() {
     isLoading = false;
 }
 
+pA_wins.addEventListener("input", resetCoaches);
+pB_wins.addEventListener("input", resetCoaches);
 
+function resetCoaches() {
+    document.getElementById('pA_coach').checked = false;
+    document.getElementById('pB_coach').checked = false;
+}
 /* AUTO SAVE */
 document.addEventListener("input", saveScoresheet);
 
