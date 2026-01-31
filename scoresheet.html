@@ -400,7 +400,7 @@ submitMatch.onclick = () => {
         matchWinner: matchWinner.value
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbyeYfnQiubM6MJ7tJ3KHbuD9EBGJ6JyggjT9RIuswQ6EWe0x-mOIsAa50akBuC_gNPv/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbxjPd21vbwaqtxnDHyiwq-232S6vxdG-t6JPd2nQrdi9bbH8EakOr4S_11jDF9uvu4/exec", {
         method: "POST",
         body: JSON.stringify(data)
     })
@@ -432,10 +432,12 @@ function saveScoresheet() {
     if (isLoading) return;
 
     const ids = [
-        "team","opponent","lagWinner","lagLoser","matchInnings","matchWinner",
-        "pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8",
-        "pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8"
-    ];
+  "team","opponent","lagWinner","lagLoser","matchInnings","matchWinner",
+  "pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8",
+  "pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8",
+  "matchNotes"
+];
+
 
     const data = {};
     ids.forEach(id => {
@@ -527,8 +529,8 @@ function toggleNotes() {
   <button
     type="button"
     onclick="exportScoresheet()"
-    style="width:160px; font-size:22px; margin-right:10px;">
-    Transfer Scoresheet
+    style="width:160px; font-size:20px; margin-right:10px;">
+    Transfer Score
   </button>
 
   <button
@@ -544,7 +546,7 @@ function toggleNotes() {
   <textarea
     id="matchNotes"
     placeholder="Enter match notes here..."
-    style="width:90%; max-width:500px; height:120px; font-size:16px; padding:8px;">
+    style="width:80%; max-width:500px; height:100px; font-size:16px; padding:8px;">
   </textarea>
 </div>
 
