@@ -261,13 +261,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach"></div>
     </div>
 </div>
-    <div style="text-align:center;margin-top:30px;">
-<button class="startBtn" onclick="startTimer()">Start Timer</button>
-<div id="timerBox">
-  <span id="timerValue">0</span> sec
-  <button class="closeBtn" onclick="closeTimer()">X</button>
-</div>
-    </div>
+    
 <div style="text-align:center;margin-top:30px;">
     <label>Match Winner</label><br>
    <input id="matchWinner" readonly style="text-align:center; width:160px;">
@@ -608,16 +602,18 @@ function toggleNotes() {
   <button
     type="button"
     onclick="exportScoresheet()"
-    style="width:40%; height:40px;font-size:20px; margin-right:10px;">
+    style="width:30%; height:40px;font-size:20px; margin-right:10px;">
     Transfer
   </button>
 
   <button
     type="button"
     onclick="toggleNotes()"
-    style="width:40%; height:40px;font-size:20px;">
+    style="width:30%; height:40px;font-size:20px;">
     Notes
   </button>
+
+    <button class="startBtn" onclick="startTimer()" style="width:30%; height:40px;font-size:20px; margin-right:10px;">Start Timer</button> <div id="timerBox">   <span id="timerValue">0</span> sec   <button class="closeBtn" onclick="closeTimer()">X</button> </div>     </div>
 </div>
 
 <div id="notesContainer"
