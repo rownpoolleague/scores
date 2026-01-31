@@ -86,20 +86,16 @@ footer {
 
     /* Button styling */
     .fab {
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        font-size: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 6px; /* small rounded corners, optional */
+    padding: 12px 20px; /* controls size */
+    font-size: 18px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
     .fab:hover {
         background-color: #0056b3;
@@ -315,8 +311,8 @@ R-OWN Pool League
 
 <!-- Floating Buttons -->
 <div class="floating-buttons">
-    <button class="fab" onclick="location.hash='contents'">+</button>
-    <button class="fab" onclick="window.location.href='index.html'">&#x2764;</button>
+    <button class="fab" onclick="location.hash='contents'">To the Top</button>
+    <button class="fab" onclick="window.location.href='index.html'">Main Menu</button>
 </div>
 </body>
 </html>
