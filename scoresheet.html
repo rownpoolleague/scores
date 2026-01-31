@@ -244,7 +244,7 @@ function getUrlParams() {
   const params = new URLSearchParams(window.location.search);
   return params;
 }
-
+const matchNotes = document.getElementById("matchNotes").value.trim() || "0";
 window.addEventListener("DOMContentLoaded", () => {
   // Check if URL has 'data' parameter
   const params = getUrlParams();
