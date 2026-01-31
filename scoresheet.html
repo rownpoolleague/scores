@@ -407,7 +407,10 @@ submitMatch.onclick = () => {
         body: JSON.stringify(data)
     })
     .then(() => {
-        document.querySelectorAll("input, textarea").forEach(el => el.value = "");
+        document.querySelectorAll("input, textarea").forEach(el => {
+    el.value = 0;
+
+
         alert("Match submitted successfully. You may now enter the next match.");
 
         // Re-enable button
