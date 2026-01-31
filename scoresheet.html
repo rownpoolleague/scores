@@ -12,7 +12,7 @@
 .spinner {
   width: 100px;
   height: 100px;
-  background-image: url('9ball.png'); /* path must be correct */
+  background-image: url('9ball.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -248,9 +248,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <label>Match Winner</label><br>
    <input id="matchWinner" readonly style="text-align:center; width:160px;">
 </div>
-<div id="loadingSpinner";class="spinner";style="display:none;margin:20px"></div>
-
-    <img src="spinner.gif" width="40">
+    <div id="loadingSpinner" class="spinner" style="display:none; margin:20px auto;"></div>
 </div>
 <div style="text-align:center;margin-top:30px;">
     <button id="submitMatch" style="display:none;background-color:#00FF00;width:200px;height:55px;border-radius: 6px;color: #000;font-weight:bold;font-size:24px;">Submit Match</button> 
