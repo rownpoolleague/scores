@@ -5,6 +5,21 @@
 <title>Scoresheet</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+    @keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 100px;
+  height: 100px;
+  background-image: url('9ball.png'); /* path must be correct */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  animation: spin 3s linear infinite;
+}
+
 /* --- Styles unchanged from your version --- */
 body { font-family: Arial, sans-serif; font-size: 18px; background-color: #000; color: #fff; }
 .row { display: flex; justify-content: center; gap: 40px; margin-top: 40px; }
@@ -234,7 +249,10 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <label>Match Winner</label><br>
    <input id="matchWinner" readonly style="text-align:center; width:160px;">
 </div>
+<div id="loadingSpinner" class="spinner" style="display:none; margin:20px auto;"></div>
 
+    <img src="spinner.gif" width="40">
+</div>
 <div style="text-align:center;margin-top:30px;">
     <button id="submitMatch" style="display:none;background-color:#00FF00;width:200px;height:55px;border-radius: 6px;color: #000;font-weight:bold;font-size:24px;">Submit Match</button> 
 </div>
@@ -373,7 +391,7 @@ submitMatch.onclick = () => {
     submitMatch.style.cursor = "not-allowed";
 
     // Show waiting popup
-    alert("Please wait while your results are submitted...");
+  document.getElementById("loadingSpinner").style.display = "block";
 
     const data = {
     team: team.value,
@@ -410,6 +428,7 @@ submitMatch.onclick = () => {
         document.querySelectorAll("input, textarea").forEach(el => {
     el.value = 0;
 });
+document.getElementById("loadingSpinner").style.display = "none";
 
         alert("Match submitted successfully. You may now enter the next match.");
 
