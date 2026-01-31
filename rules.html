@@ -72,6 +72,38 @@ footer {
     padding: 20px;
     font-weight: bold;
 }
+    /* Container for floating buttons */
+    .floating-buttons {
+        position: fixed;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 15px; /* Space between buttons */
+        z-index: 999;
+    }
+
+    /* Button styling */
+    .fab {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .fab:hover {
+        background-color: #0056b3;
+    }
 </style>
 </head>
 
@@ -278,6 +310,12 @@ Please be reasonable, we want to have "continuous" play.
 <footer>
 R-OWN Pool League
 </footer>
+<p style="height: 1500px;">(Extra content to enable scrolling)</p>
 
+<!-- Floating Buttons -->
+<div class="floating-buttons">
+    <button class="fab" onclick="alert('Button 1 clicked!')">+</button>
+    <button class="fab" onclick="alert('Button 2 clicked!')">&#x2764;</button>
+</div>
 </body>
 </html>
