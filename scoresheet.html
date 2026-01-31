@@ -408,15 +408,16 @@ submitMatch.onclick = () => {
     })
     .then(() => {
         document.querySelectorAll("input, textarea").forEach(el => {
-    el.value = "-";
+    if (el.type === "number") {
+        el.value = 0;      // numeric fields MUST be numeric
+    } else {
+        el.value = "-";    // text fields get a subtle placeholder
+    }
 });
 
         alert("Match submitted successfully. You may now enter the next match.");
 
-        // Re-enable button
-        submitMatch.disabled = false;
-        submitMatch.style.opacity = "1";
-        submitMatch.style.cursor = "pointer";
+       submitMatch.style.display = "none";
     })
     .catch(() => {
         alert("There was an error submitting the match. Please try again.");
