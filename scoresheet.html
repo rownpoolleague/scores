@@ -335,8 +335,6 @@ document.addEventListener("click", e => {
 // Stat increment/decrement functions
 function changeInnings(amount){ let input = matchInnings; input.value = Math.max(0,(parseInt(input.value)||0)+amount); }
 function changeWinsA(amount){let input = pA_wins;input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
-
-    // clear both coach checkboxes
     document.getElementById('pA_coach').checked = false;
     document.getElementById('pB_coach').checked = false;
 
@@ -353,7 +351,13 @@ function changePBsafeties(amount){ let input=pB_safeties; input.value=Math.max(0
 function changePB8B(amount){ let input=pB_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
 function changePBBR(amount){ let input=pB_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
 function changePAE8(amount){ let input=pA_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
-function changeWinsB(amount){ let input=pB_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();}
+function changeWinsB(amount){let input = pB_wins;input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
+    document.getElementById('pA_coach').checked = false;
+    document.getElementById('pB_coach').checked = false;
+
+    updateMatchWinner();
+    saveNow();
+}
 function changePBE8(amount){ let input=pB_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
 // Match winner logic
 function updateMatchWinner(){
