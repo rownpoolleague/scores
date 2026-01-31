@@ -500,19 +500,7 @@ function exportScoresheet() {
   showQRModal(fullUrl);
 }
 
-function importScoresheet() {
-    const code = prompt("Paste the transfer code here:");
-    if (!code) return;
 
-    try {
-        const parsed = JSON.parse(code); // validate + normalize
-        localStorage.setItem(FORM_KEY, JSON.stringify(parsed));
-        alert("Scoresheet imported. Reloading…");
-        location.reload();
-    } catch (e) {
-        alert("Invalid transfer code.");
-    }
-}
 function showQRModal(data) {
   document.getElementById('qrModal').style.display = 'flex';
   // Clear previous QR code if any
@@ -532,11 +520,31 @@ function closeQRModal() {
 
 </script>
 <div style="text-align:center; margin-top:20px;">
-    <button type="button"onclick="exportScoresheet()"style="width:160px;color:#000;border-radius: 4px;font-size:22px;display:inline-block;">
-        Transfer Scoresheet
-    </button>
+  <button
+    type="button"
+    onclick="exportScoresheet()"
+    style="width:160px; font-size:22px; margin-right:10px;">
+    Transfer Scoresheet
+  </button>
 
+  <button
+    type="button"
+    onclick="toggleNotes()"
+    style="width:160px; font-size:20px;">
+    Match Notes
+  </button>
 </div>
+
+<div id="notesContainer"
+     style="display:none; text-align:center; margin-top:12px;">
+  <textarea
+    id="matchNotes"
+    placeholder="Enter match notes here..."
+    style="width:90%; max-width:500px; height:120px; font-size:16px; padding:8px;">
+  </textarea>
+</div>
+
+
     <a class="back-button" href="index.html">Back to Main Menu</a>
 </div>
     <!-- QR Code Popup -->
