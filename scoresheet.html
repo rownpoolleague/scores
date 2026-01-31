@@ -408,7 +408,7 @@ submitMatch.onclick = () => {
     })
     .then(() => {
         document.querySelectorAll("input, textarea").forEach(el => {
-    el.value = 0;
+    el.value = "-";
 });
 
         alert("Match submitted successfully. You may now enter the next match.");
