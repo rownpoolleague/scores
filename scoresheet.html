@@ -396,10 +396,11 @@ submitMatch.onclick = () => {
             b8: pB_b8.value, 
             br: pB_br.value, 
             e8: pB_e8.value,
-            matchNotes: matchNotes.value
+            
         },
         matchWinner: matchWinner.value
-    };
+        matchNotes: matchNotes.value
+        ;
 
     fetch("https://script.google.com/macros/s/AKfycbxjPd21vbwaqtxnDHyiwq-232S6vxdG-t6JPd2nQrdi9bbH8EakOr4S_11jDF9uvu4/exec", {
         method: "POST",
