@@ -61,7 +61,37 @@ select, input, button { font-size:inherit; font-family:inherit; }
 .player-stats-container { position:relative; display:flex; justify-content:center; gap:60px; }
 .player-stats-container::after { content:""; position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:2px; background-color:#fff; opacity:0.7; pointer-events:none; }
 .back-button { display: block; margin: 30px auto 0 auto; padding: 8px 16px; background-color: #1e90ff; color: #fff; border-radius: 6px; text-decoration: none; font-size: 18px; text-align: center; }
-
+ /* Floating timer box */
+  #timerBox {
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #222;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+  }
+  #timerValue {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  .closeBtn {
+    background: crimson;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    margin-left: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .startBtn {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+  }
 </style>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 </head>
@@ -232,7 +262,13 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach"></div>
     </div>
 </div>
-
+    <div style="text-align:center;margin-top:30px;">
+<button class="startBtn" onclick="startTimer()">Start Timer</button>
+<div id="timerBox">
+  <span id="timerValue">0</span> sec
+  <button class="closeBtn" onclick="closeTimer()">X</button>
+</div>
+    </div>
 <div style="text-align:center;margin-top:30px;">
     <label>Match Winner</label><br>
    <input id="matchWinner" readonly style="text-align:center; width:160px;">
@@ -548,7 +584,26 @@ function toggleNotes() {
   const box = document.getElementById("notesContainer");
   box.style.display = box.style.display === "none" ? "block" : "none";
 }
-   
+  let timerInterval;
+  let seconds = 0;
+
+  function startTimer() {
+    seconds = 0;
+    document.getElementById("timerValue").textContent = seconds;
+    document.getElementById("timerBox").style.display = "block";
+
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      seconds++;
+      document.getElementById("timerValue").textContent = seconds;
+    }, 1000);
+  }
+
+  function closeTimer() {
+    clearInterval(timerInterval);
+    document.getElementById("timerBox").style.display = "none";
+    seconds = 0;
+  } 
 </script>
 <div style="text-align:center; margin-top:20px;">
   <button
