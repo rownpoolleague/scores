@@ -334,7 +334,15 @@ document.addEventListener("click", e => {
 
 // Stat increment/decrement functions
 function changeInnings(amount){ let input = matchInnings; input.value = Math.max(0,(parseInt(input.value)||0)+amount); }
-function changeWinsA(amount){ let input=pA_wins; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();}
+function changeWinsA(amount){let input = pA_wins;input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
+
+    // clear both coach checkboxes
+    document.getElementById('pA_coach').checked = false;
+    document.getElementById('pB_coach').checked = false;
+
+    updateMatchWinner();
+    saveNow();
+}
 function changePALosses(amount){ let input=pA_losses; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();}
 function changePASafeties(amount){ let input=pA_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
 function changePA8B(amount){ let input=pA_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
@@ -536,10 +544,7 @@ function toggleNotes() {
   const box = document.getElementById("notesContainer");
   box.style.display = box.style.display === "none" ? "block" : "none";
 }
-    pA_wins.addEventListener("input", resetCoaches);
-pB_wins.addEventListener("input", resetCoaches);
-
-
+   
 </script>
 <div style="text-align:center; margin-top:20px;">
   <button
