@@ -599,21 +599,33 @@ function toggleNotes() {
   } 
 </script>
 <div style="margin-top:20px;">
+
   <button
     type="button"
     onclick="exportScoresheet()"
-    style="width:30%; height:40px;font-size:20px; margin-right:5px;">
+    style="width:30%; height:40px; font-size:20px; margin-right:5px;">
     Transfer
   </button>
 
   <button
-    type="button"style="width:30%; height:40px;font-size:20px; margin-right:5px;"startbtn
+    type="button"
     onclick="toggleNotes()"
-    style="width:30%; height:40px;font-size:20px;margin-right:5px;">
+    style="width:30%; height:40px; font-size:20px; margin-right:5px;">
     Notes
   </button>
 
-    <button class="startBtn" onclick="startTimer()" style="width:30%; height:40px;font-size:20px; margin-right:5px;">Timer</button> <div id="timerBox">   <span id="timerValue">0</span> sec   <button class="closeBtn" onclick="closeTimer()">X</button> </div>     </div>
+  <button
+    class="startBtn"
+    onclick="startTimer()"
+    style="width:30%; height:40px; font-size:20px; margin-right:5px;">
+    Timer
+  </button>
+
+  <div id="timerBox">
+    <span id="timerValue">0</span> sec
+    <button class="closeBtn" onclick="closeTimer()">X</button>
+  </div>
+
 </div>
 
 <div id="notesContainer"
