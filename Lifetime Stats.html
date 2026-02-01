@@ -183,11 +183,15 @@ input.addEventListener('input', function () {
 });
 
 function selectPlayer(player) {
-  document.getElementById('playerName').textContent = player["Player Name"];
+  // Show player name + handicap in the header
+  document.getElementById('playerName').textContent = `${player["Player Name"]} (HC: ${player["Handicap"]})`;
+  
   const table = document.getElementById('statsTable');
   table.innerHTML = '';
+  
+  // Display all stats except Player Name and Handicap (since we now show it in the title)
   for (const key in player) {
-    if (key === "Player Name") continue;
+    if (key === "Player Name" || key === "Handicap") continue;
     const row = document.createElement('tr');
     const cellKey = document.createElement('th');
     cellKey.textContent = key;
@@ -197,10 +201,12 @@ function selectPlayer(player) {
     row.appendChild(cellVal);
     table.appendChild(row);
   }
+
   document.getElementById('statsBox').style.display = 'block';
   list.innerHTML = '';
   input.value = '';
 }
+
 </script>
 
 </body>
