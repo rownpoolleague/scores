@@ -72,6 +72,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
      border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     z-index: 1000;
+      width: 100px;
   }
   #timerValue {
     font-size: 1.5em;
@@ -600,20 +601,20 @@ function toggleNotes() {
 </script>
 <div style="margin-top:20px;text-align:center;background-color: #000;">
 
-  <button
+  <buttonbackground-color: #000;
     type="button"
     onclick="exportScoresheet()"
-    style="width:30%; height:40px; font-size:20px; margin-right:5px;padding: 10px 20px;text-align:center;">Transfer</button>
+    style="width:30%; height:40px; font-size:22px; margin-right:5px;padding: 10px 20px;text-align:center;background-color: #000;color: #1e90ff;">Transfer</button>
 
   <button
     type="button"
     onclick="toggleNotes()"
-    style="width:30%; height:40px; font-size:20px; margin-right:5px;padding: 10px 20px;">Notes</button>
+    style="width:30%; height:40px; font-size:22px; margin-right:5px;padding: 10px 20px;background-color: #000;color: #1e90ff;">Notes</button>
 
   <button
     class="startBtn"
     onclick="startTimer()"
-    style="width:30%; height:40px; font-size:20px; margin-right:5px;">Timer</button>
+    style="width:30%; height:40px; font-size:22px; margin-right:5px;background-color: #000;color: #1e90ff;">Timer</button>
 
   <div id="timerBox">
     <span id="timerValue">0</span> sec
