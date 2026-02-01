@@ -158,20 +158,30 @@ const players = [
   {"Player #":970,"Player Name":"Joe Neal","MP":55,"MW":26,"Match Win %":"47.27%","GP":257,"GW":120,"Game Win%":"46.69%","8 Break":2,"B+R":0,"Mini-Slam":0,"Rackless":6,"Life Hash":9.862,"Longest Win Streak":6,"Handicap":3,"Undefeated":8,"% weeks w/8OB or B+R":"14.55%","White Washed":6,"hc":3},
   {"Player #":616,"Player Name":"Phil Nelson","MP":56,"MW":21,"Match Win %":"37.50%","GP":202,"GW":81,"Game Win%":"40.10%","8 Break":1,"B+R":0,"Mini-Slam":0,"Rackless":4,"Life Hash":11.452,"Longest Win Streak":3,"Handicap":3,"Undefeated":6,"% weeks w/8OB or B+R":"8.93%","White Washed":11,"hc":3}
 ]
-// AUTOCOMPLETE LOGIC
+
+// AUTOCOMPLETE LOGIC (fixed)
 const input = document.getElementById('playerInput');
 const list = document.getElementById('autocomplete-list');
-input.addEventListener('input', function() {
+
+input.addEventListener('input', function () {
   const val = this.value.toLowerCase();
   list.innerHTML = '';
   if (!val) return;
-  players.filter(p => p["Player Name"].toLowerCase().includes(val))
-    .forEach(p => {
-      const item = document.createElement('div');
-      item.textContent = p["Player Name"];
-      item.addEventListener('click', () => selectPlayer(p));
-      list.appendChild(item);
-    });
+
+  const matches = players
+    .map(p => p["Player Name"])
+    .filter(name => name.toLowerCase().startsWith(val))
+    .sort((a, b) => a.localeCompare(b));
+
+  matches.forEach(name => {
+    const item = document.createElement('div');
+    item.textContent = name;
+
+    const playerObj = players.find(p => p["Player Name"] === name);
+    item.addEventListener('click', () => selectPlayer(playerObj));
+
+    list.appendChild(item);
+  });
 });
 
 function selectPlayer(player) {
