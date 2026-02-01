@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R-OWN Player Stats</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f7f7f7;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  .search-box {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto 20px auto;
+    position: relative;
+  }
+
+  input[type=text] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  .autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-top: none;
+    z-index: 99;
+    background-color: white;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+  }
+
+  .autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .autocomplete-items div:hover {
+    background-color: #e9e9e9;
+  }
+
+  .stats-box {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    overflow-x: auto;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #222;
+    color: white;
+    position: sticky;
+    top: 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>R-OWN Pool League Player Stats</h1>
+
+<div class="search-box">
+  <input id="playerInput" type="text" placeholder="Type player name...">
+  <div id="autocomplete-list" class="autocomplete-items"></div>
+</div>
+
+<div class="stats-box" id="statsBox" style="display:none;">
+  <h2 id="playerName"></h2>
+  <table id="statsTable"></table>
+</div>
+
+<script>
+const players = [
+  {
+    "Player #":681,"Player Name":"Don Young","MP":59,"MW":20,"Match Win %":"33.90%","GP":244,"GW":99,"Game Win%":"40.57%","8 Break":0,"B+R":0,"Mini-Slam":0,"Rackless":2,"Life Hash":11.099,"Longest Win Streak":4,"Handicap":3,"Undefeated":7,"% weeks w/8OB or B+R":"3.39%","White Washed":12,"hc":3
+  },
+  {
+    "Player #":1046,"Player Name":"Luis Asavedo","MP":19,"MW":4,"Match Win %":"21.05%","GP":72,"GW":15,"Game Win%":"20.83%","8 Break":0,"B+R":0,"Mini-Slam":0,"Rackless":0,"Life Hash":12.921,"Longest Win Streak":3,"Handicap":2,"Undefeated":1,"% weeks w/8OB or B+R":"Needs 25 MP","White Washed":10,"hc":2
+  },
+  {
+    "Player #":1086,"Player Name":"Ron Gonzalez","MP":1,"MW":0,"Match Win %":"0.00%","GP":6,"GW":1,"Game Win%":"16.67%","8 Break":0,"B+R":0,"Mini-Slam":0,"Rackless":0,"Life Hash":15.0,"Longest Win Streak":0,"Handicap":2,"Undefeated":0,"% weeks w/8OB or B+R":"Needs 25 MP","White Washed":0,"hc":2
+  }
+  // Add the rest of your player objects here...
+];
+
+// AUTOCOMPLETE LOGIC
+const input = document.getElementById('playerInput');
+const list = document.getElementById('autocomplete-list');
+input.addEventListener('input', function() {
+  const val = this.value.toLowerCase();
+  list.innerHTML = '';
+  if (!val) return;
+  players.filter(p => p["Player Name"].toLowerCase().includes(val))
+    .forEach(p => {
+      const item = document.createElement('div');
+      item.textContent = p["Player Name"];
+      item.addEventListener('click', () => selectPlayer(p));
+      list.appendChild(item);
+    });
+});
+
+function selectPlayer(player) {
+  document.getElementById('playerName').textContent = player["Player Name"];
+  const table = document.getElementById('statsTable');
+  table.innerHTML = '';
+  for (const key in player) {
+    if (key === "Player Name") continue;
+    const row = document.createElement('tr');
+    const cellKey = document.createElement('th');
+    cellKey.textContent = key;
+    const cellVal = document.createElement('td');
+    cellVal.textContent = player[key];
+    row.appendChild(cellKey);
+    row.appendChild(cellVal);
+    table.appendChild(row);
+  }
+  document.getElementById('statsBox').style.display = 'block';
+  list.innerHTML = '';
+  input.value = '';
+}
+</script>
+
+</body>
+</html>
