@@ -207,7 +207,7 @@ input.addEventListener('input', function () {
 
 function selectPlayer(player) {
   // Show player name + handicap in the header
-  document.getElementById('playerName').textContent = `${player["Player Name"]} HC ${player["Handicap"]})`;
+  document.getElementById('playerName').textContent = `${player["Player Name"]} - HC ${player["Handicap"]}`;
   
   const table = document.getElementById('statsTable');
   table.innerHTML = '';
