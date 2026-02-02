@@ -62,12 +62,11 @@ select, input, button { font-size:inherit; font-family:inherit; }
 .back-button { display: block; margin: 15px auto 0 auto; background-color: #1e90ff; color: #fff; border-radius: 6px; text-decoration: none; font-size: 24px; text-align: center; }
  /* Floating timer box */
 #timerBox {
-  position: fixed;   /* ← THIS is the missing piece */
   display: none;
   width:125px;
   top: 50%;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 50%;
+  transform: translateX(50%);
   background: #000;
   color: #fff;
   border-radius: 8px;
@@ -75,6 +74,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   z-index: 1000;
 }
+
 
 
 
