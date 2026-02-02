@@ -61,20 +61,20 @@ select, input, button { font-size:inherit; font-family:inherit; }
 .player-stats-container::after { content:""; position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:2px; background-color:#fff; opacity:0.7; pointer-events:none; }
 .back-button { display: block; margin: 15px auto 0 auto; background-color: #1e90ff; color: #fff; border-radius: 6px; text-decoration: none; font-size: 18px; text-align: center; }
  /* Floating timer box */
-  #timerBox {
+ #timerBox {
   display: none;
-  width: 125px;
-  position: fixed;          /* important */
+  width:125px;
   top: 50%;
-  left: 50%;                /* use left, not right */
-  transform: translate(-50%, -50%);
+  left: 50%;
+  transform: translateX(-50%);
   background: #000;
   color: #fff;
   border-radius: 8px;
-  border: 1px solid #4af;
+  border-color: #4af;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   z-index: 1000;
 }
+
 
   #timerValue {
     font-size: 1.5em;
