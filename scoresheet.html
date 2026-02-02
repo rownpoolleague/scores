@@ -626,26 +626,35 @@ function toggleNotes() {
   const box = document.getElementById("notesContainer");
   box.style.display = box.style.display === "none" ? "block" : "none";
 }
-  let timerInterval;
-  let seconds = 0;
+ let timerInterval;
+let seconds = 0;
 
-  function startTimer() {
-    seconds = 0;
-    document.getElementById("timerValue").textContent = seconds;
-    document.getElementById("timerBox").style.display = "block";
+function startTimer() {
+  seconds = 0;
+  updateTimerDisplay();
+  document.getElementById("timerBox").style.display = "block";
 
-    clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-      seconds++;
-      document.getElementById("timerValue").textContent = seconds;
-    }, 1000);
-  }
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    seconds++;
+    updateTimerDisplay();
+  }, 1000);
+}
 
-  function closeTimer() {
-    clearInterval(timerInterval);
-    document.getElementById("timerBox").style.display = "none";
-    seconds = 0;
-  } 
+function closeTimer() {
+  clearInterval(timerInterval);
+  document.getElementById("timerBox").style.display = "none";
+  seconds = 0;
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+
+  document.getElementById("timerValue").textContent =
+    mins + ":" + (secs < 10 ? "0" + secs : secs);
+}
 </script>
 <div style="margin-top:20px;border-radius:8px;">
 
