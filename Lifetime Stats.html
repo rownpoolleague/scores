@@ -12,8 +12,7 @@
   }
 
   h1 {
-    text-align: center; background-color: #fff;
-    border-radius:12px;
+    text-align: center; background-color: #ooo; color: #4af;
   }
 
   .search-box {
@@ -110,7 +109,7 @@
 
 <div class="stats-box" id="statsBox" style="display:none;">
   <h2 id="playerName"></h2>
-  <table id="statsTable"></table>
+  <table id="statsTable" style= "background-color:#D3D3D3;"></table>
 </div>
 
 <script>
@@ -208,7 +207,7 @@ input.addEventListener('input', function () {
 
 function selectPlayer(player) {
   // Show player name + handicap in the header
-  document.getElementById('playerName').textContent = `${player["Player Name"]} (Handicap: ${player["Handicap"]})`;
+  document.getElementById('playerName').textContent = `${player["Player Name"]} HC ${player["Handicap"]})`;
   
   const table = document.getElementById('statsTable');
   table.innerHTML = '';
