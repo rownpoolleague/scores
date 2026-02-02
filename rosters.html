@@ -58,6 +58,11 @@
   .player {
     width: auto;
   }
+      .form-wrapper {
+    width: 100%; /* Spans full width */
+    border: 4px solid #000;
+    box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
+      }
 
   @media (min-width: 768px) {
     body {
@@ -83,7 +88,7 @@
 <body>
 
 <h1>R-Own Pool League – Winter 26 Session</h1>
-
+<div class="form-wrapper">
 <div class="team">
 <h2>Team 1</h2>
 <table>
@@ -225,7 +230,7 @@
 <tr><td>717</td><td>Tony Castro</td><td class="num">1</td><td class="num">1</td><td class="num">4</td></tr>
 </table>
 </div>
-
+</div>
 
   <a class="back-button" href="index.html">Main Menu</a>
 </body>
