@@ -214,6 +214,8 @@ const players = [
 ]
 
 // AUTOCOMPLETE LOGIC (fixed)
+const players = [...]; // unchanged — keep your full array here
+
 const input = document.getElementById('playerInput');
 const list = document.getElementById('autocomplete-list');
 
@@ -222,39 +224,32 @@ input.addEventListener('input', function () {
   list.innerHTML = '';
   if (!val) return;
 
-  const matches = players
+  players
     .map(p => p["Player Name"])
-    .filter(name => name.toLowerCase().startsWith(val))
-    .sort((a, b) => a.localeCompare(b));
-
-  matches.forEach(name => {
-    const item = document.createElement('div');
-    item.textContent = name;
-
-    const playerObj = players.find(p => p["Player Name"] === name);
-    item.addEventListener('click', () => selectPlayer(playerObj));
-
-    list.appendChild(item);
-  });
+    .filter(n => n.toLowerCase().startsWith(val))
+    .sort()
+    .forEach(name => {
+      const div = document.createElement('div');
+      div.textContent = name;
+      div.onclick = () => selectPlayer(players.find(p => p["Player Name"] === name));
+      list.appendChild(div);
+    });
 });
 
 function selectPlayer(player) {
-  // Show player name + handicap in the header
-  document.getElementById('playerName').textContent = `${player["Player Name"]} - HC ${player["Handicap"]}`;
-  
+  document.getElementById('playerName').textContent =
+    `${player["Player Name"]} - HC ${player["Handicap"]}`;
+
   const table = document.getElementById('statsTable');
   table.innerHTML = '';
-  
-  // Display all stats except Player Name and Handicap (since we now show it in the title)
+
   for (const key in player) {
     if (key === "Player Name" || key === "Handicap") continue;
-    const row = document.createElement('tr');row.style.cursor = 'pointer';row.addEventListener('click', () => showTop10(key));
-    const cellKey = document.createElement('th');
-    cellKey.textContent = key;
-    const cellVal = document.createElement('td');
-    cellVal.textContent = player[key];
-    row.appendChild(cellKey);
-    row.appendChild(cellVal);
+    const row = document.createElement('tr');
+    row.style.cursor = 'pointer';
+    row.onclick = () => showTop10(key);
+
+    row.innerHTML = `<th>${key}</th><td>${player[key]}</td>`;
     table.appendChild(row);
   }
 
@@ -262,52 +257,44 @@ function selectPlayer(player) {
   list.innerHTML = '';
   input.value = '';
 }
-function showTop10(statKey) {
 
-  // Stats where LOWER is better
-  const lowerIsBetter = [
-    "Life Hash",
-    "White Washed"
-  ];
+function showTop10(statKey) {
+  const lowerIsBetter = ["Life Hash", "White Washed"];
 
   const ranked = players
-    .map(p => ({
-      name: p["Player Name"],
-      value: parseFloat(String(p[statKey]).replace('%',''))
-    }))
+    .map(p => ({ name: p["Player Name"], value: parseFloat(p[statKey]) }))
     .filter(p => !isNaN(p.value))
-    .sort((a, b) => {
-      return lowerIsBetter.includes(statKey)
-        ? a.value - b.value   // ASC
-        : b.value - a.value;  // DESC
-    })
+    .sort((a, b) =>
+      lowerIsBetter.includes(statKey) ? a.value - b.value : b.value - a.value
+    )
     .slice(0, 10);
 
   document.getElementById('modalTitle').textContent =
-    `Top 10 – ${statKey} (${lowerIsBetter.includes(statKey) ? 'Lower is Better' : 'Higher is Better'})`;
+    `Top 10 – ${statKey}`;
 
   const table = document.getElementById('modalTable');
-  table.innerHTML = `
-    <tr>
-      <th>Rank</th>
-      <th>Player</th>
-      <th>${statKey}</th>
-    </tr>
-  `;
+  table.innerHTML = `<tr><th>Rank</th><th>Player</th><th>${statKey}</th></tr>`;
 
   ranked.forEach((p, i) => {
-    table.innerHTML += `
-      <tr>
-        <td>${i + 1}</td>
-        <td>${p.name}</td>
-        <td>${p.value}</td>
-      </tr>
-    `;
+    table.innerHTML += `<tr><td>${i+1}</td><td>${p.name}</td><td>${p.value}</td></tr>`;
   });
 
   document.getElementById('statModal').style.display = 'block';
 }
 
+function closeModal() {
+  document.getElementById('statModal').style.display = 'none';
+}
+
+// click outside modal
+document.getElementById('statModal').onclick = e => {
+  if (e.target.id === 'statModal') closeModal();
+};
+
+// ESC key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
 </script>
 </br>
 </br>
