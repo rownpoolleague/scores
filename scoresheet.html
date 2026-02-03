@@ -54,7 +54,28 @@ select, input, button { font-size:inherit; font-family:inherit; }
     margin: 0 auto;   /* center it horizontally */
   }
 }
-.lag-row { flex-direction:column; gap:10px; width:100%; margin-top:20px; align-items:center; text-align:center; }
+.lag-row { flex-direction:column; gap:10px; width:100%; margin-top:20px; align-items:center; text-align:center; }.lag-row {
+    display: flex;              /* horizontal row */
+    justify-content: center;    /* center row on page */
+    gap: 40px;                  /* space between winner and loser */
+    margin-top: 30px;
+}
+
+.lag-block {
+    display: flex;
+    flex-direction: column;     /* stack label on top of input */
+    align-items: center;        /* center input under label */
+}
+
+.lag-block label {
+    margin-bottom: 8px;         /* space between label and input */
+}
+
+.lag-block input {
+    width: 160px;
+    text-align: center;
+}
+
 .stat-row { display:flex; flex-direction:column; align-items:center; margin-bottom:12px; }
 .stat-row label { width:auto; text-align:center; margin-bottom:4px; }
 .player-stats-container { position:relative; display:flex; justify-content:center; gap:60px; }
@@ -135,16 +156,17 @@ select, input, button { font-size:inherit; font-family:inherit; }
     </div>
 </div>
 
-<div class="lag-row" style="display:flex; justify-content:center; gap:40px; margin-top:30px;">
-    <div style="display:flex; flex-direction:column; align-items:center;">
+<div class="lag-row">
+    <div class="lag-block">
         <label>Lag Winner</label>
-        <input id="lagWinner" readonly style="width:160px; text-align:center;">
+        <input id="lagWinner" readonly>
     </div>
-    <div style="display:flex; flex-direction:column; align-items:center;">
+    <div class="lag-block">
         <label>Lag Loser</label>
-        <input id="lagLoser" readonly style="width:160px; text-align:center;">
+        <input id="lagLoser" readonly>
     </div>
 </div>
+
 
 
 <div style="text-align:center;margin-top:30px;">
