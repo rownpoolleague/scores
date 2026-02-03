@@ -11,14 +11,13 @@
     background-color: #000;
   }
   h1 {
-    text-align: center; background-color: #ooo; color: #4af;
+    text-align: center; background-color: #ooo; color: #4af;border-color: #000;
   }
 
   .search-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #blue;
 }
   input[type=text] {
     width: 80%;
@@ -131,7 +130,7 @@
 <h1>Player Stats</h1></br>
 
   
-<div class="search-box" style="border-color: #000">
+<div class="search-box">
   <input id="playerInput" type="text" placeholder="Type player name...">
   <div id="autocomplete-list" class="autocomplete-items"></div>
 </div>
