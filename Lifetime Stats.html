@@ -345,15 +345,39 @@ table.innerHTML = `
 `;
 
 
-  
+window.addEventListener('popstate', function () {
+  const modal = document.getElementById('statModal');
+
+  if (modal && modal.style.display === 'block') {
+    modal.style.display = 'none';
+  }
+});
+
 
   document.getElementById('statModal').style.display = 'block';
-;
+  window.addEventListener('popstate', function (e) {
+  window.addEventListener('popstate', function () {
+  const modal = document.getElementById('statModal');
+
+  if (modal && modal.style.display === 'block') {
+    modal.style.display = 'none';
+  }
+});
+
 // Push a history state so Back button closes modal
 history.pushState({ modalOpen: true }, '');
-  function closeModal() {
-  document.getElementById('statModal').style.display = 'none';
-    history.back();
+
+function closeModal() {
+  const modal = document.getElementById('statModal');
+
+  if (modal.style.display === 'block') {
+    modal.style.display = 'none';
+
+    // Only go back if we added a modal state
+    if (history.state && history.state.modalOpen) {
+      history.back();
+    }
+  }
 }
 
 </script>
