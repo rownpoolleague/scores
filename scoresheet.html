@@ -426,7 +426,11 @@ document.addEventListener("click", e => {
 
 
 // Stat increment/decrement functions
-function changeInnings(amount){ let input = matchInnings; input.value = Math.max(0,(parseInt(input.value)||0)+amount); }
+function changeInnings(amount){
+    let input = matchInnings;
+    input.value = Math.max(0,(parseInt(input.value)||0)+amount);
+    saveNow();
+}
 function changeWinsA(amount){let input = pA_wins;input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
     document.getElementById('pA_coach').checked = false;
     document.getElementById('pB_coach').checked = false;
