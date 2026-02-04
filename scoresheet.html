@@ -282,21 +282,24 @@ function getUrlParams() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  // Check if URL has 'data' parameter
   const params = getUrlParams();
-  if (params.has("data")) {
+  const alreadyImported = localStorage.getItem("qrImported");
+
+  if (params.has("data") && !alreadyImported) {
     const rawData = decodeURIComponent(params.get("data"));
     try {
       localStorage.setItem(FORM_KEY, rawData);
-      loadScoresheet(); // reload form with imported data
+      localStorage.setItem("qrImported", "true");
+      loadScoresheet();
       alert("Match data loaded from QR code.");
     } catch (e) {
       alert("Failed to load data from QR code.");
     }
   } else {
-    loadScoresheet(); // normal load
+    loadScoresheet();
   }
 });
+
 // --- JavaScript to populate rosters, lag, stats, and submit ---
     let isLoading = false;
 
