@@ -265,6 +265,14 @@ function selectPlayer(player) {
   list.innerHTML = '';
   input.value = '';
 }
+  const minMPRequiredStats = [
+  "Match Win %",
+  "Game Win%",
+  "Life Hash",
+  "% Weeks w/8OB, BR or Rackless",
+  "White Washed"
+];
+
 function showTop10(statKey) {
 
   // Stats where LOWER is better
@@ -273,17 +281,23 @@ function showTop10(statKey) {
     "White Washed"
   ];
 
-  const ranked = players
-    .map(p => ({
-      name: p["Player Name"],
-      value: parseFloat(String(p[statKey]).replace('%',''))
-    }))
-    .filter(p => !isNaN(p.value))
-    .sort((a, b) => {
-      return lowerIsBetter.includes(statKey)
-        ? a.value - b.value   // ASC
-        : b.value - a.value;  // DESC
-    })
+ const ranked = players
+  .filter(p => {
+    // Enforce 25 MP rule only for specific stats
+    if (
+      minMPRequiredStats.includes(statKey) &&
+      p["Matches Played"] < 25
+    ) {
+      return false;
+    }
+    return true;
+  })
+  .map(p => ({
+    name: p["Player Name"],
+    value: parseFloat(String(p[statKey]).replace('%',''))
+  }))
+  .filter(p => !isNaN(p.value))
+
     .slice(0, 10);
 
   document.getElementById('modalTitle').textContent =
