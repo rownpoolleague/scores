@@ -281,27 +281,51 @@ function showTop10(statKey) {
     "White Washed"
   ];
 
- const ranked = players
-  .filter(p => {
-    // Enforce 25 MP rule only for specific stats
-    if (
-      minMPRequiredStats.includes(statKey) &&
-      p["Matches Played"] < 25
-    ) {
-      return false;
-    }
-    return true;
-  })
-  .map(p => ({
-    name: p["Player Name"],
-    value: parseFloat(String(p[statKey]).replace('%',''))
-  }))
-  .filter(p => !isNaN(p.value))
+  // Stats requiring minimum Matches Played
+  const minMPRequiredStats = [
+    "Match Win %",
+    "Game Win%",
+    "Life Hash",
+    "% Weeks w/8OB, BR or Rackless",
+    "White Washed"
+  ];
 
+  const ranked = players
+    .filter(p => {
+      // Enforce 25 MP rule ONLY for specific stats
+      if (minMPRequiredStats.includes(statKey)) {
+        return p["Matches Played"] >= 25;
+      }
+      return true;
+    })
+    .map(p => {
+      let raw = p[statKey];
+
+      // Normalize value
+      let value = parseFloat(
+        typeof raw === "string"
+          ? raw.replace('%', '')
+          : raw
+      );
+
+      return {
+        name: p["Player Name"],
+        value
+      };
+    })
+    // FINAL sanity filter — guarantees clean sorting
+    .filter(p => Number.isFinite(p.value))
+    .sort((a, b) => {
+      return lowerIsBetter.includes(statKey)
+        ? a.value - b.value   // ASC
+        : b.value - a.value;  // DESC
+    })
     .slice(0, 10);
 
   document.getElementById('modalTitle').textContent =
-    `Top 10 – ${statKey} (${lowerIsBetter.includes(statKey) ? 'Lower is Better' : 'Higher is Better'})`;
+    `Top 10 – ${statKey}` +
+    (minMPRequiredStats.includes(statKey) ? " (Min 25 MP)" : "") +
+    (lowerIsBetter.includes(statKey) ? " • Lower is Better" : " • Higher is Better");
 
   const table = document.getElementById('modalTable');
   table.innerHTML = `
@@ -311,6 +335,16 @@ function showTop10(statKey) {
       <th>${statKey}</th>
     </tr>
   `;
+
+  ranked.forEach((p, i) => {
+    table.innerHTML += `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${p.name}</td>
+        <td>${p.value}</td>
+      </tr>
+    `;
+  });
 
   ranked.forEach((p, i) => {
     table.innerHTML += `
