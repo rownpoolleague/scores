@@ -323,9 +323,9 @@ function showTop10(statKey) {
     .slice(0, 10);
 
   document.getElementById('modalTitle').textContent =
-    `Top 10 – ${statKey}` +
-    (minMPRequiredStats.includes(statKey) ? " (Min 25 MP)" : "") +
-    (lowerIsBetter.includes(statKey) ? " • Lower is Better" : " • Higher is Better");
+  `Top 10 – ${statKey}` +
+  (minMPRequiredStats.includes(statKey) ? " (Min 25 MP)" : "");
+
 
   const table = document.getElementById('modalTable');
   table.innerHTML = `
