@@ -92,6 +92,25 @@
     text-align: center;
     height:30px;
   }
+  .col-rank {
+  width: 60px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.col-player {
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.col-stat {
+  text-align: center;
+  white-space: nowrap;
+}
+
 </style>
 </head>
   <div id="statModal" style="
@@ -330,19 +349,19 @@ function showTop10(statKey) {
   const table = document.getElementById('modalTable');
 
 table.innerHTML = `
-  <tr>
-    <th>Rank</th>
-    <th>Player</th>
-    <th>${statKey}</th>
-  </tr>
-  ${ranked.slice(0, 10).map((p, i) => `
-    <tr>
-      <td>${i + 1}</td>
-      <td>${p.name}</td>
-      <td>${p.value}</td>
-    </tr>
-  `).join('')}
+<tr>
+  <th class="col-rank">Rank</th>
+  <th class="col-player">Player</th>
+  <th class="col-stat">${statKey}</th>
+</tr>
+${ranked.slice(0, 10).map((p, i) => `
+<tr>
+  <td class="col-rank">${i + 1}</td>
+  <td class="col-player">${p.name}</td>
+  <td class="col-stat">${p.value}</td>
+</tr>`).join('')}
 `;
+
 
 
   
