@@ -274,12 +274,10 @@ function selectPlayer(player) {
 ];
 
 function showTop10(statKey) {
+  history.pushState({ modalOpen: true }, ""); // <-- Add this line
 
-  // Stats where LOWER is better
-  const lowerIsBetter = [
-    "Life Hash",
-    "White Washed"
-  ];
+  document.getElementById('statModal').style.display = 'block';
+}
 
   // Stats requiring minimum Matches Played
   const minMPRequiredStats = [
@@ -351,8 +349,21 @@ table.innerHTML = `
 }
   function closeModal() {
   document.getElementById('statModal').style.display = 'none';
-}
 
+  // Only go back if the history state was created for the modal
+  if (history.state && history.state.modalOpen) {
+    history.back();
+  }
+}
+window.addEventListener("popstate", function (event) {
+  const modal = document.getElementById('statModal');
+
+  if (modal.style.display === 'block') {
+    // Back button pressed → close modal instead of leaving page
+    modal.style.display = 'none';
+    return;
+  }
+});
 </script>
 </br>
 </br>
