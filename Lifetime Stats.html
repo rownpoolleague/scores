@@ -215,6 +215,7 @@ const players = [
 ]
 
 // AUTOCOMPLETE LOGIC (fixed)
+
 const input = document.getElementById('playerInput');
 const list = document.getElementById('autocomplete-list');
 
@@ -240,20 +241,23 @@ input.addEventListener('input', function () {
 });
 
 function selectPlayer(player) {
-  // Show player name + handicap in the header
   document.getElementById('playerName').textContent = `${player["Player Name"]} - HC ${player["Handicap"]}`;
   
   const table = document.getElementById('statsTable');
   table.innerHTML = '';
   
-  // Display all stats except Player Name and Handicap (since we now show it in the title)
   for (const key in player) {
     if (key === "Player Name" || key === "Handicap") continue;
-    const row = document.createElement('tr');row.style.cursor = 'pointer';row.addEventListener('click', () => showTop10(key));
+    const row = document.createElement('tr');
+    row.style.cursor = 'pointer';
+    row.addEventListener('click', () => showTop10(key));
+
     const cellKey = document.createElement('th');
     cellKey.textContent = key;
+
     const cellVal = document.createElement('td');
     cellVal.textContent = player[key];
+
     row.appendChild(cellKey);
     row.appendChild(cellVal);
     table.appendChild(row);
@@ -263,21 +267,14 @@ function selectPlayer(player) {
   list.innerHTML = '';
   input.value = '';
 }
-  const minMPRequiredStats = [
-  "Match Win %",
-  "Game Win%",
-  "Life Hash",
-  "% Weeks w/8OB, BR or Rackless",
-  "White Washed"
-];
 
-function showTop10(statKey) {
-  history.pushState({ modalOpen: true }, ""); // <-- Add this line
-
-  document.getElementById('statModal').style.display = 'block';
+function closeModal() {
+  document.getElementById('statModal').style.display = 'none';
 }
 
-  // Stats requiring minimum Matches Played
+// Example Top 10 modal logic
+function showTop10(statKey) {
+  const lowerIsBetter = ["Life Hash"]; // adjust as needed
   const minMPRequiredStats = [
     "Match Win %",
     "Game Win%",
@@ -288,7 +285,6 @@ function showTop10(statKey) {
 
   const ranked = players
     .filter(p => {
-      // Enforce 25 MP rule ONLY for specific stats
       if (minMPRequiredStats.includes(statKey)) {
         return p["Matches Played"] >= 25;
       }
@@ -296,72 +292,29 @@ function showTop10(statKey) {
     })
     .map(p => {
       let raw = p[statKey];
-
-      // Normalize value
-      let value = parseFloat(
-        typeof raw === "string"
-          ? raw.replace('%', '')
-          : raw
-      );
-
-      return {
-        name: p["Player Name"],
-        value
-      };
+      let value = parseFloat(typeof raw === "string" ? raw.replace('%', '') : raw);
+      return { name: p["Player Name"], value };
     })
-    // FINAL sanity filter — guarantees clean sorting
     .filter(p => Number.isFinite(p.value))
-    .sort((a, b) => {
-      return lowerIsBetter.includes(statKey)
-        ? a.value - b.value   // ASC
-        : b.value - a.value;  // DESC
-    })
+    .sort((a, b) => lowerIsBetter.includes(statKey) ? a.value - b.value : b.value - a.value)
     .slice(0, 10);
 
-  document.getElementById('modalTitle').textContent =
-  `Top 10 – ${statKey}` +
-  (minMPRequiredStats.includes(statKey) ? " (Min 25 MP)" : "");
+  const modalTable = document.getElementById('modalTable');
+  modalTable.innerHTML = `<tr><th>Player</th><th>${statKey}</th></tr>`;
+  ranked.forEach(p => {
+    const row = document.createElement('tr');
+    const nameCell = document.createElement('td');
+    nameCell.textContent = p.name;
+    const valCell = document.createElement('td');
+    valCell.textContent = p.value;
+    row.appendChild(nameCell);
+    row.appendChild(valCell);
+    modalTable.appendChild(row);
+  });
 
-
-  const table = document.getElementById('modalTable');
-
-table.innerHTML = `
-  <tr>
-    <th>Rank</th>
-    <th>Player</th>
-    <th>${statKey}</th>
-  </tr>
-  ${ranked.slice(0, 10).map((p, i) => `
-    <tr>
-      <td>${i + 1}</td>
-      <td>${p.name}</td>
-      <td>${p.value}</td>
-    </tr>
-  `).join('')}
-`;
-
-
-  
-
+  document.getElementById('modalTitle').textContent = `Top 10: ${statKey}`;
   document.getElementById('statModal').style.display = 'block';
 }
-  function closeModal() {
-  document.getElementById('statModal').style.display = 'none';
-
-  // Only go back if the history state was created for the modal
-  if (history.state && history.state.modalOpen) {
-    history.back();
-  }
-}
-window.addEventListener("popstate", function (event) {
-  const modal = document.getElementById('statModal');
-
-  if (modal.style.display === 'block') {
-    // Back button pressed → close modal instead of leaving page
-    modal.style.display = 'none';
-    return;
-  }
-});
 </script>
 
   <footer>
