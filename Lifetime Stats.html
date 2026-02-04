@@ -323,38 +323,29 @@ function showTop10(statKey) {
     .slice(0, 10);
 
   document.getElementById('modalTitle').textContent =
-    `Top 10 – ${statKey}` +
-    (minMPRequiredStats.includes(statKey) ? " (Min 25 MP)" : "") +
-    (lowerIsBetter.includes(statKey) ? " • Lower is Better" : " • Higher is Better");
+  `Top 10 – ${statKey}` +
+  (minMPRequiredStats.includes(statKey) ? " (Min 25 MP)" : "");
+
 
   const table = document.getElementById('modalTable');
-  table.innerHTML = `
+
+table.innerHTML = `
+  <tr>
+    <th>Rank</th>
+    <th>Player</th>
+    <th>${statKey}</th>
+  </tr>
+  ${ranked.slice(0, 10).map((p, i) => `
     <tr>
-      <th>Rank</th>
-      <th>Player</th>
-      <th>${statKey}</th>
+      <td>${i + 1}</td>
+      <td>${p.name}</td>
+      <td>${p.value}</td>
     </tr>
-  `;
+  `).join('')}
+`;
 
-  ranked.forEach((p, i) => {
-    table.innerHTML += `
-      <tr>
-        <td>${i + 1}</td>
-        <td>${p.name}</td>
-        <td>${p.value}</td>
-      </tr>
-    `;
-  });
 
-  ranked.forEach((p, i) => {
-    table.innerHTML += `
-      <tr>
-        <td>${i + 1}</td>
-        <td>${p.name}</td>
-        <td>${p.value}</td>
-      </tr>
-    `;
-  });
+  
 
   document.getElementById('statModal').style.display = 'block';
 }
