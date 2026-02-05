@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Player Stats</title>
+  <script src="playerData.js"></script>
 
 <style>
 body {
@@ -163,18 +164,12 @@ th {
   <table id="statsTable" style="background-color:#D3D3D3;"></table>
 </div>
 
-<script>
+<Script>
 function closeModal() {
   document.getElementById('statModal').style.display = 'none';
 }
-</script>
-
-</body>
-</html>
 
 
-<script>
-<script src="playerData.js"></script>
 
 // AUTOCOMPLETE LOGIC (fixed)
 const input = document.getElementById('playerInput');
@@ -303,11 +298,10 @@ ${ranked.slice(0, 10).map((p, i) => `
   document.getElementById('statModal').style.display = 'none';
 }
 
-</script>
-
   <a class="back-button" style="margin-top:50px;" href="index.html">Main Menu</a>
 <footer>
     <img src="white transparent.png" style="margin-top:35px" alt="League Logo" class="footer-logo">
 </footer>
+    </script>
 </body>
 </html>
