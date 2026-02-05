@@ -4,155 +4,163 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Player Stats</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background-color: #000;
-  }
-  h1 {
-    text-align: center; background-color: #ooo; color: #4af;border-color: #000;font-size:36px;
-  }
 
-  .search-box {
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #000;
+}
+
+h1 {
+  text-align: center;
+  color: #4af;
+  font-size: 36px;
+}
+
+/* SEARCH BOX */
+.search-box {
   display: flex;
   flex-direction: column;
-  align-items: center;
-    margin-top:35px;
+  align-items: stretch;   /* 🔑 FIX */
+  margin-top: 35px;
 }
-  input[type=text] {
-    width: 80%;
-    font-size: 22px;
-    margin-top:20px;
 
-  }
+input[type="text"] {
+  width: 80%;
+  font-size: 22px;
+  margin: 20px auto 0 auto;
+}
 
-  .autocomplete-items:empty {
+/* AUTOCOMPLETE */
+.autocomplete-items:empty {
   display: none;
 }
+
+.autocomplete-items {
+  width: 80%;             /* 🔑 FIX */
+  margin: 0 auto;
+}
+
 .autocomplete-items div {
   background-color: #fff;
   color: #000;
-  width: 80%;
+  width: 100%;
   font-size: 22px;
+  padding: 6px;
+  cursor: pointer;
 }
 
-  .autocomplete-items div:hover {
-    background-color: #e9e9e9;
-  }
-
-  .stats-box {
-    max-width: 800px;
-    margin: 20px auto;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    overflow-x: auto;
-  }
-
-  table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-
-  th, td {
-    text-align: left;
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-  }
-
-  th {
-    background-color: #222;
-    color: white;
-    position: sticky;
-    top: 0;
-  }
-  footer {
-    text-align: center;
-    padding: 20px;
-}
-.footer-logo {
-    max-width: 200px;
-    height: auto;
-}
-    .back-button {
-    display: block;
-    
-    padding: 8px 16px;
-    background-color: #4af;
-    color: #fff;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 22px;
-    text-align: center;
-    height:30px;
-  }
-  .col-rank {
-  width: 60px;
-  text-align: center;
-  font-weight: bold;
+.autocomplete-items div:hover {
+  background-color: #e9e9e9;
 }
 
-.col-player {
+/* STATS BOX */
+.stats-box {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
   text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 220px;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
 }
 
-.col-stat {
+th {
+  background-color: #222;
+  color: white;
+  position: sticky;
+  top: 0;
+}
+
+/* MODAL */
+#statModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: #000;
+  z-index: 1000;
+  color: white;
+}
+
+#statModalContent {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 20px;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+/* BUTTON */
+.back-button {
+  display: block;
+  padding: 8px 16px;
+  background-color: #4af;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 22px;
   text-align: center;
-  white-space: nowrap;
+  height: 30px;
 }
-
 </style>
 </head>
-  <div id="statModal" style="
-  display:none;
-  position:fixed;
-  inset:0;
-  background-color: #000;
-  z-index:1000;
-  color:white;
-">
-  <div style="
-    max-width:900px;
-    margin:60px auto;
-    padding:20px;
-    border-radius:10px;
-    overflow-x:auto;
-  ">
-    
 
 <body>
-<h2 id="modalTitle"></h2>
+
+<!-- MODAL -->
+<div id="statModal">
+  <div id="statModalContent">
+    <h2 id="modalTitle"></h2>
     <table id="modalTable" style="width:100%; border-collapse:collapse;"></table>
-  <div class="search-box">
-    <button onclick="closeModal()" style="
-      margin-top:20px;
-      padding:10px 20px;
-      font-size:18px;
-      cursor:pointer;
-      background-color:#4af;
-      color:#000;
-    ">Close</button>
+
+    <div class="search-box">
+      <button onclick="closeModal()" style="
+        margin-top:20px;
+        padding:10px 20px;
+        font-size:18px;
+        cursor:pointer;
+        background-color:#4af;
+        color:#000;
+      ">Close</button>
+    </div>
   </div>
 </div>
-  </div>
+
 <h1>Player Stats</h1>
 
-  
+<!-- SEARCH -->
 <div class="search-box">
   <input id="playerInput" type="text" placeholder="Type player name...">
   <div id="autocomplete-list" class="autocomplete-items"></div>
 </div>
 
+<!-- STATS -->
 <div class="stats-box" id="statsBox" style="display:none;">
   <h2 id="playerName"></h2>
-  <table id="statsTable" style= "background-color:#D3D3D3;"></table>
+  <table id="statsTable" style="background-color:#D3D3D3;"></table>
 </div>
+
+<script>
+function closeModal() {
+  document.getElementById('statModal').style.display = 'none';
+}
+</script>
+
+</body>
+</html>
+
 
 <script>
 const players = [
