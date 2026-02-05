@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <title>Winter 26' Tuesday Night Schedule</title>
   <meta name="viewport" content="width=device-width, initial-scale=0.8">
-
-  <!-- DATA -->
   <script src="scheduleData.js"></script>
-
   <style>
     body {
       background-color: #fff;
@@ -32,8 +29,7 @@
       font-size: 14px;
     }
     th {
-      background-color: #111;
-      color: #fff;
+      background-color: #111; color:#fff;
     }
     .section-title {
       font-size: 20px;
@@ -41,7 +37,7 @@
       margin-bottom: 10px;
       border-bottom: 1px solid #555;
       padding-bottom: 5px;
-      text-align: center;
+      text-align:center;
     }
     .back-button {
       display: inline-block;
@@ -52,7 +48,7 @@
       border-radius: 6px;
       text-decoration: none;
       font-size: 22px;
-      height: 30px;
+      height:30px;
     }
     .back-button:hover {
       background-color: #ddd;
@@ -64,61 +60,45 @@
     }
 
     @media (max-width: 600px) {
-      body {
-        font-size: 16px;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 22px;
-      }
-      th, td {
-        font-size: 12px;
-        padding: 4px;
-      }
-      .section-title {
-        font-size: 28px;
-        font-weight: bold;
-      }
+      body { font-size: 16px; padding: 12px; }
+      h1 { font-size: 22px; }
+      th, td { font-size: 12px; padding: 4px; }
+      .section-title { font-size: 28px; font-weight: bold; }
       .back-button {
         display: block;
         margin: 30px auto 0 auto;
-        text-align: center;
+        padding: 8px 16px;
+        background-color: #1e90ff;
         color: #fff;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 22px;
+        text-align: center;
+        height:30px;
       }
     }
   </style>
 </head>
-
 <body>
 <div class="form-wrapper">
-
 <h1>Winter 26' Tuesday Night Schedule</h1>
 
 <table>
   <thead>
     <tr>
-      <th>Week</th>
-      <th>Date</th>
-      <th>Match 1</th>
-      <th>Match 2</th>
-      <th>Match 3</th>
-      <th>Match 4</th>
-      <th>Match 5</th>
+      <th>Week</th><th>Date</th><th>Match 1</th><th>Match 2</th><th>Match 3</th><th>Match 4</th><th>Match 5</th>
     </tr>
   </thead>
-  <tbody id="scheduleBody"></tbody>
+  <tbody id="scheduleBody">
+    <!-- Schedule rows will be inserted here by JS -->
+  </tbody>
 </table>
 
 <div class="section-title">Standings</div>
-
 <table>
   <thead>
     <tr>
-      <th>Team #</th>
-      <th>Team Name</th>
-      <th>Points</th>
-      <th>Home Base</th>
-      <th>Phone #</th>
+      <th>Team #</th><th>Team Name</th><th>Points</th><th>Home Base</th><th>Phone #</th>
     </tr>
   </thead>
   <tbody>
@@ -137,36 +117,32 @@
 
 <a class="back-button" href="index.html">Main Menu</a>
 
-</div>
-
-<!-- RENDER LOGIC -->
 <script>
-  const tbody = document.getElementById("scheduleBody");
+const tbody = document.getElementById("scheduleBody");
 
-  scheduleData.forEach(row => {
-    const tr = document.createElement("tr");
-
-    if (row.positionRound !== undefined) {
-      tr.innerHTML = `
-        <td>${row.week}</td>
-        <td>${row.date}</td>
-        <td colspan="5">${row.positionRound}</td>
-      `;
-    } else {
-      tr.innerHTML = `
-        <td>${row.week}</td>
-        <td>${row.date}</td>
-        <td>${row.m1}</td>
-        <td>${row.m2}</td>
-        <td>${row.m3}</td>
-        <td>${row.m4}</td>
-        <td>${row.m5}</td>
-      `;
-    }
-
-    tbody.appendChild(tr);
-  });
+scheduleData.forEach(row => {
+  const tr = document.createElement("tr");
+  if (row.positionRound !== undefined) {
+    tr.innerHTML = `
+      <td>${row.week}</td>
+      <td>${row.date}</td>
+      <td colspan="5">${row.positionRound}</td>
+    `;
+  } else {
+    tr.innerHTML = `
+      <td>${row.week}</td>
+      <td>${row.date}</td>
+      <td>${row.m1}</td>
+      <td>${row.m2}</td>
+      <td>${row.m3}</td>
+      <td>${row.m4}</td>
+      <td>${row.m5}</td>
+    `;
+  }
+  tbody.appendChild(tr);
+});
 </script>
 
+</div>
 </body>
 </html>
