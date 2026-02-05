@@ -117,31 +117,37 @@
 
 <a class="back-button" href="index.html">Main Menu</a>
 
+<script src="scheduleData.js"></script>
 <script>
-const tbody = document.getElementById("scheduleBody");
+document.addEventListener("DOMContentLoaded", function() {
+    const tbody = document.getElementById("scheduleBody");
 
-scheduleData.forEach(row => {
-  const tr = document.createElement("tr");
-  if (row.positionRound !== undefined) {
-    tr.innerHTML = `
-      <td>${row.week}</td>
-      <td>${row.date}</td>
-      <td colspan="5">${row.positionRound}</td>
-    `;
-  } else {
-    tr.innerHTML = `
-      <td>${row.week}</td>
-      <td>${row.date}</td>
-      <td>${row.m1}</td>
-      <td>${row.m2}</td>
-      <td>${row.m3}</td>
-      <td>${row.m4}</td>
-      <td>${row.m5}</td>
-    `;
-  }
-  tbody.appendChild(tr);
+    scheduleData.forEach(row => {
+        const tr = document.createElement("tr");
+
+        if (row.positionRound !== undefined) {
+            tr.innerHTML = `
+                <td>${row.week}</td>
+                <td>${row.date}</td>
+                <td colspan="5">${row.positionRound}</td>
+            `;
+        } else {
+            tr.innerHTML = `
+                <td>${row.week}</td>
+                <td>${row.date}</td>
+                <td>${row.m1}</td>
+                <td>${row.m2}</td>
+                <td>${row.m3}</td>
+                <td>${row.m4}</td>
+                <td>${row.m5}</td>
+            `;
+        }
+
+        tbody.appendChild(tr);
+    });
 });
 </script>
+
 
 </div>
 </body>
