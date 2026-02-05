@@ -36,11 +36,17 @@
 <table>
   <thead>
     <tr>
-      <th>Week</th><th>Date</th><th>Match 1</th><th>Match 2</th><th>Match 3</th><th>Match 4</th><th>Match 5</th>
+      <th>Week</th>
+      <th>Date</th>
+      <th>Match 1</th>
+      <th>Match 2</th>
+      <th>Match 3</th>
+      <th>Match 4</th>
+      <th>Match 5</th>
     </tr>
   </thead>
   <tbody id="scheduleBody">
-    <!-- JS will populate schedule here -->
+    <!-- Schedule rows will be inserted here by JS -->
   </tbody>
 </table>
 
@@ -68,12 +74,14 @@
 <a class="back-button" href="index.html">Main Menu</a>
 </div> <!-- end form-wrapper -->
 
-<!-- Scripts placed after content -->
+<!-- JS -->
 <script src="scheduleData.js"></script>
 <script>
-(function() {
+document.addEventListener("DOMContentLoaded", function() {
     const tbody = document.getElementById("scheduleBody");
-    if (!tbody) { console.error("scheduleBody not found!"); return; }
+    if (!tbody) return console.error("scheduleBody not found");
+
+    if (!window.scheduleData) return console.error("scheduleData not loaded");
 
     scheduleData.forEach(row => {
         const tr = document.createElement("tr");
@@ -84,7 +92,7 @@
         }
         tbody.appendChild(tr);
     });
-})();
+});
 </script>
 </body>
 </html>
