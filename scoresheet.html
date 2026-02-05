@@ -555,16 +555,23 @@ function saveScoresheet() {
     const ids = [
   "team","opponent","lagWinner","lagLoser","matchInnings","matchWinner",
   "pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8",
-  "pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8",
+  "pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8","pA_coach",pB_coach",
   "matchNotes"
 ];
 
 
     const data = {};
     ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) data[id] = el.value;
-    });
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (el.type === "checkbox") {
+        data[id] = el.checked; // ✅ save checked state
+    } else {
+        data[id] = el.value;
+    }
+});
+
 
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
@@ -580,9 +587,16 @@ function loadScoresheet() {
     const data = JSON.parse(raw);
 
     Object.keys(data).forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = data[id];
-    });
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (el.type === "checkbox") {
+        el.checked = data[id]; // ✅ restore checked state
+    } else {
+        el.value = data[id];
+    }
+});
+
 
     updateRoster(team, teamRoster);
     updateRoster(opponent, opponentRoster);
