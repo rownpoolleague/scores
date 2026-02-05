@@ -114,6 +114,17 @@ th {
   text-align: center;
   height: 30px;
 }
+  .col-left {
+  text-align: left;
+}
+
+.col-center {
+  text-align: center;
+}
+
+.col-right {
+  text-align: right;
+}
 </style>
 </head>
 
@@ -353,9 +364,9 @@ table.innerHTML = `
 </tr>
 ${ranked.slice(0, 10).map((p, i) => `
 <tr>
-  <td class="col-rank">${i + 1}</td>
-  <td class="col-player">${p.name}</td>
-  <td class="col-stat">${p.value}</td>
+  <td class="col-center">${i + 1}</td>
+  <td class="col-left">${p.name}</td>
+  <td class="col-center">${p.value}</td>
 </tr>`).join('')}
 `;
 
