@@ -185,7 +185,7 @@ input.addEventListener('input', function () {
   list.innerHTML = '';
   if (!val) return;
 
-  const matches = players
+  const matches = playerData
     .map(p => p["Player Name"])
     .filter(name => name.toLowerCase().startsWith(val))
     .sort((a, b) => a.localeCompare(b));
@@ -194,7 +194,7 @@ input.addEventListener('input', function () {
     const item = document.createElement('div');
     item.textContent = name;
 
-    const playerObj = players.find(p => p["Player Name"] === name);
+    const playerObj = playerData.find(p => p["Player Name"] === name);
     item.addEventListener('click', () => selectPlayer(playerObj));
 
     list.appendChild(item);
