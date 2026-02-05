@@ -1,4 +1,4 @@
-const players = [
+const playerData = [
   {"Player #":808,"Player Name":"Brett Boger","Matches Played":45,"Matches Won":20,"Match Win %":"44.44%","Games Played":218,"Games Won":100,"Game Win%":"45.87%","8 on Break":0,"Break and Run":1,"Mini-Slam":0,"Rackless":4,"Life Hash":8.793,"Longest Win Streak":3,"Handicap":5,"Undefeated":6,"% Weeks w/8OB, BR or Rackless":"11.11%","White Washed":5,"HC":5},
   {"Player #":1028,"Player Name":"Brooke Bridges","Matches Played":15,"Matches Won":1,"Match Win %":"6.67%","Games Played":51,"Games Won":7,"Game Win%":"13.73%","8 on Break":0,"Break and Run":0,"Mini-Slam":0,"Rackless":0,"Life Hash":14.800,"Longest Win Streak":1,"Handicap":2,"Undefeated":0,"% Weeks w/8OB, BR or Rackless":"0.00%","White Washed":9,"HC":2},
   {"Player #":743,"Player Name":"Buster Fuller","Matches Played":15,"Matches Won":7,"Match Win %":"46.67%","Games Played":71,"Games Won":32,"Game Win%":"45.07%","8 on Break":0,"Break and Run":0,"Mini-Slam":0,"Rackless":0,"Life Hash":9.217,"Longest Win Streak":3,"Handicap":3,"Undefeated":2,"% Weeks w/8OB, BR or Rackless":"0.00%","White Washed":2,"HC":3},
