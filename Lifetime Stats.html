@@ -23,14 +23,16 @@ h1 {
 .search-box {
   display: flex;
   flex-direction: column;
-  align-items: stretch;   /* 🔑 FIX */
+  align-items: stretch;
   margin-top: 35px;
+  position: relative;
 }
 
 input[type="text"] {
   width: 80%;
   font-size: 22px;
   margin: 20px auto 0 auto;
+  padding: 10px;
 }
 
 /* AUTOCOMPLETE */
@@ -39,8 +41,16 @@ input[type="text"] {
 }
 
 .autocomplete-items {
-  width: 80%;             /* 🔑 FIX */
+  width: 80%;
   margin: 0 auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 70px;
+  z-index: 99;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 
 .autocomplete-items div {
@@ -49,6 +59,8 @@ input[type="text"] {
   width: 100%;
   font-size: 22px;
   cursor: pointer;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
 }
 
 .autocomplete-items div:hover {
@@ -297,7 +309,7 @@ ${ranked.slice(0, 10).map((p, i) => `
     
     title.innerText = "Player Details";
     modal.style.display = "block";
-
+}
 
 </script>
 
