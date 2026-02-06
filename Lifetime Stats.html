@@ -235,7 +235,7 @@ function showTop10(statKey) {
     "White Washed"
   ];
 
-  const ranked = players
+  const ranked = playerdata
     .filter(p => {
       // Enforce 25 MP rule ONLY for specific stats
       if (minMPRequiredStats.includes(statKey)) {
@@ -289,9 +289,7 @@ ${ranked.slice(0, 10).map((p, i) => `
 `;
   document.getElementById('statModal').style.display = 'block';
 }
-  function closeModal() {
-  document.getElementById('statModal').style.display = 'none';
-}
+  
 
 </script>
 
