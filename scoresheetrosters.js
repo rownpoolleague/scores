@@ -20,7 +20,7 @@ const scoresheetrosters = {
     "Freddy Izguerra":5,
     "Greg Wood":4,
     "Harnaik Lal":4,
-    "Jariel Diaz":4,
+    "Jariel Diaz*":4,
     "Javier Mauricio":3,
     "Jennifer Wagner":3,
     "Jeremie Ketner":4,
