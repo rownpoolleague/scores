@@ -289,7 +289,15 @@ ${ranked.slice(0, 10).map((p, i) => `
 `;
   document.getElementById('statModal').style.display = 'block';
 }
-  
+  function openModal(data) {
+    console.log("Modal Opened!", data); // Troubleshooting line
+    
+    const modal = document.getElementById("statModal");
+    const title = document.getElementById("modalTitle");
+    
+    title.innerText = "Player Details";
+    modal.style.display = "block";
+
 
 </script>
 
