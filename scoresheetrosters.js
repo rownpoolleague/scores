@@ -43,13 +43,14 @@ const scoresheetrosters = {
     "Luis Asavedo":2,
     "Luke Valenzuela":6,
     "Mario Orenday":4,
+    "Miguel Arias":2,
     "Mike Uhlean":5,
     "Mike Zbonski Jr.":2,
-    "Noe Castaña":2,
+    "Noe Castana":2,
     "Pam Neal":2,
     "Peggy Wood":2,
     "Pete Steele":2,
-    "Phil Nelson":3,
+    "Phil Nelson":2,
     "Randy Rycraft":4,
     "Rico Urvina":3,
     "Rob Zwart":4,
@@ -69,4 +70,4 @@ const scoresheetrosters = {
     "Tony Perelli":5,
     "Tony Perez":4,
     "Yani Marinopoulos":4,
-}
+};
