@@ -1,4 +1,5 @@
 const scoresheetrosters = {
+    "Alex Cruz Sr.":4,
     "Brett Boger":5,
     "Brooke Bridges":2,
     "Buster Fuller":3,
