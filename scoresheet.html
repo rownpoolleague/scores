@@ -321,38 +321,20 @@ select, input, button { font-size:inherit; font-family:inherit; }
   </div>
 </div>
     <script>
-function getUrlParams() {
-  const params = new URLSearchParams(window.location.search);
-  return params;
-}
+let isLoading = false;
+const FORM_KEY = "scoresheetData";
+let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
+let flip = false;
 
-window.addEventListener("DOMContentLoaded", () => {
-  const params = getUrlParams();
-  const alreadyImported = localStorage.getItem("qrImported");
-
-  if (params.has("data") && !alreadyImported) {
-    const rawData = decodeURIComponent(params.get("data"));
-    try {
-      localStorage.setItem(FORM_KEY, rawData);
-      localStorage.setItem("qrImported", "true");
-      loadScoresheet();
-      alert("Match data loaded from QR code.");
-    } catch (e) {
-      alert("Failed to load data from QR code.");
+// 1. Populate roster when team selects
+function updateRoster(sel, div) {
+    if (!sel.value) {
+        div.innerHTML = "";
+        return;
     }
-  } else {
-    loadScoresheet();
-  }
-});
-
-// --- JavaScript to populate rosters, lag, stats, and submit ---
-    let isLoading = false;
-
-
-// Populate roster when team selects
-function updateRoster(sel, div){
-    div.innerHTML = (scoresheetinfo[sel.value]||[]).map(p => {
-        const hc = scoresheetrosters[p] || 0; // get the player's HC
+    // Accessing global variables from scoresheetinfo.js and scoresheetrosters.js
+    div.innerHTML = (scoresheetinfo[sel.value] || []).map(p => {
+        const hc = scoresheetrosters[p] || 0;
         return `<div class="playerName" data-p="${p}">
                     <span class="name">${p}</span>
                     <span class="hc">${hc}</span>
@@ -360,11 +342,15 @@ function updateRoster(sel, div){
     }).join("");
 }
 
-document.getElementById("team").addEventListener("change", ()=>updateRoster(team,teamRoster));
-document.getElementById("opponent").addEventListener("change", ()=>updateRoster(opponent,opponentRoster));
+// 2. Event Listeners for Team Selection
+document.getElementById("team").addEventListener("change", function() {
+    updateRoster(this, document.getElementById("teamRoster"));
+});
+document.getElementById("opponent").addEventListener("change", function() {
+    updateRoster(this, document.getElementById("opponentRoster"));
+});
 
-let flip = false;
-
+// 3. Player Selection Logic (Lag Winner/Loser)
 document.addEventListener("click", e => {
     const playerDiv = e.target.closest(".playerName");
     if (!playerDiv) return;
@@ -373,354 +359,220 @@ document.addEventListener("click", e => {
     const hc = scoresheetrosters[name] || 0;
 
     if (!flip) {
-        lagWinner.value = name;
-        pA_hc.value = hc;
+        document.getElementById("lagWinner").value = name;
+        document.getElementById("pA_hc").value = hc;
         document.getElementById("lagWinnerHeader").textContent = name;
     } else {
-        lagLoser.value = name;
-        pB_hc.value = hc;
-        document.getElementById("lagLoserHeader").textContent = name;    }
+        document.getElementById("lagLoser").value = name;
+        document.getElementById("pB_hc").value = hc;
+        document.getElementById("lagLoserHeader").textContent = name;
+    }
 
     flip = !flip;
     saveNow();
 });
 
-        // Add this at the top of your <script> section
-let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
-
+// 4. Scoring UI Update
 function updateScoreUI() {
     const hScore = document.getElementById("homeScore");
     const aScore = document.getElementById("awayScore");
-    if(hScore && aScore) {
+    if (hScore && aScore) {
         hScore.textContent = scores.home;
         aScore.textContent = scores.away;
     }
 }
 
-// Stat increment/decrement functions
-function changeInnings(amount){
-    let input = matchInnings;
-    input.value = Math.max(0,(parseInt(input.value)||0)+amount);
+// 5. Stat Increment/Decrement
+function changeInnings(amount) {
+    let input = document.getElementById("matchInnings");
+    input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
     saveNow();
 }
-function changeWinsA(amount){let input = pA_wins;input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
+
+function changeWinsA(amount) {
+    let input = document.getElementById("pA_wins");
+    input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
     document.getElementById('pA_coach').checked = false;
     document.getElementById('pB_coach').checked = false;
-
     updateMatchWinner();
     saveNow();
 }
-function changePALosses(amount){ let input=pA_losses; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();}
-function changePASafeties(amount){ let input=pA_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
-function changePA8B(amount){ let input=pA_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
-function changePABR(amount){ let input=pA_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
-function changePAHC(amount){ let input=pA_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); updateMatchWinner(); saveNow();}
-function changePBHC(amount){ let input=pB_hc; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
-function changePBsafeties(amount){ let input=pB_safeties; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
-function changePB8B(amount){ let input=pB_b8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
-function changePBBR(amount){ let input=pB_br; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
-function changePAE8(amount){ let input=pA_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
-function changeWinsB(amount){let input = pB_wins;input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
+
+function changeWinsB(amount) {
+    let input = document.getElementById("pB_wins");
+    input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
     document.getElementById('pA_coach').checked = false;
     document.getElementById('pB_coach').checked = false;
-
     updateMatchWinner();
     saveNow();
 }
-function changePBE8(amount){ let input=pB_e8; input.value=Math.max(0,(parseInt(input.value)||0)+amount); saveNow();}
-// Match winner logic
-function updateMatchWinner(){
-    const aWins = parseInt(pA_wins.value)||0;
-    const aLoss = parseInt(pB_wins.value)||0;
-    const aHC = parseInt(pA_hc.value)||0;
-    const bHC = parseInt(pB_hc.value)||0;
 
-    if(aWins === aHC && aHC > 0){
-        matchWinner.value = lagWinner.value;
-    } else if(aLoss === bHC && bHC > 0){
-        matchWinner.value = lagLoser.value;
+// Utility functions for other stats
+function changePASafeties(amount) { let input = document.getElementById("pA_safeties"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
+function changePA8B(amount) { let input = document.getElementById("pA_b8"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
+function changePABR(amount) { let input = document.getElementById("pA_br"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
+function changePAHC(amount) { let input = document.getElementById("pA_hc"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); updateMatchWinner(); saveNow(); }
+function changePAE8(amount) { let input = document.getElementById("pA_e8"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
+function changePBHC(amount) { let input = document.getElementById("pB_hc"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); updateMatchWinner(); saveNow(); }
+function changePBsafeties(amount) { let input = document.getElementById("pB_safeties"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
+function changePB8B(amount) { let input = document.getElementById("pB_b8"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
+function changePBBR(amount) { let input = document.getElementById("pB_br"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
+function changePBE8(amount) { let input = document.getElementById("pB_e8"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
+
+// 6. Match Winner Logic
+function updateMatchWinner() {
+    const aWins = parseInt(document.getElementById("pA_wins").value) || 0;
+    const bWins = parseInt(document.getElementById("pB_wins").value) || 0;
+    const aHC = parseInt(document.getElementById("pA_hc").value) || 0;
+    const bHC = parseInt(document.getElementById("pB_hc").value) || 0;
+    const winField = document.getElementById("matchWinner");
+    const subBtn = document.getElementById("submitMatch");
+
+    if (aWins === aHC && aHC > 0) {
+        winField.value = document.getElementById("lagWinner").value;
+    } else if (bWins === bHC && bHC > 0) {
+        winField.value = document.getElementById("lagLoser").value;
     } else {
-        matchWinner.value = "";
-        saveNow();
+        winField.value = "";
     }
-
-    // 🔒 Show submit button ONLY when matchWinner exists
-    submitMatch.style.display = matchWinner.value ? "inline-block" : "none";
+    subBtn.style.display = winField.value ? "inline-block" : "none";
 }
 
-// Submit to Google Sheets
-submitMatch.onclick = () => {
-
-    // Disable button immediately
-    submitMatch.disabled = true;
-    submitMatch.style.opacity = "0.5";
-    submitMatch.style.cursor = "not-allowed";
-
-    // Show waiting popup
+// 7. Submit to Google Sheets
+document.getElementById("submitMatch").onclick = function() {
+    const btn = this;
+    btn.disabled = true;
+    btn.style.opacity = "0.5";
     alert("Please wait while your results are submitted...");
 
     const data = {
-        team: team.value,
-        opponent: opponent.value,
-        lagWinner: lagWinner.value,
-        lagLoser: lagLoser.value,
-        matchInnings: matchInnings.value,
+        team: document.getElementById("team").value,
+        opponent: document.getElementById("opponent").value,
+        lagWinner: document.getElementById("lagWinner").value,
+        lagLoser: document.getElementById("lagLoser").value,
+        matchInnings: document.getElementById("matchInnings").value,
         pA: {
-            handicap: pA_hc.value,
-            wins: pA_wins.value,
-            safeties: pA_safeties.value,
-            b8: pA_b8.value,
-            br: pA_br.value,
-            e8: pA_e8.value
+            handicap: document.getElementById("pA_hc").value,
+            wins: document.getElementById("pA_wins").value,
+            safeties: document.getElementById("pA_safeties").value,
+            b8: document.getElementById("pA_b8").value,
+            br: document.getElementById("pA_br").value,
+            e8: document.getElementById("pA_e8").value
         },
         pB: {
-            handicap: pB_hc.value,
-            wins: pB_wins.value,
-            safeties: pB_safeties.value,
-            b8: pB_b8.value,
-            br: pB_br.value,
-            e8: pB_e8.value
+            handicap: document.getElementById("pB_hc").value,
+            wins: document.getElementById("pB_wins").value,
+            safeties: document.getElementById("pB_safeties").value,
+            b8: document.getElementById("pB_b8").value,
+            br: document.getElementById("pB_br").value,
+            e8: document.getElementById("pB_e8").value
         },
-        matchWinner: matchWinner.value,
-        matchNotes: matchNotes.value
+        matchWinner: document.getElementById("matchWinner").value,
+        matchNotes: document.getElementById("matchNotes").value
     };
 
     fetch("https://script.google.com/macros/s/AKfycbxjPd21vbwaqtxnDHyiwq-232S6vxdG-t6JPd2nQrdi9bbH8EakOr4S_11jDF9uvu4/exec", {
         method: "POST",
+        mode: "no-cors", // Use no-cors if the Apps Script isn't returning headers
         body: JSON.stringify(data)
     })
     .then(() => {
-    // --- SCORING LOGIC ---
-    const winnerName = document.getElementById("matchWinner").value;
-    const homeTeamName = document.getElementById("team").value;
-    const awayTeamName = document.getElementById("opponent").value;
+        const winnerName = document.getElementById("matchWinner").value;
+        const homeTeamName = document.getElementById("team").value;
+        const homeRoster = scoresheetinfo[homeTeamName] || [];
 
-    const homeRoster = scoresheetinfo[homeTeamName] || [];
-    const awayRoster = scoresheetinfo[awayTeamName] || [];
-
-    if (homeRoster.includes(winnerName)) {
-        scores.home++;
-    } else if (awayRoster.includes(winnerName)) {
-        scores.away++;
-    }
-
-    // --- AUTO-RESET LOGIC ---
-    // Check if total matches played reaches 5
-    if ((scores.home + scores.away) >= 5) {
-        alert(`Match night complete! Final Score: ${scores.home} - ${scores.away}. The team score will now reset.`);
-        scores = { home: 0, away: 0 }; // Reset the variable
-    }
-
-    localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-    updateScoreUI();
-
-    // Reset form fields
-    document.querySelectorAll("input, textarea").forEach(el => {
-        if (el.type === "number") {
-            el.value = 0;      
+        if (homeRoster.includes(winnerName)) {
+            scores.home++;
         } else {
-            el.value = "-";    
+            scores.away++;
         }
-    });
 
-    alert("Match submitted successfully.");
-    submitMatch.style.display = "none";
-})
+        if ((scores.home + scores.away) >= 5) {
+            alert(`Match night complete! Final Score: ${scores.home} - ${scores.away}. Resetting scores.`);
+            scores = { home: 0, away: 0 };
+        }
 
-        alert("Match submitted successfully. Team score updated!");
-        submitMatch.style.display = "none";
+        localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+        updateScoreUI();
+        localStorage.removeItem(FORM_KEY);
+        alert("Match submitted successfully!");
+        location.reload(); // Refresh to clear form
     })
-    .catch(() => {
-        alert("There was an error submitting the match. Please try again.");
-        // Re-enable button on error so user can try again
-        submitMatch.disabled = false;
-        submitMatch.style.opacity = "1";
-        submitMatch.style.cursor = "pointer";
+    .catch(err => {
+        alert("Error submitting match.");
+        btn.disabled = false;
+        btn.style.opacity = "1";
     });
 };
 
-        alert("Match submitted successfully. You may now enter the next match.");
-
-       submitMatch.style.display = "none";
-    })
-    .catch(() => {
-        alert("There was an error submitting the match. Please try again.");
-
-        // Re-enable button on error
-        submitMatch.disabled = false;
-        submitMatch.style.opacity = "1";
-        submitMatch.style.cursor = "pointer";
-    });
-    };
-const FORM_KEY = "scoresheetData";
+// 8. Save/Load Logic
 function saveNow() {
-    saveScoresheet();
-}
-
-/* SAVE FORM STATE */
-function saveScoresheet() {
     if (isLoading) return;
-
-    const ids = [
-  "team","opponent","lagWinner","lagLoser","matchInnings","matchWinner",
-  "pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8",
-  "pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8","pA_coach","pB_coach",
-  "matchNotes"
-];
-
-
+    const ids = ["team","opponent","lagWinner","lagLoser","matchInnings","matchWinner","pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8","pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8","pA_coach","pB_coach","matchNotes"];
     const data = {};
     ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    if (el.type === "checkbox") {
-        data[id] = el.checked; // ✅ save checked state
-    } else {
-        data[id] = el.value;
-    }
-});
-
-
+        const el = document.getElementById(id);
+        if (el) data[id] = el.type === "checkbox" ? el.checked : el.value;
+    });
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
 
-
-/* LOAD FORM STATE */
 function loadScoresheet() {
     const raw = localStorage.getItem(FORM_KEY);
     if (!raw) return;
-
     isLoading = true;
-
     const data = JSON.parse(raw);
-
     Object.keys(data).forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    if (el.type === "checkbox") {
-        el.checked = data[id]; // ✅ restore checked state
-    } else {
-        el.value = data[id];
-    }
-});
-
-
-    updateRoster(team, teamRoster);
-    updateRoster(opponent, opponentRoster);
-
-    lagWinnerHeader.textContent = lagWinner.value || "Lag Winner";
-    lagLoserHeader.textContent = lagLoser.value || "Lag Loser";
-
+        const el = document.getElementById(id);
+        if (el) {
+            if (el.type === "checkbox") el.checked = data[id];
+            else el.value = data[id];
+        }
+    });
+    updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
+    updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
     updateMatchWinner();
-
     isLoading = false;
 }
 
-
-
-function resetCoaches() {
-    document.getElementById('pA_coach').checked = false;
-    document.getElementById('pB_coach').checked = false;
-}
-/* AUTO SAVE */
-document.addEventListener("input", saveScoresheet);
-
-
-/* LOAD ON PAGE OPEN */
-window.addEventListener("DOMContentLoaded", loadScoresheet);
-
-/* CLEAR AFTER SUBMIT */
-submitMatch.addEventListener("click", () => {
-    setTimeout(() => localStorage.removeItem(FORM_KEY), 1000);
-});
-    /* ==============================
-   SCORESHEET TRANSFER (OPTION 1)
-   ============================== */
-
+// 9. Extra UI Helpers
 function exportScoresheet() {
-  const data = localStorage.getItem(FORM_KEY);
-  if (!data) {
-    alert("No scoresheet data to transfer.");
-    return;
-  }
-  const baseUrl = "https://rownpoolleague.github.io/scores/scoresheet.html";
-  const encodedData = encodeURIComponent(data);
-  const fullUrl = `${baseUrl}?data=${encodedData}`;
-  showQRModal(fullUrl);
+    const data = localStorage.getItem(FORM_KEY);
+    if (!data) return alert("No data to transfer.");
+    const baseUrl = window.location.href.split('?')[0];
+    const fullUrl = `${baseUrl}?data=${encodeURIComponent(data)}`;
+    document.getElementById('qrModal').style.display = 'flex';
+    document.getElementById('qrcode').innerHTML = '';
+    new QRCode(document.getElementById('qrcode'), { text: fullUrl, width: 256, height: 256 });
 }
 
+function closeQRModal() { document.getElementById('qrModal').style.display = 'none'; }
+function toggleNotes() { const box = document.getElementById("notesContainer"); box.style.display = box.style.display === "none" ? "block" : "none"; }
 
-function showQRModal(data) {
-  document.getElementById('qrModal').style.display = 'flex';
-  // Clear previous QR code if any
-  document.getElementById('qrcode').innerHTML = '';
-  // Generate new QR code
-  new QRCode(document.getElementById('qrcode'), {
-    text: data,
-    width: 256,
-    height: 256,
-  });
-}
-
-function closeQRModal() {
-  document.getElementById('qrModal').style.display = 'none';
-    }
-function toggleNotes() {
-  const box = document.getElementById("notesContainer");
-  box.style.display = box.style.display === "none" ? "block" : "none";
-}
- let timerInterval;
-let seconds = 0;
-
+let timerInterval, seconds = 0;
 function startTimer() {
-  seconds = 0;
-  updateTimerDisplay();
-  document.getElementById("timerBox").style.display = "block";
-
-  clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
-    seconds++;
-    updateTimerDisplay();
-  }, 1000);
+    seconds = 0;
+    document.getElementById("timerBox").style.display = "block";
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => { seconds++; updateTimerDisplay(); }, 1000);
 }
-
-function closeTimer() {
-  clearInterval(timerInterval);
-  document.getElementById("timerBox").style.display = "none";
-  seconds = 0;
-  updateTimerDisplay();
-}
-
+function closeTimer() { clearInterval(timerInterval); document.getElementById("timerBox").style.display = "none"; }
 function updateTimerDisplay() {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-
-  document.getElementById("timerValue").textContent =
-    mins + ":" + (secs < 10 ? "0" + secs : secs);
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    document.getElementById("timerValue").textContent = `${mins}:${secs < 10 ? '0' + secs : secs}`;
 }
-        // Initialize or Load Team Scores
-let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
 
-function updateScoreUI() {
-    // Make sure these IDs match the <span> tags in your HTML
-    if(document.getElementById("homeScore")) {
-        document.getElementById("homeScore").textContent = scores.home;
-        document.getElementById("awayScore").textContent = scores.away;
+// 10. Initialization
+window.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("data")) {
+        localStorage.setItem(FORM_KEY, decodeURIComponent(params.get("data")));
+        window.history.replaceState({}, document.title, window.location.pathname);
     }
-}
-
-function resetTeamScores() {
-    if(confirm("Are you sure you want to reset the team match score to 0-0?")) {
-        scores = { home: 0, away: 0 };
-        localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-        updateScoreUI();
-    }
-}
-
-// Call this on page load
-window.addEventListener("DOMContentLoaded", updateScoreUI);
+    loadScoresheet();
+    updateScoreUI();
+});
 </script>
 </body>
 </html>
