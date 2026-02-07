@@ -290,25 +290,12 @@ select, input, button { font-size:inherit; font-family:inherit; }
     Score: <span id="homeScore">0</span> - <span id="awayScore">0</span>
 </div>
 
-  <button
-    type="button"
-    onclick="exportScoresheet()"
-    style="width:23%; height:40px; font-size:20px; margin-left:10px;text-align:center;">Transfer</button>
-
-  <button
-    type="button"
-    onclick="toggleNotes()"
-    style="width:23%; height:40px; font-size:20px; text-align:center;">Notes</button>
-
-  <button
-    class="startBtn"
-    onclick="startTimer()"
-    style="width:23%; height:40px; font-size:20px; text-align:center;">Timer</button>
-
-    <button 
-  type="button" 
-  onclick="showHistory()" 
-  style="width:23%; height:40px; font-size:20px; text-align:center;">History</button>
+  <div class="button-row">
+    <button type="button" onclick="exportScoresheet()">Transfer</button>
+    <button type="button" onclick="toggleNotes()">Notes</button>
+    <button type="button" class="startBtn" onclick="startTimer()">Timer</button>
+    <button type="button" onclick="showHistory()">History</button>
+</div>
     
 </div>
   <div id="timerBox">
