@@ -276,6 +276,10 @@ select, input, button { font-size:inherit; font-family:inherit; }
 </div>
 <div style="margin-top:20px;border-radius:8px;">
 
+    <div id="teamScoreDisplay" style="text-align:center; font-size:28px; font-weight:bold; margin-bottom:10px; color:#1e90ff;">
+    Score: <span id="homeScore">0</span> - <span id="awayScore">0</span>
+</div>
+
   <button
     type="button"
     onclick="exportScoresheet()"
@@ -381,6 +385,17 @@ document.addEventListener("click", e => {
     saveNow();
 });
 
+        // Add this at the top of your <script> section
+let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
+
+function updateScoreUI() {
+    const hScore = document.getElementById("homeScore");
+    const aScore = document.getElementById("awayScore");
+    if(hScore && aScore) {
+        hScore.textContent = scores.home;
+        aScore.textContent = scores.away;
+    }
+}
 
 // Stat increment/decrement functions
 function changeInnings(amount){
@@ -445,44 +460,84 @@ submitMatch.onclick = () => {
     alert("Please wait while your results are submitted...");
 
     const data = {
-    team: team.value,
-    opponent: opponent.value,
-    lagWinner: lagWinner.value,
-    lagLoser: lagLoser.value,
-    matchInnings: matchInnings.value,
-    pA: {
-        handicap: pA_hc.value,
-        wins: pA_wins.value,
-        safeties: pA_safeties.value,
-        b8: pA_b8.value,
-        br: pA_br.value,
-        e8: pA_e8.value
-    },
-    pB: {
-        handicap: pB_hc.value,
-        wins: pB_wins.value,
-        safeties: pB_safeties.value,
-        b8: pB_b8.value,
-        br: pB_br.value,
-        e8: pB_e8.value
-    },
-    matchWinner: matchWinner.value,
-    matchNotes: matchNotes.value
-};
-
+        team: team.value,
+        opponent: opponent.value,
+        lagWinner: lagWinner.value,
+        lagLoser: lagLoser.value,
+        matchInnings: matchInnings.value,
+        pA: {
+            handicap: pA_hc.value,
+            wins: pA_wins.value,
+            safeties: pA_safeties.value,
+            b8: pA_b8.value,
+            br: pA_br.value,
+            e8: pA_e8.value
+        },
+        pB: {
+            handicap: pB_hc.value,
+            wins: pB_wins.value,
+            safeties: pB_safeties.value,
+            b8: pB_b8.value,
+            br: pB_br.value,
+            e8: pB_e8.value
+        },
+        matchWinner: matchWinner.value,
+        matchNotes: matchNotes.value
+    };
 
     fetch("https://script.google.com/macros/s/AKfycbxjPd21vbwaqtxnDHyiwq-232S6vxdG-t6JPd2nQrdi9bbH8EakOr4S_11jDF9uvu4/exec", {
         method: "POST",
         body: JSON.stringify(data)
     })
     .then(() => {
-        document.querySelectorAll("input, textarea").forEach(el => {
-    if (el.type === "number") {
-        el.value = 0;      // numeric fields MUST be numeric
-    } else {
-        el.value = "-";    // text fields get a subtle placeholder
+    // --- SCORING LOGIC ---
+    const winnerName = document.getElementById("matchWinner").value;
+    const homeTeamName = document.getElementById("team").value;
+    const awayTeamName = document.getElementById("opponent").value;
+
+    const homeRoster = scoresheetinfo[homeTeamName] || [];
+    const awayRoster = scoresheetinfo[awayTeamName] || [];
+
+    if (homeRoster.includes(winnerName)) {
+        scores.home++;
+    } else if (awayRoster.includes(winnerName)) {
+        scores.away++;
     }
-});
+
+    // --- AUTO-RESET LOGIC ---
+    // Check if total matches played reaches 5
+    if ((scores.home + scores.away) >= 5) {
+        alert(`Match night complete! Final Score: ${scores.home} - ${scores.away}. The team score will now reset.`);
+        scores = { home: 0, away: 0 }; // Reset the variable
+    }
+
+    localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+    updateScoreUI();
+
+    // Reset form fields
+    document.querySelectorAll("input, textarea").forEach(el => {
+        if (el.type === "number") {
+            el.value = 0;      
+        } else {
+            el.value = "-";    
+        }
+    });
+
+    alert("Match submitted successfully.");
+    submitMatch.style.display = "none";
+})
+
+        alert("Match submitted successfully. Team score updated!");
+        submitMatch.style.display = "none";
+    })
+    .catch(() => {
+        alert("There was an error submitting the match. Please try again.");
+        // Re-enable button on error so user can try again
+        submitMatch.disabled = false;
+        submitMatch.style.opacity = "1";
+        submitMatch.style.cursor = "pointer";
+    });
+};
 
         alert("Match submitted successfully. You may now enter the next match.");
 
@@ -645,6 +700,27 @@ function updateTimerDisplay() {
   document.getElementById("timerValue").textContent =
     mins + ":" + (secs < 10 ? "0" + secs : secs);
 }
+        // Initialize or Load Team Scores
+let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
+
+function updateScoreUI() {
+    // Make sure these IDs match the <span> tags in your HTML
+    if(document.getElementById("homeScore")) {
+        document.getElementById("homeScore").textContent = scores.home;
+        document.getElementById("awayScore").textContent = scores.away;
+    }
+}
+
+function resetTeamScores() {
+    if(confirm("Are you sure you want to reset the team match score to 0-0?")) {
+        scores = { home: 0, away: 0 };
+        localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+        updateScoreUI();
+    }
+}
+
+// Call this on page load
+window.addEventListener("DOMContentLoaded", updateScoreUI);
 </script>
 </body>
 </html>
