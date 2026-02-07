@@ -293,17 +293,23 @@ select, input, button { font-size:inherit; font-family:inherit; }
   <button
     type="button"
     onclick="exportScoresheet()"
-    style="width:30%; height:40px; font-size:20px; margin-right:5px;text-align:center;">Transfer</button>
+    style="width:20%; height:40px; font-size:20px; margin-right:5px;text-align:center;">Transfer</button>
 
   <button
     type="button"
     onclick="toggleNotes()"
-    style="width:30%; height:40px; font-size:20px; margin-right:5px;text-align:center;">Notes</button>
+    style="width:20%; height:40px; font-size:20px; margin-right:5px;text-align:center;">Notes</button>
 
   <button
     class="startBtn"
     onclick="startTimer()"
-    style="width:30%; height:40px; font-size:20px; margin-right:5px;text-align:center;">Timer</button>
+    style="width:20%; height:40px; font-size:20px; margin-right:5px;text-align:center;">Timer</button>
+
+    <button 
+  type="button" 
+  onclick="showHistory()" 
+  style="width:20%; height:40px; font-size:20px; margin-right:5px; text-align:center;">History</button>
+    
 </div>
   <div id="timerBox">
     <span id="timerValue">0</span> sec
@@ -487,6 +493,11 @@ document.getElementById("submitMatch").onclick = function() {
         body: JSON.stringify(data)
     })
     .then(() => {
+        // --- SAVE TO HISTORY ---
+        const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
+        history.push(data); 
+        localStorage.setItem("matchHistory", JSON.stringify(history));
+
         // --- Update Team Scores ---
         const winnerName = document.getElementById("matchWinner").value;
         const homeTeamName = document.getElementById("team").value;
@@ -502,14 +513,13 @@ document.getElementById("submitMatch").onclick = function() {
         if ((scores.home + scores.away) >= 5) {
             alert(`Match night complete! Final Score: ${scores.home} - ${scores.away}. Resetting session.`);
             scores = { home: 0, away: 0 };
+            localStorage.removeItem("matchHistory"); // Optional: clear history automatically after 5 games
         }
 
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
 
         // --- RESET PLAYER FIELDS ONLY ---
-        // We keep 'team' and 'opponent' values. 
-        // We reset the specific match stats:
         const fieldsToReset = [
             "lagWinner", "lagLoser", "matchInnings", "matchWinner",
             "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8",
@@ -521,24 +531,18 @@ document.getElementById("submitMatch").onclick = function() {
             if (el) el.value = el.type === "number" ? 0 : "";
         });
 
-        // Reset the visual headers for names
         document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
         document.getElementById("lagLoserHeader").textContent = "Lag Loser";
         document.getElementById("matchNotes").value = "-";
-        
-        // Uncheck coach boxes
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
 
-        // Hide the submit button for the next match
         btn.style.display = "none";
         btn.disabled = false;
         btn.style.opacity = "1";
 
-        // Update local storage save state so teams stay saved, but stats are cleared
         saveNow();
-
-        alert("Match submitted successfully! Team boxes kept for next game.");
+        alert("Match submitted and saved to history!");
     })
     .catch(err => {
         alert("Error submitting match. Please try again.");
@@ -614,6 +618,59 @@ window.addEventListener("DOMContentLoaded", () => {
     loadScoresheet();
     updateScoreUI();
 });
+        // Function to show the history modal
+function showHistory() {
+    const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
+    const tbody = document.getElementById("historyTableBody");
+    
+    if (history.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px;">No matches submitted yet.</td></tr>';
+    } else {
+        tbody.innerHTML = history.map((m, index) => `
+            <tr style="border-bottom: 1px solid #333;">
+                <td style="padding:10px;">
+                    <div style="font-weight:bold; color:#4af;">Match ${index + 1}</div>
+                    ${m.lagWinner} vs ${m.lagLoser}
+                </td>
+                <td style="padding:10px; text-align:center;">
+                    ${m.pA.wins}-${m.pB.wins}<br>
+                    <small style="color:#0f0;">Winner: ${m.matchWinner}</small>
+                </td>
+                <td style="padding:10px; text-align:center;">${m.matchInnings}</td>
+            </tr>
+        `).join("");
+    }
+    document.getElementById("historyModal").style.display = "flex";
+}
+
+function closeHistory() { document.getElementById("historyModal").style.display = "none"; }
+
+function clearHistory() {
+    if(confirm("Clear all match history for this evening?")) {
+        localStorage.removeItem("matchHistory");
+        showHistory();
+    }
+}
 </script>
+    <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
+  <div style="background:#222; padding:20px; border-radius:8px; width:95%; max-width:600px; max-height:80vh; overflow-y:auto; border: 2px solid #1e90ff;">
+    <h3 style="text-align:center; color:#1e90ff;">Match History</h3>
+    <table style="width:100%; border-collapse: collapse; color: white; font-size: 14px;">
+      <thead>
+        <tr style="border-bottom: 2px solid #444;">
+          <th style="padding:8px; text-align:left;">Match</th>
+          <th style="padding:8px; text-align:center;">Result</th>
+          <th style="padding:8px; text-align:center;">Inn.</th>
+        </tr>
+      </thead>
+      <tbody id="historyTableBody">
+        </tbody>
+    </table>
+    <div style="text-align:center; margin-top:20px; display:flex; gap:10px; justify-content:center;">
+      <button onclick="closeHistory()" style="padding:10px 20px;">Close</button>
+      <button onclick="clearHistory()" style="padding:10px 20px; background:crimson; color:white; border:none; border-radius:4px;">Reset History</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
