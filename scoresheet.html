@@ -438,7 +438,7 @@ function updateMatchWinner() {
     subBtn.style.display = winField.value ? "inline-block" : "none";
 }
 
-// 7. Submit to Google Sheets
+// 7. Submit to Google Sheets (Updated to NOT reset teams)
 document.getElementById("submitMatch").onclick = function() {
     const btn = this;
     btn.disabled = true;
@@ -473,10 +473,11 @@ document.getElementById("submitMatch").onclick = function() {
 
     fetch("https://script.google.com/macros/s/AKfycbxjPd21vbwaqtxnDHyiwq-232S6vxdG-t6JPd2nQrdi9bbH8EakOr4S_11jDF9uvu4/exec", {
         method: "POST",
-        mode: "no-cors", // Use no-cors if the Apps Script isn't returning headers
+        mode: "no-cors", 
         body: JSON.stringify(data)
     })
     .then(() => {
+        // --- Update Team Scores ---
         const winnerName = document.getElementById("matchWinner").value;
         const homeTeamName = document.getElementById("team").value;
         const homeRoster = scoresheetinfo[homeTeamName] || [];
@@ -487,24 +488,54 @@ document.getElementById("submitMatch").onclick = function() {
             scores.away++;
         }
 
+        // --- Auto-Reset Nightly Score if 5 matches reached ---
         if ((scores.home + scores.away) >= 5) {
-            alert(`Match night complete! Final Score: ${scores.home} - ${scores.away}. Resetting scores.`);
+            alert(`Match night complete! Final Score: ${scores.home} - ${scores.away}. Resetting session.`);
             scores = { home: 0, away: 0 };
         }
 
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
-        localStorage.removeItem(FORM_KEY);
-        alert("Match submitted successfully!");
-        location.reload(); // Refresh to clear form
+
+        // --- RESET PLAYER FIELDS ONLY ---
+        // We keep 'team' and 'opponent' values. 
+        // We reset the specific match stats:
+        const fieldsToReset = [
+            "lagWinner", "lagLoser", "matchInnings", "matchWinner",
+            "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8",
+            "pB_hc", "pB_wins", "pB_safeties", "pB_b8", "pB_br", "pB_e8"
+        ];
+
+        fieldsToReset.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = el.type === "number" ? 0 : "";
+        });
+
+        // Reset the visual headers for names
+        document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
+        document.getElementById("lagLoserHeader").textContent = "Lag Loser";
+        document.getElementById("matchNotes").value = "-";
+        
+        // Uncheck coach boxes
+        document.getElementById('pA_coach').checked = false;
+        document.getElementById('pB_coach').checked = false;
+
+        // Hide the submit button for the next match
+        btn.style.display = "none";
+        btn.disabled = false;
+        btn.style.opacity = "1";
+
+        // Update local storage save state so teams stay saved, but stats are cleared
+        saveNow();
+
+        alert("Match submitted successfully! Team boxes kept for next game.");
     })
     .catch(err => {
-        alert("Error submitting match.");
+        alert("Error submitting match. Please try again.");
         btn.disabled = false;
         btn.style.opacity = "1";
     });
 };
-
 // 8. Save/Load Logic
 function saveNow() {
     if (isLoading) return;
