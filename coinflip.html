@@ -88,6 +88,51 @@
             padding: 10px 20px;
             border-radius: 5px;
         }
+        /* 1. Add this to your Global Styles to stop the "Flash" on tap */
+* {
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.coin-container {
+    perspective: 1000px;
+    cursor: pointer;
+    user-select: none; /* Prevents text selection during tap */
+}
+
+#coin {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.coin-side {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    backface-visibility: hidden; /* Keeps the 'other' side hidden */
+    -webkit-backface-visibility: hidden; /* Safari support */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    border: 2px solid #1e90ff;
+}
+
+/* 2. Separate the faces slightly in 3D space to stop "Z-fighting" flash */
+.heads {
+    background: #222;
+    transform: rotateY(0deg) translateZ(1px);
+}
+
+.tails {
+    background: #1e90ff;
+    color: #000;
+    transform: rotateY(180deg) translateZ(1px);
+}
     </style>
 </head>
 <body>
@@ -108,29 +153,30 @@
     <a href="javascript:history.back()" class="back-btn">Back to Scoresheet</a>
 
     <script>
-        let currentRotation = 0;
+       // 3. Updated Script to handle the spin cleanly
+let currentRotation = 0;
+let isFlipping = false;
 
-        function flipCoin() {
-            const coin = document.getElementById('coin');
-            const resultText = document.getElementById('result-text');
-            
-            // Randomize result
-            const isHeads = Math.random() < 0.5;
-            
-            // Rotate at least 5 full times (1800deg) + result
-            const spinDegrees = isHeads ? 1800 : 1980; 
-            currentRotation += spinDegrees;
+function flipCoin() {
+    if (isFlipping) return; // Prevent double-taps during animation
+    
+    isFlipping = true;
+    const coin = document.getElementById('coin');
+    const resultText = document.getElementById('result-text');
+    
+    const isHeads = Math.random() < 0.5;
+    const spinDegrees = isHeads ? 1800 : 1980; 
+    currentRotation += spinDegrees;
 
-            // Apply animation
-            coin.style.transform = `rotateY(${currentRotation}deg) scale(1.2)`;
-            resultText.innerText = "Flipping...";
+    coin.style.transform = `rotateY(${currentRotation}deg) scale(1.1)`;
+    resultText.innerText = "Flipping...";
 
-            setTimeout(() => {
-                // Return to normal scale but keep rotation
-                coin.style.transform = `rotateY(${currentRotation}deg) scale(1.0)`;
-                resultText.innerText = isHeads ? "RESULT: LOGO" : "RESULT: TAILS";
-            }, 2000);
-        }
+    setTimeout(() => {
+        coin.style.transform = `rotateY(${currentRotation}deg) scale(1.0)`;
+        resultText.innerText = isHeads ? "HEADS" : "TAILS";
+        isFlipping = false;
+    }, 2000);
+}
     </script>
 </body>
 </html>
