@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin Flip</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .coin-container {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        #coin {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .coin-side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+            border: 5px solid #1e90ff;
+            box-sizing: border-box;
+            box-shadow: 0 0 20px rgba(30, 144, 255, 0.5);
+        }
+
+        /* HEADS - Logo Side */
+        .heads {
+            background: #222;
+        }
+
+        .heads img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+        }
+
+        /* TAILS Side */
+        .tails {
+            background: #1e90ff;
+            color: #000;
+            transform: rotateY(180deg);
+        }
+
+        #result-text {
+            margin-top: 30px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #00ff00;
+            height: 35px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .instruction {
+            margin-bottom: 20px;
+            color: #888;
+            font-size: 16px;
+        }
+
+        .back-btn {
+            margin-top: 50px;
+            color: #1e90ff;
+            text-decoration: none;
+            border: 1px solid #1e90ff;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="instruction">Tap the coin to flip</div>
+
+    <div class="coin-container" onclick="flipCoin()">
+        <div id="coin">
+            <div class="coin-side heads">
+                <img src="xxxx.png" alt="LOGO" onerror="this.style.display='none'; this.parentElement.innerHTML='HEADS';">
+            </div>
+            <div class="coin-side tails">TAILS</div>
+        </div>
+    </div>
+
+    <div id="result-text">Ready?</div>
+
+    <a href="javascript:history.back()" class="back-btn">Back to Scoresheet</a>
+
+    <script>
+        let currentRotation = 0;
+
+        function flipCoin() {
+            const coin = document.getElementById('coin');
+            const resultText = document.getElementById('result-text');
+            
+            // Randomize result
+            const isHeads = Math.random() < 0.5;
+            
+            // Rotate at least 5 full times (1800deg) + result
+            const spinDegrees = isHeads ? 1800 : 1980; 
+            currentRotation += spinDegrees;
+
+            // Apply animation
+            coin.style.transform = `rotateY(${currentRotation}deg) scale(1.2)`;
+            resultText.innerText = "Flipping...";
+
+            setTimeout(() => {
+                // Return to normal scale but keep rotation
+                coin.style.transform = `rotateY(${currentRotation}deg) scale(1.0)`;
+                resultText.innerText = isHeads ? "RESULT: LOGO" : "RESULT: TAILS";
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
