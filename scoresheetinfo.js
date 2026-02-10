@@ -1,6 +1,6 @@
 const scoresheetinfo = {
     "Halfway Crooks":["Dan Foster","Tony Perelli","Don Young","Don Rak","Yani Marinopoulos","Brooke Bridges","Jeremie Ketner","Tony Guthrie"],
-    "Haters Welcome":["Randy Rycraft","Joe Neal","Jennifer Wagner","Jim Czenk","Phil Nelson","Pam Neal","Greg Wood","Brett Boger"],
+    "Haters Welcome":["Randy Rycraft","Joe Neal","Jennifer Wagner","Jim Czenk","Phil Nelson","Julie Ringbauer","Mike Gore","Brett Boger"],
     "Lynn's Amigos":["Francisco Ibarra","Noe Castana","Enrique Meza","Tomas Ramirez"],
     "Rackless Behavior":["Jim Nevin","Larry Casper","Harnaik Lal","Freddy Izguerra","Tom Nevin","Doug Misner","Joe Crutchfield","Ross Giannino"],
     "Dirty Ballers":["Rocky Oiler Sr.","Kevin Pattenaude","Ron Gonzalez","Javier Mauricio","Peggy Wood","Joey Sanchez","John Schoiber","Chuck Feager"],
