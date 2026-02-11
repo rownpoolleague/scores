@@ -347,19 +347,33 @@ let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, a
 let flip = false;
 
 // 1. Populate roster when team selects
+// 1. Populate roster when team selects
+// 1. Populate roster when team selects
 function updateRoster(sel, div) {
     if (!sel.value) {
         div.innerHTML = "";
         return;
     }
-    // Accessing global variables from scoresheetinfo.js and scoresheetrosters.js
-    div.innerHTML = (scoresheetinfo[sel.value] || []).map(p => {
+    // Accessing global variables from scoresheetinfo.js
+    let players = (scoresheetinfo[sel.value] || []);
+    
+    let rosterHTML = players.map(p => {
         const hc = scoresheetrosters[p] || 0;
         return `<div class="playerName" data-p="${p}">
                     <span class="name">${p}</span>
                     <span class="hc">${hc}</span>
                 </div>`;
     }).join("");
+
+    // Add the "New Player" slot to the end of the string
+    rosterHTML += `
+        <div class="playerName" data-p="NEW PLAYER" style="border-top: 1px dashed #1e90ff; margin-top: 10px; padding-top: 8px; color: #00ff00; font-weight: bold;">
+            <span class="name">+ ADD SUB / NEW</span>
+            <span class="hc">3</span>
+        </div>`;
+
+    // Push the final list to the screen
+    div.innerHTML = rosterHTML;
 }
 
 // 2. Event Listeners for Team Selection
@@ -375,8 +389,20 @@ document.addEventListener("click", e => {
     const playerDiv = e.target.closest(".playerName");
     if (!playerDiv) return;
 
-    const name = playerDiv.dataset.p;
-    const hc = scoresheetrosters[name] || 0;
+    let name = playerDiv.dataset.p;
+    let hc = (scoresheetrosters[name] !== undefined) ? scoresheetrosters[name] : 0;
+
+    // Handle clicking the New Player slot
+    if (name === "NEW PLAYER") {
+        const newName = prompt("Enter New Player Name:");
+        if (!newName) return; // Exit if they hit cancel
+        name = newName;
+        hc = 3; // Force default HC to 3 for new players
+        
+        // Show notes automatically so they can record info if needed
+        const notesBox = document.getElementById("notesContainer");
+        if (notesBox) notesBox.style.display = "block";
+    }
 
     if (!flip) {
         document.getElementById("lagWinner").value = name;
@@ -389,9 +415,13 @@ document.addEventListener("click", e => {
     }
 
     flip = !flip;
+    
+    // Safety check to update the Submit button visibility
+    if (typeof updateMatchWinner === "function") updateMatchWinner();
+    
+    // Save current state to LocalStorage
     saveNow();
-});
-
+});;
 // 4. Scoring UI Update
 function updateScoreUI() {
     const hScore = document.getElementById("homeScore");
