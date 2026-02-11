@@ -734,15 +734,14 @@ function closePlayerModal() {
 }
 
 function confirmNewPlayer() {
-    const nameInput = document.getElementById("manualPlayerName");
-    const newName = nameInput.value.trim();
+    const newName = document.getElementById("manualPlayerName").value.trim();
     if (!newName) return;
     
-    // 1. Get the team side from the radio buttons in your modal
+    // Get which team was selected in the modal (home or away)
     const side = document.querySelector('input[name="npTeam"]:checked').value;
-    const hc = 3; // Default Handicap
+    const hc = 3; 
 
-    // 2. Assign to Lag Winner/Loser slots based on 'flip'
+    // 1. Assign to stats based on 'flip'
     if (!flip) {
         document.getElementById("lagWinner").value = newName;
         document.getElementById("pA_hc").value = hc;
@@ -753,23 +752,24 @@ function confirmNewPlayer() {
         document.getElementById("lagLoserHeader").textContent = newName;
     }
 
-    // 3. Update the roster array so the "Submit Match" score works
+    // 2. FIX: Add them to the roster list in memory so Submit Match sees them
     const teamDropdownId = (side === 'home') ? "team" : "opponent";
-    const rosterDivId = (side === 'home') ? "teamRoster" : "opponentRoster";
+    const teamName = document.getElementById(teamDropdownId).value;
     
-    const teamDropdown = document.getElementById(teamDropdownId);
-    const teamName = teamDropdown.value;
-    
-    if (teamName && scoresheetinfo[teamName]) {
-        // Only add if they aren't already there
+    // Check if a team is actually selected before adding
+    if (teamName) {
+        if (!scoresheetinfo[teamName]) {
+            scoresheetinfo[teamName] = []; // Create list if it doesn't exist
+        }
         if (!scoresheetinfo[teamName].includes(newName)) {
             scoresheetinfo[teamName].push(newName);
-            // Refresh visual list so they appear in the black box
-            updateRoster(teamDropdown, document.getElementById(rosterDivId));
+            
+            // 3. Refresh the visual roster list so you see them in the black box
+            const rosterDivId = (side === 'home') ? "teamRoster" : "opponentRoster";
+            updateRoster(document.getElementById(teamDropdownId), document.getElementById(rosterDivId));
         }
     }
 
-    // 4. Update UI, save state, and close
     flip = !flip;
     updateMatchWinner();
     saveNow();
