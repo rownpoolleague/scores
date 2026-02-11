@@ -19,6 +19,7 @@ const scoresheetrosters = {
     "Francisco Ibarra":3,
     "Francisco Tinajero":4,
     "Freddy Izguerra":5,
+    "Greg Wood":4,
     "Harnaik Lal":4,
     "Jariel Diaz":4,
     "Javier Mauricio":3,
