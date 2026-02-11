@@ -312,6 +312,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <button type="button" onclick="toggleNotes()">Notes</button>
     <button type="button" class="startBtn" onclick="startTimer()">Timer</button>
     <button type="button" onclick="showHistory()">History</button>
+    <button type="button" onclick="addNewPlayerManual()">Add NP</button>
 </div>
     
 </div>
@@ -347,33 +348,19 @@ let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, a
 let flip = false;
 
 // 1. Populate roster when team selects
-// 1. Populate roster when team selects
-// 1. Populate roster when team selects
 function updateRoster(sel, div) {
     if (!sel.value) {
         div.innerHTML = "";
         return;
     }
-    // Accessing global variables from scoresheetinfo.js
-    let players = (scoresheetinfo[sel.value] || []);
-    
-    let rosterHTML = players.map(p => {
+    // Accessing global variables from scoresheetinfo.js and scoresheetrosters.js
+    div.innerHTML = (scoresheetinfo[sel.value] || []).map(p => {
         const hc = scoresheetrosters[p] || 0;
         return `<div class="playerName" data-p="${p}">
                     <span class="name">${p}</span>
                     <span class="hc">${hc}</span>
                 </div>`;
     }).join("");
-
-    // Add the "New Player" slot to the end of the string
-    rosterHTML += `
-        <div class="playerName" data-p="NEW PLAYER" style="border-top: 1px dashed #1e90ff; margin-top: 10px; padding-top: 8px; color: #00ff00; font-weight: bold;">
-            <span class="name">+ ADD SUB / NEW</span>
-            <span class="hc">3</span>
-        </div>`;
-
-    // Push the final list to the screen
-    div.innerHTML = rosterHTML;
 }
 
 // 2. Event Listeners for Team Selection
@@ -389,20 +376,8 @@ document.addEventListener("click", e => {
     const playerDiv = e.target.closest(".playerName");
     if (!playerDiv) return;
 
-    let name = playerDiv.dataset.p;
-    let hc = (scoresheetrosters[name] !== undefined) ? scoresheetrosters[name] : 0;
-
-    // Handle clicking the New Player slot
-    if (name === "NEW PLAYER") {
-        const newName = prompt("Enter New Player Name:");
-        if (!newName) return; // Exit if they hit cancel
-        name = newName;
-        hc = 3; // Force default HC to 3 for new players
-        
-        // Show notes automatically so they can record info if needed
-        const notesBox = document.getElementById("notesContainer");
-        if (notesBox) notesBox.style.display = "block";
-    }
+    const name = playerDiv.dataset.p;
+    const hc = scoresheetrosters[name] || 0;
 
     if (!flip) {
         document.getElementById("lagWinner").value = name;
@@ -415,13 +390,9 @@ document.addEventListener("click", e => {
     }
 
     flip = !flip;
-    
-    // Safety check to update the Submit button visibility
-    if (typeof updateMatchWinner === "function") updateMatchWinner();
-    
-    // Save current state to LocalStorage
     saveNow();
-});;
+});
+
 // 4. Scoring UI Update
 function updateScoreUI() {
     const hScore = document.getElementById("homeScore");
@@ -587,7 +558,12 @@ document.getElementById("submitMatch").onclick = function() {
 // 8. Save/Load Logic
 function saveNow() {
     if (isLoading) return;
-    const ids = ["team","opponent","lagWinner","lagLoser","matchInnings","matchWinner","pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8","pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8","pA_coach","pB_coach","matchNotes"];
+    const ids = [
+        "team","opponent","lagWinner","lagLoser","matchInnings","matchWinner",
+        "pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8",
+        "pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8",
+        "pA_coach","pB_coach","matchNotes"
+    ];
     const data = {};
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -608,6 +584,13 @@ function loadScoresheet() {
             else el.value = data[id];
         }
     });
+
+    // --- FIX: Update visual headers from the loaded hidden values ---
+    const lw = document.getElementById("lagWinner").value;
+    const ll = document.getElementById("lagLoser").value;
+    if (lw) document.getElementById("lagWinnerHeader").textContent = lw;
+    if (ll) document.getElementById("lagLoserHeader").textContent = ll;
+
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
     updateMatchWinner();
@@ -684,6 +667,26 @@ function clearHistory() {
         localStorage.removeItem("matchHistory");
         showHistory();
     }
+}
+        function addNewPlayerManual() {
+    const newName = prompt("Enter New Player Name:");
+    if (!newName) return;
+    
+    const hc = 3; // Default Handicap for new players
+
+    if (!flip) {
+        document.getElementById("lagWinner").value = newName;
+        document.getElementById("pA_hc").value = hc;
+        document.getElementById("lagWinnerHeader").textContent = newName;
+    } else {
+        document.getElementById("lagLoser").value = newName;
+        document.getElementById("pB_hc").value = hc;
+        document.getElementById("lagLoserHeader").textContent = newName;
+    }
+
+    flip = !flip;
+    updateMatchWinner();
+    saveNow();
 }
 </script>
     <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
