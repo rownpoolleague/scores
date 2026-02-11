@@ -376,31 +376,28 @@ function updateRoster(sel, div) {
         div.innerHTML = "";
         return;
     }
-    // Accessing global variables from scoresheetinfo.js and scoresheetrosters.js
+    
     div.innerHTML = (scoresheetinfo[sel.value] || []).map(p => {
-        const hc = scoresheetrosters[p] || 0;
-        return `<div class="playerName" data-p="${p}">
-                    <span class="name">${p}</span>
+        // If p is an object, use its properties. If it's a string, look it up in rosters.
+        const isObj = typeof p === 'object' && p !== null;
+        const name = isObj ? p.name : p;
+        const hc = isObj ? p.hc : (scoresheetrosters[p] || 0);
+
+        return `<div class="playerName" data-p="${name}" data-hc="${hc}">
+                    <span class="name">${name}</span>
                     <span class="hc">${hc}</span>
                 </div>`;
     }).join("");
 }
 
-// 2. Event Listeners for Team Selection
-document.getElementById("team").addEventListener("change", function() {
-    updateRoster(this, document.getElementById("teamRoster"));
-});
-document.getElementById("opponent").addEventListener("change", function() {
-    updateRoster(this, document.getElementById("opponentRoster"));
-});
-
-// 3. Player Selection Logic (Lag Winner/Loser)
+// 3. Player Selection Logic (Updated to handle manual player objects)
 document.addEventListener("click", e => {
     const playerDiv = e.target.closest(".playerName");
     if (!playerDiv) return;
 
-    const name = playerDiv.dataset.p;
-    const hc = scoresheetrosters[name] || 0;
+    // Pull name and hc directly from the attributes we set in updateRoster
+    const name = playerDiv.getAttribute("data-p");
+    const hc = playerDiv.getAttribute("data-hc") || 0;
 
     if (!flip) {
         document.getElementById("lagWinner").value = name;
@@ -415,7 +412,6 @@ document.addEventListener("click", e => {
     flip = !flip;
     saveNow();
 });
-
 // 4. Scoring UI Update
 function updateScoreUI() {
     const hScore = document.getElementById("homeScore");
