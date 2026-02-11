@@ -341,6 +341,30 @@ select, input, button { font-size:inherit; font-family:inherit; }
   </div>
 </div>
     <script>
+        function checkWeeklyReset() {
+    const lastSession = localStorage.getItem("lastVisitDate");
+    const now = new Date();
+    const today = now.getTime();
+
+    if (lastSession) {
+        const lastDate = parseInt(lastSession);
+        const daysSince = (today - lastDate) / (1000 * 60 * 60 * 24);
+
+        // If it's been more than 3 days, clear everything and refresh
+        if (daysSince > 3) {
+            localStorage.clear(); // Clears rosters, scores, and history
+            localStorage.setItem("lastVisitDate", today.toString());
+            window.location.reload(); 
+            return;
+        }
+    }
+    
+    // Update the last visit to right now
+    localStorage.setItem("lastVisitDate", today.toString());
+}
+
+// Run this immediately on load
+checkWeeklyReset();
 let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
@@ -628,21 +652,27 @@ function updateTimerDisplay() {
 
 // 10. Initialization
 window.addEventListener("DOMContentLoaded", () => {
+    // --- WEEKLY RESET CHECK ---
+    const now = Date.now();
+    const lastVisit = localStorage.getItem("lastVisitTimestamp");
+    const THREE_DAYS = 3 * 24 * 60 * 60 * 1000; 
+
+    if (lastVisit && (now - parseInt(lastVisit) > THREE_DAYS)) {
+        localStorage.clear(); // Wipes the memory for the new week
+    }
+    localStorage.setItem("lastVisitTimestamp", now.toString());
+    // --------------------------
+
     const params = new URLSearchParams(window.location.search);
     if (params.has("data")) {
         const incomingData = decodeURIComponent(params.get("data"));
-        // This ensures the transferred data overwrites the current session
         localStorage.setItem(FORM_KEY, incomingData);
-        
-        // Clear URL so refresh doesn't keep reloading old data
         window.history.replaceState({}, document.title, window.location.pathname);
     }
     
-    // This loads everything into the UI
     loadScoresheet();
     updateScoreUI();
     
-    // Special fix: If there are notes, show the notes box automatically
     const notes = document.getElementById("matchNotes").value;
     if (notes && notes !== "-") {
         document.getElementById("notesContainer").style.display = "block";
