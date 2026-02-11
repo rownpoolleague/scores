@@ -652,16 +652,26 @@ function updateTimerDisplay() {
 
 // 10. Initialization
 window.addEventListener("DOMContentLoaded", () => {
-    // --- WEEKLY RESET CHECK ---
-    const now = Date.now();
-    const lastVisit = localStorage.getItem("lastVisitTimestamp");
-    const THREE_DAYS = 3 * 24 * 60 * 60 * 1000; 
+    const THREE_DAYS = 12 * 60 * 60 * 1000;
 
-    if (lastVisit && (now - parseInt(lastVisit) > THREE_DAYS)) {
-        localStorage.clear(); // Wipes the memory for the new week
-    }
-    localStorage.setItem("lastVisitTimestamp", now.toString());
-    // --------------------------
+    // Function to wipe data if it's been over 3 days
+    const performWeeklyReset = () => {
+        const now = Date.now();
+        const lastVisit = localStorage.getItem("lastVisitTimestamp");
+        if (lastVisit && (now - parseInt(lastVisit) > THREE_DAYS)) {
+            localStorage.clear();
+            location.reload(); // Force a fresh start
+        }
+        localStorage.setItem("lastVisitTimestamp", now.toString());
+    };
+
+    // Run check on initial load
+    performWeeklyReset();
+
+    // Fix for users who leave the tab open all week: checks when they return to the tab
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") performWeeklyReset();
+    });
 
     const params = new URLSearchParams(window.location.search);
     if (params.has("data")) {
@@ -678,7 +688,6 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("notesContainer").style.display = "block";
     }
 });
-        // Function to show the history modal
 function showHistory() {
     const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
     const tbody = document.getElementById("historyTableBody");
