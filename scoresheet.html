@@ -721,10 +721,21 @@ function clearHistory() {
     }
 }
         function addNewPlayerManual() {
-    const newName = prompt("Enter New Player Name:");
+    // Open the modal and focus the input
+    document.getElementById("playerModal").style.display = "flex";
+    document.getElementById("manualPlayerName").value = "";
+    document.getElementById("manualPlayerName").focus();
+}
+
+function closePlayerModal() {
+    document.getElementById("playerModal").style.display = "none";
+}
+
+function confirmNewPlayer() {
+    const newName = document.getElementById("manualPlayerName").value.trim();
     if (!newName) return;
     
-    const hc = 3; // Default Handicap for new players
+    const hc = 3; // Your default HC
 
     if (!flip) {
         document.getElementById("lagWinner").value = newName;
@@ -739,6 +750,7 @@ function clearHistory() {
     flip = !flip;
     updateMatchWinner();
     saveNow();
+    closePlayerModal(); // Close it after adding
 }
 </script>
     <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
@@ -761,5 +773,15 @@ function clearHistory() {
     </div>
   </div>
 </div>
-</body>
+    <div id="playerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
+  <div style="background:#222; padding:20px; border-radius:8px; width:90%; max-width:400px; border: 2px solid #1e90ff; text-align:center;">
+    <h3 style="color:#1e90ff; margin-bottom:20px;">Add New Player</h3>
+    <input type="text" id="manualPlayerName" placeholder="Enter Name" style="width:80%; padding:10px; font-size:18px; margin-bottom:20px; border-radius:4px; border:1px solid #444;">
+    <div style="display:flex; gap:10px; justify-content:center;">
+      <button onclick="closePlayerModal()" style="padding:10px 20px;">Cancel</button>
+      <button onclick="confirmNewPlayer()" style="padding:10px 20px; background:#1e90ff; color:white; border:none; border-radius:4px;">Add Player</button>
+    </div>
+  </div>
+</div>
+    </body>
 </html>
