@@ -724,6 +724,10 @@ function clearHistory() {
 }
         // --- NEW PLAYER MODAL LOGIC ---
 
+// --- COMPLETE MODAL LOGIC WITH DEFAULT HANDICAP ---
+
+// --- COMPLETE MODAL LOGIC WITH DEFAULT HANDICAP ---
+
 function addNewPlayerManual() {
     // Open the modal and focus the input
     document.getElementById("playerModal").style.display = "flex";
@@ -736,45 +740,57 @@ function closePlayerModal() {
 }
 
 function confirmNewPlayer() {
-    const newName = document.getElementById("manualPlayerName").value.trim();
-    if (!newName) return;
+    const nameInput = document.getElementById("manualPlayerName");
+    const newName = nameInput.value.trim();
     
-    // Get which team was selected in the modal (home or away)
+    if (!newName) {
+        alert("Please enter a name.");
+        return;
+    }
+    
+    // 1. Get the team side from the radio buttons in the modal
     const side = document.querySelector('input[name="npTeam"]:checked').value;
-    const hc = 3; 
-
-    // 1. Assign to stats based on 'flip'
-    if (!flip) {
-        document.getElementById("lagWinner").value = newName;
-        document.getElementById("pA_hc").value = hc;
-        document.getElementById("lagWinnerHeader").textContent = newName;
-    } else {
-        document.getElementById("lagLoser").value = newName;
-        document.getElementById("pB_hc").value = hc;
-        document.getElementById("lagLoserHeader").textContent = newName;
-    }
-
-    // 2. FIX: Add them to the roster list in memory so Submit Match sees them
-    const teamDropdownId = (side === 'home') ? "team" : "opponent";
-    const teamName = document.getElementById(teamDropdownId).value;
     
-    // Check if a team is actually selected before adding
-    if (teamName) {
-        if (!scoresheetinfo[teamName]) {
-            scoresheetinfo[teamName] = []; // Create list if it doesn't exist
-        }
-        if (!scoresheetinfo[teamName].includes(newName)) {
-            scoresheetinfo[teamName].push(newName);
-            
-            // 3. Refresh the visual roster list so you see them in the black box
-            const rosterDivId = (side === 'home') ? "teamRoster" : "opponentRoster";
-            updateRoster(document.getElementById(teamDropdownId), document.getElementById(rosterDivId));
-        }
+    // 2. Identify the correct dropdown and roster box
+    const teamDropdownId = (side === 'home') ? "team" : "opponent";
+    const rosterDivId = (side === 'home') ? "teamRoster" : "opponentRoster";
+    
+    const teamDropdown = document.getElementById(teamDropdownId);
+    const teamName = teamDropdown.value;
+    
+    if (!teamName || teamName === "Select Home Team" || teamName === "Select Opponent") {
+        alert("Please select a team in the dropdown first so I know where to add this player.");
+        return;
     }
 
-    flip = !flip;
-    updateMatchWinner();
-    saveNow();
+    // 3. Add the player to the roster list in scoresheetinfo
+    if (!scoresheetinfo[teamName]) {
+        scoresheetinfo[teamName] = [];
+    }
+    
+    // Check if player exists (case-insensitive)
+    const exists = scoresheetinfo[teamName].some(p => 
+        (typeof p === 'string' ? p : p.name).toLowerCase() === newName.toLowerCase()
+    );
+
+    if (!exists) {
+        // 4. FIX: Push an object with the default handicap instead of just a string
+        // If your system expects objects like {name: "Name", hc: 3}
+        scoresheetinfo[teamName].push({
+            name: newName,
+            hc: 3
+        });
+        
+        // 5. Refresh the visual list
+        updateRoster(teamDropdown, document.getElementById(rosterDivId));
+        
+        // 6. Save the updated roster to state
+        saveNow();
+    } else {
+        alert("This player is already on the roster.");
+    }
+
+    // 7. Close the modal
     closePlayerModal();
 }
 </script>
