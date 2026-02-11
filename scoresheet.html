@@ -227,8 +227,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
                 <button onclick="changePAE8(1)">+</button>
             </div>
         </div>
-                 <div class="stat-row"><label>Coach</label><input type="checkbox" id="pA_coach">
-</div>
+                 <div class="stat-row"><label>Coach</label><input type="checkbox" id="pA_coach" onclick="saveNow()"></div>
     </div>
 
     <div class="block">
@@ -281,7 +280,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
                 <button onclick="changePBE8(1)">+</button>
             </div>
         </div>
-        <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach"></div>
+        <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach" onclick="saveNow()"></div>
     </div>
 </div>
     <div style="text-align:center;padding-top:20px;;">
@@ -326,7 +325,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
      style="display:none; text-align:center; margin-top:12px;">
   <textarea
   id="matchNotes"
-  style="width:60%; max-width:500px; height:70px; font-size:16px; padding:8px;"
+  oninput="saveNow()" style="width:60%; max-width:500px; height:70px; font-size:16px; padding:8px;"
 >-</textarea>
 </div>
 </div>
@@ -562,12 +561,14 @@ function saveNow() {
         "team","opponent","lagWinner","lagLoser","matchInnings","matchWinner",
         "pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8",
         "pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8",
-        "pA_coach","pB_coach","matchNotes"
+        "pA_coach","pB_coach","matchNotes" // Ensure these are here
     ];
     const data = {};
     ids.forEach(id => {
         const el = document.getElementById(id);
-        if (el) data[id] = el.type === "checkbox" ? el.checked : el.value;
+        if (el) {
+            data[id] = (el.type === "checkbox") ? el.checked : el.value;
+        }
     });
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
@@ -629,11 +630,23 @@ function updateTimerDisplay() {
 window.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     if (params.has("data")) {
-        localStorage.setItem(FORM_KEY, decodeURIComponent(params.get("data")));
+        const incomingData = decodeURIComponent(params.get("data"));
+        // This ensures the transferred data overwrites the current session
+        localStorage.setItem(FORM_KEY, incomingData);
+        
+        // Clear URL so refresh doesn't keep reloading old data
         window.history.replaceState({}, document.title, window.location.pathname);
     }
+    
+    // This loads everything into the UI
     loadScoresheet();
     updateScoreUI();
+    
+    // Special fix: If there are notes, show the notes box automatically
+    const notes = document.getElementById("matchNotes").value;
+    if (notes && notes !== "-") {
+        document.getElementById("notesContainer").style.display = "block";
+    }
 });
         // Function to show the history modal
 function showHistory() {
