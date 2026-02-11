@@ -678,9 +678,26 @@ function clearHistory() {
     }
 }
         function addNewPlayerManual() {
-    document.getElementById("playerModal").style.display = "flex";
-    document.getElementById("manualPlayerName").value = "";
-    document.getElementById("manualPlayerName").focus();
+    const homeName = document.getElementById("team").value;
+    const awayName = document.getElementById("opponent").value;
+
+    // Check if teams are selected first
+    if (!homeName || homeName.includes("Select") || !awayName || awayName.includes("Select")) {
+        alert("Please select both teams first.");
+        return;
+    }
+
+    // Update the labels in the modal
+    document.getElementById("homeLabel").textContent = homeName;
+    document.getElementById("awayLabel").textContent = awayName;
+
+    // Show the modal
+    const modal = document.getElementById("playerModal");
+    if (modal) {
+        modal.style.display = "flex";
+        document.getElementById("manualPlayerName").value = "";
+        document.getElementById("manualPlayerName").focus();
+    }
 }
 
 function closePlayerModal() {
@@ -739,7 +756,7 @@ function confirmNewPlayer() {
     </div>
   </div>
 </div>
-    <div id="playerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
+<div id="playerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
   <div style="background:#222; padding:25px; border-radius:12px; width:90%; max-width:400px; border: 2px solid #1e90ff; text-align:center; box-sizing: border-box;">
     
     <h3 style="color:#1e90ff; margin:0 0 15px 0;">Add to Roster</h3>
@@ -747,12 +764,12 @@ function confirmNewPlayer() {
     <input type="text" id="manualPlayerName" placeholder="Enter Player Name" 
            style="width:100%; padding:12px; font-size:18px; margin-bottom:20px; border-radius:6px; border:1px solid #444; background:#111; color:white; box-sizing: border-box;">
     
-    <div style="margin-bottom: 25px; color:white; font-size:18px;">
-      <label style="margin-right:20px; cursor:pointer;">
-        <input type="radio" name="npTeam" value="home" checked style="transform: scale(1.2);"> Home
+    <div style="margin-bottom: 25px; color:white; font-size:18px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; padding-left: 20px;">
+      <label style="cursor:pointer;">
+        <input type="radio" name="npTeam" value="home" checked style="transform: scale(1.2);"> <span id="homeLabel">Home Team</span>
       </label>
       <label style="cursor:pointer;">
-        <input type="radio" name="npTeam" value="away" style="transform: scale(1.2);"> Away
+        <input type="radio" name="npTeam" value="away" style="transform: scale(1.2);"> <span id="awayLabel">Away Team</span>
       </label>
     </div>
     
@@ -763,11 +780,11 @@ function confirmNewPlayer() {
       </button>
       <button type="button" onclick="confirmNewPlayer()" 
               style="padding:10px 20px; background:#1e90ff; color:white; border:none; border-radius:4px; font-weight:bold; font-size:16px; cursor:pointer;">
-        Add to List
+        Add to Roster
       </button>
     </div>
     
   </div>
-</div>
+</div>>
 </body>
 </html>
