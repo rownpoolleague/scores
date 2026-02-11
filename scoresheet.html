@@ -754,39 +754,41 @@ function confirmNewPlayer() {
     const teamDropdown = document.getElementById(teamDropdownId);
     const teamName = teamDropdown.value;
     
-    if (!teamName || teamName === "Select Home Team" || teamName === "Select Opponent") {
-        alert("Please select a team in the dropdown first so I know where to add this player.");
+    if (!teamName || teamName.includes("Select")) {
+        alert("Please select a team in the dropdown first.");
         return;
     }
 
-    // 3. Add the player to the roster list in scoresheetinfo
+    // 3. Ensure the team exists in the global scoresheetinfo object
     if (!scoresheetinfo[teamName]) {
         scoresheetinfo[teamName] = [];
     }
     
-    // Check if player exists (case-insensitive)
+    // 4. Check if player already exists (case-insensitive)
     const exists = scoresheetinfo[teamName].some(p => 
         (typeof p === 'string' ? p : p.name).toLowerCase() === newName.toLowerCase()
     );
 
     if (!exists) {
-        // 4. FIX: Push an object with the default handicap instead of just a string
-        // If your system expects objects like {name: "Name", hc: 3}
+        // 5. Add the new player as an object with default HC 3
         scoresheetinfo[teamName].push({
             name: newName,
             hc: 3
         });
         
-        // 5. Refresh the visual list
+        // 6. PERSISTENCE: Save the entire object to localStorage so they stay on refresh
+        localStorage.setItem("scoresheetinfo", JSON.stringify(scoresheetinfo));
+        
+        // 7. Refresh the visual list on the screen
         updateRoster(teamDropdown, document.getElementById(rosterDivId));
         
-        // 6. Save the updated roster to state
+        // 8. Call your general save function for state consistency
         saveNow();
     } else {
         alert("This player is already on the roster.");
     }
 
-    // 7. Close the modal
+    // 9. Close the modal
     closePlayerModal();
 }
 </script>
