@@ -227,7 +227,8 @@ select, input, button { font-size:inherit; font-family:inherit; }
                 <button onclick="changePAE8(1)">+</button>
             </div>
         </div>
-                 <div class="stat-row"><label>Coach</label><input type="checkbox" id="pA_coach" onclick="saveNow()"></div>
+                 <div class="stat-row"><label>Coach</label><input type="checkbox" id="pA_coach">
+</div>
     </div>
 
     <div class="block">
@@ -280,7 +281,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
                 <button onclick="changePBE8(1)">+</button>
             </div>
         </div>
-        <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach" onclick="saveNow()"></div>
+        <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach"></div>
     </div>
 </div>
     <div style="text-align:center;padding-top:20px;;">
@@ -311,7 +312,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <button type="button" onclick="toggleNotes()">Notes</button>
     <button type="button" class="startBtn" onclick="startTimer()">Timer</button>
     <button type="button" onclick="showHistory()">History</button>
-    <button type="button" onclick="addNewPlayerManual()">Add NP</button>
+    <button type="button" onclick="addNewPlayerManual()">Add Player</button>
 </div>
     
 </div>
@@ -325,7 +326,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
      style="display:none; text-align:center; margin-top:12px;">
   <textarea
   id="matchNotes"
-  oninput="saveNow()" style="width:60%; max-width:500px; height:70px; font-size:16px; padding:8px;"
+  style="width:60%; max-width:500px; height:70px; font-size:16px; padding:8px;"
 >-</textarea>
 </div>
 </div>
@@ -341,30 +342,6 @@ select, input, button { font-size:inherit; font-family:inherit; }
   </div>
 </div>
     <script>
-        function checkWeeklyReset() {
-    const lastSession = localStorage.getItem("lastVisitDate");
-    const now = new Date();
-    const today = now.getTime();
-
-    if (lastSession) {
-        const lastDate = parseInt(lastSession);
-        const daysSince = (today - lastDate) / (1000 * 60 * 60 * 24);
-
-        // If it's been more than 3 days, clear everything and refresh
-        if (daysSince > 3) {
-            localStorage.clear(); // Clears rosters, scores, and history
-            localStorage.setItem("lastVisitDate", today.toString());
-            window.location.reload(); 
-            return;
-        }
-    }
-    
-    // Update the last visit to right now
-    localStorage.setItem("lastVisitDate", today.toString());
-}
-
-// Run this immediately on load
-checkWeeklyReset();
 let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
@@ -380,27 +357,31 @@ function updateRoster(sel, div) {
     const rosterData = scoresheetinfo[sel.value] || [];
     
     div.innerHTML = rosterData.map(p => {
-        // Determine if p is a simple string or our new object
-        const isObj = (typeof p === 'object' && p !== null);
-        const name = isObj ? p.name : p;
-        // Look up HC: if object, use p.hc; if string, look in scoresheetrosters
-        const hc = isObj ? p.hc : (scoresheetrosters[p] || 0);
+        // If name isn't in your scoresheetrosters.js file, it's a 3
+        const lookupHC = scoresheetrosters[p];
+        const hc = (lookupHC !== undefined && lookupHC !== 0) ? lookupHC : 3;
 
-        return `<div class="playerName" data-p="${name}" data-hc="${hc}">
-                    <span class="name">${name}</span>
+        return `<div class="playerName" data-p="${p}" data-hc="${hc}">
+                    <span class="name">${p}</span>
                     <span class="hc">${hc}</span>
                 </div>`;
     }).join("");
 }
+// 2. Event Listeners for Team Selection
+document.getElementById("team").addEventListener("change", function() {
+    updateRoster(this, document.getElementById("teamRoster"));
+});
+document.getElementById("opponent").addEventListener("change", function() {
+    updateRoster(this, document.getElementById("opponentRoster"));
+});
 
 // 3. Player Selection Logic (Lag Winner/Loser)
 document.addEventListener("click", e => {
     const playerDiv = e.target.closest(".playerName");
     if (!playerDiv) return;
 
-    // Pull directly from the data attributes we set in updateRoster
     const name = playerDiv.getAttribute("data-p");
-    const hc = playerDiv.getAttribute("data-hc") || 0;
+    const hc = playerDiv.getAttribute("data-hc");
 
     if (!flip) {
         document.getElementById("lagWinner").value = name;
@@ -415,6 +396,7 @@ document.addEventListener("click", e => {
     flip = !flip;
     saveNow();
 });
+
 // 4. Scoring UI Update
 function updateScoreUI() {
     const hScore = document.getElementById("homeScore");
@@ -481,6 +463,7 @@ function updateMatchWinner() {
     subBtn.style.display = winField.value ? "inline-block" : "none";
 }
 
+// 7. Submit to Google Sheets (Updated to NOT reset teams)
 document.getElementById("submitMatch").onclick = function() {
     const btn = this;
     btn.disabled = true;
@@ -524,16 +507,14 @@ document.getElementById("submitMatch").onclick = function() {
         history.push(data); 
         localStorage.setItem("matchHistory", JSON.stringify(history));
 
-        // --- UPDATE TEAM SCORES (REWRITTEN TO AVOID REVERSAL) ---
+        // --- Update Team Scores ---
         const winnerName = document.getElementById("matchWinner").value;
-        const playerAName = document.getElementById("lagWinner").value;
-        const playerBName = document.getElementById("lagLoser").value;
+        const homeTeamName = document.getElementById("team").value;
+        const homeRoster = scoresheetinfo[homeTeamName] || [];
 
-        // Directly compare the winner to the player slots
-        // Player A is always Home side in this logic
-        if (winnerName === playerAName) {
+        if (homeRoster.includes(winnerName)) {
             scores.home++;
-        } else if (winnerName === playerBName) {
+        } else {
             scores.away++;
         }
 
@@ -541,7 +522,7 @@ document.getElementById("submitMatch").onclick = function() {
         if ((scores.home + scores.away) >= 5) {
             alert(`Match night complete! Final Score: ${scores.home} - ${scores.away}. Resetting session.`);
             scores = { home: 0, away: 0 };
-            localStorage.removeItem("matchHistory"); 
+            localStorage.removeItem("matchHistory"); // Optional: clear history automatically after 5 games
         }
 
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
@@ -573,7 +554,6 @@ document.getElementById("submitMatch").onclick = function() {
         alert("Match submitted and saved to history!");
     })
     .catch(err => {
-        console.error(err);
         alert("Error submitting match. Please try again.");
         btn.disabled = false;
         btn.style.opacity = "1";
@@ -582,44 +562,47 @@ document.getElementById("submitMatch").onclick = function() {
 // 8. Save/Load Logic
 function saveNow() {
     if (isLoading) return;
-    const ids = [
-        "team","opponent","lagWinner","lagLoser","matchInnings","matchWinner",
-        "pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8",
-        "pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8",
-        "pA_coach","pB_coach","matchNotes" // Ensure these are here
-    ];
+    const ids = ["team","opponent","lagWinner","lagLoser","matchInnings","matchWinner","pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8","pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8","pA_coach","pB_coach","matchNotes"];
     const data = {};
     ids.forEach(id => {
         const el = document.getElementById(id);
-        if (el) {
-            data[id] = (el.type === "checkbox") ? el.checked : el.value;
-        }
+        if (el) data[id] = el.type === "checkbox" ? el.checked : el.value;
     });
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
 
 function loadScoresheet() {
+    // 1. Recover manual players from localStorage first
+    const savedManual = localStorage.getItem("manual_roster_additions");
+    if (savedManual) {
+        const parsed = JSON.parse(savedManual);
+        // Merge saved manual names into the global scoresheetinfo object
+        Object.assign(scoresheetinfo, parsed);
+    }
+
+    // 2. Load the rest of the form data
     const raw = localStorage.getItem(FORM_KEY);
     if (!raw) return;
+    
     isLoading = true;
     const data = JSON.parse(raw);
+    
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-            if (el.type === "checkbox") el.checked = data[id];
-            else el.value = data[id];
+            if (el.type === "checkbox") {
+                el.checked = data[id];
+            } else {
+                el.value = data[id];
+            }
         }
     });
 
-    // --- FIX: Update visual headers from the loaded hidden values ---
-    const lw = document.getElementById("lagWinner").value;
-    const ll = document.getElementById("lagLoser").value;
-    if (lw) document.getElementById("lagWinnerHeader").textContent = lw;
-    if (ll) document.getElementById("lagLoserHeader").textContent = ll;
-
+    // 3. Refresh rosters and winner status
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
     updateMatchWinner();
+    
     isLoading = false;
 }
 
@@ -653,42 +636,15 @@ function updateTimerDisplay() {
 
 // 10. Initialization
 window.addEventListener("DOMContentLoaded", () => {
-    const THREE_DAYS = 12 * 60 * 60 * 1000;
-
-    // Function to wipe data if it's been over 3 days
-    const performWeeklyReset = () => {
-        const now = Date.now();
-        const lastVisit = localStorage.getItem("lastVisitTimestamp");
-        if (lastVisit && (now - parseInt(lastVisit) > THREE_DAYS)) {
-            localStorage.clear();
-            location.reload(); // Force a fresh start
-        }
-        localStorage.setItem("lastVisitTimestamp", now.toString());
-    };
-
-    // Run check on initial load
-    performWeeklyReset();
-
-    // Fix for users who leave the tab open all week: checks when they return to the tab
-    document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "visible") performWeeklyReset();
-    });
-
     const params = new URLSearchParams(window.location.search);
     if (params.has("data")) {
-        const incomingData = decodeURIComponent(params.get("data"));
-        localStorage.setItem(FORM_KEY, incomingData);
+        localStorage.setItem(FORM_KEY, decodeURIComponent(params.get("data")));
         window.history.replaceState({}, document.title, window.location.pathname);
     }
-    
     loadScoresheet();
     updateScoreUI();
-    
-    const notes = document.getElementById("matchNotes").value;
-    if (notes && notes !== "-") {
-        document.getElementById("notesContainer").style.display = "block";
-    }
 });
+        // Function to show the history modal
 function showHistory() {
     const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
     const tbody = document.getElementById("historyTableBody");
@@ -721,14 +677,7 @@ function clearHistory() {
         showHistory();
     }
 }
-        // --- NEW PLAYER MODAL LOGIC ---
-
-// --- COMPLETE MODAL LOGIC WITH DEFAULT HANDICAP ---
-
-// --- COMPLETE MODAL LOGIC WITH DEFAULT HANDICAP ---
-
-function addNewPlayerManual() {
-    // Open the modal and focus the input
+        function addNewPlayerManual() {
     document.getElementById("playerModal").style.display = "flex";
     document.getElementById("manualPlayerName").value = "";
     document.getElementById("manualPlayerName").focus();
@@ -741,47 +690,32 @@ function closePlayerModal() {
 function confirmNewPlayer() {
     const nameInput = document.getElementById("manualPlayerName");
     const newName = nameInput.value.trim();
-    
-    if (!newName) {
-        alert("Please enter a name.");
-        return;
-    }
+    if (!newName) return;
     
     const side = document.querySelector('input[name="npTeam"]:checked').value;
-    const teamDropdownId = (side === 'home') ? "team" : "opponent";
-    const rosterDivId = (side === 'home') ? "teamRoster" : "opponentRoster";
-    
-    const teamDropdown = document.getElementById(teamDropdownId);
+    const teamDropdown = document.getElementById(side === 'home' ? "team" : "opponent");
+    const rosterDiv = document.getElementById(side === 'home' ? "teamRoster" : "opponentRoster");
     const teamName = teamDropdown.value;
     
     if (!teamName || teamName.includes("Select")) {
-        alert("Please select a team in the dropdown first.");
+        alert("Select a team first!");
         return;
     }
 
-    if (!scoresheetinfo[teamName]) {
-        scoresheetinfo[teamName] = [];
-    }
+    if (!scoresheetinfo[teamName]) scoresheetinfo[teamName] = [];
     
-    // Case-insensitive duplicate check
-    const exists = scoresheetinfo[teamName].some(p => 
-        (typeof p === 'string' ? p : p.name).toLowerCase() === newName.toLowerCase()
-    );
+    const exists = scoresheetinfo[teamName].some(p => p.toLowerCase() === newName.toLowerCase());
 
     if (!exists) {
-        // Add as object with default HC 3
-        scoresheetinfo[teamName].push({ name: newName, hc: 3 });
+        // Insert as simple text string
+        scoresheetinfo[teamName].push(newName);
         
         // Save to localStorage so they stay on refresh
-        localStorage.setItem("scoresheetinfo", JSON.stringify(scoresheetinfo));
+        localStorage.setItem("manual_roster_additions", JSON.stringify(scoresheetinfo));
         
-        // Refresh the box
-        updateRoster(teamDropdown, document.getElementById(rosterDivId));
+        updateRoster(teamDropdown, rosterDiv);
         saveNow();
-    } else {
-        alert("This player is already on the roster.");
     }
-
     closePlayerModal();
 }
 </script>
@@ -805,19 +739,5 @@ function confirmNewPlayer() {
     </div>
   </div>
 </div>
-  <div id="playerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
-  <div style="background:#222; padding:20px; border-radius:8px; width:90%; max-width:400px; border: 2px solid #1e90ff; text-align:center;">
-    <h3 style="color:#1e90ff; margin-bottom:20px;">Add New Player</h3>
-    <input type="text" id="manualPlayerName" placeholder="Enter Name" style="width:80%; padding:10px; font-size:18px; margin-bottom:20px; border-radius:4px; border:1px solid #444;">
-    <div style="margin-bottom: 20px;">
-      <label style="margin-right:15px;"><input type="radio" name="npTeam" value="home" checked> Home</label>
-      <label><input type="radio" name="npTeam" value="away"> Away</label>
-    </div>
-    <div style="display:flex; gap:10px; justify-content:center;">
-      <button onclick="closePlayerModal()" style="padding:10px 20px;">Cancel</button>
-      <button onclick="confirmNewPlayer()" style="padding:10px 20px; background:#1e90ff; color:white; border:none; border-radius:4px;">Add Player</button>
-    </div>
-  </div>
-</div>
-    </body>
+</body>
 </html>
