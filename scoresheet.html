@@ -463,7 +463,7 @@ function updateMatchWinner() {
     subBtn.style.display = winField.value ? "inline-block" : "none";
 }
 
-// 7. Submit to Google Sheets (Updated to NOT reset teams)
+// 7. Submit to Google Sheets
 document.getElementById("submitMatch").onclick = function() {
     const btn = this;
     btn.disabled = true;
@@ -506,6 +506,9 @@ document.getElementById("submitMatch").onclick = function() {
         const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
         history.push(data); 
         localStorage.setItem("matchHistory", JSON.stringify(history));
+        
+        // Update "Last Visit" timestamp for the 12-hour wipe
+        localStorage.setItem("lastSessionActivity", Date.now().toString());
 
         // --- Update Team Scores ---
         const winnerName = document.getElementById("matchWinner").value;
@@ -517,18 +520,10 @@ document.getElementById("submitMatch").onclick = function() {
         } else {
             scores.away++;
         }
-
-        // --- Auto-Reset Nightly Score if 5 matches reached ---
-        if ((scores.home + scores.away) >= 5) {
-            alert(`Match night complete! Final Score: ${scores.home} - ${scores.away}. Resetting session.`);
-            scores = { home: 0, away: 0 };
-            localStorage.removeItem("matchHistory"); // Optional: clear history automatically after 5 games
-        }
-
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
 
-        // --- RESET PLAYER FIELDS ONLY ---
+        // --- RESET PLAYER FIELDS ---
         const fieldsToReset = [
             "lagWinner", "lagLoser", "matchInnings", "matchWinner",
             "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8",
@@ -546,20 +541,33 @@ document.getElementById("submitMatch").onclick = function() {
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
 
+        // --- HANDLE 5TH MATCH SCENARIO ---
+        if ((scores.home + scores.away) >= 5) {
+            alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}. Resetting session fields, but history is saved.`);
+            // Reset Team Selections and Scores for the next league night
+            document.getElementById("team").selectedIndex = 0;
+            document.getElementById("opponent").selectedIndex = 0;
+            updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
+            updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
+            scores = { home: 0, away: 0 };
+            localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+            updateScoreUI();
+        }
+
         btn.style.display = "none";
         btn.disabled = false;
         btn.style.opacity = "1";
 
         saveNow();
-        alert("Match submitted and saved to history!");
+        alert("Match submitted!");
     })
     .catch(err => {
-        alert("Error submitting match. Please try again.");
+        alert("Error submitting match.");
         btn.disabled = false;
         btn.style.opacity = "1";
     });
 };
-// 8. Save/Load Logic
+    // 8. Save/Load Logic
 function saveNow() {
     if (isLoading) return;
     const ids = ["team","opponent","lagWinner","lagLoser","matchInnings","matchWinner","pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8","pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8","pA_coach","pB_coach","matchNotes"];
@@ -633,14 +641,31 @@ function updateTimerDisplay() {
     const secs = seconds % 60;
     document.getElementById("timerValue").textContent = `${mins}:${secs < 10 ? '0' + secs : secs}`;
 }
-
 // 10. Initialization
 window.addEventListener("DOMContentLoaded", () => {
+    // Check for 12-hour expiration since last activity
+    const lastActivity = localStorage.getItem("lastSessionActivity");
+    const twelveHours = 12 * 60 * 60 * 1000;
+
+    if (lastActivity && (Date.now() - parseInt(lastActivity)) > twelveHours) {
+        console.log("Session expired. Clearing history and manual players.");
+        localStorage.removeItem("matchHistory");
+        localStorage.removeItem("manual_roster_additions");
+        localStorage.removeItem("teamMatchScores");
+        localStorage.removeItem(FORM_KEY);
+        localStorage.removeItem("lastSessionActivity");
+        scores = { home: 0, away: 0 };
+    } else {
+        // If within 12 hours, update activity timestamp to "now"
+        localStorage.setItem("lastSessionActivity", Date.now().toString());
+    }
+
     const params = new URLSearchParams(window.location.search);
     if (params.has("data")) {
         localStorage.setItem(FORM_KEY, decodeURIComponent(params.get("data")));
         window.history.replaceState({}, document.title, window.location.pathname);
     }
+    
     loadScoresheet();
     updateScoreUI();
 });
