@@ -482,7 +482,6 @@ function updateMatchWinner() {
     subBtn.style.display = winField.value ? "inline-block" : "none";
 }
 
-// 7. Submit to Google Sheets (Updated to NOT reset teams)
 document.getElementById("submitMatch").onclick = function() {
     const btn = this;
     btn.disabled = true;
@@ -526,14 +525,16 @@ document.getElementById("submitMatch").onclick = function() {
         history.push(data); 
         localStorage.setItem("matchHistory", JSON.stringify(history));
 
-        // --- Update Team Scores ---
+        // --- UPDATE TEAM SCORES (REWRITTEN TO AVOID REVERSAL) ---
         const winnerName = document.getElementById("matchWinner").value;
-        const homeTeamName = document.getElementById("team").value;
-        const homeRoster = scoresheetinfo[homeTeamName] || [];
+        const playerAName = document.getElementById("lagWinner").value;
+        const playerBName = document.getElementById("lagLoser").value;
 
-        if (homeRoster.includes(winnerName)) {
+        // Directly compare the winner to the player slots
+        // Player A is always Home side in this logic
+        if (winnerName === playerAName) {
             scores.home++;
-        } else {
+        } else if (winnerName === playerBName) {
             scores.away++;
         }
 
@@ -541,7 +542,7 @@ document.getElementById("submitMatch").onclick = function() {
         if ((scores.home + scores.away) >= 5) {
             alert(`Match night complete! Final Score: ${scores.home} - ${scores.away}. Resetting session.`);
             scores = { home: 0, away: 0 };
-            localStorage.removeItem("matchHistory"); // Optional: clear history automatically after 5 games
+            localStorage.removeItem("matchHistory"); 
         }
 
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
@@ -573,6 +574,7 @@ document.getElementById("submitMatch").onclick = function() {
         alert("Match submitted and saved to history!");
     })
     .catch(err => {
+        console.error(err);
         alert("Error submitting match. Please try again.");
         btn.disabled = false;
         btn.style.opacity = "1";
