@@ -55,7 +55,7 @@ const scoresheetrosters = {
     "Pete Steele":2,
     "Phil Nelson":2,
     "Randy Rycraft":4,
-    "Rico Urvina":3,
+    "Ricardo Urvina":3,
     "Rob Zwart":4,
     "Rocky Oiler Sr.":3,
     "Ron Podborny":2,
