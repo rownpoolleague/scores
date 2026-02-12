@@ -275,7 +275,7 @@ const masterlist = [
   { "Player #": "768", "Player Name": "Monreal, Joanne", "Handicap": 2 },
   { "Player #": "391", "Player Name": "Monreal, Julio", "Handicap": 3 },
   { "Player #": "98", "Player Name": "Monte, Butch", "Handicap": 3 },
-  { "Player #": "280", "Player Name": "Monte, Julie", "Handicap": 3 }
+  { "Player #": "280", "Player Name": "Monte, Julie", "Handicap": 3 },
   { "Player #": "531", "Player Name": "Moore, Jimmy", "Handicap": 2 },
   { "Player #": "508", "Player Name": "Moore, Liz", "Handicap": 2 },
   { "Player #": "794", "Player Name": "Morales, Matt", "Handicap": 4 },
@@ -739,4 +739,4 @@ const masterlist = [
   { "Player #": "484", "Player Name": "Troio, Jim", "Handicap": 4 },
   { "Player #": "218", "Player Name": "Upchurch, Mike", "Handicap": 6 },
   { "Player #": "304", "Player Name": "Zbonski, Mike Jr.", "Handicap": 5 }
-]
+];
