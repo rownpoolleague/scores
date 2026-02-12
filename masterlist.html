@@ -9,7 +9,7 @@
         .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         
         /* Sticky Menu */
-        nav { position: sticky; top: 0; background: white; padding: 10px 0; border-bottom: 2px solid #eee; display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        nav { position: sticky; top: 0; background: white; padding: 10px 0; border-bottom: 2px solid #eee; display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; z-index: 10; }
         nav a { text-decoration: none; color: #007bff; font-weight: bold; padding: 5px 10px; border: 1px solid #007bff; border-radius: 4px; font-size: 0.9rem; }
         nav a:hover { background: #007bff; color: white; }
 
@@ -43,56 +43,59 @@
 <script>
     // Groups for navigation
     const groups = [
-        { label: "A-E", range: /[A-E]/i },
-        { label: "F-J", range: /[F-J]/i },
-        { label: "K-O", range: /[K-O]/i },
-        { label: "P-T", range: /[P-T]/i },
-        { label: "U-Z", range: /[U-Z]/i }
+        { label: "A-E", range: /[A-E]/i, id: "A-E" },
+        { label: "F-J", range: /[F-J]/i, id: "F-J" },
+        { label: "K-O", range: /[K-O]/i, id: "K-O" },
+        { label: "P-T", range: /[P-T]/i, id: "P-T" },
+        { label: "U-Z", range: /[U-Z]/i, id: "U-Z" }
     ];
 
     const container = document.getElementById('list-container');
 
-    groups.forEach(group => {
-        // Filter players whose last name starts with a letter in the range
-        const filtered = players.filter(p => group.range.test(p["Player Name"][0]));
+    // Check if masterlist is loaded
+    if (typeof masterlist !== 'undefined') {
+        groups.forEach(group => {
+            // FIXED: Changed 'players' to 'masterlist'
+            const filtered = masterlist.filter(p => group.range.test(p["Player Name"][0]));
 
-        if (filtered.length > 0) {
-            // Create Section Header
-            const header = document.createElement('h3');
-            header.className = 'section-header';
-            header.id = group.label;
-            header.innerText = group.label;
-            container.appendChild(header);
+            if (filtered.length > 0) {
+                const header = document.createElement('h3');
+                header.className = 'section-header';
+                header.id = group.id;
+                header.innerText = group.label;
+                container.appendChild(header);
 
-            // Create Table
-            let tableHtml = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="pnum">#</th>
-                            <th>Player Name</th>
-                            <th class="hcap">HC</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            filtered.forEach(p => {
-                tableHtml += `
-                    <tr>
-                        <td class="pnum">${p["Player #"]}</td>
-                        <td>${p["Player Name"]}</td>
-                        <td class="hcap">${p["Handicap"]}</td>
-                    </tr>
+                let tableHtml = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="pnum">#</th>
+                                <th>Player Name</th>
+                                <th class="hcap">HC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                 `;
-            });
 
-            tableHtml += `</tbody></table>`;
-            const wrapper = document.createElement('div');
-            wrapper.innerHTML = tableHtml;
-            container.appendChild(wrapper);
-        }
-    });
+                filtered.forEach(p => {
+                    tableHtml += `
+                        <tr>
+                            <td class="pnum">${p["Player #"]}</td>
+                            <td>${p["Player Name"]}</td>
+                            <td class="hcap">${p["Handicap"]}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHtml += `</tbody></table>`;
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = tableHtml;
+                container.appendChild(wrapper);
+            }
+        });
+    } else {
+        container.innerHTML = "<p style='color:red'>Error: 'masterlist' variable not found in master.js</p>";
+    }
 </script>
 
 </body>
