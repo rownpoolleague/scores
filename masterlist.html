@@ -4,20 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player Master List</title>
+    
+    <script src="master.js" defer></script>
+
     <style>
         body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
         .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        
-        /* Sticky Menu */
         nav { position: sticky; top: 0; background: white; padding: 10px 0; border-bottom: 2px solid #eee; display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; z-index: 10; }
         nav a { text-decoration: none; color: #007bff; font-weight: bold; padding: 5px 10px; border: 1px solid #007bff; border-radius: 4px; font-size: 0.9rem; }
-        nav a:hover { background: #007bff; color: white; }
-
         .section-header { background: #333; color: white; padding: 10px; margin-top: 20px; border-radius: 4px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { text-align: left; padding: 12px; border-bottom: 1px solid #ddd; }
-        th { background: #f8f8f8; font-size: 0.8rem; text-transform: uppercase; color: #666; }
-        tr:hover { background: #f9f9f9; }
         .hcap { font-weight: bold; color: #d9534f; width: 50px; text-align: center; }
         .pnum { color: #888; width: 80px; }
     </style>
@@ -26,7 +23,6 @@
 
 <div class="container">
     <h2>Player Master List</h2>
-    
     <nav id="menu">
         <a href="#A-E">A - E</a>
         <a href="#F-J">F - J</a>
@@ -34,68 +30,48 @@
         <a href="#P-T">P - T</a>
         <a href="#U-Z">U - Z</a>
     </nav>
-
     <div id="list-container"></div>
 </div>
 
-<script src="master.js"></script>
-
 <script>
-    // Groups for navigation
-    const groups = [
-        { label: "A-E", range: /[A-E]/i, id: "A-E" },
-        { label: "F-J", range: /[F-J]/i, id: "F-J" },
-        { label: "K-O", range: /[K-O]/i, id: "K-O" },
-        { label: "P-T", range: /[P-T]/i, id: "P-T" },
-        { label: "U-Z", range: /[U-Z]/i, id: "U-Z" }
-    ];
+    // This window.onload ensures the script waits until master.js is fully read
+    window.onload = function() {
+        const groups = [
+            { label: "A-E", range: /[A-E]/i, id: "A-E" },
+            { label: "F-J", range: /[F-J]/i, id: "F-J" },
+            { label: "K-O", range: /[K-O]/i, id: "K-O" },
+            { label: "P-T", range: /[P-T]/i, id: "P-T" },
+            { label: "U-Z", range: /[U-Z]/i, id: "U-Z" }
+        ];
 
-    const container = document.getElementById('list-container');
+        const container = document.getElementById('list-container');
 
-    // Check if masterlist is loaded
-    if (typeof masterlist !== 'undefined') {
-        groups.forEach(group => {
-            // FIXED: Changed 'players' to 'masterlist'
-            const filtered = masterlist.filter(p => group.range.test(p["Player Name"][0]));
+        if (typeof masterlist !== 'undefined') {
+            groups.forEach(group => {
+                const filtered = masterlist.filter(p => group.range.test(p["Player Name"][0]));
 
-            if (filtered.length > 0) {
-                const header = document.createElement('h3');
-                header.className = 'section-header';
-                header.id = group.id;
-                header.innerText = group.label;
-                container.appendChild(header);
+                if (filtered.length > 0) {
+                    const header = document.createElement('h3');
+                    header.className = 'section-header';
+                    header.id = group.id;
+                    header.innerText = group.label;
+                    container.appendChild(header);
 
-                let tableHtml = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="pnum">#</th>
-                                <th>Player Name</th>
-                                <th class="hcap">HC</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-
-                filtered.forEach(p => {
-                    tableHtml += `
-                        <tr>
-                            <td class="pnum">${p["Player #"]}</td>
-                            <td>${p["Player Name"]}</td>
-                            <td class="hcap">${p["Handicap"]}</td>
-                        </tr>
-                    `;
-                });
-
-                tableHtml += `</tbody></table>`;
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = tableHtml;
-                container.appendChild(wrapper);
-            }
-        });
-    } else {
-        container.innerHTML = "<p style='color:red'>Error: 'masterlist' variable not found in master.js</p>";
-    }
+                    let tableHtml = `<table><thead><tr><th class="pnum">#</th><th>Player Name</th><th class="hcap">HC</th></tr></thead><tbody>`;
+                    filtered.forEach(p => {
+                        tableHtml += `<tr><td class="pnum">${p["Player #"]}</td><td>${p["Player Name"]}</td><td class="hcap">${p["Handicap"]}</td></tr>`;
+                    });
+                    tableHtml += `</tbody></table>`;
+                    
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = tableHtml;
+                    container.appendChild(wrapper);
+                }
+            });
+        } else {
+            container.innerHTML = "<p style='color:red'>Still can't find 'masterlist' in master.js. Check the file name and path.</p>";
+        }
+    };
 </script>
 
 </body>
