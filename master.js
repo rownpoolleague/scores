@@ -446,7 +446,7 @@ const masterlist = [
   { "Player #": "899", "Player Name": "Sandman, Jackie", "Handicap": 2 },
   { "Player #": "209", "Player Name": "Santor, Chris", "Handicap": 5 },
   { "Player #": "158", "Player Name": "Sauser, Bob", "Handicap": 3 },
-  { "Player #": "550", "Player Name": "Savaglio, George", "Handicap": 3 }
+  { "Player #": "550", "Player Name": "Savaglio, George", "Handicap": 3 },
   { "Player #": "562", "Player Name": "Sawyer, Mike", "Handicap": 2 },
   { "Player #": "260", "Player Name": "Scales, Greg", "Handicap": 4 },
   { "Player #": "648", "Player Name": "Scanlon, Pat", "Handicap": 2 },
