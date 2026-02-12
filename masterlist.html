@@ -1,29 +1,191 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Debug Test</title>
-</head>
-<body style="background: #222; color: #fff; font-family: sans-serif;">
-
-    <h1>Data Connection Test</h1>
-    <div id="test-output">Waiting for data...</div>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Master List</title>
     <script src="master.js"></script>
-
-    <script>
-        const display = document.getElementById('test-output');
-
-        if (typeof masterlist !== 'undefined') {
-            // If it finds the list, show the first player's name
-            const firstName = masterlist[0]["Player Name"];
-            display.innerHTML = "Success! Found: " + firstName;
-            display.style.color = "lime";
-        } else {
-            // If it fails, show this
-            display.innerHTML = "FAILED: 'masterlist' is still undefined.";
-            display.style.color = "red";
+    
+    <style>
+        :root {
+            --gold: #ffcc00;
+            --blue: #00d4ff;
+            --bg: #121212;
+            --card: #1e1e1e;
+            --text: #eeeeee;
         }
-    </script>
+
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding-bottom: 50px;
+        }
+
+        /* Sticky Navigation Bar */
+        nav { 
+            position: sticky; 
+            top: 0; 
+            background: rgba(30, 30, 30, 0.95); 
+            backdrop-filter: blur(10px);
+            padding: 15px 0; 
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            border-bottom: 2px solid #333;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        nav a { 
+            text-decoration: none; 
+            color: var(--blue); 
+            font-weight: bold; 
+            padding: 8px 16px; 
+            border: 1px solid var(--blue); 
+            border-radius: 4px; 
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        nav a:hover { 
+            background: var(--blue); 
+            color: #000; 
+        }
+
+        .container { max-width: 1000px; margin: auto; padding: 20px; }
+
+        .section-header { 
+            background: linear-gradient(90deg, #333, #121212);
+            color: var(--gold); 
+            padding: 12px 20px; 
+            margin-top: 50px; 
+            border-left: 5px solid var(--gold);
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            scroll-margin-top: 80px; /* Offset for sticky nav */
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            background: var(--card); 
+            margin-top: 10px;
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
+        }
+
+        th { 
+            background: #252525; 
+            color: #888; 
+            text-align: left; 
+            padding: 15px; 
+            font-size: 0.8rem; 
+            text-transform: uppercase; 
+        }
+
+        td { 
+            padding: 15px; 
+            border-bottom: 1px solid #2a2a2a; 
+            font-size: 1.1rem;
+        }
+
+        tr:hover { background: #252525; }
+
+        .hcap { 
+            font-weight: bold; 
+            color: var(--gold); 
+            text-align: center; 
+            width: 80px;
+            font-size: 1.2rem;
+        }
+
+        .pnum { 
+            color: #666; 
+            width: 100px; 
+            font-family: monospace;
+        }
+
+        .empty-msg { padding: 20px; color: #555; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#A-E">A - E</a>
+    <a href="#F-J">F - J</a>
+    <a href="#K-O">K - O</a>
+    <a href="#P-T">P - T</a>
+    <a href="#U-Z">U - Z</a>
+</nav>
+
+<div class="container">
+    <h1 style="text-align: center; color: var(--gold); margin-bottom: 10px;">PRO-AM MASTER LIST</h1>
+    <p style="text-align: center; color: #777; margin-bottom: 40px;">Official Player Handicap Index</p>
+    
+    <div id="list-output"></div>
+</div>
+
+<script>
+    const groups = [
+        { label: "A - E", range: /^[A-E]/i, id: "A-E" },
+        { label: "F - J", range: /^[F-J]/i, id: "F-J" },
+        { label: "K - O", range: /^[K-O]/i, id: "K-O" },
+        { label: "P - T", range: /^[P-T]/i, id: "P-T" },
+        { label: "U - Z", range: /^[U-Z]/i, id: "U-Z" }
+    ];
+
+    const output = document.getElementById('list-output');
+
+    // Double check that masterlist exists before running
+    if (typeof masterlist !== 'undefined') {
+        groups.forEach(group => {
+            // Filter players by the first letter of their Name
+            const filtered = masterlist.filter(p => group.range.test(p["Player Name"]));
+
+            // Build the Section Header
+            const header = document.createElement('div');
+            header.className = 'section-header';
+            header.id = group.id;
+            header.innerText = group.label;
+            output.appendChild(header);
+
+            if (filtered.length > 0) {
+                let tableHtml = `<table>
+                    <thead>
+                        <tr>
+                            <th class="pnum">Player #</th>
+                            <th>Name</th>
+                            <th class="hcap">HC</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+                
+                filtered.forEach(p => {
+                    tableHtml += `
+                        <tr>
+                            <td class="pnum">${p["Player #"]}</td>
+                            <td>${p["Player Name"]}</td>
+                            <td class="hcap">${p["Handicap"]}</td>
+                        </tr>`;
+                });
+
+                tableHtml += `</tbody></table>`;
+                const tableWrapper = document.createElement('div');
+                tableWrapper.innerHTML = tableHtml;
+                output.appendChild(tableWrapper);
+            } else {
+                const empty = document.createElement('div');
+                empty.className = 'empty-msg';
+                empty.innerText = "No players found in this range.";
+                output.appendChild(empty);
+            }
+        });
+    } else {
+        output.innerHTML = "<h2 style='color:red; text-align:center;'>Error: Could not load masterlist from master.js</h2>";
+    }
+</script>
 
 </body>
 </html>
