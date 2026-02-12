@@ -11,7 +11,7 @@ const scoresheetrosters = {
     "Doc Halek":4,
     "Don Murphy":3,
     "Don Rak":6,
-    "Don Young":3,
+    "Don Young":2,
     "Doug Andrus":4,
     "Doug Misner":4,
     "Enrique Meza":2,
