@@ -10,13 +10,17 @@
             color: #fff; 
             font-family: sans-serif; 
             display: flex; 
-            justify-content: center; 
-            padding-top: 50px;
+            flex-direction: column; /* Stack H2 and Table vertically */
+            align-items: center; 
+            padding: 20px;
+            margin: 0;
+        }
+        #mvp-container {
+            width: 100%; /* Container takes full width */
         }
         table { 
             border-collapse: collapse; 
-            width: 80%; 
-            max-width: 600px;
+            width: 100%; /* Table fills the container */
             background-color: #1a1a1a;
         }
         th, td { 
@@ -26,15 +30,19 @@
         }
         th { 
             background-color: #333; 
-            color: #00ff00; /* Distinct color for headers */
+            color: #00ff00; 
         }
         h2 { 
             text-align: center; 
             color: #fff;
+            margin-bottom: 20px;
         }
         tr:nth-child(even) {
             background-color: #222;
         }
+        /* Make columns consistent */
+        th:nth-child(1), td:nth-child(1) { width: 10%; text-align: center; } /* Rank */
+        th:nth-child(3), td:nth-child(3) { width: 15%; text-align: center; } /* Points */
     </style>
 </head>
 <body>
@@ -46,7 +54,7 @@
                 <tr>
                     <th>Rank</th>
                     <th>Player Name</th>
-                    <th>Score</th>
+                    <th>Points</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -57,9 +65,8 @@
     <script>
         function populateTable(tableId, data) {
             const tbody = document.querySelector(`#${tableId} tbody`);
-            tbody.innerHTML = ""; // Clear existing content
+            tbody.innerHTML = ""; 
             
-            // Only take the top 20
             data.slice(0, 20).forEach((player, index) => {
                 const row = `<tr>
                     <td>${index + 1}</td>
