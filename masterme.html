@@ -147,7 +147,7 @@
 <body>
     <div class="form-wrapper">
 <div class="container">
-    <h1 style="text-align: center; color: var(--gold); margin-bottom: 10px;">R-OWN POOL LEAGUE MASTER LIST (Pre Fall 2023)</h1>
+    <h1 style="text-align: center; color: var(--gold); margin-bottom: 10px;">R-OWN POOL LEAGUE MASTER LIST (Since Fall 2023)</h1>
     <p style="text-align: center; color: #fff; margin-bottom: 40px;">Search by LAST name</p>
       <nav style="flex-wrap: wrap; justify-content: center; gap: 5px;">
     <script>
@@ -163,11 +163,11 @@
 <script>
     const output = document.getElementById('list-output');
 
-    if (typeof masterlist !== 'undefined') {
+    if (typeof masterme !== 'undefined') {
         const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
         letters.forEach(letter => {
-            const filtered = masterlist.filter(p => p["Player Name"].trim().toUpperCase().startsWith(letter));
+            const filtered = masterme.filter(p => p["Player Name"].trim().toUpperCase().startsWith(letter));
 
             if (filtered.length > 0) {
                 const header = document.createElement('div');
@@ -202,7 +202,7 @@
             }
         });
     } else {
-        output.innerHTML = "<h2 style='color:red; text-align:center;'>Error: Could not load masterlist from masterme.js</h2>";
+        output.innerHTML = "<h2 style='color:red; text-align:center;'>Error: Could not load masterme from masterme.js</h2>";
     }
 </script>
     <div class="floating-buttons">
