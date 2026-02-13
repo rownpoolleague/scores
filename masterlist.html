@@ -116,12 +116,38 @@
     border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
     box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
 }
+         .floating-buttons {
+        position: fixed;
+        bottom: 5px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 25px; /* Space between buttons */
+        z-index: 999;
+    }
+         /* Button styling */
+    .fab {
+    background-color: #4af;
+    color: white;
+    border: none;
+    border-radius: 6px; /* small rounded corners, optional */
+    padding: 12px 20px; /* controls size */
+    font-size: 18px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .fab:hover {
+        background-color: #0056b3;
+    }
     </style>
 </head>
 <body>
     <div class="form-wrapper">
 <div class="container">
-    <h1 style="text-align: center; color: var(--gold); margin-bottom: 10px;">R-OWN POOL LEAGUE MASTER LIST</h1>
+    <h1 style="text-align: center; color: var(--gold); margin-bottom: 10px;">R-OWN POOL LEAGUE MASTER LIST (Pre Fall 2023)</h1>
     <p style="text-align: center; color: #fff; margin-bottom: 40px;">Search by LAST name</p>
       <nav style="flex-wrap: wrap; justify-content: center; gap: 5px;">
     <script>
@@ -179,5 +205,8 @@
         output.innerHTML = "<h2 style='color:red; text-align:center;'>Error: Could not load masterlist from master.js</h2>";
     }
 </script>
+    <div class="floating-buttons">
+    <button class="fab" onclick="window.location.href='index.html'">Main Menu</button>
+</div>
 </body>
 </html>
