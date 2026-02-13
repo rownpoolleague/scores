@@ -58,23 +58,23 @@
 
        /* Styling for the Menu link in the section headers */
 .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: relative; /* Allows absolute positioning inside */
 }
 
 .main-menu-link {
-    text-decoration: none; /* Removes underline */
-    color: var(--blue);    /* Or any color you prefer */
-    font-size: 0.9rem;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-decoration: none;
+    color: var(--blue);
+    font-size: 0.8rem;
     font-weight: bold;
-    text-transform: uppercase;
 }
 
 .main-menu-link:hover {
     color: var(--gold);
 }
-
         table { 
             width: 100%; 
             border-collapse: collapse; 
