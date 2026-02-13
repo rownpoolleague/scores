@@ -56,16 +56,24 @@
         }
         .container { max-width: 1000px; margin: auto; padding: 20px; }
 
-        .section-header { 
-            background: linear-gradient(90deg, #333, #121212);
-            color: var(--gold); 
-            padding: 12px 20px; 
-            margin-top: 50px; 
-            border-left: 5px solid var(--gold);
-            font-size: 1.5rem;
-            letter-spacing: 1px;
-            scroll-margin-top: 80px; /* Offset for sticky nav */
-        }
+       /* Styling for the Menu link in the section headers */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-menu-link {
+    text-decoration: none; /* Removes underline */
+    color: var(--blue);    /* Or any color you prefer */
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.main-menu-link:hover {
+    color: var(--gold);
+}
 
         table { 
             width: 100%; 
@@ -147,9 +155,10 @@ header.className = 'section-header';
 header.id = letter;
 
 // Add the Letter and the Floating Menu Link pointing to index.html
+// Add the Letter and the Floating Menu Link pointing to index.html
 header.innerHTML = `
     <span>${letter}</span>
-    <a href="index.html" class="main-menu-link">Main Menu</a>
+    <a href="index.html" class="main-menu-link">MENU</a>
 `;
 
 output.appendChild(header);
