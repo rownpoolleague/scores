@@ -40,18 +40,20 @@
             text-decoration: none; 
             color: #4af; 
             font-weight: bold; 
-            padding: 8px 16px; 
-            border: 1px solid #4af; 
-            border-radius: 4px; 
-            transition: all 0.3s;
-            font-size: 0.9rem;
+            transition: color 0.3s;
+            font-size: 1.1rem;
+            padding: 0 2px;
         }
 
         nav a:hover { 
-            background: #4af; 
-            color: #000; 
+            color: var(--gold); 
         }
 
+        /* Dash styling */
+        .nav-separator {
+            color: #666;
+            user-select: none;
+        }
         .container { max-width: 1000px; margin: auto; padding: 20px; }
 
         .section-header { 
@@ -120,42 +122,33 @@
 <div class="container">
     <h1 style="text-align: center; color: var(--gold); margin-bottom: 10px;">R-OWN POOL LEAGUE MASTER LIST</h1>
     <p style="text-align: center; color: #fff; margin-bottom: 40px;">Search by LAST name</p>
-        <nav>
-    <a href="#A-E">A - E</a>
-    <a href="#F-J">F - J</a>
-    <a href="#K-O">K - O</a>
-    <a href="#P-T">P - T</a>
-    <a href="#U-Z">U - Z</a>
+      <nav style="flex-wrap: wrap; justify-content: center; gap: 5px;">
+    <script>
+        const navLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        const navHtml = navLetters.map(l => `<a href="#${l}">${l}</a>`).join('<span class="nav-separator">-</span>');
+        document.write(navHtml);
+    </script>
 </nav>
     <div id="list-output"></div>
 </div>
 
     </div>
 <script>
-    const groups = [
-        { label: "A - E", range: /^[A-E]/i, id: "A-E" },
-        { label: "F - J", range: /^[F-J]/i, id: "F-J" },
-        { label: "K - O", range: /^[K-O]/i, id: "K-O" },
-        { label: "P - T", range: /^[P-T]/i, id: "P-T" },
-        { label: "U - Z", range: /^[U-Z]/i, id: "U-Z" }
-    ];
-
     const output = document.getElementById('list-output');
 
-    // Double check that masterlist exists before running
     if (typeof masterlist !== 'undefined') {
-        groups.forEach(group => {
-            // Filter players by the first letter of their Name
-            const filtered = masterlist.filter(p => group.range.test(p["Player Name"]));
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-            // Build the Section Header
-            const header = document.createElement('div');
-            header.className = 'section-header';
-            header.id = group.id;
-            header.innerText = group.label;
-            output.appendChild(header);
+        letters.forEach(letter => {
+            const filtered = masterlist.filter(p => p["Player Name"].trim().toUpperCase().startsWith(letter));
 
             if (filtered.length > 0) {
+                const header = document.createElement('div');
+                header.className = 'section-header';
+                header.id = letter;
+                header.innerText = letter;
+                output.appendChild(header);
+
                 let tableHtml = `<table>
                     <thead>
                         <tr>
@@ -179,17 +172,11 @@
                 const tableWrapper = document.createElement('div');
                 tableWrapper.innerHTML = tableHtml;
                 output.appendChild(tableWrapper);
-            } else {
-                const empty = document.createElement('div');
-                empty.className = 'empty-msg';
-                empty.innerText = "No players found in this range.";
-                output.appendChild(empty);
             }
         });
     } else {
         output.innerHTML = "<h2 style='color:red; text-align:center;'>Error: Could not load masterlist from master.js</h2>";
     }
 </script>
-
 </body>
 </html>
