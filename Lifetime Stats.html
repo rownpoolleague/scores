@@ -137,10 +137,17 @@ th {
 .col-right {
   text-align: right;
 }
+  .form-wrapper {
+    width: 100%; /* Spans full width */
+    padding: 2px;
+    border: 4px solid #1e90ff;
+    border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
+    box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
+}
 </style>
 </head>
   <body>
-
+<div class="form-wrapper">
 <!-- MODAL -->
 <div id="statModal">
   <div id="statModalContent">
@@ -333,5 +340,6 @@ ${ranked.slice(0, 10).map((p, i) => `
 <footer>
     <img src="white transparent.png" style="margin-top:35px" alt="League Logo" class="footer-logo">
 </footer>
+</div>
 </body>
 </html>
