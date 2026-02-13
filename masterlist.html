@@ -101,11 +101,189 @@
             font-size: 1.2rem;
         }
 
-        .pnum { 
-            color: #666; 
-            width: 100px; 
-            font-family: monospace;
+       <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Master List</title>
+    <script src="master.js"></script>
+    
+    <style>
+        :root {
+            --gold: #ffcc00;
+            --blue: #00d4ff;
+            --bg: #121212;
+            --card: #1e1e1e;
+            --text: #eeeeee;
         }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding-bottom: 50px;
+        }
+
+        /* Sticky Navigation Bar */
+        nav { 
+            position: sticky; 
+            top: 0;
+            padding: 15px 0; 
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            border-bottom: 2px solid #333;
+            z-index: 1000;
+           
+        }
+
+        nav a { 
+            text-decoration: none; 
+            color: #4af; 
+            font-weight: bold; 
+            transition: color 0.3s;
+            font-size: .9rem;
+            padding: 0 2px;
+        }
+
+        nav a:hover { 
+            color: var(--gold); 
+        }
+
+        /* Dash styling */
+        .nav-separator {
+            color: #fff;
+            user-select: none;
+        }
+        .container { max-width: 1000px; margin: auto; padding: 20px; }
+
+        .section-header { 
+            background: linear-gradient(90deg, #333, #121212);
+            color: var(--gold); 
+            padding: 12px 20px; 
+            margin-top: 50px; 
+            border-left: 5px solid var(--gold);
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            scroll-margin-top: 80px; /* Offset for sticky nav */
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            background: var(--card); 
+            margin-top: 10px;
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
+        }
+
+        th { 
+            background: #252525; 
+            color: #888; 
+            text-align: left; 
+            padding: 15px; 
+            font-size: 0.8rem; 
+            text-transform: uppercase; 
+        }
+
+        td { 
+            padding: 15px; 
+            border-bottom: 1px solid #2a2a2a; 
+            font-size: 1.1rem;
+        }
+
+        tr:hover { background: #252525; }
+
+        .hcap { 
+            font-weight: bold; 
+            color: var(--gold); 
+            text-align: center; 
+            width: 80px;
+            font-size: 1.2rem;
+        }
+
+        .pnum { 
+    color: var(--text); /* Changed from #666 to match the names */
+    width: 100px; 
+    font-family: monospace;
+}
+
+        .empty-msg { padding: 20px; color: #555; font-style: italic; }
+        .form-wrapper {
+    width: 100%; /* Spans full width */
+    padding: 2px;
+    border: 4px solid #1e90ff;
+    border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
+    box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
+}
+    </style>
+</head>
+<body>
+    <div class="form-wrapper">
+<div class="container">
+    <h1 style="text-align: center; color: var(--gold); margin-bottom: 10px;">R-OWN POOL LEAGUE MASTER LIST</h1>
+    <p style="text-align: center; color: #fff; margin-bottom: 40px;">Search by LAST name</p>
+      <nav style="flex-wrap: wrap; justify-content: center; gap: 5px;">
+    <script>
+        const navLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        const navHtml = navLetters.map(l => `<a href="#${l}">${l}</a>`).join('<span class="nav-separator">-</span>');
+        document.write(navHtml);
+    </script>
+</nav>
+    <div id="list-output"></div>
+</div>
+
+    </div>
+<script>
+    const output = document.getElementById('list-output');
+
+    if (typeof masterlist !== 'undefined') {
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+        letters.forEach(letter => {
+            const filtered = masterlist.filter(p => p["Player Name"].trim().toUpperCase().startsWith(letter));
+
+            if (filtered.length > 0) {
+                const header = document.createElement('div');
+                header.className = 'section-header';
+                header.id = letter;
+                header.innerText = letter;
+                output.appendChild(header);
+
+                let tableHtml = `<table>
+                    <thead>
+                        <tr>
+                            <th class="pnum">Player #</th>
+                            <th>Name</th>
+                            <th class="hcap">HC</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+                
+                filtered.forEach(p => {
+                    tableHtml += `
+                        <tr>
+                            <td class="pnum">${p["Player #"]}</td>
+                            <td>${p["Player Name"]}</td>
+                            <td class="hcap">${p["Handicap"]}</td>
+                        </tr>`;
+                });
+
+                tableHtml += `</tbody></table>`;
+                const tableWrapper = document.createElement('div');
+                tableWrapper.innerHTML = tableHtml;
+                output.appendChild(tableWrapper);
+            }
+        });
+    } else {
+        output.innerHTML = "<h2 style='color:red; text-align:center;'>Error: Could not load masterlist from master.js</h2>";
+    }
+</script>
+</body>
+</html>
+
 
         .empty-msg { padding: 20px; color: #555; font-style: italic; }
         .form-wrapper {
