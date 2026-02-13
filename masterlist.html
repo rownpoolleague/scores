@@ -77,14 +77,13 @@
         }
 
         th { 
-            background: #252525; 
-            color: #888; 
-            text-align: left; 
-            padding: 15px; 
-            font-size: 0.8rem; 
-            text-transform: uppercase; 
-        }
-
+    background: #252525; 
+    color: var(--text); /* Changed from #888 to match the names */
+    text-align: left; 
+    padding: 15px; 
+    font-size: 0.8rem; 
+    text-transform: uppercase; 
+}
         td { 
             padding: 15px; 
             border-bottom: 1px solid #2a2a2a; 
@@ -283,78 +282,4 @@
 </script>
 </body>
 </html>
-
-
-        .empty-msg { padding: 20px; color: #555; font-style: italic; }
-        .form-wrapper {
-    width: 100%; /* Spans full width */
-    padding: 2px;
-    border: 4px solid #1e90ff;
-    border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
-    box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
-}
-    </style>
-</head>
-<body>
-    <div class="form-wrapper">
-<div class="container">
-    <h1 style="text-align: center; color: var(--gold); margin-bottom: 10px;">R-OWN POOL LEAGUE MASTER LIST</h1>
-    <p style="text-align: center; color: #fff; margin-bottom: 40px;">Search by LAST name</p>
-      <nav style="flex-wrap: wrap; justify-content: center; gap: 5px;">
-    <script>
-        const navLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-        const navHtml = navLetters.map(l => `<a href="#${l}">${l}</a>`).join('<span class="nav-separator">-</span>');
-        document.write(navHtml);
-    </script>
-</nav>
-    <div id="list-output"></div>
-</div>
-
-    </div>
-<script>
-    const output = document.getElementById('list-output');
-
-    if (typeof masterlist !== 'undefined') {
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-
-        letters.forEach(letter => {
-            const filtered = masterlist.filter(p => p["Player Name"].trim().toUpperCase().startsWith(letter));
-
-            if (filtered.length > 0) {
-                const header = document.createElement('div');
-                header.className = 'section-header';
-                header.id = letter;
-                header.innerText = letter;
-                output.appendChild(header);
-
-                let tableHtml = `<table>
-                    <thead>
-                        <tr>
-                            <th class="pnum">Player #</th>
-                            <th>Name</th>
-                            <th class="hcap">HC</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-                
-                filtered.forEach(p => {
-                    tableHtml += `
-                        <tr>
-                            <td class="pnum">${p["Player #"]}</td>
-                            <td>${p["Player Name"]}</td>
-                            <td class="hcap">${p["Handicap"]}</td>
-                        </tr>`;
-                });
-
-                tableHtml += `</tbody></table>`;
-                const tableWrapper = document.createElement('div');
-                tableWrapper.innerHTML = tableHtml;
-                output.appendChild(tableWrapper);
-            }
-        });
-    } else {
-        output.innerHTML = "<h2 style='color:red; text-align:center;'>Error: Could not load masterlist from master.js</h2>";
-    }
-</script>
-</body>
-</html>
+    
