@@ -1,5 +1,4 @@
 const masterme = [
-const masterlist = [
   { "Player #": 1073, "Player Name": "Allas, Dan", "HC": 3 },
   { "Player #": 1025, "Player Name": "Albis, Mo", "HC": 6 },
   { "Player #": 366, "Player Name": "Aler, Mike", "HC": 6 },
