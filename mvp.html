@@ -3,13 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard - Top 20</title>
+    <title>Leaderboard - Top 20 MVP</title>
     <style>
-        body { font-family: sans-serif; display: flex; gap: 20px; justify-content: center; }
-        table { border-collapse: collapse; width: 45%; margin-top: 20px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background-color: #f4f4f4; }
-        h2 { text-align: center; }
+        body { 
+            background-color: #000; 
+            color: #fff; 
+            font-family: sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            padding-top: 50px;
+        }
+        table { 
+            border-collapse: collapse; 
+            width: 80%; 
+            max-width: 600px;
+            background-color: #1a1a1a;
+        }
+        th, td { 
+            border: 1px solid #444; 
+            padding: 12px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #333; 
+            color: #00ff00; /* Distinct color for headers */
+        }
+        h2 { 
+            text-align: center; 
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #222;
+        }
     </style>
 </head>
 <body>
@@ -28,39 +53,27 @@
         </table>
     </div>
 
-    <div id="improved-container">
-        <h2>Top 20 Most Improved</h2>
-        <table id="improved-table">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Player Name</th>
-                    <th>Improvement</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-
     <script src="leaders.js"></script>
     <script>
         function populateTable(tableId, data) {
             const tbody = document.querySelector(`#${tableId} tbody`);
+            tbody.innerHTML = ""; // Clear existing content
+            
             // Only take the top 20
             data.slice(0, 20).forEach((player, index) => {
                 const row = `<tr>
                     <td>${index + 1}</td>
                     <td>${player["Player Name"]}</td>
-                    <td>${player.Score || player.Improvement}</td>
+                    <td>${player.Score}</td>
                 </tr>`;
                 tbody.innerHTML += row;
             });
         }
 
-        // Initialize tables on load
         window.onload = () => {
-            if (typeof mvpList !== 'undefined') populateTable('mvp-table', mvpList);
-            if (typeof mostImprovedList !== 'undefined') populateTable('improved-table', mostImprovedList);
+            if (typeof mvpList !== 'undefined') {
+                populateTable('mvp-table', mvpList);
+            }
         };
     </script>
 </body>
