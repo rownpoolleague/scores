@@ -1,5 +1,5 @@
 const mvpList = [
-  {"Player Name":"Doug Andrus","Points":16},
+  {"Player Name":"Doug Andrus","Points":4},
   {"Player Name":"Kevin Pattenaude","Points":13},
   {"Player Name":"Shawn Mcbride","Points":13},
   {"Player Name":"Doc Halek","Points":12},
