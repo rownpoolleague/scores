@@ -219,21 +219,29 @@ input.addEventListener('input', function () {
 function selectPlayer(player) {
   const name = player["Player Name"];
   const photo = document.getElementById('playerPhoto');
-  
-  // Construct the URL (Assuming photos are in a folder named 'photos' in your repo)
-  // File names must match Player Names exactly (e.g., "John Doe.jpg")
   const photoUrl = `photos/${encodeURIComponent(name)}.jpg`;
 
   photo.src = photoUrl;
   photo.style.display = 'block';
 
-  // Handle missing photos (hides the img tag if the .jpg doesn't exist)
+  // Logic to expand the photo into the existing statModal
+  photo.onclick = function() {
+    const modalTitle = document.getElementById('modalTitle');
+    const modalTable = document.getElementById('modalTable');
+    
+    modalTitle.textContent = name;
+    // Clears any previous Top 10 table and inserts the image
+    modalTable.innerHTML = `<div style="text-align:center;"><img src="${photoUrl}" style="max-width:100%; max-height:70vh; border-radius:8px;"></div>`;
+    
+    document.getElementById('statModal').style.display = 'block';
+  };
+
   photo.onerror = function() {
     this.style.display = 'none';
   };
 
+  // The rest of your existing table-building code remains the same...
   document.getElementById('playerName').textContent = `${name} - HC ${player["Handicap"]}`;
-  
   const table = document.getElementById('statsTable');
   table.innerHTML = '';
   
