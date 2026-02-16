@@ -17,10 +17,12 @@
         background: #000;
         color: #fff;
         padding: 20px;
-        border: 3px solid #44AAFF;
+        border: 3px solid #4AF;
         border-radius: 10px;
         max-width: 800px;
+        width: 98%;
         margin: 0 auto;
+        box-sizing: border-box;
     }
 
     .section-title {
@@ -35,7 +37,7 @@
 
     .block-title {
         font-size: 22px;
-        border-bottom: 2px solid #44AAFF;
+        border-bottom: 2px solid #4AF;
         padding-bottom: 5px;
         margin-bottom: 10px;
     }
@@ -43,11 +45,14 @@
     .winner-block ul {
         list-style: none;
         padding-left: 0;
+        margin: 0;
     }
 
     .winner-block li {
         padding: 4px 0;
         font-size: 16px;
+        line-height: 1.3;
+        word-wrap: break-word;
     }
 
     .menu-button-container {
@@ -59,11 +64,28 @@
         display: inline-block;
         background: #000;
         color: #fff;
-        border: 2px solid #44AAFF;
+        border: 2px solid #4AF;
         padding: 10px 20px;
         text-decoration: none;
         font-size: 18px;
         border-radius: 6px;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 600px) {
+        .section-title {
+            font-size: 24px;
+        }
+        .block-title {
+            font-size: 20px;
+        }
+        .winner-block li {
+            font-size: 15px;
+        }
+        .menu-button {
+            font-size: 16px;
+            padding: 8px 16px;
+        }
     }
 </style>
 </head>
