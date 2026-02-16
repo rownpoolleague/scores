@@ -16,7 +16,7 @@
     .form-wrapper {
         width: 100%;
         box-sizing: border-box; 
-        padding: 5px; /* Increased padding to push content away from blue border */
+        padding: 5px; 
         border: 2px solid #4af;
         min-height: 100vh;
         display: flex;
@@ -31,11 +31,11 @@
     }
 
     .winner-block {
-        width: 95%; /* Dropped from 95% to reveal rounded corners on small screens */
+        width: 95%; 
         margin: 10px auto; 
         background-color: #111;
         padding: 5px;
-        border-radius: 8px; /* Now clearly visible */
+        border-radius: 8px; 
         border: 2px solid #333;
         box-sizing: border-box;
     }
@@ -87,6 +87,54 @@
         width: 70%;
         margin: 25px auto;
     }
+
+    /* Targets only clickable items */
+    li[data-photo] {
+        cursor: pointer;
+    }
+
+    /* Adds the camera icon AFTER the text for clickable items */
+    li[data-photo]::after {
+        content: " 📷";
+        font-size: 14px;
+        margin-left: 8px;
+        opacity: 0.8;
+    }
+
+    li[data-photo]:active {
+        background-color: #222;
+    }
+
+    /* MODAL STYLES (REQUIRED) */
+    #photoModal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.9);
+        justify-content: center;
+        align-items: center;
+    }
+
+    #modalImg {
+        max-width: 90%;
+        max-height: 80%;
+        border: 3px solid #4af;
+        border-radius: 8px;
+        object-fit: contain;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+    }
 </style>
 </head>
 <body>
@@ -96,10 +144,10 @@
         <div class="winner-block">
             <h3 class="block-title">Tuesday Night</h3>
             <ul>
-                <li>Winter 2000 Pickpockets Doc's Trackside</li>
-                <li>Winter 2019 One at a Time Coaches Pub</li>
-                <li>Fall 2020 One at a Time Coaches Pub</li>
-                <li>Winter 2022 Killer Instinct Coaches Pub</li>
+                <li data-photo="Winter2000.jpg">Winter 2000 Pickpockets Doc's Trackside</li>
+                <li data-photo="W19.jpg">Winter 2019 One at a Time Coaches Pub</li>
+                <li data-photo="F20.jpg">Fall 2020 One at a Time Coaches Pub</li>
+                <li data-photo="W22.jpg">Winter 2022 Killer Instinct Coaches Pub</li>
                 <li>Fall 2022 Killer Instinct Coaches Pub</li>
                 <li>Winter 2023 Coaches Killer Instinct Pub</li>
                 <li>Fall 2023 Killer Instinct Coaches Pub</li>
@@ -110,7 +158,7 @@
                 <li>Fall 2024 MVP Mike Uhlean</li>
                 <li>Fall 2024 Killer Instinct Coaches Pub</li>
                 <li>9 Ball Summer 2024 Killer Instinct Coaches Pub</li>
-                <li>Fall 2025 Killer Instinct Coaches Pub</li>
+                <li data-photo="F25.jpg">Fall 2025 Killer Instinct Coaches Pub</li>
                 <li>Winter 2025 Shark Life T's Place</li>
                 <li>Winter 2025 Most Improved Joey Sanchez</li>
             </ul>
@@ -119,17 +167,47 @@
         <div class="winner-block">
             <h3 class="block-title">Wednesday Night</h3>
             <ul>
-                <li>Wednesday Fall 2016 Killer Instinct X's and O's</li>
-                <li>Winter 2018 Wednesday Killer Instinct X's and O's</li>
+                <li data-photo="WF2016.jpg">Wednesday Fall 2016 Killer Instinct X's and O's</li>
+                <li data-photo="WF2017.jpg">Winter 2018 Wednesday Killer Instinct X's and O's</li>
                 <li>Wednesday Winter 2018 Killer Instinct X's and O's</li>
-                <li>Wednesday Fall 2018 Killer Instinct Slap Shots</li>
-                <li>Winter 2019 Wednesday Killer Instinct JP Flannerys</li>
+                <li data-photo="WF18.jpg">Wednesday Fall 2018 Killer Instinct Slap Shots</li>
+                <li data-photo="WW2019.jpg">Winter 2019 Wednesday Killer Instinct JP Flannerys</li>
                 <li>Wednesday Winter 2019 Killer Instinct JP Flannerys</li>
-                <li>Fall 2020 Wednesday Killer Instinct Coaches Pub</li>
+                <li data-photo="WF20.jpg">Fall 2020 Wednesday Killer Instinct Coaches Pub</li>
             </ul>
         </div>
 
         <a href="allstatssplash.html" class="back-button">Back</a>
     </div>
+
+    <div id="photoModal">
+        <span class="close-modal">&times;</span>
+        <img id="modalImg">
+    </div>
+
+    <script>
+        const modal = document.getElementById("photoModal");
+        const modalImg = document.getElementById("modalImg");
+        const closeBtn = document.querySelector(".close-modal");
+
+        // Assumes your folder is named "photos" in your main branch
+        const photoFolder = "photos/"; 
+
+        document.querySelectorAll('li[data-photo]').forEach(item => {
+            item.addEventListener('click', function() {
+                const fileName = this.getAttribute('data-photo');
+                if (fileName) {
+                    modal.style.display = "flex";
+                    modalImg.src = photoFolder + fileName;
+                }
+            });
+        });
+
+        // Close when X is clicked
+        closeBtn.onclick = function() { modal.style.display = "none"; }
+        
+        // Close when clicking outside the image
+        modal.onclick = function(e) { if (e.target === modal) modal.style.display = "none"; }
+    </script>
 </body>
 </html>
