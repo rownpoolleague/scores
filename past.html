@@ -1,114 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Past Winners</title>
-
-<style>
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        background: #000;
-        color: #fff;
-        font-family: Arial, sans-serif;
-    }
-
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding: 20px;
-        box-sizing: border-box;
-    }
-
-    .past-winners-container {
-        background: #000;
-        color: #fff;
-        padding: 20px;
-        border: 3px solid #44AAFF;
-        border-radius: 10px;
-        width: 95%;
-        max-width: 900px;
-        min-height: 100vh; /* <-- THIS FIXES THE SHORT HEIGHT */
-        box-sizing: border-box;
-    }
-
-    .section-title {
-        text-align: center;
-        font-size: 28px;
-        margin-bottom: 20px;
-    }
-
-    .winner-block {
-        margin-bottom: 30px;
-    }
-
-    .block-title {
-        font-size: 22px;
-        border-bottom: 2px solid #44AAFF;
-        padding-bottom: 5px;
-        margin-bottom: 10px;
-    }
-
-    .winner-block ul {
-        list-style: none;
-        padding-left: 0;
-        margin: 0;
-    }
-
-    .winner-block li {
-        padding: 4px 0;
-        font-size: 16px;
-        line-height: 1.3;
-        word-wrap: break-word;
-    }
-
-    .menu-button-container {
-        text-align: center;
-        margin-top: 25px;
-        padding-bottom: 20px;
-    }
-
-    .menu-button {
-        display: inline-block;
-        background: #000;
-        color: #fff;
-        border: 2px solid #44AAFF;
-        padding: 10px 20px;
-        text-decoration: none;
-        font-size: 18px;
-        border-radius: 6px;
-    }
-
-    /* Mobile adjustments */
-    @media (max-width: 600px) {
-        .section-title {
-            font-size: 24px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Winners</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #000;
+            color: white;
         }
+
+        h1 {
+            text-align: center;
+            color: #4af;
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        .winner-block {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #111; /* Slightly lighter than body to define the area */
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            box-shadow: 0 0 10px rgba(74, 170, 255, 0.1);
+        }
+
         .block-title {
+            color: #4af;
+            font-size: 28px;
+            border-bottom: 2px solid #4af;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 12px 10px;
+            border-bottom: 1px solid #222;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+
+        li:before {
+            content: "🏆";
+            margin-right: 15px;
             font-size: 20px;
         }
-        .winner-block li {
-            font-size: 15px;
-        }
-        .menu-button {
-            font-size: 16px;
-            padding: 8px 16px;
-        }
-    }
-</style>
-</head>
 
+        li:last-child {
+            border-bottom: none;
+        }
+
+        li:hover {
+            background-color: #1a1a1a;
+        }
+
+        .back-button {
+            display: block;
+            padding: 8px 16px;
+            background-color: #4af;
+            color: #fff;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 22px;
+            text-align: center;
+            width: fit-content;
+            margin: 0 auto 30px auto;
+        }
+    </style>
+</head>
 <body>
 
-<div class="past-winners-container">
+    <h1>HALL OF CHAMPIONS</h1>
 
-    <h2 class="section-title">Past Winners</h2>
+   
 
-    <!-- Tuesday Night -->
     <div class="winner-block">
-        <h3 class="block-title">Tuesday Night</h3>
+        <h3 class="block-title">League History</h3>
         <ul>
             <li>Winter 2000 Pickpockets Doc's Trackside</li>
             <li>Winter 2019 One at a Time Coaches Pub</li>
@@ -130,7 +107,6 @@
         </ul>
     </div>
 
-    <!-- Wednesday Night -->
     <div class="winner-block">
         <h3 class="block-title">Wednesday Night</h3>
         <ul>
@@ -143,13 +119,6 @@
             <li>Fall 2020 Wednesday Killer Instinct Coaches Pub</li>
         </ul>
     </div>
-
-    <!-- Menu Button -->
-    <div class="menu-button-container">
-        <a href="https://rownpoolleague.github.io/scores/" class="menu-button">Main Menu</a>
-    </div>
-
-</div>
-
+ <a href="allstatssplash.html" class="back-button">Back</a>
 </body>
 </html>
