@@ -5,85 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tournament Winners</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0; 
-            background-color: #000;
-            color: white;
-        }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0; 
+        background-color: #000;
+        color: white;
+        overflow-x: hidden;
+    }
 
-        .form-wrapper {
-            width: 100%;
-            padding: 5px; /* Minimal padding for phone edges */
-            border: 2px solid #4af;
-            box-sizing: border-box;
-            min-height: 100vh;
-        }
+    .form-wrapper {
+        width: 100%;
+        box-sizing: border-box; 
+        padding: 10px; /* Increased padding to push content away from blue border */
+        border: 2px solid #4af;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 
-        h1 {
-            text-align: center;
-            color: #ffd700;
-            font-size: 28px; /* Scaled down for mobile */
-            margin: 10px 0;
-        }
+    h1 {
+        text-align: center;
+        color: #ffd700;
+        font-size: 30px; 
+        margin: 20px 0;
+    }
 
-        .winner-block {
-            width: 98%;
-            margin: 5px auto;
-            background-color: #111;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #333;
-        }
+    .winner-block {
+        width: 90%; /* Dropped from 95% to reveal rounded corners on small screens */
+        margin: 15px auto; 
+        background-color: #111;
+        padding: 15px;
+        border-radius: 8px; /* Now clearly visible */
+        border: 1px solid #333;
+        box-sizing: border-box;
+    }
 
-        .block-title {
-            color: #4af;
-            font-size: 22px;
-            border-bottom: 2px solid #4af;
-            padding-bottom: 3px;
-            margin-bottom: 8px;
-            margin-top: 0;
-            text-align: center;
-        }
+    .block-title {
+        color: #4af;
+        font-size: 26px;
+        border-bottom: 2px solid #4af;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+        margin-top: 0;
+        text-align: center;
+    }
 
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
 
-        li {
-            padding: 5px 2px; /* Very tight vertical padding */
-            border-bottom: 1px solid #222;
-            font-size: 15px; /* Optimized for mobile reading */
-            display: flex;
-            align-items: center;
-            line-height: 1.2;
-        }
+    li {
+        padding: 12px 5px; 
+        border-bottom: 1px solid #222;
+        font-size: 17px; 
+        display: flex;
+        align-items: center;
+        line-height: 1.4;
+    }
 
-        li:before {
-            content: "🏆";
-            margin-right: 8px;
-            font-size: 14px;
-        }
+    li:before {
+        content: "🏆";
+        margin-right: 12px;
+        font-size: 18px;
+    }
 
-        li:last-child {
-            border-bottom: none;
-        }
+    li:last-child {
+        border-bottom: none;
+    }
 
-        .back-button {
-            display: block;
-            padding: 12px;
-            background-color: #4af;
-            color: #fff;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 18px;
-            text-align: center;
-            width: 80%;
-            margin: 15px auto;
-        }
-    </style>
+    .back-button {
+        display: block;
+        padding: 15px;
+        background-color: #4af;
+        color: #fff;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 20px;
+        text-align: center;
+        width: 70%;
+        margin: 25px auto;
+    }
+</style>
 </head>
 <body>
     <div class="form-wrapper">
