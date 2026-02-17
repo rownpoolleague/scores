@@ -93,11 +93,6 @@ select, input, button { font-size:inherit; font-family:inherit; }
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   z-index: 1000;
 }
-
-
-
-
-
   #timerValue {
     font-size: 1.5em;
     font-weight: bold;
@@ -114,10 +109,42 @@ select, input, button { font-size:inherit; font-family:inherit; }
     font-size: 1em;
     cursor: pointer;
   }
+    /* Spinner Overlay */
+#loadingOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #333;
+    border-top: 5px solid #4af; /* Theme blue */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 </head>
 <body>
+    <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div>Submitting Results...</div>
+</div>
 <div class="form-wrapper">
 
 <div class="row">
@@ -466,9 +493,11 @@ function updateMatchWinner() {
 // 7. Submit to Google Sheets
 document.getElementById("submitMatch").onclick = function() {
     const btn = this;
+    const loader = document.getElementById("loadingOverlay");
+
+    // Start Loading State
     btn.disabled = true;
-    btn.style.opacity = "0.5";
-    alert("Please wait while your results are submitted...");
+    loader.style.display = "flex"; // Show the spinner overlay
 
     const data = {
         team: document.getElementById("team").value,
@@ -502,12 +531,14 @@ document.getElementById("submitMatch").onclick = function() {
         body: JSON.stringify(data)
     })
     .then(() => {
+        // --- End Loading State ---
+        loader.style.display = "none"; 
+
         // --- SAVE TO HISTORY ---
         const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
         history.push(data); 
         localStorage.setItem("matchHistory", JSON.stringify(history));
         
-        // Update "Last Visit" timestamp for the 12-hour wipe
         localStorage.setItem("lastSessionActivity", Date.now().toString());
 
         // --- Update Team Scores ---
@@ -544,7 +575,6 @@ document.getElementById("submitMatch").onclick = function() {
         // --- HANDLE 5TH MATCH SCENARIO ---
         if ((scores.home + scores.away) >= 5) {
             alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}. Resetting session fields, but history is saved.`);
-            // Reset Team Selections and Scores for the next league night
             document.getElementById("team").selectedIndex = 0;
             document.getElementById("opponent").selectedIndex = 0;
             updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
@@ -559,12 +589,12 @@ document.getElementById("submitMatch").onclick = function() {
         btn.style.opacity = "1";
 
         saveNow();
-        alert("Match submitted!");
+        alert("Match submitted!"); // Final confirmation alert
     })
     .catch(err => {
+        loader.style.display = "none";
         alert("Error submitting match.");
         btn.disabled = false;
-        btn.style.opacity = "1";
     });
 };
     // 8. Save/Load Logic
