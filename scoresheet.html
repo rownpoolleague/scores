@@ -609,20 +609,18 @@ function saveNow() {
 
     data.lwH = document.getElementById("lagWinnerHeader").textContent;
     data.llH = document.getElementById("lagLoserHeader").textContent;
-    data.mScores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
     
-    // Grab full history
-    data.mHistory = JSON.parse(localStorage.getItem("matchHistory")) || [];
+    // Convert scores to a simple string "2-1" to save space
+    const s = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
+    data.mScores = `${s.home}-${s.away}`; 
+    
+    // Only send history if it's not empty, and flatten it
+    const history = localStorage.getItem("matchHistory");
+    if (history) data.mHistory = history; 
 
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
 function loadScoresheet() {
-    const savedManual = localStorage.getItem("manual_roster_additions");
-    if (savedManual) {
-        const parsed = JSON.parse(savedManual);
-        Object.assign(scoresheetinfo, parsed);
-    }
-
     const raw = localStorage.getItem(FORM_KEY);
     if (!raw) return;
     
@@ -632,26 +630,25 @@ function loadScoresheet() {
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-            if (el.type === "checkbox") {
-                el.checked = data[id] === true;
-            } else {
-                el.value = data[id];
-            }
+            if (el.type === "checkbox") { el.checked = data[id] === true; } 
+            else { el.value = data[id]; }
         }
     });
 
     if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
     if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
 
+    // Unpack the "2-1" score string back into an object
     if (data.mScores) {
-        scores = data.mScores;
+        const parts = data.mScores.split("-");
+        scores = { home: parseInt(parts[0]), away: parseInt(parts[1]) };
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
     }
 
-    // Restore match history
-    if (data.mHistory && Array.isArray(data.mHistory)) {
-        localStorage.setItem("matchHistory", JSON.stringify(data.mHistory));
+    // Restore match history directly
+    if (data.mHistory) {
+        localStorage.setItem("matchHistory", data.mHistory);
     }
 
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
@@ -660,7 +657,6 @@ function loadScoresheet() {
     
     isLoading = false;
 }
-
 // 9. Extra UI Helpers
 function exportScoresheet() {
     const data = localStorage.getItem(FORM_KEY);
