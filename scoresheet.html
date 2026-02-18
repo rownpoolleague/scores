@@ -137,6 +137,9 @@ select, input, button { font-size:inherit; font-family:inherit; }
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+    #qrModal {
+    z-index: 1000000 !important; /* One level higher than your history modal */
+}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 </head>
