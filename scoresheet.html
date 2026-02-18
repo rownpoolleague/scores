@@ -606,39 +606,56 @@ function saveNow() {
         const el = document.getElementById(id);
         if (el) data[id] = el.type === "checkbox" ? el.checked : el.value;
     });
+
+    // ADDED: Include the extra session data in the payload
+    data.currentScores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
+    data.currentHistory = JSON.parse(localStorage.getItem("matchHistory")) || [];
+    // Include visual headers for the names
+    data.lagWinnerHeader = document.getElementById("lagWinnerHeader").textContent;
+    data.lagLoserHeader = document.getElementById("lagLoserHeader").textContent;
+
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
 
 function loadScoresheet() {
-    // 1. Recover manual players from localStorage first
     const savedManual = localStorage.getItem("manual_roster_additions");
     if (savedManual) {
         const parsed = JSON.parse(savedManual);
-        // Merge saved manual names into the global scoresheetinfo object
         Object.assign(scoresheetinfo, parsed);
     }
 
-    // 2. Load the rest of the form data
     const raw = localStorage.getItem(FORM_KEY);
     if (!raw) return;
     
     isLoading = true;
     const data = JSON.parse(raw);
     
+    // 1. Load standard fields
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
-        if (el) {
-            if (el.type === "checkbox") {
-                el.checked = data[id];
-            } else {
-                el.value = data[id];
-            }
+        if (el && id !== "currentScores" && id !== "currentHistory") {
+            if (el.type === "checkbox") { el.checked = data[id]; } 
+            else { el.value = data[id]; }
         }
     });
 
-    // 3. Refresh rosters and winner status
+    // 2. Load transferred scores and history back into local storage
+    if (data.currentScores) {
+        scores = data.currentScores;
+        localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+    }
+    if (data.currentHistory) {
+        localStorage.setItem("matchHistory", JSON.stringify(data.currentHistory));
+    }
+
+    // 3. Update the visual Headers (the boxes that change from Lag Winner to Name)
+    if (data.lagWinnerHeader) document.getElementById("lagWinnerHeader").textContent = data.lagWinnerHeader;
+    if (data.lagLoserHeader) document.getElementById("lagLoserHeader").textContent = data.lagLoserHeader;
+
+    // 4. Refresh UI
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
+    updateScoreUI(); // Refreshes the match count at the bottom
     updateMatchWinner();
     
     isLoading = false;
