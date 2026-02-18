@@ -606,19 +606,21 @@ function saveNow() {
         const el = document.getElementById(id);
         if (el) data[id] = el.type === "checkbox" ? el.checked : el.value;
     });
+
+    // Capture the header text (the boxes that change to names)
+    data.lwH = document.getElementById("lagWinnerHeader").textContent;
+    data.llH = document.getElementById("lagLoserHeader").textContent;
+
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
 
 function loadScoresheet() {
-    // 1. Recover manual players from localStorage first
     const savedManual = localStorage.getItem("manual_roster_additions");
     if (savedManual) {
         const parsed = JSON.parse(savedManual);
-        // Merge saved manual names into the global scoresheetinfo object
         Object.assign(scoresheetinfo, parsed);
     }
 
-    // 2. Load the rest of the form data
     const raw = localStorage.getItem(FORM_KEY);
     if (!raw) return;
     
@@ -629,14 +631,17 @@ function loadScoresheet() {
         const el = document.getElementById(id);
         if (el) {
             if (el.type === "checkbox") {
-                el.checked = data[id];
+                el.checked = !!data[id]; // Force boolean for checkboxes
             } else {
                 el.value = data[id];
             }
         }
     });
 
-    // 3. Refresh rosters and winner status
+    // Restore the header text boxes
+    if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
+    if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
+
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
     updateMatchWinner();
