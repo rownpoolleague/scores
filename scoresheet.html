@@ -704,11 +704,28 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     const params = new URLSearchParams(window.location.search);
+    
+    // --- HANDLE MAIN FORM TRANSFER ---
     if (params.has("data")) {
         localStorage.setItem(FORM_KEY, decodeURIComponent(params.get("data")));
+        // Clean URL immediately
         window.history.replaceState({}, document.title, window.location.pathname);
     }
     
+    // --- HANDLE HISTORY ONLY TRANSFER ---
+    if (params.has("hdata")) {
+        const hRaw = decodeURIComponent(params.get("hdata"));
+        localStorage.setItem("matchHistory", hRaw);
+        
+        // Clean URL immediately
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        alert("Match History Sync Successful!");
+        // Refresh history modal if it's currently open
+        if (typeof showHistory === "function") showHistory(); 
+    }
+    
+    // Final UI Refresh
     loadScoresheet();
     updateScoreUI();
 });
@@ -803,6 +820,18 @@ function confirmNewPlayer() {
     }
     closePlayerModal();
 }
+        function exportHistoryOnly() {
+    const history = localStorage.getItem("matchHistory");
+    if (!history || history === "[]") return alert("No history to transfer.");
+    
+    const baseUrl = window.location.href.split('?')[0];
+    // We use a different key 'hdata' so it doesn't mess with the main form loader
+    const fullUrl = `${baseUrl}?hdata=${encodeURIComponent(history)}`;
+    
+    document.getElementById('qrModal').style.display = 'flex';
+    document.getElementById('qrcode').innerHTML = '';
+    new QRCode(document.getElementById('qrcode'), { text: fullUrl, width: 256, height: 256 });
+}
 </script>
     <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
   <div style="background:#222; padding:20px; border-radius:8px; width:95%; max-width:600px; max-height:80vh; overflow-y:auto; border: 2px solid #1e90ff;">
@@ -820,7 +849,8 @@ function confirmNewPlayer() {
     </table>
     <div style="text-align:center; margin-top:20px; display:flex; gap:10px; justify-content:center;">
       <button onclick="closeHistory()" style="padding:10px 20px;">Close</button>
-      <button onclick="clearHistory()" style="padding:10px 20px; background:crimson; color:white; border:none; border-radius:4px;">Reset History</button>
+        <button onclick="exportHistoryOnly()" style="background:#4af; color:white; padding:10px;">Transfer</button>
+      <button onclick="clearHistory()" style="padding:10px 20px; background:crimson; color:white; border:none; border-radius:4px;">Reset</button>
     </div>
   </div>
 </div>
