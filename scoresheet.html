@@ -607,23 +607,18 @@ function saveNow() {
         if (el) data[id] = el.type === "checkbox" ? el.checked : el.value;
     });
 
-    // ADDED: Include the extra session data in the payload
-    data.currentScores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
-    data.currentHistory = JSON.parse(localStorage.getItem("matchHistory")) || [];
-    // Include visual headers for the names
-    data.lagWinnerHeader = document.getElementById("lagWinnerHeader").textContent;
-    data.lagLoserHeader = document.getElementById("lagLoserHeader").textContent;
+    // Send only the counts, not the full history objects, to keep QR small
+    const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
+    data.hCount = history.length; 
+    data.scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
+    
+    // Names for the display boxes
+    data.lwH = document.getElementById("lagWinnerHeader").textContent;
+    data.llH = document.getElementById("lagLoserHeader").textContent;
 
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
-
 function loadScoresheet() {
-    const savedManual = localStorage.getItem("manual_roster_additions");
-    if (savedManual) {
-        const parsed = JSON.parse(savedManual);
-        Object.assign(scoresheetinfo, parsed);
-    }
-
     const raw = localStorage.getItem(FORM_KEY);
     if (!raw) return;
     
@@ -633,34 +628,30 @@ function loadScoresheet() {
     // 1. Load standard fields
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
-        if (el && id !== "currentScores" && id !== "currentHistory") {
+        if (el) {
             if (el.type === "checkbox") { el.checked = data[id]; } 
             else { el.value = data[id]; }
         }
     });
 
-    // 2. Load transferred scores and history back into local storage
-    if (data.currentScores) {
-        scores = data.currentScores;
+    // 2. Sync Scores
+    if (data.scores) {
+        scores = data.scores;
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
     }
-    if (data.currentHistory) {
-        localStorage.setItem("matchHistory", JSON.stringify(data.currentHistory));
-    }
 
-    // 3. Update the visual Headers (the boxes that change from Lag Winner to Name)
-    if (data.lagWinnerHeader) document.getElementById("lagWinnerHeader").textContent = data.lagWinnerHeader;
-    if (data.lagLoserHeader) document.getElementById("lagLoserHeader").textContent = data.lagLoserHeader;
+    // 3. Sync Header Text (The Boxes)
+    if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
+    if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
 
     // 4. Refresh UI
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
-    updateScoreUI(); // Refreshes the match count at the bottom
+    updateScoreUI();
     updateMatchWinner();
     
     isLoading = false;
 }
-
 // 9. Extra UI Helpers
 function exportScoresheet() {
     const data = localStorage.getItem(FORM_KEY);
