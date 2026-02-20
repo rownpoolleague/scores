@@ -60,7 +60,7 @@ const scoresheetrosters = {
     "Rob Zwart":4,
     "Rocky Oiler Sr.":3,
     "Ron Podborny":2,
-    "Ross Giannino":4,
+    "Ross Giannino":5,
     "Samantha Kommenich":2,
     "Sergio Sanchez":4,
     "Shawn Mcbride":2,
