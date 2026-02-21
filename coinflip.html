@@ -5,50 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Coin Toss - Who Breaks?</title>
     <style>
-        /* 1. Remove all default spacing and force full height */
+        /* Reset and force full view */
+        * {
+            box-sizing: border-box;
+        }
+
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
             background-color: #000;
-            overflow-x: hidden; /* Prevent horizontal scrolling */
+            color: white;
+            font-family: sans-serif;
+            overflow-x: hidden;
         }
 
         body {
-            color: white;
-            font-family: sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* 2. Edge-to-edge wrapper with internal centering */
+        /* Border stays at screen edges */
         .form-wrapper {
-    width: 100%;
-    /* Subtract the 8px of total border height from the viewport height */
-    height: calc(100vh - 8px); 
-    padding: 10px;
-    border: 4px solid #4af;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden; /* Ensures no internal scroll */
-}
+            width: 100%;
+            min-height: 100vh;
+            border: 4px solid #4af;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 10px;
+        }
 
         h1 {
-    color: #4af;
-    margin: 10px 0 20px 0; /* Top 10px, Bottom 20px */
-    text-align: center;
-}
+            color: #4af;
+            margin: 0 0 20px 0;
+            text-align: center;
+            font-size: 28px;
+        }
 
         .coin-wrapper {
             width: 150px;
             height: 150px;
             perspective: 1000px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         #coin {
@@ -72,40 +74,55 @@
             font-weight: bold;
             backface-visibility: hidden;
             border: 4px solid #4af;
-            box-sizing: border-box;
         }
 
-        .heads { background: #ffffff; color: #000000; z-index: 2; }
-        .tails { background: #000000; color: #ffffff; transform: rotateY(180deg); border-color: #666; }
+        .heads { 
+            background: #ffffff; 
+            color: #000000; 
+            z-index: 2; 
+        }
+
+        .tails { 
+            background: #000000; 
+            color: #ffffff; 
+            transform: rotateY(180deg); 
+            border-color: #666; 
+        }
 
         #result-text {
-    font-size: 24px;
-    height: 30px;
-    margin-top: 20px; /* Reduced from 50px */
-    margin-bottom: 30px; /* Reduced from 70px */
-    font-weight: bold;
-    text-transform: uppercase;
-    text-align: center;
-}
+            font-size: 24px;
+            height: 30px;
+            margin: 20px 0 40px 0;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            min-height: 30px;
+        }
 
-        /* Standardized Buttons */
+        /* Buttons standardized for mobile thumbs */
         button {
             background: #4af;
             color: white;
             border: none;
-            margin-bottom: 15px;
-            width: 200px; /* Wider for better thumb tap */
+            margin-bottom: 12px;
+            width: 220px;
             height: 55px;
             font-size: 20px;
             font-weight: bold;
-            border-radius: 8px; /* Matching your menu-button style */
+            border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.1s;
+            transition: transform 0.1s, background 0.3s;
+            flex-shrink: 0;
         }
 
-        button:active { transform: scale(0.95); }
-        button:disabled { background: #444; }
+        button:active { 
+            transform: scale(0.95); 
+        }
 
+        button:disabled { 
+            background: #444; 
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -143,6 +160,7 @@
 
         const isHeads = Math.random() < 0.5;
         const extraDegrees = isHeads ? 0 : 180;
+        // Spin at least 10 times
         const spinDegrees = 3600 + extraDegrees;
         
         currentRotation += spinDegrees;
@@ -151,10 +169,10 @@
         setTimeout(() => {
             if (isHeads) {
                 resultText.textContent = "Heads Wins";
-                resultText.style.color = "#ffd700";
+                resultText.style.color = "#ffffff";
             } else {
                 resultText.textContent = "Tails Wins";
-                resultText.style.color = "#ffd700";
+                resultText.style.color = "#888"; // Subtle grey for tails
             }
             btn.disabled = false;
         }, 3100);
