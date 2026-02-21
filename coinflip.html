@@ -25,22 +25,24 @@
 
         /* 2. Edge-to-edge wrapper with internal centering */
         .form-wrapper {
-            width: 100%;
-            min-height: 100vh; /* Full screen height */
-            padding: 10px;
-            border: 4px solid #4af;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+    width: 100%;
+    /* Subtract the 8px of total border height from the viewport height */
+    height: calc(100vh - 8px); 
+    padding: 10px;
+    border: 4px solid #4af;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Ensures no internal scroll */
+}
 
         h1 {
-            color: #4af;
-            margin-bottom: 30px;
-            text-align: center;
-        }
+    color: #4af;
+    margin: 10px 0 20px 0; /* Top 10px, Bottom 20px */
+    text-align: center;
+}
 
         .coin-wrapper {
             width: 150px;
@@ -77,14 +79,14 @@
         .tails { background: #000000; color: #ffffff; transform: rotateY(180deg); border-color: #666; }
 
         #result-text {
-            font-size: 24px;
-            height: 30px;
-            margin-top: 50px;
-            margin-bottom: 70px;
-            font-weight: bold;
-            text-transform: uppercase;
-            text-align: center;
-        }
+    font-size: 24px;
+    height: 30px;
+    margin-top: 20px; /* Reduced from 50px */
+    margin-bottom: 30px; /* Reduced from 70px */
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+}
 
         /* Standardized Buttons */
         button {
