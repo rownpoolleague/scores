@@ -96,15 +96,12 @@ height:50px;
             background: #444;
             cursor: not-allowed;
         }
-.form-wrapper {
-    width: 100%;
-    height: 100%;
+ .form-wrapper {
+    width: 100%; /* Spans full width */
+    padding: 2px;
     border: 4px solid #1e90ff;
-    box-sizing: border-box;
-    /* ADD THESE THREE LINES */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
+    box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
 }
         .menu-button {
     display: block;
