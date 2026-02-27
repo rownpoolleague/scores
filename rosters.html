@@ -48,7 +48,6 @@
     text-align: left;
   }
 
-  /* Make player rows look clickable */
   tr.player-row {
     cursor: pointer;
   }
@@ -56,7 +55,6 @@
     background-color: #f0f0f0;
   }
 
-  /* Styling for the dropdown history panel */
   .history-panel {
     display: none;
     background: #f9f9f9;
@@ -68,16 +66,17 @@
     width: 100%;
     background: #fff;
     border: 1px solid #000;
+    margin-top: 5px;
   }
 
   .history-table th {
     background: #eee;
     font-size: 0.75rem;
+    border: 1px solid #ddd;
   }
-
-  th {
-    font-weight: bold;
-    font-size: 0.9rem;
+  
+  .history-table td {
+      border: 1px solid #eee;
   }
 
   .num {
@@ -100,7 +99,7 @@
 
   .back-button {
     display: block;
-    margin: 30px auto 0 auto;
+    margin: 30px auto 30px auto;
     padding: 8px 16px;
     background-color: #1e90ff;
     color: #fff;
@@ -108,7 +107,7 @@
     text-decoration: none;
     font-size: 22px;
     text-align: center;
-    height: 30px;
+    line-height: 30px;
   }
 </style>
 </head>
@@ -120,9 +119,7 @@
 <div class="team">
 <h2>Team 1</h2>
 <table>
-  <thead>
-    <tr><th>#</th><th>Player</th><th class="num">MP</th><th class="num">MW</th><th class="num">HC</th></tr>
-  </thead>
+  <thead><tr><th>#</th><th>Player</th><th class="num">MP</th><th class="num">MW</th><th class="num">HC</th></tr></thead>
   <tbody>
     <tr class="player-row"><td>784</td><td class="p-name">Dan Foster</td><td class="num">3</td><td class="num">2</td><td class="num">4</td></tr>
     <tr class="player-row"><td>1083</td><td class="p-name">Tony Perelli</td><td class="num">5</td><td class="num">2</td><td class="num">5</td></tr>
@@ -138,9 +135,7 @@
 <div class="team">
 <h2>Team 2</h2>
 <table>
-  <thead>
-    <tr><th>#</th><th>Player</th><th class="num">MP</th><th class="num">MW</th><th class="num">HC</th></tr>
-  </thead>
+  <thead><tr><th>#</th><th>Player</th><th class="num">MP</th><th class="num">MW</th><th class="num">HC</th></tr></thead>
   <tbody>
     <tr class="player-row"><td>375</td><td class="p-name">Randy Rycraft</td><td class="num">3</td><td class="num">3</td><td class="num">4</td></tr>
     <tr class="player-row"><td>970</td><td class="p-name">Joe Neal</td><td class="num">3</td><td class="num">1</td><td class="num">3</td></tr>
@@ -150,6 +145,137 @@
     <tr class="player-row"><td>1101</td><td class="p-name">Julie Ringbauer</td><td class="num">2</td><td class="num">0</td><td class="num">2</td></tr>
     <tr class="player-row"><td>266</td><td class="p-name">Mike Gore</td><td class="num">2</td><td class="num">1</td><td class="num">2</td></tr>
     <tr class="player-row"><td>808</td><td class="p-name">Brett Boger</td><td class="num">5</td><td class="num">1</td><td class="num">4</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="team">
+<h2>Team 3</h2>
+<table>
+  <thead><tr><th>#</th><th>Player</th><th class="num">MP</th><th class="num">MW</th><th class="num">HC</th></tr></thead>
+  <tbody>
+    <tr class="player-row"><td>1044</td><td class="p-name">Francisco Ibarra</td><td class="num">4</td><td class="num">1</td><td class="num">2</td></tr>
+    <tr class="player-row"><td>1045</td><td class="p-name">Noe Castana*</td><td class="num">4</td><td class="num">3</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>1051</td><td class="p-name">Enrique Meza</td><td class="num">2</td><td class="num">1</td><td class="num">2</td></tr>
+    <tr class="player-row"><td>1049</td><td class="p-name">Tomas Ramirez</td><td class="num">4</td><td class="num">0</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>1103</td><td class="p-name">Ignasio Gutierrez*</td><td class="num">4</td><td class="num">1</td><td class="num">2</td></tr>
+    <tr class="player-row"><td>1104</td><td class="p-name">Jose Munoz</td><td class="num">1</td><td class="num">0</td><td class="num">2</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="team">
+<h2>Team 4</h2>
+<table>
+  <thead><tr><th>#</th><th>Player</th><th class="num">MP</th><th class="num">MW</th><th class="num">HC</th></tr></thead>
+  <tbody>
+    <tr class="player-row"><td>147</td><td class="p-name">Jim Nevin</td><td class="num">4</td><td class="num">4</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>1092</td><td class="p-name">Larry Casper</td><td class="num">5</td><td class="num">3</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>1032</td><td class="p-name">Harnaik Lal</td><td class="num">4</td><td class="num">1</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>1089</td><td class="p-name">Freddy Izguerra</td><td class="num">5</td><td class="num">3</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>420</td><td class="p-name">Tom Nevin</td><td class="num">5</td><td class="num">3</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>971</td><td class="p-name">Doug Misner</td><td class="num">3</td><td class="num">3</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>216</td><td class="p-name">Joe Crutchfield</td><td class="num">2</td><td class="num">1</td><td class="num">2</td></tr>
+    <tr class="player-row"><td>1098</td><td class="p-name">Ross Giannino</td><td class="num">2</td><td class="num">1</td><td class="num">6</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="team">
+<h2>Team 5</h2>
+<table>
+  <thead><tr><th>#</th><th>Player</th><th class="num">MP</th><th class="num">MW</th><th class="num">HC</th></tr></thead>
+  <tbody>
+    <tr class="player-row"><td>22</td><td class="p-name">Rocky Oiler Sr.</td><td class="num">4</td><td class="num">2</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>898</td><td class="p-name">Kevin Pattenaude</td><td class="num">7</td><td class="num">4</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>443</td><td class="p-name">Greg Wood</td><td class="num">3</td><td class="num">2</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>338</td><td class="p-name">Javier Mauricio</td><td class="num">3</td><td class="num">1</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>138</td><td class="p-name">Peggy Wood</td><td class="num">1</td><td class="num">0</td><td class="num">2</td></tr>
+    <tr class="player-row"><td>565</td><td class="p-name">Joey Sanchez</td><td class="num">5</td><td class="num">3</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>1009</td><td class="p-name">John Schoiber</td><td class="num">5</td><td class="num">3</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>951</td><td class="p-name">Chuck Feager</td><td class="num">3</td><td class="num">2</td><td class="num">2</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="team">
+<h2>Team 6</h2>
+<table>
+  <thead><tr><th>#</th><th>Player</th><th class="num">MP</th><th class="num">MW</th><th class="num">HC</th></tr></thead>
+  <tbody>
+    <tr class="player-row"><td>510</td><td class="p-name">Doc Halek</td><td class="num">6</td><td class="num">3</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>994</td><td class="p-name">Juergen Jackert</td><td class="num">5</td><td class="num">3</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>615</td><td class="p-name">Danny Plowman</td><td class="num">2</td><td class="num">0</td><td class="num">5</td></tr>
+    <tr class="player-row"><td>1091</td><td class="p-name">John Amrein</td><td class="num">1</td><td class="num">1</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>1017</td><td class="p-name">Kevin Ward</td><td class="num">1</td><td class="num">0</td><td class="num">2</td></tr>
+    <tr class="player-row"><td>953</td><td class="p-name">Shawn Mcbride</td><td class="num">6</td><td class="num">5</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>859</td><td class="p-name">Don Murphy</td><td class="num">5</td><td class="num">1</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>392</td><td class="p-name">Kenny Esposito</td><td class="num">5</td><td class="num">3</td><td class="num">4</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="team">
+<h2>Team 7</h2>
+<table>
+  <thead><tr><th>#</th><th>Player</th><th class="num">MP</th><th class="num">MW</th><th class="num">HC</th></tr></thead>
+  <tbody>
+    <tr class="player-row"><td>212</td><td class="p-name">Francisco Tinajero</td><td class="num">3</td><td class="num">2</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>772</td><td class="p-name">Sergio Sanchez</td><td class="num">6</td><td class="num">2</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>664</td><td class="p-name">Mario Orenday</td><td class="num">4</td><td class="num">3</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>675</td><td class="p-name">Felipe Ochoa</td><td class="num">5</td><td class="num">2</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>689</td><td class="p-name">Jeronimo Ramirez</td><td class="num">4</td><td class="num">3</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>1029</td><td class="p-name">Kevin Joyner</td><td class="num">3</td><td class="num">2</td><td class="num">6</td></tr>
+    <tr class="player-row"><td>661</td><td class="p-name">Tony Perez</td><td class="num">5</td><td class="num">0</td><td class="num">4</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="team">
+<h2>Team 8</h2>
+<table>
+  <thead><tr><th>#</th><th>Player</th><th class="num">MP</th><th class="num">MW</th><th class="num">HC</th></tr></thead>
+  <tbody>
+    <tr class="player-row"><td>1047</td><td class="p-name">Jose Gonzalez</td><td class="num">5</td><td class="num">2</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>1046</td><td class="p-name">Luis Asavedo</td><td class="num">5</td><td class="num">2</td><td class="num">2</td></tr>
+    <tr class="player-row"><td>1053</td><td class="p-name">Ricardo Urvina</td><td class="num">4</td><td class="num">0</td><td class="num">2</td></tr>
+    <tr class="player-row"><td>1097</td><td class="p-name">Jariel Diaz*</td><td class="num">6</td><td class="num">4</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>1099</td><td class="p-name">Miguel Arias</td><td class="num">3</td><td class="num">1</td><td class="num">2</td></tr>
+    <tr class="player-row"><td>1105</td><td class="p-name">Jose Silva</td><td class="num">1</td><td class="num">0</td><td class="num">2</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="team">
+<h2>Team 9</h2>
+<table>
+  <thead><tr><th>#</th><th>Player</th><th class="num">MP</th><th class="num">MW</th><th class="num">HC</th></tr></thead>
+  <tbody>
+    <tr class="player-row"><td>299</td><td class="p-name">Mike Uhlean</td><td class="num">5</td><td class="num">4</td><td class="num">5</td></tr>
+    <tr class="player-row"><td>459</td><td class="p-name">Doug Andrus*</td><td class="num">7</td><td class="num">5</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>471</td><td class="p-name">Jim Berger</td><td class="num">2</td><td class="num">2</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>496</td><td class="p-name">Shawn Vitolka*</td><td class="num">4</td><td class="num">2</td><td class="num">5</td></tr>
+    <tr class="player-row"><td>1033</td><td class="p-name">Mike Zbonski Jr.</td><td class="num">5</td><td class="num">3</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>1065</td><td class="p-name">Luke Valenzuela</td><td class="num">4</td><td class="num">3</td><td class="num">6</td></tr>
+    <tr class="player-row"><td>864</td><td class="p-name">Samantha Kommenich</td><td class="num">2</td><td class="num">0</td><td class="num">2</td></tr>
+    <tr class="player-row"><td>1100</td><td class="p-name">Alex Cruz Sr.</td><td class="num">1</td><td class="num">1</td><td class="num">5</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="team">
+<h2>Team 10</h2>
+<table>
+  <thead><tr><th>#</th><th>Player</th><th class="num">MP</th><th class="num">MW</th><th class="num">HC</th></tr></thead>
+  <tbody>
+    <tr class="player-row"><td>240</td><td class="p-name">Tom Schroeder</td><td class="num">4</td><td class="num">1</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>410</td><td class="p-name">Chuck Harding</td><td class="num">5</td><td class="num">1</td><td class="num">3</td></tr>
+    <tr class="player-row"><td>395</td><td class="p-name">Dan Schroeder</td><td class="num">0</td><td class="num">0</td><td class="num">5</td></tr>
+    <tr class="player-row"><td>1005</td><td class="p-name">Rob Zwart</td><td class="num">4</td><td class="num">1</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>593</td><td class="p-name">Pete Steele</td><td class="num">1</td><td class="num">0</td><td class="num">2</td></tr>
+    <tr class="player-row"><td>743</td><td class="p-name">Buster Fuller</td><td class="num">5</td><td class="num">3</td><td class="num">4</td></tr>
+    <tr class="player-row"><td>1094</td><td class="p-name">Ron Podborny</td><td class="num">4</td><td class="num">2</td><td class="num">2</td></tr>
+    <tr class="player-row"><td>717</td><td class="p-name">Tony Castro</td><td class="num">2</td><td class="num">2</td><td class="num">4</td></tr>
   </tbody>
 </table>
 </div>
@@ -164,34 +290,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     rows.forEach(row => {
         row.addEventListener('click', function() {
-            // Check if panel already exists, if so, toggle it
             const nextRow = this.nextElementSibling;
             if (nextRow && nextRow.classList.contains('history-panel')) {
                 nextRow.style.display = (nextRow.style.display === 'table-row') ? 'none' : 'table-row';
                 return;
             }
 
-            // Get player name (clean up asterisks or extra spaces)
-            const name = this.querySelector('.p-name').textContent.trim().replace('*', '');
+            // Clean name for searching
+            const rawName = this.querySelector('.p-name').textContent.trim();
+            const searchName = rawName.replace('*', '').toLowerCase();
             
-            // Search for player in the history constant from roster.js
-            const playerData = history.find(p => p.name.replace('*', '').trim() === name);
+            // Search history array
+            const playerData = history.find(p => p.name.replace('*', '').trim().toLowerCase() === searchName);
 
             if (!playerData) {
-                alert("No history found for " + name);
+                console.log("No match found for: " + searchName);
                 return;
             }
 
-            // Create history panel row
             const panel = document.createElement('tr');
             panel.classList.add('history-panel');
             
             let historyHtml = `
                 <td colspan="5" style="padding: 10px;">
-                    <div style="margin-bottom: 5px;"><strong>Win %:</strong> ${playerData.winPct} | <strong>Last Hash:</strong> ${playerData.currentHash}</div>
+                    <div style="margin-bottom: 5px;"><strong>Win %:</strong> ${playerData.winPct} | <strong>Current Hash:</strong> ${playerData.currentHash}</div>
                     <table class="history-table">
                         <thead>
-                            <tr><th>Date</th><th>Week</th><th>GW</th><th>Inn</th><th>Hash</th></tr>
+                            <tr><th>Date</th><th>Wk</th><th>GW</th><th>Inn</th><th>Hash</th></tr>
                         </thead>
                         <tbody>`;
             
@@ -209,7 +334,6 @@ document.addEventListener('DOMContentLoaded', () => {
             historyHtml += `</tbody></table></td>`;
             panel.innerHTML = historyHtml;
 
-            // Insert panel after the clicked row
             this.after(panel);
             panel.style.display = 'table-row';
         });
