@@ -55,34 +55,36 @@
     background-color: #f0f0f0;
   }
 
-  .history-panel {
-    display: none;
-    background: #f9f9f9;
-    font-weight: normal;
-    font-size: 0.85rem;
-  }
+ /* Center the history panel text and tables */
+.history-panel td {
+  text-align: center;
+}
 
-  .history-table {
-    width: 100%;
-    background: #fff;
-    border: 1px solid #000;
-    margin-top: 5px;
-  }
+.history-panel div {
+  text-align: center;
+  margin-bottom: 8px;
+}
 
-  .history-table th {
-    background: #eee;
-    font-size: 0.75rem;
-    border: 1px solid #ddd;
-  }
-  
-  .history-table td {
-      border: 1px solid #eee;
-  }
-  .p-name {
-    color: #4af;
-    text-decoration: underline;
-  }
+.history-table {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #000;
+  margin-top: 5px;
+  border-collapse: collapse;
+}
 
+/* Ensure all columns in the history table are centered */
+.history-table th, 
+.history-table td {
+  text-align: center !important;
+  padding: 8px 4px;
+}
+
+.history-table th {
+  background: #eee;
+  font-size: 0.75rem;
+  border: 1px solid #ddd;
+}
   .num {
     text-align: center;
     width: 40px;
@@ -320,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div style="margin-bottom: 5px;"><strong>Win %:</strong> ${playerData.winPct} | <strong>Current Hash:</strong> ${playerData.currentHash}</div>
                     <table class="history-table">
                         <thead>
-                            <tr><th>Date</th><th>Wk</th><th>GW</th><th>Inn</th><th>Hash</th></tr>
+                            <tr><th>Date</th><th>Week</th><th>Won</th><th>Innings</th><th>Hash</th></tr>
                         </thead>
                         <tbody>`;
             
@@ -347,5 +349,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
 
