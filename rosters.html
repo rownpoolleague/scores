@@ -274,8 +274,66 @@
 </div>
 
   <a class="back-button" href="index.html">Main Menu</a>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const rows = document.querySelectorAll('.player-row');
+
+    rows.forEach(row => {
+        row.addEventListener('click', function() {
+            const nextRow = this.nextElementSibling;
+            if (nextRow && nextRow.classList.contains('history-panel')) {
+                nextRow.style.display = (nextRow.style.display === 'table-row') ? 'none' : 'table-row';
+                return;
+            }
+
+            // Clean name for searching
+            const rawName = this.querySelector('.p-name').textContent.trim();
+            const searchName = rawName.replace('*', '').toLowerCase();
+            
+            // Search history array
+            const playerData = history.find(p => p.name.replace('*', '').trim().toLowerCase() === searchName);
+
+            if (!playerData) {
+                console.log("No match found for: " + searchName);
+                return;
+            }
+
+            const panel = document.createElement('tr');
+            panel.classList.add('history-panel');
+            
+            let historyHtml = `
+                <td colspan="5" style="padding: 10px;">
+                    <div style="margin-bottom: 5px;"><strong>Win %:</strong> ${playerData.winPct} | <strong>Current Hash:</strong> ${playerData.currentHash}</div>
+                    <table class="history-table">
+                        <thead>
+                            <tr><th>Date</th><th>Week</th><th>Won</th><th>Innings</th><th>Hash</th></tr>
+                        </thead>
+                        <tbody>`;
+            
+            playerData.history.forEach(h => {
+                historyHtml += `
+                    <tr>
+                        <td>${h.date}</td>
+                         <td>${h.week}</td>
+                        <td>${h.gw}</td>
+                        <td>${h.innings}</td>
+                        <td>${h.hash}</td>
+                       
+                    </tr>`;
+            });
+
+            historyHtml += `</tbody></table></td>`;
+            panel.innerHTML = historyHtml;
+
+            this.after(panel);
+            panel.style.display = 'table-row';
+        });
+    });
+});
+</script>
 </body>
 </html>
+
 
 
 
