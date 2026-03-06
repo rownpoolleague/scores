@@ -89,7 +89,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
   background: #000;
   color: #fff;
   border-radius: 8px;
-  border-color: #4af;
+  border-color: #1e90ff;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   z-index: 1000;
 }
@@ -127,7 +127,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
     width: 50px;
     height: 50px;
     border: 5px solid #333;
-    border-top: 5px solid #4af; /* Theme blue */
+    border-top: 5px solid #1e90ff; /* Theme blue */
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 15px;
@@ -743,7 +743,7 @@ function showHistory() {
         tbody.innerHTML = history.map((m, index) => `
             <tr style="border-bottom: 1px solid #333;">
                 <td style="padding:10px;">
-                    <div style="font-weight:bold; color:#4af;">Match ${index + 1}</div>
+                    <div style="font-weight:bold; color:#1e90ff;">Match ${index + 1}</div>
                     ${m.lagWinner} vs ${m.lagLoser}
                 </td>
                 <td style="padding:10px; text-align:center;">
@@ -852,7 +852,7 @@ function confirmNewPlayer() {
     </table>
     <div style="text-align:center; margin-top:20px; display:flex; gap:10px; justify-content:center;">
       <button onclick="closeHistory()" style="padding:10px 20px;">Close</button>
-        <button onclick="exportHistoryOnly()" style="background:#4af; color:white; padding:10px;">Transfer</button>
+        <button onclick="exportHistoryOnly()" style="background:#1e90ff; color:white; padding:10px;">Transfer</button>
       <button onclick="clearHistory()" style="padding:10px 20px; background:crimson; color:white; border:none; border-radius:4px;">Reset</button>
     </div>
   </div>
