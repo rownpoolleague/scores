@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Top 20 MVP</title>
+    <style>
+        body { 
+            background-color: #000; 
+            color: #fff; 
+            font-family: sans-serif; 
+            display: flex; 
+            flex-direction: column; /* Stack H2 and Table vertically */
+            align-items: center; 
+            padding: 1px;
+            margin: 0;
+        }
+        #mimpp-container {
+            width: 100%; /* Container takes full width */
+        }
+        table { 
+            border-collapse: collapse; 
+            width: 100%; /* Table fills the container */
+            background-color: #1a1a1a;
+        }
+        th, td { 
+            border: 1px solid #444; 
+            padding: 12px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #333; 
+            color: #4af; 
+        }
+        h2 { 
+            text-align: center; 
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        tr:nth-child(even) {
+            background-color: #222;
+        }
+        /* Make columns consistent */
+        th:nth-child(1), td:nth-child(1) { width: 10%; text-align: center; } /* Rank */
+        th:nth-child(3), td:nth-child(3) { width: 15%; text-align: center; } /* Points */
+          .form-wrapper {
+    width: 100%; /* Spans full width */
+    padding: 2px;
+    border: 4px solid #1e90ff;
+    border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
+    box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
+}
+        .back-button {
+  display: block;
+  padding-top: 5px;
+  background-color: #4af;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 22px;
+  text-align: center;
+  height: 30px;
+}
+    </style>
+</head>
+     <div class="form-wrapper">
+<body>
+
+    <div id="mimp-container">
+        <h2>Most Improved Winter 2026 (Min 8 MP)</h2>
+        <table id="mimp-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Player Name</th>
+                    <th>% Better</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+<a class="back-button" style="margin-top:50px;" href="allstatssplash.html">Back</a>
+    <script src="mimpList.js"></script>
+    <script>
+        function populateTable(tableId, data) {
+            const tbody = document.querySelector(`#${tableId} tbody`);
+            tbody.innerHTML = ""; 
+            
+            data.slice(0, 20).forEach((player, index) => {
+                const row = `<tr>
+                    <td>${index + 1}</td>
+                    <td>${player["Player Name"]}</td>
+                    <td>${player.Points}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        window.onload = () => {
+            if (typeof mimpList !== 'undefined') {
+                populateTable('mimp-table', mimpList);
+            }
+        };
+    </script>
+</body>
+     </div>
+</html>
