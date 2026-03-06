@@ -51,19 +51,23 @@
     border-radius: 0;
     box-sizing: border-box;
 }
-         .floating-buttons {
-        position: fixed;
-        display: flex;
-        bottom: 5px;
-        height: 30px;
-        width: 80%;
-        text-align: center;
-        background-color: #4af;
-  color: #fff;
-        font-size: 22px;
-       border-radius: 6px;
-             justify-content: center;
-    }
+        .floating-buttons {
+    position: fixed;
+    bottom: 5px;
+    left: 50%;                 /* move the left edge to the center */
+    transform: translateX(-50%); /* pull it back by half its width */
+    
+    display: flex;
+    justify-content: center;
+
+    width: 80%;
+    height: 30px;
+    background-color: #4af;
+    color: #fff;
+    font-size: 22px;
+    border-radius: 6px;
+    text-align: center;
+}
     </style>
 </head>
      <div class="form-wrapper">
