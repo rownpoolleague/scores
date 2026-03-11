@@ -440,7 +440,14 @@ function updateScoreUI() {
 // 5. Stat Increment/Decrement
 function changeInnings(amount) {
     let input = document.getElementById("matchInnings");
-    input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
+    let val = Math.max(0, (parseInt(input.value) || 0) + amount);
+    input.value = val;
+
+    // Toggle roster visibility: hide if innings > 0, show if 0
+    const displayStyle = (val > 0) ? "none" : "block";
+    document.getElementById("teamRoster").style.display = displayStyle;
+    document.getElementById("opponentRoster").style.display = displayStyle;
+
     saveNow();
 }
 
