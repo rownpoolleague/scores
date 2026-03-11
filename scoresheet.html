@@ -184,6 +184,14 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <div id="opponentRoster" class="roster-box"></div>
     </div>
 </div>
+    <div id="lagModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7);">
+    <div class="modal-content" style="background:white; margin:15% auto; padding:20px; width:250px; text-align:center;">
+        <p>Did <strong id="modalName"></strong> win the lag?</p>
+        <button onclick="assignLag(true)">YES</button>
+        <button onclick="assignLag(false)">NO</button>
+        <button onclick="document.getElementById('lagModal').style.display='none'">Cancel</button>
+    </div>
+</div>
 
 <div class="lag-row" style="display:none;justify-content:center;gap:40px;margin-top:30px;">
     <div class="block center-label">
@@ -378,14 +386,6 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <div id="qrcode"></div>
     <button onclick="closeQRModal()" style="margin-top:10px; padding:8px 16px; font-size:16px;">Close</button>
   </div>
-</div>
-   <div id="lagModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7);">
-    <div class="modal-content" style="background:white; margin:15% auto; padding:20px; width:250px; text-align:center;">
-        <p>Did <strong id="modalName"></strong> win the lag?</p>
-        <button onclick="assignLag(true)">YES</button>
-        <button onclick="assignLag(false)">NO</button>
-        <button onclick="document.getElementById('lagModal').style.display='none'">Cancel</button>
-    </div>
 </div>
     <script>
         let pendingLagPlayer = "";
