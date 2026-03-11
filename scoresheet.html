@@ -152,23 +152,6 @@ select, input, button { font-size:inherit; font-family:inherit; }
 
 <div class="row">
     <div class="block">
-        <select id="team">
-            <option value="">-- Select Home Team --</option>
-            <option>Halfway Crooks</option>
-            <option>Haters Welcome</option>
-            <option>Lynn's Amigos</option>
-            <option>Rackless Behavior</option>
-            <option>Dirty Ballers</option>
-            <option>8 on Break</option>
-            <option>Five Amigos</option>
-            <option>Frank's Pizza</option>
-            <option>Killer Instinct</option>
-            <option>Pete's Bunch</option>
-        </select>
-        <div id="teamRoster" class="roster-box"></div>
-    </div>
-<div class="row">
-    <div class="block">
         <label>Select Your Team:</label>
         <select id="myTeamSelect" onchange="autoFillBySchedule()">
             <option value="">-- Choose Your Team --</option>
@@ -184,6 +167,19 @@ select, input, button { font-size:inherit; font-family:inherit; }
             <option>Pete's Bunch</option>
         </select>
     </div>
+
+    <select id="team" style="display:none"></select>
+    <select id="opponent" style="display:none"></select>
+</div>
+
+<div class="row">
+    <div class="block">
+        <div id="teamRoster" class="roster-box"></div>
+    </div>
+    <div class="block">
+        <div id="opponentRoster" class="roster-box"></div>
+    </div>
+</div>
 
     <select id="team" style="display:none"></select>
     <select id="opponent" style="display:none"></select>
