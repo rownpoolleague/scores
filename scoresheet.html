@@ -379,16 +379,12 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <button onclick="closeQRModal()" style="margin-top:10px; padding:8px 16px; font-size:16px;">Close</button>
   </div>
 </div>
-   <div id="lagModal" class="modal">
-    <div class="modal-content">
-        <h3>Lag Assignment</h3>
-        <p id="lagPrompt">Did this player win the lag?</p>
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button onclick="assignLag(true)" style="background: green; color: white; padding: 10px;">Won Lag</button>
-            <button onclick="assignLag(false)" style="background: red; color: white; padding: 10px;">Lost Lag</button>
-        </div>
-        <br>
-        <button onclick="closeModal('lagModal')">Cancel</button>
+   <div id="lagModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7);">
+    <div class="modal-content" style="background:white; margin:15% auto; padding:20px; width:250px; text-align:center;">
+        <p>Did <strong id="modalName"></strong> win the lag?</p>
+        <button onclick="assignLag(true)">YES</button>
+        <button onclick="assignLag(false)">NO</button>
+        <button onclick="document.getElementById('lagModal').style.display='none'">Cancel</button>
     </div>
 </div>
     <script>
@@ -445,17 +441,29 @@ document.getElementById("opponent").addEventListener("change", function() {
 let pendingPlayer = { name: "", hc: "" };
 
 // 3. New Player Selection Logic (Triggers Modal)
+let selected = {};
+
 document.addEventListener("click", e => {
-    const playerDiv = e.target.closest(".playerName");
-    if (!playerDiv) return;
+    const el = e.target.closest(".playerName");
+    if (!el) return;
 
-    // Store the clicked player info
-    pendingPlayer.name = playerDiv.getAttribute("data-p");
-    pendingPlayer.hc = playerDiv.getAttribute("data-hc");
-
-    // Open your existing modal
-    openModal('lagModal');
+    // Just capture the data and show the modal
+    selected = { name: el.dataset.p, hc: el.dataset.hc };
+    document.getElementById("modalName").textContent = selected.name;
+    document.getElementById("lagModal").style.display = "block";
 });
+
+function assignLag(win) {
+    const side = win ? {id: "lagWinner", hc: "pA_hc", head: "lagWinnerHeader"} 
+                     : {id: "lagLoser",  hc: "pB_hc", head: "lagLoserHeader"};
+
+    document.getElementById(side.id).value = selected.name;
+    document.getElementById(side.hc).value = selected.hc;
+    document.getElementById(side.head).textContent = selected.name;
+
+    document.getElementById("lagModal").style.display = "none";
+    saveNow();
+}
 
 // Function called by Modal Buttons
 function assignLag(didWin) {
