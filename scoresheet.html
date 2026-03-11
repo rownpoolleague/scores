@@ -167,9 +167,11 @@ select, input, button { font-size:inherit; font-family:inherit; }
         </select>
         <div id="teamRoster" class="roster-box"></div>
     </div>
+<div class="row">
     <div class="block">
-        <select id="opponent">
-            <option value="">-- Select Away Team --</option>
+        <label>Select Your Team:</label>
+        <select id="myTeamSelect" onchange="autoFillBySchedule()">
+            <option value="">-- Choose Your Team --</option>
             <option>Halfway Crooks</option>
             <option>Haters Welcome</option>
             <option>Lynn's Amigos</option>
@@ -181,6 +183,17 @@ select, input, button { font-size:inherit; font-family:inherit; }
             <option>Killer Instinct</option>
             <option>Pete's Bunch</option>
         </select>
+    </div>
+
+    <select id="team" style="display:none"></select>
+    <select id="opponent" style="display:none"></select>
+</div>
+
+<div class="row">
+    <div class="block">
+        <div id="teamRoster" class="roster-box"></div>
+    </div>
+    <div class="block">
         <div id="opponentRoster" class="roster-box"></div>
     </div>
 </div>
@@ -372,6 +385,68 @@ select, input, button { font-size:inherit; font-family:inherit; }
   </div>
 </div>
     <script>
+        const leagueSchedule = [
+    { date: "2026-01-20", pairings: ["1v10", "2v9", "3v8", "7v4", "5v6"] },
+    { date: "2026-01-27", pairings: ["10v2", "3v1", "4v9", "8v5", "6v7"] },
+    { date: "2026-02-03", pairings: ["10v3", "2v4", "5v1", "9v6", "7v8"] },
+    { date: "2026-02-10", pairings: ["4v10", "3v5", "6v2", "1v7", "8v9"] },
+    { date: "2026-02-17", pairings: ["5v10", "6v4", "7v3", "8v2", "9v1"] },
+    { date: "2026-02-24", pairings: ["10v6", "7v5", "4v8", "3v9", "1v2"] },
+    { date: "2026-03-03", pairings: ["10v7", "6v8", "9v5", "1v4", "2v3"] },
+    { date: "2026-03-10", pairings: ["8v10", "7v9", "1v6", "5v2", "4v3"] },
+    { date: "2026-03-17", pairings: ["9v10", "8v1", "2v7", "3v6", "5v4"] },
+    { date: "2026-03-24", pairings: ["10v1", "9v2", "3v8", "4v7", "6v5"] },
+    { date: "2026-03-31", pairings: ["2v10", "1v3", "9v4", "5v8", "6v7"] },
+    { date: "2026-04-07", pairings: ["3v10", "4v2", "5v1", "6v9", "8v7"] },
+    { date: "2026-04-14", pairings: ["10v4", "3v5", "2v6", "7v1", "9v8"] },
+    { date: "2026-04-21", pairings: ["5v10", "4v6", "7v3", "8v2", "1v9"] },
+    { date: "2026-04-28", pairings: ["10v6", "7v5", "8v4", "9v3", "2v1"] }
+];
+const teamMap = {
+    "1": "Halfway Crooks",
+    "2": "Haters Welcome",
+    "3": "Lynn's Amigos",
+    "4": "Rackless Behavior",
+    "5": "Dirty Ballers",
+    "6": "8 on Break",
+    "7": "Five Amigos",
+    "8": "Frank's Pizza",
+    "9": "Killer Instinct",
+    "10": "Pete's Bunch"
+};
+function autoFillBySchedule() {
+    const myTeamName = document.getElementById("myTeamSelect").value;
+    if (!myTeamName) return;
+
+    const myNumber = Object.keys(teamMap).find(key => teamMap[key] === myTeamName);
+    const today = new Date();
+    // Finds the current week based on date
+    const currentWeek = leagueSchedule.slice().reverse().find(w => new Date(w.date) <= today) || leagueSchedule[0];
+
+    let homeName = "";
+    let awayName = "";
+    
+    currentWeek.pairings.forEach(match => {
+        const [homeNum, awayNum] = match.split('v');
+        
+        if (homeNum === myNumber || awayNum === myNumber) {
+            homeName = teamMap[homeNum];
+            awayName = teamMap[awayNum];
+        }
+    });
+
+    if (homeName && awayName) {
+        // Fill hidden inputs
+        document.getElementById("team").value = homeName;
+        document.getElementById("opponent").value = awayName;
+
+        // Force roster updates
+        updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
+        updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
+        
+        saveNow();
+    }
+}
 let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
