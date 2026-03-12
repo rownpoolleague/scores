@@ -142,18 +142,17 @@ select, input, button { font-size:inherit; font-family:inherit; }
 }
     /* Modal background overlay */
 .modal {
-    display: none;
+    display: none; /* now controlled by CSS, not inline */
     position: fixed;
     inset: 0;
     background: black;
     z-index: 9999;
 
-    /* This forces perfect centering */
+    /* Center the modal box */
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
 .modal-content {
     background: #111;
     color: #fff;
@@ -168,7 +167,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 </head>
 <body>
-     <div id="lagModal" class="modal" style="display:none;">
+     <div id="lagModal" class="modal">
     <div class="modal-content">
         <h3>Lag Assignment</h3>
         <p>Did <span id="lagPlayerName"></span> win the lag?</p>
