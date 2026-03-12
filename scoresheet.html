@@ -167,20 +167,6 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 </head>
 <body>
-     <div id="lagModal" class="modal">
-    <div class="modal-content">
-        <h3>Lag Assignment</h3>
-        <p>Did <span id="lagPlayerName"></span> win the lag?</p>
-
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button onclick="assignLag(true)" style="background: green; color: white; padding: 10px;">Won Lag</button>
-            <button onclick="assignLag(false)" style="background: red; color: white; padding: 10px;">Lost Lag</button>
-        </div>
-
-        <br>
-        <button onclick="closeModal('lagModal')">Cancel</button>
-    </div>
-</div>
     <div id="loadingOverlay">
     <div class="spinner"></div>
     <div>Submitting Results...</div>
@@ -921,10 +907,17 @@ function confirmNewPlayer() {
     document.getElementById('qrcode').innerHTML = '';
     new QRCode(document.getElementById('qrcode'), { text: fullUrl, width: 256, height: 256 });
 }
-        function openModal(id) {
+function openModal(id) {
     const modal = document.getElementById(id);
-    if (!modal) return;
-    modal.style.display = "block";
+
+    // Force correct display mode for flex centering
+    modal.style.display = "flex";
+
+    // Force a synchronous reflow so mobile browsers apply flexbox immediately
+    void modal.offsetHeight;
+
+    // Optional: ensure scroll is locked behind modal
+    document.body.style.overflow = "hidden";
 }
 
 function closeModal(id) {
@@ -980,6 +973,20 @@ function closeModal(id) {
     </div>
     
   </div>
+</div>
+         <div id="lagModal" class="modal">
+    <div class="modal-content">
+        <h3>Lag Assignment</h3>
+        <p>Did <span id="lagPlayerName"></span> win the lag?</p>
+
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button onclick="assignLag(true)" style="background: green; color: white; padding: 10px;">Won Lag</button>
+            <button onclick="assignLag(false)" style="background: red; color: white; padding: 10px;">Lost Lag</button>
+        </div>
+
+        <br>
+        <button onclick="closeModal('lagModal')">Cancel</button>
+    </div>
 </div>
 </body>
 </html>
