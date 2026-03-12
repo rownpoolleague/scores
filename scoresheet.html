@@ -398,18 +398,34 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <script>
         let pendingLagPlayer = "";
 
-function handlePlayerClick(playerName) {
-    pendingLagPlayer = playerName;
+let pendingLagPlayer = "";
+let pendingHC = "";
 
-    // Update modal text
+function handlePlayerClick(playerName, playerHC) {
+    pendingLagPlayer = playerName;
+    pendingHC = playerHC;
+
     const span = document.getElementById("lagPlayerName");
-    if (span) {
-        span.textContent = playerName;
-    }
+    if (span) span.textContent = playerName;
 
     openModal('lagModal');
 }
 
+function assignLag(didWin) {
+    if (didWin) {
+        document.getElementById("lagWinner").value = pendingLagPlayer;
+        document.getElementById("pA_hc").value = pendingHC;
+        document.getElementById("lagWinnerHeader").textContent = pendingLagPlayer;
+    } else {
+        document.getElementById("lagLoser").value = pendingLagPlayer;
+        document.getElementById("pB_hc").value = pendingHC;
+        document.getElementById("lagLoserHeader").textContent = pendingLagPlayer;
+    }
+    
+    updateMatchWinner(); // Force the check for Submit button
+    closeModal('lagModal');
+    saveNow();
+}
 function assignLag(didWin) {
     if (didWin) {
         document.getElementById("lagWinner").value = pendingLagPlayer;
@@ -462,12 +478,8 @@ document.addEventListener("click", e => {
     const name = playerDiv.dataset.p;
     const hc = playerDiv.dataset.hc;
 
-    // Store clicked player info
-    pendingPlayer.name = name;
-    pendingPlayer.hc = hc;
-
-    // Call your modal-opening function
-    handlePlayerClick(name);
+    // Trigger the modal handler
+    handlePlayerClick(name, hc);
 });
 
 // Function called by Modal Buttons
