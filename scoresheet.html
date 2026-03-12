@@ -144,26 +144,22 @@ select, input, button { font-size:inherit; font-family:inherit; }
 .modal {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.55); /* dim background */
+    inset: 0; /* shorthand for top:0; left:0; right:0; bottom:0 */
+    background: black;
     z-index: 999;
 }
 
-/* Modal box */
+/* Center the modal box */
 .modal-content {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* perfect centering */
+    transform: translate(-50%, -50%);
     background: #111;
     color: #fff;
     padding: 20px 30px;
     border-radius: 10px;
-    border: 2px solid #1e90ff; /* glowing blue border */
-    box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    border: 2px solid #1e90ff;
     min-width: 280px;
     text-align: center;
 }
