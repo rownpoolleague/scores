@@ -472,19 +472,28 @@ document.addEventListener("click", e => {
 
 // Function called by Modal Buttons
 function assignLag(didWin) {
-    if (didWin) {
-        document.getElementById("lagWinner").value = pendingPlayer.name;
-        document.getElementById("pA_hc").value = pendingPlayer.hc;
-        document.getElementById("lagWinnerHeader").textContent = pendingPlayer.name;
-    } else {
-        document.getElementById("lagLoser").value = pendingPlayer.name;
-        document.getElementById("pB_hc").value = pendingPlayer.hc;
-        document.getElementById("lagLoserHeader").textContent = pendingPlayer.name;
+    try {
+        if (didWin) {
+            document.getElementById("lagWinner").value = pendingLagPlayer;
+        } else {
+            document.getElementById("lagLoser").value = pendingLagPlayer;
+        }
+        saveNow();
+    } finally {
+        closeModal('lagModal'); // always runs
     }
-
-    closeModal('lagModal');
-    saveNow();
 }
+
+   function closeModal(id) {
+    const modal = document.getElementById(id);
+
+    modal.style.display = "none";
+
+    // Always unlock scroll
+    document.body.style.overflow = "auto";
+}
+
+
 
 // 4. Scoring UI Update
 function updateScoreUI() {
