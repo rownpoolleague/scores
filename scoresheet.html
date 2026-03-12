@@ -168,6 +168,20 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 </head>
 <body>
+     <div id="lagModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h3>Lag Assignment</h3>
+        <p>Did <span id="lagPlayerName"></span> win the lag?</p>
+
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button onclick="assignLag(true)" style="background: green; color: white; padding: 10px;">Won Lag</button>
+            <button onclick="assignLag(false)" style="background: red; color: white; padding: 10px;">Lost Lag</button>
+        </div>
+
+        <br>
+        <button onclick="closeModal('lagModal')">Cancel</button>
+    </div>
+</div>
     <div id="loadingOverlay">
     <div class="spinner"></div>
     <div>Submitting Results...</div>
@@ -206,20 +220,6 @@ select, input, button { font-size:inherit; font-family:inherit; }
             <option>Pete's Bunch</option>
         </select>
         <div id="opponentRoster" class="roster-box"></div>
-    </div>
-</div>
- <div id="lagModal" class="modal" style="display:none;">
-    <div class="modal-content">
-        <h3>Lag Assignment</h3>
-        <p>Did <span id="lagPlayerName"></span> win the lag?</p>
-
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button onclick="assignLag(true)" style="background: green; color: white; padding: 10px;">Won Lag</button>
-            <button onclick="assignLag(false)" style="background: red; color: white; padding: 10px;">Lost Lag</button>
-        </div>
-
-        <br>
-        <button onclick="closeModal('lagModal')">Cancel</button>
     </div>
 </div>
 <div class="lag-row" style="display:none;justify-content:center;gap:40px;margin-top:30px;">
@@ -415,7 +415,13 @@ select, input, button { font-size:inherit; font-family:inherit; }
 
 function handlePlayerClick(playerName) {
     pendingLagPlayer = playerName;
-    // Open your existing modal
+
+    // Update modal text
+    const span = document.getElementById("lagPlayerName");
+    if (span) {
+        span.textContent = playerName;
+    }
+
     openModal('lagModal');
 }
 
