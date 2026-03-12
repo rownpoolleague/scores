@@ -468,20 +468,44 @@ document.getElementById("opponent").addEventListener("change", function() {
     updateRoster(this, document.getElementById("opponentRoster"));
 });
 
-let pendingPlayer = { name: "", hc: "" };
+let pendingLagPlayer = "";
+let pendingHC = ""; 
+let pendingPlayer = { name: "", hc: "" }; // Keep this if you have it elsewhere
 
-// 3. New Player Selection Logic (Triggers Modal)
+
+// 3. New Player Selection Logic (Fixed to stay out of the way of dropdowns)
+// 3. New Player Selection Logic
 document.addEventListener("click", e => {
     const playerDiv = e.target.closest(".playerName");
     if (!playerDiv) return;
 
-    const name = playerDiv.dataset.p;
-    const hc = playerDiv.dataset.hc;
+    // Set your variables
+    pendingLagPlayer = playerDiv.getAttribute("data-p");
+    pendingHC = playerDiv.getAttribute("data-hc");
 
-    // Trigger the modal handler
-    handlePlayerClick(name, hc);
+    // Update modal text and show it
+    const span = document.getElementById("lagPlayerName");
+    if (span) span.textContent = pendingLagPlayer;
+    
+    document.getElementById('lagModal').style.display = 'flex';
 });
 
+// Function called by Modal Buttons
+function assignLag(didWin) {
+    if (didWin) {
+        document.getElementById("lagWinner").value = pendingLagPlayer;
+        document.getElementById("pA_hc").value = pendingHC;
+        document.getElementById("lagWinnerHeader").textContent = pendingLagPlayer;
+    } else {
+        document.getElementById("lagLoser").value = pendingLagPlayer;
+        document.getElementById("pB_hc").value = pendingHC;
+        document.getElementById("lagLoserHeader").textContent = pendingLagPlayer;
+    }
+    
+    updateMatchWinner();
+    closeModal('lagModal');
+    saveNow();
+}
 // Function called by Modal Buttons
 function assignLag(didWin) {
     try {
