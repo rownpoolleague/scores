@@ -142,14 +142,11 @@ select, input, button { font-size:inherit; font-family:inherit; }
 }
     /* Modal background overlay */
 .modal {
-    display: none; /* now controlled by CSS, not inline */
+    display: none; /* Force it to start hidden */
     position: fixed;
     inset: 0;
     background: black;
     z-index: 9999;
-
-    /* Center the modal box */
-    display: flex;
     justify-content: center;
     align-items: center;
 }
