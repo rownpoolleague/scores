@@ -372,56 +372,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <button onclick="closeQRModal()" style="margin-top:10px; padding:8px 16px; font-size:16px;">Close</button>
   </div>
 </div>
-
-    <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
-  <div style="background:#222; padding:20px; border-radius:8px; width:95%; max-width:600px; max-height:80vh; overflow-y:auto; border: 2px solid #1e90ff;">
-    <h3 style="text-align:center; color:#1e90ff;">Match History</h3>
-    <table style="width:100%; border-collapse: collapse; color: white; font-size: 14px;">
-      <thead>
-        <tr style="border-bottom: 2px solid #444;">
-          <th style="padding:8px; text-align:left;">Match</th>
-          <th style="padding:8px; text-align:center;">Result</th>
-          <th style="padding:8px; text-align:center;">Inn.</th>
-        </tr>
-      </thead>
-      <tbody id="historyTableBody">
-        </tbody>
-    </table>
-    <div style="text-align:center; margin-top:20px; display:flex; gap:10px; justify-content:center;">
-      <button onclick="closeHistory()" style="padding:10px 20px;">Close</button>
-        <button onclick="exportHistoryOnly()" style="background:#1e90ff; color:white; padding:10px;">Transfer</button>
-      <button onclick="clearHistory()" style="padding:10px 20px; background:crimson; color:white; border:none; border-radius:4px;">Reset</button>
-    </div>
-  </div>
-</div>
-<div id="playerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
-  <div style="background:#222; padding:25px; border-radius:12px; width:90%; max-width:400px; border: 2px solid #1e90ff; text-align:center; box-sizing: border-box;">
-    
-    <h3 style="color:#1e90ff; margin:0 0 15px 0;">Add to Roster</h3>
-    
-    <input type="text" id="manualPlayerName" placeholder="Enter Player Name" 
-           style="width:100%; padding:12px; font-size:18px; margin-bottom:20px; border-radius:6px; border:1px solid #444; background:#111; color:white; box-sizing: border-box;">
-    
-    <div style="margin-bottom: 25px; color:white; font-size:18px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; padding-left: 20px;">
-      <label style="cursor:pointer;">
-        <input type="radio" name="npTeam" value="home" checked style="transform: scale(1.2);"> <span id="homeLabel">Home Team</span>
-      </label>
-      <label style="cursor:pointer;">
-        <input type="radio" name="npTeam" value="away" style="transform: scale(1.2);"> <span id="awayLabel">Away Team</span>
-      </label>
-    </div>
-    
-    <div style="display:flex; gap:12px; justify-content:center;">
-      <button type="button" onclick="closePlayerModal()" 
-              style="padding:10px 20px; background:#444; color:white; border:none; border-radius:4px; font-size:16px; cursor:pointer;">
-        Cancel
-      </button>
-      <button type="button" onclick="confirmNewPlayer()" style="padding:10px 20px; background:#1e90ff; color:white; border:none; border-radius:4px; font-weight:bold; font-size:16px; cursor:pointer;">Add to Roster</button>
-    </div>
-    
-  </div>
-</div>
-        <script>
+    <script>
 let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
@@ -625,27 +576,38 @@ document.getElementById("submitMatch").onclick = function() {
             const el = document.getElementById(id);
             if (el) el.value = el.type === "number" ? 0 : "";
         });
-function checkRosterCollapse() {
-    const innings = parseInt(document.getElementById("matchInnings").value) || 0;
-    const homeRoster = document.getElementById("teamRoster");
-    const awayRoster = document.getElementById("opponentRoster");
-    const teamSelect = document.getElementById("team");
-    const opponentSelect = document.getElementById("opponent");
+checkRosterCollapse();
+        document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
+        document.getElementById("lagLoserHeader").textContent = "Lag Loser";
+        document.getElementById("matchNotes").value = "-";
+        document.getElementById('pA_coach').checked = false;
+        document.getElementById('pB_coach').checked = false;
 
-    if (innings > 0) {
-        // Hide rosters and lock team selection
-        if (homeRoster) homeRoster.style.display = "none";
-        if (awayRoster) awayRoster.style.display = "none";
-        if (teamSelect) teamSelect.disabled = true;
-        if (opponentSelect) opponentSelect.disabled = true;
-    } else {
-        // Show rosters and unlock team selection
-        if (homeRoster) homeRoster.style.display = "block";
-        if (awayRoster) awayRoster.style.display = "block";
-        if (teamSelect) teamSelect.disabled = false;
-        if (opponentSelect) opponentSelect.disabled = false;
-    }
-}
+        // --- HANDLE 5TH MATCH SCENARIO ---
+        if ((scores.home + scores.away) >= 5) {
+            alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}. Resetting session fields, but history is saved.`);
+            document.getElementById("team").selectedIndex = 0;
+            document.getElementById("opponent").selectedIndex = 0;
+            updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
+            updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
+            scores = { home: 0, away: 0 };
+            localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+            updateScoreUI();
+        }
+
+        btn.style.display = "none";
+        btn.disabled = false;
+        btn.style.opacity = "1";
+
+        saveNow();
+        alert("Match submitted!"); // Final confirmation alert
+    })
+    .catch(err => {
+        loader.style.display = "none";
+        alert("Error submitting match.");
+        btn.disabled = false;
+    });
+};
     // 8. Save/Load Logic
 function saveNow() {
     if (isLoading) return;
@@ -898,5 +860,53 @@ function confirmNewPlayer() {
     }
 }
 </script>
+    <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
+  <div style="background:#222; padding:20px; border-radius:8px; width:95%; max-width:600px; max-height:80vh; overflow-y:auto; border: 2px solid #1e90ff;">
+    <h3 style="text-align:center; color:#1e90ff;">Match History</h3>
+    <table style="width:100%; border-collapse: collapse; color: white; font-size: 14px;">
+      <thead>
+        <tr style="border-bottom: 2px solid #444;">
+          <th style="padding:8px; text-align:left;">Match</th>
+          <th style="padding:8px; text-align:center;">Result</th>
+          <th style="padding:8px; text-align:center;">Inn.</th>
+        </tr>
+      </thead>
+      <tbody id="historyTableBody">
+        </tbody>
+    </table>
+    <div style="text-align:center; margin-top:20px; display:flex; gap:10px; justify-content:center;">
+      <button onclick="closeHistory()" style="padding:10px 20px;">Close</button>
+        <button onclick="exportHistoryOnly()" style="background:#1e90ff; color:white; padding:10px;">Transfer</button>
+      <button onclick="clearHistory()" style="padding:10px 20px; background:crimson; color:white; border:none; border-radius:4px;">Reset</button>
+    </div>
+  </div>
+</div>
+<div id="playerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
+  <div style="background:#222; padding:25px; border-radius:12px; width:90%; max-width:400px; border: 2px solid #1e90ff; text-align:center; box-sizing: border-box;">
+    
+    <h3 style="color:#1e90ff; margin:0 0 15px 0;">Add to Roster</h3>
+    
+    <input type="text" id="manualPlayerName" placeholder="Enter Player Name" 
+           style="width:100%; padding:12px; font-size:18px; margin-bottom:20px; border-radius:6px; border:1px solid #444; background:#111; color:white; box-sizing: border-box;">
+    
+    <div style="margin-bottom: 25px; color:white; font-size:18px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; padding-left: 20px;">
+      <label style="cursor:pointer;">
+        <input type="radio" name="npTeam" value="home" checked style="transform: scale(1.2);"> <span id="homeLabel">Home Team</span>
+      </label>
+      <label style="cursor:pointer;">
+        <input type="radio" name="npTeam" value="away" style="transform: scale(1.2);"> <span id="awayLabel">Away Team</span>
+      </label>
+    </div>
+    
+    <div style="display:flex; gap:12px; justify-content:center;">
+      <button type="button" onclick="closePlayerModal()" 
+              style="padding:10px 20px; background:#444; color:white; border:none; border-radius:4px; font-size:16px; cursor:pointer;">
+        Cancel
+      </button>
+      <button type="button" onclick="confirmNewPlayer()" style="padding:10px 20px; background:#1e90ff; color:white; border:none; border-radius:4px; font-weight:bold; font-size:16px; cursor:pointer;">Add to Roster</button>
+    </div>
+    
+  </div>
+</div>
 </body>
 </html>
