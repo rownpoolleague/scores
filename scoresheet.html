@@ -320,7 +320,18 @@ select, input, button { font-size:inherit; font-family:inherit; }
     
 <div style="text-align:center; padding-top:20px; font-size:20px;">
     <label style="display:block; margin-bottom:10px;">Match Winner</label>
-    <input type="hidden" id="matchWinner">
+    <input id="matchWinner" readonly 
+           style="display: inline-block;
+                  box-sizing: border-box; 
+                  text-align: center; 
+                  background-color: #000; 
+                  color: #00ff00; 
+                  font-size: 20px; 
+                  border: 1px solid #000;
+                  width: 180px; 
+                  height: 40px; 
+                  vertical-align: middle; 
+                  margin: 0 auto;">
 </div>
 <div style="margin-top:20px;border-radius:8px;">
 
@@ -418,7 +429,7 @@ document.addEventListener("click", e => {
 });
 
 // 4. Scoring UI Update
-teScoreUI() {
+function updateScoreUI() {
     const hScore = document.getElementById("homeScore");
     const aScore = document.getElementById("awayScore");
     if (hScore && aScore) {
@@ -479,26 +490,15 @@ function updateMatchWinner() {
     const bHC = parseInt(document.getElementById("pB_hc").value) || 0;
     const winField = document.getElementById("matchWinner");
     const subBtn = document.getElementById("submitMatch");
-    const headA = document.getElementById("lagWinnerHeader");
-    const headB = document.getElementById("lagLoserHeader");
-
-    // Reset styles and button state
-    headA.style.color = "";
-    headB.style.color = "";
-    winField.value = "";
-    subBtn.style.display = "none";
 
     if (aWins === aHC && aHC > 0) {
         winField.value = document.getElementById("lagWinner").value;
-        headA.style.color = "#00ff00"; // Green for Winner
-        subBtn.textContent = `Submit ${winField.value} Win`;
-        subBtn.style.display = "inline-block";
     } else if (bWins === bHC && bHC > 0) {
         winField.value = document.getElementById("lagLoser").value;
-        headB.style.color = "#00ff00"; // Green for Winner
-        subBtn.textContent = `Submit ${winField.value} Win`;
-        subBtn.style.display = "inline-block";
+    } else {
+        winField.value = "";
     }
+    subBtn.style.display = winField.value ? "inline-block" : "none";
 }
 
 // 7. Submit to Google Sheets
