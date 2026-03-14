@@ -576,38 +576,27 @@ document.getElementById("submitMatch").onclick = function() {
             const el = document.getElementById(id);
             if (el) el.value = el.type === "number" ? 0 : "";
         });
-checkRosterCollapse();
-        document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
-        document.getElementById("lagLoserHeader").textContent = "Lag Loser";
-        document.getElementById("matchNotes").value = "-";
-        document.getElementById('pA_coach').checked = false;
-        document.getElementById('pB_coach').checked = false;
+function checkRosterCollapse() {
+    const innings = parseInt(document.getElementById("matchInnings").value) || 0;
+    const homeRoster = document.getElementById("teamRoster");
+    const awayRoster = document.getElementById("opponentRoster");
+    const teamSelect = document.getElementById("team");
+    const opponentSelect = document.getElementById("opponent");
 
-        // --- HANDLE 5TH MATCH SCENARIO ---
-        if ((scores.home + scores.away) >= 5) {
-            alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}. Resetting session fields, but history is saved.`);
-            document.getElementById("team").selectedIndex = 0;
-            document.getElementById("opponent").selectedIndex = 0;
-            updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
-            updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
-            scores = { home: 0, away: 0 };
-            localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-            updateScoreUI();
-        }
-
-        btn.style.display = "none";
-        btn.disabled = false;
-        btn.style.opacity = "1";
-
-        saveNow();
-        alert("Match submitted!"); // Final confirmation alert
-    })
-    .catch(err => {
-        loader.style.display = "none";
-        alert("Error submitting match.");
-        btn.disabled = false;
-    });
-};
+    if (innings > 0) {
+        // Hide rosters and lock team selection
+        if (homeRoster) homeRoster.style.display = "none";
+        if (awayRoster) awayRoster.style.display = "none";
+        if (teamSelect) teamSelect.disabled = true;
+        if (opponentSelect) opponentSelect.disabled = true;
+    } else {
+        // Show rosters and unlock team selection
+        if (homeRoster) homeRoster.style.display = "block";
+        if (awayRoster) awayRoster.style.display = "block";
+        if (teamSelect) teamSelect.disabled = false;
+        if (opponentSelect) opponentSelect.disabled = false;
+    }
+}
     // 8. Save/Load Logic
 function saveNow() {
     if (isLoading) return;
