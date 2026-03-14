@@ -575,7 +575,7 @@ document.getElementById("submitMatch").onclick = function() {
             const el = document.getElementById(id);
             if (el) el.value = el.type === "number" ? 0 : "";
         });
-checkRosterCollapse();
+
         document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
         document.getElementById("lagLoserHeader").textContent = "Lag Loser";
         document.getElementById("matchNotes").value = "-";
