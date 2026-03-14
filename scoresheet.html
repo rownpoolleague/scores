@@ -663,6 +663,7 @@ function loadScoresheet() {
 
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
+    checkRosterCollapse();
     updateMatchWinner();
     
     isLoading = false;
