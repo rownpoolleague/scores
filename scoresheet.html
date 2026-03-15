@@ -863,8 +863,10 @@ function confirmNewPlayer() {
         if (awayRoster) awayRoster.style.display = "block";
     }
 }
-     function updateCurrentWeekAndDate() {
+    function updateCurrentWeekAndDate() {
     const today = new Date();
+
+    // Today minus 2 days
     const cutoff = new Date(today);
     cutoff.setDate(cutoff.getDate() - 2);
 
@@ -875,20 +877,25 @@ function confirmNewPlayer() {
 
         const matchDate = new Date(row.date);
 
-        if (matchDate <= cutoff) {
+        // ✔ Correct rule:
+        // Show this week until 2 days AFTER its match date
+        if (matchDate >= cutoff) {
             activeWeek = row;
+            break;
         }
     }
 
+    // If we passed all weeks, use the last one
     if (!activeWeek) {
-        activeWeek = scheduleData[0];
+        activeWeek = scheduleData[scheduleData.length - 1];
     }
 
     document.getElementById("weekDisplay").textContent = "Week " + activeWeek.week;
     document.getElementById("dateDisplay").textContent = "Date: " + activeWeek.date;
 }
+        window.addEventListener("load", updateCurrentWeekAndDate);
 
-window.addEventListener("load", updateCurrentWeekAndDate);
+
                
 </script>
     <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
