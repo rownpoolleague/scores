@@ -43,7 +43,7 @@
 <div class="setup-row">
     <div class="box">
         <label style="display:block; font-size:10px; color:#aaa; margin-bottom:5px; text-transform:uppercase;">Your Team</label>
-        <select id="team" onchange="findMatchup()">
+        <select id="team" class="oppdisplay"; onchange="findMatchup()">
             <option value="">-- Select --</option>
         </select>
     </div>
@@ -84,11 +84,17 @@ let activeWeek = null;
 
 function getHC(fullName) {
     if (typeof masterme === 'undefined') return "?";
-    const searchParts = fullName.toLowerCase().split(' ');
+    
+    // Remove punctuation (like . or ,) and lowercase everything
+    const clean = (str) => str.toLowerCase().replace(/[.,]/g, "").trim();
+    const searchParts = clean(fullName).split(' ');
+    
     const player = masterme.find(p => {
-        const masterName = p["Player Name"].toLowerCase();
-        return searchParts.every(part => masterName.includes(part));
+        const masterClean = clean(p["Player Name"]);
+        // Check if every part of the name (Dan, Foster) exists in the master record (Foster, Dan)
+        return searchParts.every(part => masterClean.includes(part));
     });
+
     return player ? player["HC"] : "?";
 }
 
