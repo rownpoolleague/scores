@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Scheduled Scoresheet</title>
+    <script src="scheduledata.js"></script>
+    <script src="scoresheetinfo.js"></script>
+    <style>
+        :root { --bg: #1a1a1a; --card: #2a2a2a; --text: #ffffff; --accent: #00ff00; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 15px; margin: 0; }
+        
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 10px; }
+        .week-num { color: var(--accent); font-size: 1.4rem; font-weight: bold; }
+
+        .setup-row { display: flex; align-items: center; justify-content: space-between; background: var(--card); padding: 20px; border-radius: 10px; }
+        .box { width: 42%; text-align: center; }
+        select { width: 100%; padding: 12px; background: #333; color: #fff; border: 1px solid #444; border-radius: 5px; font-size: 16px; }
+        .opp-display { font-size: 1.1rem; font-weight: bold; color: var(--accent); padding: 10px; background: #111; border-radius: 5px; border: 1px solid #444; min-height: 20px; }
+
+        .roster-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .roster-box { background: var(--card); padding: 15px; border-radius: 10px; }
+        .playerName { width: 100%; padding: 12px; margin: 8px 0; background: #444; border: none; color: #fff; border-radius: 5px; cursor: pointer; text-align: left; }
+
+        /* Modal */
+        #lagModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: var(--card); padding: 20px; border-radius: 10px; width: 85%; max-width: 400px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div id="dateDisplay" style="color:#888; font-size: 0.8rem;">---</div>
+    <div id="weekDisplay" class="week-num">Detecting Week...</div>
+</div>
+
+<div class="setup-row">
+    <div class="box">
+        <label style="display:block; font-size:10px; color:#aaa; margin-bottom:5px;">YOUR TEAM</label>
+        <select id="team" onchange="findMatchup()">
+            <option value="">-- Select --</option>
+            <option value="1">Halfway Crooks</option>
+            <option value="2">Haters Welcome</option>
+            <option value="3">Lynn's Amigos</option>
+            <option value="4">Rackless Behavior</option>
+            <option value="5">Dirty Ballers</option>
+            <option value="6">8 on Break</option>
+            <option value="7">Five Amigos</option>
+            <option value="8">Frank's Pizza</option>
+            <option value="9">Killer Instinct</option>
+            <option value="10">Pete's Bunch</option>
+        </select>
+    </div>
+    <div style="font-weight:bold; color:var(--accent);">VS</div>
+    <div class="box">
+        <label style="display:block; font-size:10px; color:#aaa; margin-bottom:5px;">OPPONENT</label>
+        <div id="oppName" class="opp-display">---</div>
+    </div>
+</div>
+
+<div class="roster-grid" id="rosterArea">
+    <div class="roster-box">
+        <strong style="font-size:12px; color:var(--accent);">HOME</strong>
+        <div id="homeRoster"></div>
+    </div>
+    <div class="roster-box">
+        <strong style="font-size:12px; color:var(--accent);">AWAY</strong>
+        <div id="awayRoster"></div>
+    </div>
+</div>
+
+<div id="lagModal">
+    <div class="modal-content">
+        <h3>Match Started</h3>
+        <p id="matchDesc"></p>
+        <button onclick="document.getElementById('lagModal').style.display='none'" style="width:100%; padding:10px; background:var(--accent); border:none; border-radius:5px; font-weight:bold;">Close</button>
+    </div>
+</div>
+
+<script>
+// MAP THE NUMBERS FROM SCHEDULE TO THE NAMES IN SCORESHEETINFO
+const teamMap = {
+    "1": "Halfway Crooks", "2": "Haters Welcome", "3": "Lynn's Amigos", "4": "Rackless Behavior", 
+    "5": "Dirty Ballers", "6": "8 on Break", "7": "Five Amigos", "8": "Frank's Pizza", 
+    "9": "Killer Instinct", "10": "Pete's Bunch"
+};
+
+let activeWeek = null;
+
+function init() {
+    const today = new Date();
+    // Find week by checking if today is past the schedule date
+    activeWeek = scheduleData.slice().reverse().find(w => today >= new Date(w.date)) || scheduleData[0];
+    
+    document.getElementById("weekDisplay").textContent = `Week ${activeWeek.week}`;
+    document.getElementById("dateDisplay").textContent = activeWeek.date;
+}
+
+function findMatchup() {
+    const myNum = document.getElementById("team").value;
+    const oppLabel = document.getElementById("oppName");
+    if (!myNum || !activeWeek) return;
+
+    let oppNum = null;
+
+    for (let i = 1; i <= 5; i++) {
+        let matchStr = activeWeek[`m${i}`].split('(')[0]; // Get "1v10"
+        let teams = matchStr.split('v');
+        if (teams[0] === myNum) { oppNum = teams[1]; break; }
+        if (teams[1] === myNum) { oppNum = teams[0]; break; }
+    }
+
+    if (oppNum) {
+        const myName = teamMap[myNum];
+        const oppName = teamMap[oppNum];
+        oppLabel.textContent = oppName;
+
+        renderRoster(myName, "homeRoster");
+        renderRoster(oppName, "awayRoster");
+    }
+}
+
+function renderRoster(teamName, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+    const players = scoresheetinfo[teamName] || [];
+    
+    players.forEach(name => {
+        const btn = document.createElement("button");
+        btn.className = "playerName";
+        btn.textContent = name;
+        btn.onclick = () => startMatch(name);
+        container.appendChild(btn);
+    });
+}
+
+function startMatch(playerName) {
+    document.getElementById("matchDesc").textContent = `Selected: ${playerName}`;
+    document.getElementById("lagModal").style.display = "flex";
+}
+
+window.onload = init;
+</script>
+</body>
+</html>
