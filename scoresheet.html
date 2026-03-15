@@ -151,8 +151,10 @@ select, input, button { font-size:inherit; font-family:inherit; }
 </div>
 <div class="form-wrapper">
 <div id="matchHeader" style="text-align:center; margin-top:10px; margin-bottom:20px;">
-    <div id="weekDisplay" style="font-size:26px; font-weight:bold;"></div>
-    <div id="dateDisplay" style="font-size:22px; margin-top:5px;"></div>
+    <div style="display:flex; justify-content:center; gap:12px; font-size:26px; font-weight:bold;">
+    <div id="weekDisplay"></div>
+    <div id="dateDisplay" style="font-size:22px; font-weight:normal;"></div>
+</div>
 </div>
 <div class="row">
     <div class="block">
@@ -891,7 +893,7 @@ function confirmNewPlayer() {
     }
 
     document.getElementById("weekDisplay").textContent = "Week " + activeWeek.week;
-    document.getElementById("dateDisplay").textContent = "Date: " + activeWeek.date;
+    document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
 }
         window.addEventListener("load", updateCurrentWeekAndDate);
 
