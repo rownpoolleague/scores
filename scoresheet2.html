@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Scheduled Scoresheet</title>
-    <script src="schedule.js"></script>
+    <script src="scheduledata.js"></script>
     <script src="scoresheetinfo.js"></script>
     <script src="masterme.js"></script>
     <style>
@@ -20,7 +20,10 @@
         .opp-display { font-size: 1.1rem; font-weight: bold; color: var(--accent); padding: 10px; background: #111; border-radius: 5px; border: 1px solid #444; min-height: 20px; text-align: center; }
 
         .roster-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .roster-box { background: var(--card); padding: 10px; border-radius: 10px; min-height: 100px; }
+        .roster-box { background: var(--card); padding: 10px; border-radius: 10px; min-height: 100px; border-top: 3px solid transparent; }
+        .home-accent { border-top-color: var(--accent); }
+        .away-accent { border-top-color: #ff4444; }
+        
         .playerName { width: 100%; padding: 12px; margin: 8px 0; background: #444; border: none; color: #fff; border-radius: 5px; cursor: pointer; text-align: left; font-size: 14px; }
         .hc-badge { float: right; color: var(--accent); font-weight: bold; }
 
@@ -52,12 +55,12 @@
 </div>
 
 <div class="roster-grid">
-    <div class="roster-box">
-        <strong style="font-size:11px; color:var(--accent);">HOME ROSTER</strong>
+    <div id="homeContainer" class="roster-box">
+        <strong id="homeTitle" style="font-size:11px; color:var(--accent);">HOME ROSTER</strong>
         <div id="homeRoster"></div>
     </div>
-    <div class="roster-box">
-        <strong style="font-size:11px; color:var(--accent);">AWAY ROSTER</strong>
+    <div id="awayContainer" class="roster-box">
+        <strong id="awayTitle" style="font-size:11px; color:#ff4444;">AWAY ROSTER</strong>
         <div id="awayRoster"></div>
     </div>
 </div>
@@ -71,7 +74,6 @@
 </div>
 
 <script>
-// Mapping schedule IDs to scoresheetinfo.js keys
 const teamMap = {
     "1": "Halfway Crooks", "2": "Haters Welcome", "3": "Lynn's Amigos", "4": "Rackless Behavior",
     "5": "Dirty Ballers", "6": "8 on Break", "7": "Five Amigos", "8": "Frank's Pizza",
@@ -80,7 +82,6 @@ const teamMap = {
 
 let activeWeek = null;
 
-// Helper to cross-reference handicap from masterme.js
 function getHC(fullName) {
     if (typeof masterme === 'undefined') return "?";
     const searchParts = fullName.toLowerCase().split(' ');
@@ -92,7 +93,6 @@ function getHC(fullName) {
 }
 
 function init() {
-    // 1. Populate Dropdown
     const teamSelect = document.getElementById("team");
     Object.keys(teamMap).forEach(num => {
         const opt = document.createElement("option");
@@ -101,7 +101,6 @@ function init() {
         teamSelect.appendChild(opt);
     });
 
-    // 2. Determine Week (Today or Future)
     if (typeof scheduleData !== 'undefined') {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -128,22 +127,38 @@ function findMatchup() {
         return;
     }
 
-    let oppNum = null;
+    let homeNum = null;
+    let awayNum = null;
+    let amIHome = true;
+
     for (let i = 1; i <= 5; i++) {
         let matchStr = activeWeek["m" + i];
         if (!matchStr) continue;
         let pair = matchStr.split('(')[0]; 
-        let teams = pair.split('v');
-        if (teams[0] === myNum) { oppNum = teams[1]; break; }
-        if (teams[1] === myNum) { oppNum = teams[0]; break; }
+        let teams = pair.split('v'); // teams[0] is home, teams[1] is away
+
+        if (teams[0] === myNum) {
+            homeNum = teams[0];
+            awayNum = teams[1];
+            amIHome = true;
+            break;
+        } else if (teams[1] === myNum) {
+            homeNum = teams[0];
+            awayNum = teams[1];
+            amIHome = false;
+            break;
+        }
     }
 
-    if (oppNum) {
-        const myName = teamMap[myNum];
-        const oppName = teamMap[oppNum];
-        oppLabel.textContent = oppName;
-        renderRoster(myName, "homeRoster");
-        renderRoster(oppName, "awayRoster");
+    if (homeNum && awayNum) {
+        oppLabel.textContent = amIHome ? teamMap[awayNum] : teamMap[homeNum];
+        
+        // Update Labels to show which is yours
+        document.getElementById("homeTitle").textContent = "HOME: " + teamMap[homeNum] + (amIHome ? " (YOU)" : "");
+        document.getElementById("awayTitle").textContent = "AWAY: " + teamMap[awayNum] + (!amIHome ? " (YOU)" : "");
+
+        renderRoster(teamMap[homeNum], "homeRoster");
+        renderRoster(teamMap[awayNum], "awayRoster");
     }
 }
 
