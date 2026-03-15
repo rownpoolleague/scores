@@ -14,17 +14,18 @@
         .week-num { color: var(--accent); font-size: 1.4rem; font-weight: bold; }
 
         .setup-row { display: flex; align-items: center; justify-content: space-between; background: var(--card); padding: 20px; border-radius: 10px; }
-        .box { width: 42%; text-align: center; }
+        .box { width: 45%; text-align: center; }
         select { width: 100%; padding: 12px; background: #333; color: #fff; border: 1px solid #444; border-radius: 5px; font-size: 16px; }
-        .opp-display { font-size: 1.1rem; font-weight: bold; color: var(--accent); padding: 10px; background: #111; border-radius: 5px; border: 1px solid #444; min-height: 20px; }
+        .opp-display { font-size: 1.1rem; font-weight: bold; color: var(--accent); padding: 10px; background: #111; border-radius: 5px; border: 1px solid #444; min-height: 20px; text-align: center; }
 
         .roster-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .roster-box { background: var(--card); padding: 15px; border-radius: 10px; }
-        .playerName { width: 100%; padding: 12px; margin: 8px 0; background: #444; border: none; color: #fff; border-radius: 5px; cursor: pointer; text-align: left; }
-
-        /* Modal */
-        #lagModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 100; }
-        .modal-content { background: var(--card); padding: 20px; border-radius: 10px; width: 85%; max-width: 400px; text-align: center; }
+        .roster-box { background: var(--card); padding: 10px; border-radius: 10px; min-height: 100px; }
+        .playerName { width: 100%; padding: 12px; margin: 8px 0; background: #444; border: none; color: #fff; border-radius: 5px; cursor: pointer; text-align: left; font-size: 14px; }
+        
+        /* Lag Modal */
+        #lagModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--card); padding: 20px; border-radius: 10px; width: 85%; max-width: 400px; text-align: center; border: 1px solid var(--accent); }
+        .modal-btn { width: 100%; padding: 12px; background: var(--accent); color: #000; border: none; border-radius: 5px; font-weight: bold; margin-top: 15px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -36,76 +37,97 @@
 
 <div class="setup-row">
     <div class="box">
-        <label style="display:block; font-size:10px; color:#aaa; margin-bottom:5px;">YOUR TEAM</label>
+        <label style="display:block; font-size:10px; color:#aaa; margin-bottom:5px; text-transform:uppercase;">Your Team</label>
         <select id="team" onchange="findMatchup()">
             <option value="">-- Select --</option>
-            <option value="1">Halfway Crooks</option>
-            <option value="2">Haters Welcome</option>
-            <option value="3">Lynn's Amigos</option>
-            <option value="4">Rackless Behavior</option>
-            <option value="5">Dirty Ballers</option>
-            <option value="6">8 on Break</option>
-            <option value="7">Five Amigos</option>
-            <option value="8">Frank's Pizza</option>
-            <option value="9">Killer Instinct</option>
-            <option value="10">Pete's Bunch</option>
         </select>
     </div>
-    <div style="font-weight:bold; color:var(--accent);">VS</div>
+    <div style="font-weight:bold; color:var(--accent); margin-top: 15px;">VS</div>
     <div class="box">
-        <label style="display:block; font-size:10px; color:#aaa; margin-bottom:5px;">OPPONENT</label>
+        <label style="display:block; font-size:10px; color:#aaa; margin-bottom:5px; text-transform:uppercase;">Opponent</label>
         <div id="oppName" class="opp-display">---</div>
     </div>
 </div>
 
-<div class="roster-grid" id="rosterArea">
+<div class="roster-grid">
     <div class="roster-box">
-        <strong style="font-size:12px; color:var(--accent);">HOME</strong>
+        <strong style="font-size:11px; color:var(--accent);">HOME ROSTER</strong>
         <div id="homeRoster"></div>
     </div>
     <div class="roster-box">
-        <strong style="font-size:12px; color:var(--accent);">AWAY</strong>
+        <strong style="font-size:11px; color:var(--accent);">AWAY ROSTER</strong>
         <div id="awayRoster"></div>
     </div>
 </div>
 
 <div id="lagModal">
     <div class="modal-content">
-        <h3>Match Started</h3>
-        <p id="matchDesc"></p>
-        <button onclick="document.getElementById('lagModal').style.display='none'" style="width:100%; padding:10px; background:var(--accent); border:none; border-radius:5px; font-weight:bold;">Close</button>
+        <h2 style="margin-top:0;">Match Start</h2>
+        <p id="matchInfo" style="font-size: 1.1rem;"></p>
+        <button class="modal-btn" onclick="closeModal()">LET'S PLAY</button>
     </div>
 </div>
 
 <script>
-// MAP THE NUMBERS FROM SCHEDULE TO THE NAMES IN SCORESHEETINFO
+// Single source of truth for mapping IDs to names used in scoresheetinfo.js
 const teamMap = {
-    "1": "Halfway Crooks", "2": "Haters Welcome", "3": "Lynn's Amigos", "4": "Rackless Behavior", 
-    "5": "Dirty Ballers", "6": "8 on Break", "7": "Five Amigos", "8": "Frank's Pizza", 
+    "1": "Halfway Crooks", "2": "Haters Welcome", "3": "Lynn's Amigos", "4": "Rackless Behavior",
+    "5": "Dirty Ballers", "6": "8 on Break", "7": "Five Amigos", "8": "Frank's Pizza",
     "9": "Killer Instinct", "10": "Pete's Bunch"
 };
 
 let activeWeek = null;
 
 function init() {
+    if (typeof scheduleData === 'undefined') {
+        document.getElementById("weekDisplay").textContent = "Schedule Data Missing";
+        return;
+    }
+
+    // 1. Automatically populate the dropdown from teamMap
+    const teamSelect = document.getElementById("team");
+    Object.keys(teamMap).forEach(num => {
+        const opt = document.createElement("option");
+        opt.value = num;
+        opt.textContent = teamMap[num];
+        teamSelect.appendChild(opt);
+    });
+
     const today = new Date();
-    // Find week by checking if today is past the schedule date
-    activeWeek = scheduleData.slice().reverse().find(w => today >= new Date(w.date)) || scheduleData[0];
-    
-    document.getElementById("weekDisplay").textContent = `Week ${activeWeek.week}`;
+    today.setHours(0, 0, 0, 0);
+
+    // 2. Find first date today or in future
+    activeWeek = scheduleData.find(w => {
+        const matchDate = new Date(w.date);
+        return matchDate >= today;
+    }) || scheduleData[scheduleData.length - 1];
+
+    document.getElementById("weekDisplay").textContent = "Week " + activeWeek.week;
     document.getElementById("dateDisplay").textContent = activeWeek.date;
 }
 
 function findMatchup() {
     const myNum = document.getElementById("team").value;
     const oppLabel = document.getElementById("oppName");
-    if (!myNum || !activeWeek) return;
+    const homeDiv = document.getElementById("homeRoster");
+    const awayDiv = document.getElementById("awayRoster");
+    
+    if (!myNum) {
+        oppLabel.textContent = "---";
+        homeDiv.innerHTML = "";
+        awayDiv.innerHTML = "";
+        return;
+    }
 
     let oppNum = null;
-
     for (let i = 1; i <= 5; i++) {
-        let matchStr = activeWeek[`m${i}`].split('(')[0]; // Get "1v10"
-        let teams = matchStr.split('v');
+        let matchStr = activeWeek["m" + i];
+        if (!matchStr) continue;
+        
+        // Split to handle "1v10(4-1)" -> "1v10"
+        let pair = matchStr.split('(')[0]; 
+        let teams = pair.split('v');
+
         if (teams[0] === myNum) { oppNum = teams[1]; break; }
         if (teams[1] === myNum) { oppNum = teams[0]; break; }
     }
@@ -114,7 +136,6 @@ function findMatchup() {
         const myName = teamMap[myNum];
         const oppName = teamMap[oppNum];
         oppLabel.textContent = oppName;
-
         renderRoster(myName, "homeRoster");
         renderRoster(oppName, "awayRoster");
     }
@@ -123,20 +144,25 @@ function findMatchup() {
 function renderRoster(teamName, containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
+    if (typeof scoresheetinfo === 'undefined') return;
+
     const players = scoresheetinfo[teamName] || [];
-    
     players.forEach(name => {
         const btn = document.createElement("button");
         btn.className = "playerName";
         btn.textContent = name;
-        btn.onclick = () => startMatch(name);
+        btn.onclick = () => openModal(name);
         container.appendChild(btn);
     });
 }
 
-function startMatch(playerName) {
-    document.getElementById("matchDesc").textContent = `Selected: ${playerName}`;
+function openModal(playerName) {
+    document.getElementById("matchInfo").textContent = "Starting match for: " + playerName;
     document.getElementById("lagModal").style.display = "flex";
+}
+
+function closeModal() {
+    document.getElementById("lagModal").style.display = "none";
 }
 
 window.onload = init;
