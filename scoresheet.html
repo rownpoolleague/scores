@@ -142,6 +142,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
 }
 </style>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+    <script src="schedule.js"></script>
 </head>
 <body>
     <div id="loadingOverlay">
@@ -864,8 +865,6 @@ function confirmNewPlayer() {
 }
      function updateCurrentWeekAndDate() {
     const today = new Date();
-    
-    // Add 2-day buffer so week doesn't advance early
     const cutoff = new Date(today);
     cutoff.setDate(cutoff.getDate() - 2);
 
@@ -876,12 +875,11 @@ function confirmNewPlayer() {
 
         const matchDate = new Date(row.date);
 
-        // If match date is <= cutoff, this is the current active week
         if (matchDate <= cutoff) {
             activeWeek = row;
         }
     }
-    // If no week qualifies yet (season hasn't started)
+
     if (!activeWeek) {
         activeWeek = scheduleData[0];
     }
@@ -889,8 +887,9 @@ function confirmNewPlayer() {
     document.getElementById("weekDisplay").textContent = "Week " + activeWeek.week;
     document.getElementById("dateDisplay").textContent = "Date: " + activeWeek.date;
 }
-};
-                 window.addEventListener("load", updateCurrentWeekAndDate);
+
+window.addEventListener("load", updateCurrentWeekAndDate);
+               
 </script>
     <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
   <div style="background:#222; padding:20px; border-radius:8px; width:95%; max-width:600px; max-height:80vh; overflow-y:auto; border: 2px solid #1e90ff;">
