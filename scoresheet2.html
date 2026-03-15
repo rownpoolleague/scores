@@ -22,10 +22,8 @@
         .roster-box { background: var(--card); padding: 10px; border-radius: 10px; min-height: 100px; }
         .playerName { width: 100%; padding: 12px; margin: 8px 0; background: #444; border: none; color: #fff; border-radius: 5px; cursor: pointer; text-align: left; font-size: 14px; }
         
-        /* Lag Modal */
         #lagModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: var(--card); padding: 20px; border-radius: 10px; width: 85%; max-width: 400px; text-align: center; border: 1px solid var(--accent); }
-        .modal-btn { width: 100%; padding: 12px; background: var(--accent); color: #000; border: none; border-radius: 5px; font-weight: bold; margin-top: 15px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -64,12 +62,11 @@
     <div class="modal-content">
         <h2 style="margin-top:0;">Match Start</h2>
         <p id="matchInfo" style="font-size: 1.1rem;"></p>
-        <button class="modal-btn" onclick="closeModal()">LET'S PLAY</button>
+        <button onclick="document.getElementById('lagModal').style.display='none'" style="width:100%; padding:12px; background:var(--accent); color:#000; border:none; border-radius:5px; font-weight:bold; margin-top:15px;">LET'S PLAY</button>
     </div>
 </div>
 
 <script>
-// Single source of truth for mapping IDs to names used in scoresheetinfo.js
 const teamMap = {
     "1": "Halfway Crooks", "2": "Haters Welcome", "3": "Lynn's Amigos", "4": "Rackless Behavior",
     "5": "Dirty Ballers", "6": "8 on Break", "7": "Five Amigos", "8": "Frank's Pizza",
@@ -79,43 +76,37 @@ const teamMap = {
 let activeWeek = null;
 
 function init() {
-    if (typeof scheduleData === 'undefined') {
-        document.getElementById("weekDisplay").textContent = "Schedule Data Missing";
-        return;
+    // 1. Fill the dropdown
+    const teamSelect = document.getElementById("team");
+    if (teamSelect) {
+        Object.keys(teamMap).forEach(num => {
+            const opt = document.createElement("option");
+            opt.value = num;
+            opt.textContent = teamMap[num];
+            teamSelect.appendChild(opt);
+        });
     }
 
-    // 1. Automatically populate the dropdown from teamMap
-    const teamSelect = document.getElementById("team");
-    Object.keys(teamMap).forEach(num => {
-        const opt = document.createElement("option");
-        opt.value = num;
-        opt.textContent = teamMap[num];
-        teamSelect.appendChild(opt);
-    });
+    // 2. Find the week
+    if (typeof scheduleData !== 'undefined') {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+        activeWeek = scheduleData.find(w => new Date(w.date) >= today) || scheduleData[scheduleData.length - 1];
 
-    // 2. Find first date today or in future
-    activeWeek = scheduleData.find(w => {
-        const matchDate = new Date(w.date);
-        return matchDate >= today;
-    }) || scheduleData[scheduleData.length - 1];
-
-    document.getElementById("weekDisplay").textContent = "Week " + activeWeek.week;
-    document.getElementById("dateDisplay").textContent = activeWeek.date;
+        document.getElementById("weekDisplay").textContent = "Week " + activeWeek.week;
+        document.getElementById("dateDisplay").textContent = activeWeek.date;
+    }
 }
 
 function findMatchup() {
     const myNum = document.getElementById("team").value;
     const oppLabel = document.getElementById("oppName");
-    const homeDiv = document.getElementById("homeRoster");
-    const awayDiv = document.getElementById("awayRoster");
     
-    if (!myNum) {
+    if (!myNum || !activeWeek) {
         oppLabel.textContent = "---";
-        homeDiv.innerHTML = "";
-        awayDiv.innerHTML = "";
+        document.getElementById("homeRoster").innerHTML = "";
+        document.getElementById("awayRoster").innerHTML = "";
         return;
     }
 
@@ -123,8 +114,6 @@ function findMatchup() {
     for (let i = 1; i <= 5; i++) {
         let matchStr = activeWeek["m" + i];
         if (!matchStr) continue;
-        
-        // Split to handle "1v10(4-1)" -> "1v10"
         let pair = matchStr.split('(')[0]; 
         let teams = pair.split('v');
 
@@ -133,11 +122,9 @@ function findMatchup() {
     }
 
     if (oppNum) {
-        const myName = teamMap[myNum];
-        const oppName = teamMap[oppNum];
-        oppLabel.textContent = oppName;
-        renderRoster(myName, "homeRoster");
-        renderRoster(oppName, "awayRoster");
+        oppLabel.textContent = teamMap[oppNum];
+        renderRoster(teamMap[myNum], "homeRoster");
+        renderRoster(teamMap[oppNum], "awayRoster");
     }
 }
 
@@ -151,18 +138,12 @@ function renderRoster(teamName, containerId) {
         const btn = document.createElement("button");
         btn.className = "playerName";
         btn.textContent = name;
-        btn.onclick = () => openModal(name);
+        btn.onclick = () => {
+            document.getElementById("matchInfo").textContent = "Starting match for: " + name;
+            document.getElementById("lagModal").style.display = "flex";
+        };
         container.appendChild(btn);
     });
-}
-
-function openModal(playerName) {
-    document.getElementById("matchInfo").textContent = "Starting match for: " + playerName;
-    document.getElementById("lagModal").style.display = "flex";
-}
-
-function closeModal() {
-    document.getElementById("lagModal").style.display = "none";
 }
 
 window.onload = init;
