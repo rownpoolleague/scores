@@ -9,8 +9,8 @@
 <style>
 /* --- Styles unchanged from your version --- */
 body { font-family: Arial, sans-serif;font-size: 18px; background-color: #000; color: #fff; }
-.row { display: flex; justify-content: center; gap: 5px; margin-top: 10px;font-size:17px; }
-.block { text-align: center;flex: 1; max-width: 50%; }
+.row {overflow-wrap: break-word; display: flex; justify-content: center; gap: 5px; margin-top: 10px;font-size:17px; }
+.block {overflow-wrap: break-word; text-align: center;flex: 1; max-width: 50%; }
 .roster-box {overflow-wrap: break-word;
     text-align: left;
     width: 100%;       /* Fill the block it's inside */
@@ -77,7 +77,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
 @media (max-width:600px) {
 
 .form-wrapper { margin:1px;}
-.roster-box { 
+.roster-box { overflow-wrap: break-word;
     text-align: left; 
     width: 90%;       /* take up most of the screen on mobile */
     max-width: 300px; /* optional: don’t let it get too wide on large phones */
