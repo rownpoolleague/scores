@@ -1,5 +1,5 @@
 const scoresheetrosters = {
-    "Alex Cruz Sr.":5,
+    "Alex Gomez":3,
     "Brett Boger":4,
     "Buster Fuller":3,
     "Chuck Feager":2,
@@ -11,7 +11,6 @@ const scoresheetrosters = {
     "Don Murphy":3,
     "Don Rak":6,
     "Don Young":2,
-    "Doug Andrus":4,
     "Doug Misner":4,
     "Enrique Meza":2,
     "Felipe Ochoa":4,
@@ -61,7 +60,6 @@ const scoresheetrosters = {
     "Rocky Oiler Sr.":3,
     "Ron Podborny":2,
     "Ross Giannino":5,
-    "Samantha Kommenich":2,
     "Sergio Sanchez":4,
     "Shawn Mcbride":3,
     "Shawn Vitolka":5,
