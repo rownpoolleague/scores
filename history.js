@@ -182,15 +182,15 @@ const history = [
   },
   {
     "name": "Brett Boger",
-    "currentHash": "4.337",
-    "winPct": "50%",
+    "currentHash": "4.670",
+    "winPct": "40%",
     "hc": 4,
     "history": [
-      {"date": "11/18/2025", "gw": 3, "innings": 10, "hash": "3.333", "week": 10},
-      {"date": "12/9/2025", "gw": 3, "innings": 13, "hash": "4.333", "week": 8},
-      {"date": "2/3/2026", "gw": 5, "innings": 23, "hash": "4.600", "week": 5},
-      {"date": "12/2/2025", "gw": 3, "innings": 14, "hash": "4.667", "week": 9},
-      {"date": "3/3/2026", "gw": 4, "innings": 19, "hash": "4.750", "week": 1}
+      {"date": "12/9/2025", "gw": 3, "innings": 13, "hash": "4.333", "week": 9},
+      {"date": "2/3/2026", "gw": 5, "innings": 23, "hash": "4.600", "week": 6},
+      {"date": "12/2/2025", "gw": 3, "innings": 14, "hash": "4.667", "week": 10},
+      {"date": "3/3/2026", "gw": 4, "innings": 19, "hash": "4.750", "week": 2},
+      {"date": "2/24/2026", "gw": 3, "innings": 15, "hash": "5.000", "week": 3}
     ]
   },
   {
@@ -775,16 +775,16 @@ const history = [
     ]
   },
   {
-    "name": "Doug Andrus*",
-    "currentHash": "4.350",
-    "winPct": "80%",
-    "hc": 4,
+    "name": "Alex Gomez",
+    "currentHash": "6.700",
+    "winPct": "67%",
+    "hc": 3,
     "history": [
-      {"date": "2/10/2026", "gw": 4, "innings": 12, "hash": "3.000", "week": 4},
-      {"date": "1/20/2026", "gw": 4, "innings": 16, "hash": "4.000", "week": 8},
-      {"date": "3/3/2026", "gw": 4, "innings": 16, "hash": "4.000", "week": 1},
-      {"date": "2/24/2026", "gw": 4, "innings": 20, "hash": "5.000", "week": 2},
-      {"date": "12/16/2025", "gw": 4, "innings": 23, "hash": "5.750", "week": 10}
+      {"date": "12/9/2025", "gw": 2, "innings": 6, "hash": "3.000", "week": 2},
+      {"date": "APA", "gw": 0, "innings": 0, "hash": "3.500", "week": 1},
+      {"date": "11/25/2025", "gw": 2, "innings": 13, "hash": "6.500", "week": 4},
+      {"date": "12/2/2025", "gw": 2, "innings": 20, "hash": "10.000", "week": 3},
+      {"date": "10/28/2025", "gw": 2, "innings": 21, "hash": "10.500", "week": 5}
     ]
   },
   {
@@ -814,19 +814,6 @@ const history = [
     ]
   },
   {
-    "name": "Samantha Kommenich",
-    "currentHash": "13.267",
-    "winPct": "20%",
-    "hc": 2,
-    "history": [
-      {"date": "9/16/2025", "gw": 2, "innings": 16, "hash": "8.000", "week": 9},
-      {"date": "9/9/2025", "gw": 3, "innings": 40, "hash": "13.333", "week": 10},
-      {"date": "9/23/2025", "gw": 1, "innings": 16, "hash": "15.000", "week": 8},
-      {"date": "10/7/2025", "gw": 0, "innings": 12, "hash": "15.000", "week": 7},
-      {"date": "10/28/2025", "gw": 1, "innings": 16, "hash": "15.000", "week": 6}
-    ]
-  },
-  {
     "name": "Shawn Vitolka*",
     "currentHash": "3.960",
     "winPct": "60%",
@@ -837,16 +824,6 @@ const history = [
       {"date": "2/10/2026", "gw": 5, "innings": 20, "hash": "4.000", "week": 3},
       {"date": "11/4/2025", "gw": 4, "innings": 17, "hash": "4.250", "week": 8},
       {"date": "10/28/2025", "gw": 4, "innings": 19, "hash": "4.750", "week": 9}
-    ]
-  },
-  {
-    "name": "Alex Cruz Sr.",
-    "currentHash": "3.650",
-    "winPct": "50%",
-    "hc": 5,
-    "history": [
-      {"date": "APA HC", "gw": 0, "innings": 0, "hash": "3.500", "week": 1},
-      {"date": "2/17/2026", "gw": 5, "innings": 19, "hash": "3.800", "week": 2}
     ]
   },
   {
