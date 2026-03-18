@@ -1,28 +1,28 @@
 const history = [
   {
     "name": "Dan Foster",
-    "currentHash": "5.367",
+    "currentHash": "5.200",
     "winPct": "50%",
     "hc": 4,
     "history": [
-      {"date": "1/27/2026", "gw": 3, "innings": 12, "hash": "4.000", "week": 2},
-      {"date": "11/18/2025", "gw": 3, "innings": 13, "hash": "4.333", "week": 9},
-      {"date": "2/17/2026", "gw": 3, "innings": 13, "hash": "4.333", "week": 1},
-      {"date": "12/23/2025", "gw": 3, "innings": 20, "hash": "6.667", "week": 4},
-      {"date": "11/25/2025", "gw": 2, "innings": 15, "hash": "7.500", "week": 8}
+      {"date": "1/27/2026", "gw": 3, "innings": 12, "hash": "4.000", "week": 3},
+      {"date": "11/18/2025", "gw": 3, "innings": 13, "hash": "4.333", "week": 10},
+      {"date": "2/17/2026", "gw": 3, "innings": 13, "hash": "4.333", "week": 2},
+      {"date": "12/23/2025", "gw": 3, "innings": 20, "hash": "6.667", "week": 5},
+      {"date": "3/17/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 1}
     ]
   },
   {
     "name": "Yani Marinopoulos",
-    "currentHash": "4.950",
-    "winPct": "30%",
-    "hc": 4,
+    "currentHash": "6.500",
+    "winPct": "20%",
+    "hc": 3,
     "history": [
-      {"date": "12/2/2025", "gw": 5, "innings": 15, "hash": "3.000", "week": 8},
-      {"date": "11/18/2025", "gw": 4, "innings": 15, "hash": "3.750", "week": 10},
-      {"date": "1/27/2026", "gw": 4, "innings": 20, "hash": "5.000", "week": 5},
-      {"date": "3/10/2026", "gw": 4, "innings": 20, "hash": "5.000", "week": 1},
-      {"date": "2/3/2026", "gw": 3, "innings": 24, "hash": "8.000", "week": 4}
+      {"date": "12/2/2025", "gw": 5, "innings": 15, "hash": "3.000", "week": 9},
+      {"date": "1/27/2026", "gw": 4, "innings": 20, "hash": "5.000", "week": 6},
+      {"date": "3/10/2026", "gw": 4, "innings": 20, "hash": "5.000", "week": 2},
+      {"date": "2/3/2026", "gw": 3, "innings": 24, "hash": "8.000", "week": 5},
+      {"date": "11/25/2025", "gw": 2, "innings": 23, "hash": "11.500", "week": 10}
     ]
   },
   {
@@ -65,55 +65,55 @@ const history = [
     ]
   },
   {
-    "name": "Jeremie Ketner",
-    "currentHash": "5.383",
-    "winPct": "50%",
+    "name": "Jeremie Ketner*",
+    "currentHash": "5.333",
+    "winPct": "60%",
     "hc": 4,
     "history": [
-      {"date": "1/20/2026", "gw": 4, "innings": 12, "hash": "3.000", "week": 7},
-      {"date": "11/12/2024", "gw": 4, "innings": 21, "hash": "5.250", "week": 10},
-      {"date": "11/19/2024", "gw": 3, "innings": 18, "hash": "6.000", "week": 9},
-      {"date": "12/3/2024", "gw": 3, "innings": 18, "hash": "6.000", "week": 8},
-      {"date": "2/17/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 3}
+      {"date": "1/20/2026", "gw": 4, "innings": 12, "hash": "3.000", "week": 9},
+      {"date": "3/17/2026", "gw": 4, "innings": 16, "hash": "4.000", "week": 1},
+      {"date": "12/3/2024", "gw": 3, "innings": 18, "hash": "6.000", "week": 10},
+      {"date": "2/17/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 5},
+      {"date": "2/4/2026", "gw": 4, "innings": 28, "hash": "7.000", "week": 7}
     ]
   },
   {
     "name": "Don Rak*",
-    "currentHash": "2.713",
+    "currentHash": "2.580",
     "winPct": "80%",
     "hc": 6,
     "history": [
-      {"date": "2/17/2026", "gw": 6, "innings": 12, "hash": "2.000", "week": 5},
-      {"date": "1/20/2026", "gw": 5, "innings": 12, "hash": "2.400", "week": 9},
-      {"date": "1/27/2026", "gw": 6, "innings": 17, "hash": "2.833", "week": 8},
-      {"date": "2/10/2026", "gw": 6, "innings": 18, "hash": "3.000", "week": 6},
-      {"date": "2/24/2026", "gw": 6, "innings": 20, "hash": "3.333", "week": 3}
+      {"date": "2/17/2026", "gw": 6, "innings": 12, "hash": "2.000", "week": 6},
+      {"date": "1/20/2026", "gw": 5, "innings": 12, "hash": "2.400", "week": 10},
+      {"date": "3/17/2026", "gw": 6, "innings": 16, "hash": "2.667", "week": 1},
+      {"date": "1/27/2026", "gw": 6, "innings": 17, "hash": "2.833", "week": 9},
+      {"date": "2/10/2026", "gw": 6, "innings": 18, "hash": "3.000", "week": 7}
     ]
   },
   {
     "name": "Randy Rycraft",
-    "currentHash": "4.083",
+    "currentHash": "4.483",
     "winPct": "70%",
     "hc": 4,
     "history": [
-      {"date": "11/4/2025", "gw": 4, "innings": 12, "hash": "3.000", "week": 10},
-      {"date": "2/3/2026", "gw": 4, "innings": 13, "hash": "3.250", "week": 2},
-      {"date": "1/27/2026", "gw": 3, "innings": 13, "hash": "4.333", "week": 3},
-      {"date": "1/20/2026", "gw": 4, "innings": 18, "hash": "4.500", "week": 4},
-      {"date": "12/9/2025", "gw": 3, "innings": 16, "hash": "5.333", "week": 6}
+      {"date": "2/3/2026", "gw": 4, "innings": 13, "hash": "3.250", "week": 3},
+      {"date": "1/27/2026", "gw": 3, "innings": 13, "hash": "4.333", "week": 4},
+      {"date": "1/20/2026", "gw": 4, "innings": 18, "hash": "4.500", "week": 5},
+      {"date": "3/17/2026", "gw": 4, "innings": 20, "hash": "5.000", "week": 1},
+      {"date": "12/9/2025", "gw": 3, "innings": 16, "hash": "5.333", "week": 7}
     ]
   },
   {
     "name": "Phil Nelson",
-    "currentHash": "7.667",
-    "winPct": "60%",
+    "currentHash": "7.067",
+    "winPct": "70%",
     "hc": 3,
     "history": [
-      {"date": "1/27/2026", "gw": 2, "innings": 10, "hash": "5.000", "week": 5},
-      {"date": "2/17/2026", "gw": 2, "innings": 12, "hash": "6.000", "week": 2},
-      {"date": "12/16/2025", "gw": 2, "innings": 18, "hash": "9.000", "week": 8},
-      {"date": "2/10/2026", "gw": 2, "innings": 18, "hash": "9.000", "week": 3},
-      {"date": "12/9/2025", "gw": 3, "innings": 28, "hash": "9.333", "week": 9}
+      {"date": "1/27/2026", "gw": 2, "innings": 10, "hash": "5.000", "week": 6},
+      {"date": "2/17/2026", "gw": 2, "innings": 12, "hash": "6.000", "week": 3},
+      {"date": "3/17/2026", "gw": 3, "innings": 19, "hash": "6.333", "week": 1},
+      {"date": "12/16/2025", "gw": 2, "innings": 18, "hash": "9.000", "week": 9},
+      {"date": "2/10/2026", "gw": 2, "innings": 18, "hash": "9.000", "week": 4}
     ]
   },
   {
@@ -136,23 +136,23 @@ const history = [
     "hc": 2,
     "history": [
       {"date": "New Player", "gw": 0, "innings": 0, "hash": "7.000", "week": 1},
-      {"date": "2/10/2026", "gw": 0, "innings": 18, "hash": "15.000", "week": 5},
-      {"date": "2/17/2026", "gw": 1, "innings": 30, "hash": "15.000", "week": 4},
-      {"date": "3/3/2026", "gw": 0, "innings": 13, "hash": "15.000", "week": 3},
-      {"date": "3/10/2026", "gw": 0, "innings": 14, "hash": "15.000", "week": 2}
+      {"date": "2/10/2026", "gw": 0, "innings": 18, "hash": "15.000", "week": 6},
+      {"date": "2/17/2026", "gw": 1, "innings": 30, "hash": "15.000", "week": 5},
+      {"date": "3/3/2026", "gw": 0, "innings": 13, "hash": "15.000", "week": 4},
+      {"date": "3/10/2026", "gw": 0, "innings": 14, "hash": "15.000", "week": 3}
     ]
   },
   {
     "name": "Jennifer Wagner",
     "currentHash": "8.900",
-    "winPct": "50%",
+    "winPct": "40%",
     "hc": 2,
     "history": [
-      {"date": "10/28/2025", "gw": 2, "innings": 13, "hash": "6.500", "week": 9},
-      {"date": "3/3/2026", "gw": 2, "innings": 15, "hash": "7.500", "week": 1},
-      {"date": "12/2/2025", "gw": 2, "innings": 16, "hash": "8.000", "week": 7},
-      {"date": "12/16/2025", "gw": 2, "innings": 19, "hash": "9.500", "week": 5},
-      {"date": "12/9/2025", "gw": 2, "innings": 26, "hash": "13.000", "week": 6}
+      {"date": "10/28/2025", "gw": 2, "innings": 13, "hash": "6.500", "week": 10},
+      {"date": "3/3/2026", "gw": 2, "innings": 15, "hash": "7.500", "week": 2},
+      {"date": "12/2/2025", "gw": 2, "innings": 16, "hash": "8.000", "week": 8},
+      {"date": "12/16/2025", "gw": 2, "innings": 19, "hash": "9.500", "week": 6},
+      {"date": "12/9/2025", "gw": 2, "innings": 26, "hash": "13.000", "week": 7}
     ]
   },
   {
@@ -169,15 +169,15 @@ const history = [
   },
   {
     "name": "Jim Czenk",
-    "currentHash": "7.900",
-    "winPct": "40%",
+    "currentHash": "6.167",
+    "winPct": "50%",
     "hc": 3,
     "history": [
-      {"date": "2/17/2026", "gw": 2, "innings": 9, "hash": "4.500", "week": 4},
-      {"date": "2/3/2026", "gw": 2, "innings": 11, "hash": "5.500", "week": 6},
-      {"date": "2/10/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 5},
-      {"date": "3/3/2026", "gw": 1, "innings": 11, "hash": "11.000", "week": 2},
-      {"date": "12/23/2025", "gw": 2, "innings": 24, "hash": "12.000", "week": 9}
+      {"date": "3/17/2026", "gw": 3, "innings": 10, "hash": "3.333", "week": 1},
+      {"date": "2/17/2026", "gw": 2, "innings": 9, "hash": "4.500", "week": 5},
+      {"date": "2/3/2026", "gw": 2, "innings": 11, "hash": "5.500", "week": 7},
+      {"date": "2/10/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 6},
+      {"date": "3/3/2026", "gw": 1, "innings": 11, "hash": "11.000", "week": 3}
     ]
   },
   {
@@ -195,28 +195,28 @@ const history = [
   },
   {
     "name": "Francisco Ibarra*",
-    "currentHash": "8.800",
+    "currentHash": "7.800",
     "winPct": "50%",
-    "hc": 2,
+    "hc": 3,
     "history": [
-      {"date": "1/27/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 7},
-      {"date": "3/3/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 2},
-      {"date": "2/24/2026", "gw": 2, "innings": 20, "hash": "10.000", "week": 4},
-      {"date": "12/9/2025", "gw": 2, "innings": 21, "hash": "10.500", "week": 10},
-      {"date": "3/10/2026", "gw": 2, "innings": 21, "hash": "10.500", "week": 1}
+      {"date": "3/17/2026", "gw": 2, "innings": 11, "hash": "5.500", "week": 1},
+      {"date": "1/27/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 8},
+      {"date": "3/3/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 3},
+      {"date": "2/24/2026", "gw": 2, "innings": 20, "hash": "10.000", "week": 5},
+      {"date": "3/10/2026", "gw": 2, "innings": 21, "hash": "10.500", "week": 2}
     ]
   },
   {
     "name": "Ignasio Gutierrez*",
     "currentHash": "11.500",
-    "winPct": "17%",
+    "winPct": "14%",
     "hc": 2,
     "history": [
       {"date": "New Player", "gw": 0, "innings": 0, "hash": "7.000", "week": 1},
-      {"date": "2/17/2026", "gw": 2, "innings": 18, "hash": "9.000", "week": 5},
-      {"date": "2/10/2026", "gw": 2, "innings": 23, "hash": "11.500", "week": 6},
-      {"date": "2/24/2026", "gw": 0, "innings": 5, "hash": "15.000", "week": 3},
-      {"date": "2/24/2026", "gw": 0, "innings": 18, "hash": "15.000", "week": 3}
+      {"date": "2/17/2026", "gw": 2, "innings": 18, "hash": "9.000", "week": 6},
+      {"date": "2/10/2026", "gw": 2, "innings": 23, "hash": "11.500", "week": 7},
+      {"date": "2/24/2026", "gw": 0, "innings": 5, "hash": "15.000", "week": 4},
+      {"date": "2/24/2026", "gw": 0, "innings": 18, "hash": "15.000", "week": 4}
     ]
   },
   {
@@ -234,66 +234,67 @@ const history = [
   },
   {
     "name": "Jose Munoz",
-    "currentHash": "13.000",
+    "currentHash": "13.400",
     "winPct": "0%",
     "hc": 2,
     "history": [
       {"date": "New Player", "gw": 0, "innings": 0, "hash": "7.000", "week": 1},
-      {"date": "2/24/2026", "gw": 0, "innings": 14, "hash": "15.000", "week": 4},
-      {"date": "3/3/2026", "gw": 1, "innings": 19, "hash": "15.000", "week": 3},
-      {"date": "3/10/2026", "gw": 0, "innings": 18, "hash": "15.000", "week": 2}
+      {"date": "2/24/2026", "gw": 0, "innings": 14, "hash": "15.000", "week": 5},
+      {"date": "3/3/2026", "gw": 1, "innings": 19, "hash": "15.000", "week": 4},
+      {"date": "3/10/2026", "gw": 0, "innings": 18, "hash": "15.000", "week": 3},
+      {"date": "3/17/2026", "gw": 0, "innings": 17, "hash": "15.000", "week": 2}
     ]
   },
   {
     "name": "Enrique Meza",
     "currentHash": "9.300",
-    "winPct": "40%",
+    "winPct": "50%",
     "hc": 2,
     "history": [
-      {"date": "3/3/2026", "gw": 2, "innings": 10, "hash": "5.000", "week": 2},
-      {"date": "12/9/2025", "gw": 2, "innings": 16, "hash": "8.000", "week": 6},
-      {"date": "11/4/2025", "gw": 2, "innings": 18, "hash": "9.000", "week": 8},
-      {"date": "2/17/2026", "gw": 2, "innings": 19, "hash": "9.500", "week": 3},
-      {"date": "10/14/2025", "gw": 0, "innings": 22, "hash": "15.000", "week": 10}
+      {"date": "3/3/2026", "gw": 2, "innings": 10, "hash": "5.000", "week": 3},
+      {"date": "12/9/2025", "gw": 2, "innings": 16, "hash": "8.000", "week": 7},
+      {"date": "11/4/2025", "gw": 2, "innings": 18, "hash": "9.000", "week": 9},
+      {"date": "2/17/2026", "gw": 2, "innings": 19, "hash": "9.500", "week": 4},
+      {"date": "10/21/2025", "gw": 0, "innings": 27, "hash": "15.000", "week": 10}
     ]
   },
   {
     "name": "Tomas Ramirez",
-    "currentHash": "6.300",
+    "currentHash": "7.333",
     "winPct": "30%",
     "hc": 3,
     "history": [
-      {"date": "11/18/2025", "gw": 2, "innings": 5, "hash": "2.500", "week": 10},
-      {"date": "12/2/2025", "gw": 2, "innings": 11, "hash": "5.500", "week": 7},
-      {"date": "12/2/2025", "gw": 2, "innings": 12, "hash": "6.000", "week": 7},
-      {"date": "3/3/2026", "gw": 2, "innings": 15, "hash": "7.500", "week": 2},
-      {"date": "1/27/2026", "gw": 3, "innings": 30, "hash": "10.000", "week": 6}
+      {"date": "12/2/2025", "gw": 2, "innings": 11, "hash": "5.500", "week": 8},
+      {"date": "12/2/2025", "gw": 2, "innings": 12, "hash": "6.000", "week": 8},
+      {"date": "3/3/2026", "gw": 2, "innings": 15, "hash": "7.500", "week": 3},
+      {"date": "3/17/2026", "gw": 3, "innings": 23, "hash": "7.667", "week": 1},
+      {"date": "1/27/2026", "gw": 3, "innings": 30, "hash": "10.000", "week": 7}
     ]
   },
   {
     "name": "Jim Nevin",
     "currentHash": "3.750",
-    "winPct": "100%",
+    "winPct": "90%",
     "hc": 5,
     "history": [
-      {"date": "3/3/2026", "gw": 4, "innings": 10, "hash": "2.500", "week": 1},
-      {"date": "12/23/2025", "gw": 4, "innings": 14, "hash": "3.500", "week": 6},
-      {"date": "2/3/2026", "gw": 4, "innings": 15, "hash": "3.750", "week": 4},
-      {"date": "11/25/2025", "gw": 4, "innings": 16, "hash": "4.000", "week": 8},
-      {"date": "1/27/2026", "gw": 4, "innings": 20, "hash": "5.000", "week": 5}
+      {"date": "3/3/2026", "gw": 4, "innings": 10, "hash": "2.500", "week": 2},
+      {"date": "12/23/2025", "gw": 4, "innings": 14, "hash": "3.500", "week": 7},
+      {"date": "2/3/2026", "gw": 4, "innings": 15, "hash": "3.750", "week": 5},
+      {"date": "11/25/2025", "gw": 4, "innings": 16, "hash": "4.000", "week": 9},
+      {"date": "1/27/2026", "gw": 4, "innings": 20, "hash": "5.000", "week": 6}
     ]
   },
   {
     "name": "Tom Nevin",
-    "currentHash": "6.933",
-    "winPct": "60%",
+    "currentHash": "7.000",
+    "winPct": "50%",
     "hc": 3,
     "history": [
-      {"date": "1/20/2026", "gw": 3, "innings": 18, "hash": "6.000", "week": 7},
-      {"date": "1/27/2026", "gw": 3, "innings": 21, "hash": "7.000", "week": 6},
-      {"date": "3/3/2026", "gw": 3, "innings": 21, "hash": "7.000", "week": 2},
-      {"date": "11/25/2025", "gw": 3, "innings": 22, "hash": "7.333", "week": 10},
-      {"date": "2/10/2026", "gw": 3, "innings": 22, "hash": "7.333", "week": 3}
+      {"date": "1/20/2026", "gw": 3, "innings": 18, "hash": "6.000", "week": 8},
+      {"date": "1/27/2026", "gw": 3, "innings": 21, "hash": "7.000", "week": 7},
+      {"date": "3/3/2026", "gw": 3, "innings": 21, "hash": "7.000", "week": 3},
+      {"date": "2/10/2026", "gw": 3, "innings": 22, "hash": "7.333", "week": 4},
+      {"date": "12/2/2025", "gw": 3, "innings": 23, "hash": "7.667", "week": 10}
     ]
   },
   {
@@ -324,28 +325,28 @@ const history = [
   },
   {
     "name": "Harnaik Lal",
-    "currentHash": "6.817",
+    "currentHash": "6.750",
     "winPct": "60%",
     "hc": 4,
     "history": [
-      {"date": "12/9/2025", "gw": 3, "innings": 13, "hash": "4.333", "week": 7},
-      {"date": "12/2/2025", "gw": 3, "innings": 20, "hash": "6.667", "week": 8},
-      {"date": "11/25/2025", "gw": 3, "innings": 22, "hash": "7.333", "week": 9},
-      {"date": "12/23/2025", "gw": 4, "innings": 31, "hash": "7.750", "week": 6},
-      {"date": "3/10/2026", "gw": 4, "innings": 32, "hash": "8.000", "week": 1}
+      {"date": "12/9/2025", "gw": 3, "innings": 13, "hash": "4.333", "week": 9},
+      {"date": "12/2/2025", "gw": 3, "innings": 20, "hash": "6.667", "week": 10},
+      {"date": "3/17/2026", "gw": 4, "innings": 28, "hash": "7.000", "week": 1},
+      {"date": "12/23/2025", "gw": 4, "innings": 31, "hash": "7.750", "week": 8},
+      {"date": "3/10/2026", "gw": 4, "innings": 32, "hash": "8.000", "week": 3}
     ]
   },
   {
     "name": "Joe Crutchfield",
-    "currentHash": "6.833",
-    "winPct": "60%",
-    "hc": 3,
+    "currentHash": "4.900",
+    "winPct": "67%",
+    "hc": 4,
     "history": [
-      {"date": "2/10/2026", "gw": 2, "innings": 7, "hash": "3.500", "week": 4},
-      {"date": "3/3/2026", "gw": 2, "innings": 8, "hash": "4.000", "week": 3},
-      {"date": "3/10/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 2},
-      {"date": "New Player", "gw": 0, "innings": 0, "hash": "7.000", "week": 1},
-      {"date": "1/27/2026", "gw": 2, "innings": 26, "hash": "13.000", "week": 5}
+      {"date": "3/17/2026", "gw": 3, "innings": 10, "hash": "3.333", "week": 2},
+      {"date": "2/10/2026", "gw": 2, "innings": 7, "hash": "3.500", "week": 5},
+      {"date": "3/3/2026", "gw": 2, "innings": 8, "hash": "4.000", "week": 4},
+      {"date": "3/10/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 3},
+      {"date": "New Player", "gw": 0, "innings": 0, "hash": "7.000", "week": 1}
     ]
   },
   {
@@ -413,28 +414,28 @@ const history = [
   },
   {
     "name": "Joey Sanchez",
-    "currentHash": "7.050",
+    "currentHash": "6.800",
     "winPct": "60%",
     "hc": 4,
     "history": [
-      {"date": "12/9/2025", "gw": 4, "innings": 23, "hash": "5.750", "week": 10},
-      {"date": "2/17/2026", "gw": 4, "innings": 27, "hash": "6.750", "week": 4},
-      {"date": "12/23/2025", "gw": 4, "innings": 29, "hash": "7.250", "week": 8},
-      {"date": "1/20/2026", "gw": 4, "innings": 31, "hash": "7.750", "week": 7},
-      {"date": "3/10/2026", "gw": 4, "innings": 31, "hash": "7.750", "week": 1}
+      {"date": "3/17/2026", "gw": 4, "innings": 18, "hash": "4.500", "week": 1},
+      {"date": "2/17/2026", "gw": 4, "innings": 27, "hash": "6.750", "week": 5},
+      {"date": "12/23/2025", "gw": 4, "innings": 29, "hash": "7.250", "week": 9},
+      {"date": "1/20/2026", "gw": 4, "innings": 31, "hash": "7.750", "week": 8},
+      {"date": "3/10/2026", "gw": 4, "innings": 31, "hash": "7.750", "week": 2}
     ]
   },
   {
     "name": "Greg Wood",
-    "currentHash": "6.250",
+    "currentHash": "6.867",
     "winPct": "60%",
     "hc": 3,
     "history": [
-      {"date": "3/11/2025", "gw": 4, "innings": 17, "hash": "4.250", "week": 10},
-      {"date": "4/15/2025", "gw": 4, "innings": 22, "hash": "5.500", "week": 9},
-      {"date": "1/20/2026", "gw": 3, "innings": 18, "hash": "6.000", "week": 3},
-      {"date": "2/10/2026", "gw": 4, "innings": 29, "hash": "7.250", "week": 2},
-      {"date": "9/30/2025", "gw": 4, "innings": 33, "hash": "8.250", "week": 6}
+      {"date": "4/15/2025", "gw": 4, "innings": 22, "hash": "5.500", "week": 10},
+      {"date": "1/20/2026", "gw": 3, "innings": 18, "hash": "6.000", "week": 4},
+      {"date": "2/10/2026", "gw": 4, "innings": 29, "hash": "7.250", "week": 3},
+      {"date": "3/17/2026", "gw": 3, "innings": 22, "hash": "7.333", "week": 1},
+      {"date": "9/30/2025", "gw": 4, "innings": 33, "hash": "8.250", "week": 7}
     ]
   },
   {
@@ -443,37 +444,37 @@ const history = [
     "winPct": "40%",
     "hc": 3,
     "history": [
-      {"date": "2/10/2026", "gw": 2, "innings": 7, "hash": "3.500", "week": 4},
-      {"date": "2/24/2026", "gw": 3, "innings": 16, "hash": "5.333", "week": 2},
-      {"date": "12/16/2025", "gw": 2, "innings": 16, "hash": "8.000", "week": 8},
-      {"date": "2/4/2026", "gw": 2, "innings": 20, "hash": "10.000", "week": 5},
-      {"date": "2/17/2026", "gw": 2, "innings": 20, "hash": "10.000", "week": 3}
+      {"date": "2/10/2026", "gw": 2, "innings": 7, "hash": "3.500", "week": 5},
+      {"date": "2/24/2026", "gw": 3, "innings": 16, "hash": "5.333", "week": 3},
+      {"date": "12/16/2025", "gw": 2, "innings": 16, "hash": "8.000", "week": 9},
+      {"date": "2/4/2026", "gw": 2, "innings": 20, "hash": "10.000", "week": 6},
+      {"date": "2/17/2026", "gw": 2, "innings": 20, "hash": "10.000", "week": 4}
     ]
   },
   {
     "name": "Javier Mauricio",
-    "currentHash": "8.950",
-    "winPct": "30%",
+    "currentHash": "7.683",
+    "winPct": "40%",
     "hc": 3,
     "history": [
-      {"date": "11/25/2025", "gw": 4, "innings": 19, "hash": "4.750", "week": 9},
-      {"date": "12/2/2025", "gw": 1, "innings": 7, "hash": "7.000", "week": 8},
-      {"date": "2/3/2026", "gw": 3, "innings": 24, "hash": "8.000", "week": 4},
-      {"date": "3/10/2026", "gw": 3, "innings": 33, "hash": "11.000", "week": 1},
-      {"date": "12/23/2025", "gw": 1, "innings": 14, "hash": "14.000", "week": 6}
+      {"date": "11/25/2025", "gw": 4, "innings": 19, "hash": "4.750", "week": 10},
+      {"date": "12/2/2025", "gw": 1, "innings": 7, "hash": "7.000", "week": 9},
+      {"date": "3/17/2026", "gw": 3, "innings": 23, "hash": "7.667", "week": 1},
+      {"date": "2/3/2026", "gw": 3, "innings": 24, "hash": "8.000", "week": 5},
+      {"date": "3/10/2026", "gw": 3, "innings": 33, "hash": "11.000", "week": 2}
     ]
   },
   {
     "name": "Chuck Feager",
-    "currentHash": "10.100",
-    "winPct": "60%",
+    "currentHash": "9.100",
+    "winPct": "50%",
     "hc": 2,
     "history": [
-      {"date": "3/10/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 2},
+      {"date": "3/10/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 3},
       {"date": "New Player", "gw": 0, "innings": 0, "hash": "7.000", "week": 1},
-      {"date": "2/24/2026", "gw": 2, "innings": 15, "hash": "7.500", "week": 3},
-      {"date": "2/4/2026", "gw": 2, "innings": 29, "hash": "14.500", "week": 4},
-      {"date": "1/27/2026", "gw": 1, "innings": 22, "hash": "15.000", "week": 5}
+      {"date": "2/24/2026", "gw": 2, "innings": 15, "hash": "7.500", "week": 4},
+      {"date": "3/17/2026", "gw": 1, "innings": 10, "hash": "10.000", "week": 2},
+      {"date": "2/4/2026", "gw": 2, "innings": 29, "hash": "14.500", "week": 5}
     ]
   },
   {
@@ -491,15 +492,15 @@ const history = [
   },
   {
     "name": "Kevin Ward",
-    "currentHash": "13.700",
-    "winPct": "10%",
+    "currentHash": "12.300",
+    "winPct": "20%",
     "hc": 2,
     "history": [
-      {"date": "3/4/2025", "gw": 2, "innings": 17, "hash": "8.500", "week": 9},
-      {"date": "1/28/2025", "gw": 1, "innings": 26, "hash": "15.000", "week": 10},
-      {"date": "3/18/2025", "gw": 0, "innings": 8, "hash": "15.000", "week": 8},
-      {"date": "9/16/2025", "gw": 0, "innings": 13, "hash": "15.000", "week": 7},
-      {"date": "9/23/2025", "gw": 1, "innings": 25, "hash": "15.000", "week": 6}
+      {"date": "3/17/2026", "gw": 2, "innings": 16, "hash": "8.000", "week": 1},
+      {"date": "3/4/2025", "gw": 2, "innings": 17, "hash": "8.500", "week": 10},
+      {"date": "3/18/2025", "gw": 0, "innings": 8, "hash": "15.000", "week": 9},
+      {"date": "9/16/2025", "gw": 0, "innings": 13, "hash": "15.000", "week": 8},
+      {"date": "9/23/2025", "gw": 1, "innings": 25, "hash": "15.000", "week": 7}
     ]
   },
   {
@@ -517,41 +518,41 @@ const history = [
   },
   {
     "name": "Shawn Mcbride",
-    "currentHash": "7.067",
-    "winPct": "70%",
+    "currentHash": "7.300",
+    "winPct": "60%",
     "hc": 3,
     "history": [
-      {"date": "2/24/2026", "gw": 2, "innings": 8, "hash": "4.000", "week": 3},
-      {"date": "2/17/2026", "gw": 2, "innings": 14, "hash": "7.000", "week": 4},
-      {"date": "3/10/2026", "gw": 3, "innings": 21, "hash": "7.000", "week": 1},
-      {"date": "12/16/2025", "gw": 3, "innings": 25, "hash": "8.333", "week": 10},
-      {"date": "1/20/2026", "gw": 2, "innings": 18, "hash": "9.000", "week": 8}
+      {"date": "2/24/2026", "gw": 2, "innings": 8, "hash": "4.000", "week": 4},
+      {"date": "2/17/2026", "gw": 2, "innings": 14, "hash": "7.000", "week": 5},
+      {"date": "3/10/2026", "gw": 3, "innings": 21, "hash": "7.000", "week": 2},
+      {"date": "1/20/2026", "gw": 2, "innings": 18, "hash": "9.000", "week": 9},
+      {"date": "2/3/2026", "gw": 2, "innings": 19, "hash": "9.500", "week": 7}
     ]
   },
   {
     "name": "Danny Plowman",
-    "currentHash": "4.227",
+    "currentHash": "4.240",
     "winPct": "60%",
     "hc": 5,
     "history": [
-      {"date": "12/23/2025", "gw": 3, "innings": 9, "hash": "3.000", "week": 5},
-      {"date": "11/25/2025", "gw": 5, "innings": 20, "hash": "4.000", "week": 7},
-      {"date": "12/16/2025", "gw": 5, "innings": 20, "hash": "4.000", "week": 6},
-      {"date": "11/4/2025", "gw": 5, "innings": 24, "hash": "4.800", "week": 8},
-      {"date": "9/30/2025", "gw": 3, "innings": 16, "hash": "5.333", "week": 10}
+      {"date": "12/23/2025", "gw": 3, "innings": 9, "hash": "3.000", "week": 6},
+      {"date": "11/25/2025", "gw": 5, "innings": 20, "hash": "4.000", "week": 8},
+      {"date": "12/16/2025", "gw": 5, "innings": 20, "hash": "4.000", "week": 7},
+      {"date": "11/4/2025", "gw": 5, "innings": 24, "hash": "4.800", "week": 9},
+      {"date": "3/3/2026", "gw": 5, "innings": 27, "hash": "5.400", "week": 3}
     ]
   },
   {
     "name": "Don Murphy",
-    "currentHash": "8.533",
-    "winPct": "30%",
+    "currentHash": "7.400",
+    "winPct": "40%",
     "hc": 3,
     "history": [
-      {"date": "2/24/2026", "gw": 3, "innings": 11, "hash": "3.667", "week": 3},
-      {"date": "12/9/2025", "gw": 4, "innings": 24, "hash": "6.000", "week": 8},
-      {"date": "3/10/2026", "gw": 2, "innings": 20, "hash": "10.000", "week": 1},
-      {"date": "2/10/2026", "gw": 2, "innings": 22, "hash": "11.000", "week": 5},
-      {"date": "3/3/2026", "gw": 3, "innings": 36, "hash": "12.000", "week": 2}
+      {"date": "2/24/2026", "gw": 3, "innings": 11, "hash": "3.667", "week": 4},
+      {"date": "12/9/2025", "gw": 4, "innings": 24, "hash": "6.000", "week": 9},
+      {"date": "3/17/2026", "gw": 3, "innings": 19, "hash": "6.333", "week": 1},
+      {"date": "3/10/2026", "gw": 2, "innings": 20, "hash": "10.000", "week": 2},
+      {"date": "2/10/2026", "gw": 2, "innings": 22, "hash": "11.000", "week": 6}
     ]
   },
   {
@@ -573,24 +574,24 @@ const history = [
     "winPct": "60%",
     "hc": 4,
     "history": [
-      {"date": "1/27/2026", "gw": 3, "innings": 9, "hash": "3.000", "week": 5},
-      {"date": "12/2/2025", "gw": 3, "innings": 18, "hash": "6.000", "week": 8},
-      {"date": "12/16/2025", "gw": 3, "innings": 18, "hash": "6.000", "week": 7},
-      {"date": "2/10/2026", "gw": 3, "innings": 18, "hash": "6.000", "week": 3},
-      {"date": "11/25/2025", "gw": 2, "innings": 13, "hash": "6.500", "week": 9}
+      {"date": "1/27/2026", "gw": 3, "innings": 9, "hash": "3.000", "week": 6},
+      {"date": "12/2/2025", "gw": 3, "innings": 18, "hash": "6.000", "week": 9},
+      {"date": "12/16/2025", "gw": 3, "innings": 18, "hash": "6.000", "week": 8},
+      {"date": "2/10/2026", "gw": 3, "innings": 18, "hash": "6.000", "week": 4},
+      {"date": "11/25/2025", "gw": 2, "innings": 13, "hash": "6.500", "week": 10}
     ]
   },
   {
     "name": "Francisco Tinajero",
-    "currentHash": "5.583",
+    "currentHash": "5.500",
     "winPct": "70%",
     "hc": 4,
     "history": [
-      {"date": "2/17/2026", "gw": 4, "innings": 16, "hash": "4.000", "week": 2},
-      {"date": "10/21/2025", "gw": 3, "innings": 14, "hash": "4.667", "week": 10},
-      {"date": "12/23/2025", "gw": 3, "innings": 16, "hash": "5.333", "week": 5},
-      {"date": "2/3/2026", "gw": 4, "innings": 25, "hash": "6.250", "week": 3},
-      {"date": "10/28/2025", "gw": 3, "innings": 23, "hash": "7.667", "week": 9}
+      {"date": "2/17/2026", "gw": 4, "innings": 16, "hash": "4.000", "week": 3},
+      {"date": "3/17/2026", "gw": 4, "innings": 17, "hash": "4.250", "week": 1},
+      {"date": "12/23/2025", "gw": 3, "innings": 16, "hash": "5.333", "week": 6},
+      {"date": "2/3/2026", "gw": 4, "innings": 25, "hash": "6.250", "week": 4},
+      {"date": "10/28/2025", "gw": 3, "innings": 23, "hash": "7.667", "week": 10}
     ]
   },
   {
@@ -599,24 +600,24 @@ const history = [
     "winPct": "50%",
     "hc": 3,
     "history": [
-      {"date": "12/9/2025", "gw": 4, "innings": 19, "hash": "4.750", "week": 7},
-      {"date": "2/10/2026", "gw": 3, "innings": 16, "hash": "5.333", "week": 2},
-      {"date": "2/17/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 1},
-      {"date": "10/21/2025", "gw": 4, "innings": 31, "hash": "7.750", "week": 9},
-      {"date": "12/16/2025", "gw": 2, "innings": 16, "hash": "8.000", "week": 6}
+      {"date": "12/9/2025", "gw": 4, "innings": 19, "hash": "4.750", "week": 8},
+      {"date": "2/10/2026", "gw": 3, "innings": 16, "hash": "5.333", "week": 3},
+      {"date": "2/17/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 2},
+      {"date": "10/21/2025", "gw": 4, "innings": 31, "hash": "7.750", "week": 10},
+      {"date": "12/16/2025", "gw": 2, "innings": 16, "hash": "8.000", "week": 7}
     ]
   },
   {
     "name": "Sergio Sanchez",
-    "currentHash": "4.980",
-    "winPct": "50%",
+    "currentHash": "5.327",
+    "winPct": "40%",
     "hc": 4,
     "history": [
-      {"date": "12/16/2025", "gw": 5, "innings": 18, "hash": "3.600", "week": 10},
-      {"date": "3/3/2026", "gw": 4, "innings": 16, "hash": "4.000", "week": 2},
-      {"date": "2/24/2026", "gw": 4, "innings": 18, "hash": "4.500", "week": 3},
-      {"date": "2/17/2026", "gw": 3, "innings": 18, "hash": "6.000", "week": 4},
-      {"date": "2/10/2026", "gw": 5, "innings": 34, "hash": "6.800", "week": 5}
+      {"date": "3/3/2026", "gw": 4, "innings": 16, "hash": "4.000", "week": 3},
+      {"date": "2/24/2026", "gw": 4, "innings": 18, "hash": "4.500", "week": 4},
+      {"date": "3/17/2026", "gw": 3, "innings": 16, "hash": "5.333", "week": 1},
+      {"date": "2/17/2026", "gw": 3, "innings": 18, "hash": "6.000", "week": 5},
+      {"date": "2/10/2026", "gw": 5, "innings": 34, "hash": "6.800", "week": 6}
     ]
   },
   {
@@ -638,11 +639,11 @@ const history = [
     "winPct": "60%",
     "hc": 4,
     "history": [
-      {"date": "2/24/2026", "gw": 4, "innings": 9, "hash": "2.250", "week": 3},
-      {"date": "3/10/2026", "gw": 4, "innings": 20, "hash": "5.000", "week": 1},
-      {"date": "2/3/2026", "gw": 4, "innings": 21, "hash": "5.250", "week": 5},
-      {"date": "12/9/2025", "gw": 4, "innings": 28, "hash": "7.000", "week": 8},
-      {"date": "2/10/2026", "gw": 4, "innings": 28, "hash": "7.000", "week": 4}
+      {"date": "2/24/2026", "gw": 4, "innings": 9, "hash": "2.250", "week": 4},
+      {"date": "3/10/2026", "gw": 4, "innings": 20, "hash": "5.000", "week": 2},
+      {"date": "2/3/2026", "gw": 4, "innings": 21, "hash": "5.250", "week": 6},
+      {"date": "12/9/2025", "gw": 4, "innings": 28, "hash": "7.000", "week": 9},
+      {"date": "2/10/2026", "gw": 4, "innings": 28, "hash": "7.000", "week": 5}
     ]
   },
   {
@@ -660,28 +661,28 @@ const history = [
   },
   {
     "name": "Felipe Ochoa",
-    "currentHash": "6.433",
+    "currentHash": "6.333",
     "winPct": "60%",
     "hc": 4,
     "history": [
-      {"date": "12/23/2025", "gw": 3, "innings": 18, "hash": "6.000", "week": 8},
-      {"date": "3/3/2026", "gw": 3, "innings": 18, "hash": "6.000", "week": 2},
-      {"date": "3/11/2026", "gw": 4, "innings": 26, "hash": "6.500", "week": 1},
-      {"date": "1/27/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 6},
-      {"date": "2/3/2026", "gw": 3, "innings": 21, "hash": "7.000", "week": 5}
+      {"date": "12/23/2025", "gw": 3, "innings": 18, "hash": "6.000", "week": 9},
+      {"date": "3/3/2026", "gw": 3, "innings": 18, "hash": "6.000", "week": 3},
+      {"date": "3/10/2026", "gw": 4, "innings": 26, "hash": "6.500", "week": 2},
+      {"date": "3/17/2026", "gw": 4, "innings": 26, "hash": "6.500", "week": 1},
+      {"date": "1/27/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 7}
     ]
   },
   {
     "name": "Jose Gonzalez*",
-    "currentHash": "8.700",
-    "winPct": "30%",
+    "currentHash": "8.500",
+    "winPct": "40%",
     "hc": 2,
     "history": [
-      {"date": "3/10/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 1},
-      {"date": "1/27/2026", "gw": 3, "innings": 22, "hash": "7.333", "week": 8},
-      {"date": "2/17/2026", "gw": 3, "innings": 24, "hash": "8.000", "week": 5},
-      {"date": "2/3/2026", "gw": 2, "innings": 21, "hash": "10.500", "week": 7},
-      {"date": "3/10/2026", "gw": 1, "innings": 11, "hash": "11.000", "week": 1}
+      {"date": "3/10/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 2},
+      {"date": "1/27/2026", "gw": 3, "innings": 22, "hash": "7.333", "week": 9},
+      {"date": "2/17/2026", "gw": 3, "innings": 24, "hash": "8.000", "week": 6},
+      {"date": "3/17/2026", "gw": 2, "innings": 20, "hash": "10.000", "week": 1},
+      {"date": "2/3/2026", "gw": 2, "innings": 21, "hash": "10.500", "week": 8}
     ]
   },
   {
@@ -703,88 +704,89 @@ const history = [
     "winPct": "40%",
     "hc": 2,
     "history": [
-      {"date": "2/3/2026", "gw": 2, "innings": 6, "hash": "3.000", "week": 5},
-      {"date": "12/16/2025", "gw": 2, "innings": 13, "hash": "6.500", "week": 8},
-      {"date": "3/3/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 1},
-      {"date": "11/11/2025", "gw": 0, "innings": 10, "hash": "15.000", "week": 10},
-      {"date": "11/18/2025", "gw": 0, "innings": 13, "hash": "15.000", "week": 9}
+      {"date": "2/3/2026", "gw": 2, "innings": 6, "hash": "3.000", "week": 6},
+      {"date": "12/16/2025", "gw": 2, "innings": 13, "hash": "6.500", "week": 9},
+      {"date": "3/3/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 2},
+      {"date": "11/18/2025", "gw": 0, "innings": 13, "hash": "15.000", "week": 10},
+      {"date": "12/23/2025", "gw": 0, "innings": 22, "hash": "15.000", "week": 8}
     ]
   },
   {
     "name": "Jose Silva",
-    "currentHash": "10.000",
-    "winPct": "25%",
+    "currentHash": "8.600",
+    "winPct": "40%",
     "hc": 2,
     "history": [
+      {"date": "3/17/2026", "gw": 2, "innings": 6, "hash": "3.000", "week": 2},
       {"date": "New Player", "gw": 0, "innings": 0, "hash": "7.000", "week": 1},
-      {"date": "3/10/2026", "gw": 2, "innings": 14, "hash": "7.000", "week": 2},
-      {"date": "2/24/2026", "gw": 1, "innings": 11, "hash": "11.000", "week": 4},
-      {"date": "3/3/2026", "gw": 0, "innings": 21, "hash": "15.000", "week": 3}
+      {"date": "3/10/2026", "gw": 2, "innings": 14, "hash": "7.000", "week": 3},
+      {"date": "2/24/2026", "gw": 1, "innings": 11, "hash": "11.000", "week": 5},
+      {"date": "3/3/2026", "gw": 0, "innings": 21, "hash": "15.000", "week": 4}
     ]
   },
   {
     "name": "Ricardo Urvina",
-    "currentHash": "8.500",
-    "winPct": "40%",
+    "currentHash": "10.433",
+    "winPct": "30%",
     "hc": 2,
     "history": [
-      {"date": "11/18/2025", "gw": 3, "innings": 16, "hash": "5.333", "week": 10},
-      {"date": "12/9/2025", "gw": 3, "innings": 21, "hash": "7.000", "week": 6},
-      {"date": "3/3/2026", "gw": 2, "innings": 14, "hash": "7.000", "week": 1},
-      {"date": "11/25/2025", "gw": 3, "innings": 29, "hash": "9.667", "week": 8},
-      {"date": "11/25/2025", "gw": 2, "innings": 27, "hash": "13.500", "week": 8}
+      {"date": "12/9/2025", "gw": 3, "innings": 21, "hash": "7.000", "week": 7},
+      {"date": "3/3/2026", "gw": 2, "innings": 14, "hash": "7.000", "week": 2},
+      {"date": "11/25/2025", "gw": 3, "innings": 29, "hash": "9.667", "week": 9},
+      {"date": "11/25/2025", "gw": 2, "innings": 27, "hash": "13.500", "week": 9},
+      {"date": "12/2/2025", "gw": 0, "innings": 10, "hash": "15.000", "week": 8}
     ]
   },
   {
     "name": "Jariel Diaz*",
     "currentHash": "4.600",
-    "winPct": "56%",
+    "winPct": "50%",
     "hc": 4,
     "history": [
-      {"date": "2/3/2026", "gw": 4, "innings": 10, "hash": "2.500", "week": 7},
-      {"date": "1/27/2026", "gw": 3, "innings": 11, "hash": "3.667", "week": 8},
-      {"date": "1/27/2026", "gw": 3, "innings": 15, "hash": "5.000", "week": 8},
-      {"date": "2/24/2026", "gw": 3, "innings": 16, "hash": "5.333", "week": 4},
-      {"date": "3/10/2026", "gw": 4, "innings": 26, "hash": "6.500", "week": 2}
+      {"date": "2/3/2026", "gw": 4, "innings": 10, "hash": "2.500", "week": 8},
+      {"date": "1/27/2026", "gw": 3, "innings": 11, "hash": "3.667", "week": 9},
+      {"date": "1/27/2026", "gw": 3, "innings": 15, "hash": "5.000", "week": 9},
+      {"date": "2/24/2026", "gw": 3, "innings": 16, "hash": "5.333", "week": 5},
+      {"date": "3/10/2026", "gw": 4, "innings": 26, "hash": "6.500", "week": 3}
     ]
   },
   {
     "name": "Mike Uhlean*",
-    "currentHash": "3.520",
+    "currentHash": "3.400",
     "winPct": "80%",
     "hc": 5,
     "history": [
-      {"date": "1/27/2026", "gw": 5, "innings": 15, "hash": "3.000", "week": 7},
-      {"date": "2/17/2026", "gw": 5, "innings": 16, "hash": "3.200", "week": 5},
-      {"date": "2/24/2026", "gw": 5, "innings": 18, "hash": "3.600", "week": 4},
-      {"date": "3/3/2026", "gw": 5, "innings": 19, "hash": "3.800", "week": 2},
-      {"date": "12/23/2025", "gw": 5, "innings": 20, "hash": "4.000", "week": 9}
+      {"date": "1/27/2026", "gw": 5, "innings": 15, "hash": "3.000", "week": 8},
+      {"date": "2/17/2026", "gw": 5, "innings": 16, "hash": "3.200", "week": 6},
+      {"date": "3/17/2026", "gw": 5, "innings": 17, "hash": "3.400", "week": 1},
+      {"date": "2/24/2026", "gw": 5, "innings": 18, "hash": "3.600", "week": 5},
+      {"date": "3/3/2026", "gw": 5, "innings": 19, "hash": "3.800", "week": 3}
     ]
   },
   {
-    "name": "Mike Zbonski Jr.*",
-    "currentHash": "7.867",
-    "winPct": "40%",
+    "name": "Mike Zbonski Jr.",
+    "currentHash": "6.967",
+    "winPct": "50%",
     "hc": 3,
     "history": [
       {"date": "2/24/2026", "gw": 2, "innings": 9, "hash": "4.500", "week": 4},
       {"date": "2/10/2026", "gw": 2, "innings": 12, "hash": "6.000", "week": 5},
+      {"date": "3/17/2026", "gw": 3, "innings": 18, "hash": "6.000", "week": 1},
       {"date": "3/3/2026", "gw": 3, "innings": 25, "hash": "8.333", "week": 3},
-      {"date": "2/3/2026", "gw": 2, "innings": 20, "hash": "10.000", "week": 6},
-      {"date": "1/27/2026", "gw": 2, "innings": 21, "hash": "10.500", "week": 7}
+      {"date": "2/3/2026", "gw": 2, "innings": 20, "hash": "10.000", "week": 6}
     ]
   },
   {
     "name": "Alex Gomez",
     "currentHash": "6.700",
-    "winPct": "67%",
+    "winPct": "57%",
     "hc": 3,
     "history": [
-      {"date": "12/9/2025", "gw": 2, "innings": 6, "hash": "3.000", "week": 2},
+      {"date": "12/9/2025", "gw": 2, "innings": 6, "hash": "3.000", "week": 3},
       {"date": "APA", "gw": 0, "innings": 0, "hash": "3.500", "week": 1},
-      {"date": "11/25/2025", "gw": 2, "innings": 13, "hash": "6.500", "week": 4},
-      {"date": "12/2/2025", "gw": 2, "innings": 20, "hash": "10.000", "week": 3},
-      {"date": "10/28/2025", "gw": 2, "innings": 21, "hash": "10.500", "week": 5}
+      {"date": "11/25/2025", "gw": 2, "innings": 13, "hash": "6.500", "week": 5},
+      {"date": "12/2/2025", "gw": 2, "innings": 20, "hash": "10.000", "week": 4},
+      {"date": "10/28/2025", "gw": 2, "innings": 21, "hash": "10.500", "week": 6}
     ]
   },
   {
@@ -793,24 +795,24 @@ const history = [
     "winPct": "80%",
     "hc": 6,
     "history": [
-      {"date": "2/10/2026", "gw": 6, "innings": 15, "hash": "2.500", "week": 4},
-      {"date": "2/24/2026", "gw": 6, "innings": 18, "hash": "3.000", "week": 3},
-      {"date": "1/20/2026", "gw": 6, "innings": 19, "hash": "3.167", "week": 6},
-      {"date": "3/10/2026", "gw": 6, "innings": 21, "hash": "3.500", "week": 1},
-      {"date": "12/2/2025", "gw": 6, "innings": 23, "hash": "3.833", "week": 9}
+      {"date": "2/10/2026", "gw": 6, "innings": 15, "hash": "2.500", "week": 5},
+      {"date": "2/24/2026", "gw": 6, "innings": 18, "hash": "3.000", "week": 4},
+      {"date": "1/20/2026", "gw": 6, "innings": 19, "hash": "3.167", "week": 7},
+      {"date": "3/10/2026", "gw": 6, "innings": 21, "hash": "3.500", "week": 2},
+      {"date": "12/2/2025", "gw": 6, "innings": 23, "hash": "3.833", "week": 10}
     ]
   },
   {
     "name": "Jim Berger",
-    "currentHash": "4.400",
-    "winPct": "90%",
+    "currentHash": "4.800",
+    "winPct": "80%",
     "hc": 4,
     "history": [
-      {"date": "6/18/2025", "gw": 4, "innings": 13, "hash": "3.250", "week": 10},
-      {"date": "2/24/2026", "gw": 4, "innings": 16, "hash": "4.000", "week": 1},
-      {"date": "11/4/2025", "gw": 4, "innings": 18, "hash": "4.500", "week": 5},
-      {"date": "10/21/2025", "gw": 4, "innings": 20, "hash": "5.000", "week": 6},
-      {"date": "9/16/2025", "gw": 4, "innings": 21, "hash": "5.250", "week": 7}
+      {"date": "2/24/2026", "gw": 4, "innings": 16, "hash": "4.000", "week": 2},
+      {"date": "11/4/2025", "gw": 4, "innings": 18, "hash": "4.500", "week": 6},
+      {"date": "10/21/2025", "gw": 4, "innings": 20, "hash": "5.000", "week": 7},
+      {"date": "9/16/2025", "gw": 4, "innings": 21, "hash": "5.250", "week": 8},
+      {"date": "11/11/2025", "gw": 4, "innings": 21, "hash": "5.250", "week": 5}
     ]
   },
   {
@@ -828,15 +830,15 @@ const history = [
   },
   {
     "name": "Tom Schroeder",
-    "currentHash": "5.567",
+    "currentHash": "5.967",
     "winPct": "40%",
     "hc": 4,
     "history": [
-      {"date": "12/9/2025", "gw": 4, "innings": 14, "hash": "3.500", "week": 9},
-      {"date": "3/3/2026", "gw": 4, "innings": 16, "hash": "4.000", "week": 2},
-      {"date": "11/25/2025", "gw": 4, "innings": 19, "hash": "4.750", "week": 10},
-      {"date": "1/27/2026", "gw": 4, "innings": 29, "hash": "7.250", "week": 5},
-      {"date": "12/23/2025", "gw": 3, "innings": 25, "hash": "8.333", "week": 7}
+      {"date": "12/9/2025", "gw": 4, "innings": 14, "hash": "3.500", "week": 10},
+      {"date": "3/3/2026", "gw": 4, "innings": 16, "hash": "4.000", "week": 3},
+      {"date": "3/17/2026", "gw": 4, "innings": 27, "hash": "6.750", "week": 1},
+      {"date": "1/27/2026", "gw": 4, "innings": 29, "hash": "7.250", "week": 6},
+      {"date": "12/23/2025", "gw": 3, "innings": 25, "hash": "8.333", "week": 8}
     ]
   },
   {
@@ -845,37 +847,37 @@ const history = [
     "winPct": "30%",
     "hc": 2,
     "history": [
-      {"date": "10/21/2025", "gw": 2, "innings": 9, "hash": "4.500", "week": 6},
-      {"date": "10/7/2025", "gw": 2, "innings": 15, "hash": "7.500", "week": 7},
-      {"date": "9/30/2025", "gw": 2, "innings": 17, "hash": "8.500", "week": 8},
-      {"date": "3/11/2025", "gw": 0, "innings": 14, "hash": "15.000", "week": 10},
-      {"date": "7/23/2025", "gw": 1, "innings": 19, "hash": "15.000", "week": 9}
+      {"date": "10/21/2025", "gw": 2, "innings": 9, "hash": "4.500", "week": 7},
+      {"date": "10/7/2025", "gw": 2, "innings": 15, "hash": "7.500", "week": 8},
+      {"date": "9/30/2025", "gw": 2, "innings": 17, "hash": "8.500", "week": 9},
+      {"date": "7/23/2025", "gw": 1, "innings": 19, "hash": "15.000", "week": 10},
+      {"date": "11/18/2025", "gw": 0, "innings": 15, "hash": "15.000", "week": 6}
     ]
   },
   {
     "name": "Chuck Harding",
-    "currentHash": "9.567",
-    "winPct": "20%",
+    "currentHash": "7.867",
+    "winPct": "30%",
     "hc": 2,
     "history": [
-      {"date": "12/23/2025", "gw": 3, "innings": 16, "hash": "5.333", "week": 8},
-      {"date": "1/20/2026", "gw": 3, "innings": 24, "hash": "8.000", "week": 7},
-      {"date": "3/10/2026", "gw": 2, "innings": 19, "hash": "9.500", "week": 1},
-      {"date": "1/27/2026", "gw": 1, "innings": 10, "hash": "10.000", "week": 6},
-      {"date": "12/9/2025", "gw": 1, "innings": 23, "hash": "15.000", "week": 10}
+      {"date": "12/23/2025", "gw": 3, "innings": 16, "hash": "5.333", "week": 9},
+      {"date": "3/17/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 1},
+      {"date": "1/20/2026", "gw": 3, "innings": 24, "hash": "8.000", "week": 8},
+      {"date": "3/10/2026", "gw": 2, "innings": 19, "hash": "9.500", "week": 2},
+      {"date": "1/27/2026", "gw": 1, "innings": 10, "hash": "10.000", "week": 7}
     ]
   },
   {
-    "name": "Buster Fuller",
-    "currentHash": "6.667",
-    "winPct": "40%",
+    "name": "Buster Fuller*",
+    "currentHash": "6.733",
+    "winPct": "50%",
     "hc": 3,
     "history": [
-      {"date": "2/24/2026", "gw": 4, "innings": 18, "hash": "4.500", "week": 3},
-      {"date": "1/27/2026", "gw": 3, "innings": 14, "hash": "4.667", "week": 6},
-      {"date": "3/3/2026", "gw": 4, "innings": 30, "hash": "7.500", "week": 2},
-      {"date": "2/17/2026", "gw": 3, "innings": 23, "hash": "7.667", "week": 4},
-      {"date": "9/9/2025", "gw": 2, "innings": 18, "hash": "9.000", "week": 9}
+      {"date": "2/24/2026", "gw": 4, "innings": 18, "hash": "4.500", "week": 5},
+      {"date": "1/27/2026", "gw": 3, "innings": 14, "hash": "4.667", "week": 8},
+      {"date": "3/3/2026", "gw": 4, "innings": 30, "hash": "7.500", "week": 4},
+      {"date": "2/17/2026", "gw": 3, "innings": 23, "hash": "7.667", "week": 6},
+      {"date": "3/17/2026", "gw": 3, "innings": 28, "hash": "9.333", "week": 1}
     ]
   },
   {
