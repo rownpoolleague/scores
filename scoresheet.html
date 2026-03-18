@@ -389,13 +389,16 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <button onclick="closeQRModal()" style="margin-top:10px; padding:8px 16px; font-size:16px;">Close</button>
   </div>
 </div>
-    <div id="lagConfirmModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 2000000;">
+<div id="lagConfirmModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 2000000;">
     <div style="background: #111; padding: 25px; border: 2px solid #1e90ff; border-radius: 10px; width: 85%; max-width: 320px; text-align: center;">
-        <h3 id="lagPlayerName" style="color: #fff; margin-bottom: 20px;">Player Name</h3>
-        <p style="color: #ccc; margin-bottom: 25px;">Did this player win the lag?</p>
-        <div style="display: flex; gap: 15px;">
-            <button id="lagYes" style="flex: 1; padding: 12px; background: #1e90ff; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">YES</button>
-            <button id="lagNo" style="flex: 1; padding: 12px; background: #444; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">NO</button>
+        <h3 id="lagPlayerName" style="color: #fff; margin-bottom: 10px;">Player Name</h3>
+        <p id="lagQuestion" style="color: #ccc; margin-bottom: 25px;">Did this player win the lag?</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button id="lagYes" style="padding: 12px; background: #1e90ff; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">YES</button>
+            <button id="lagNo" style="padding: 12px; background: #444; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">NO / CANCEL</button>
+            <hr style="border: 0; border-top: 1px solid #333; margin: 5px 0;">
+            <button id="lagReset" onclick="resetLagFields()" style="padding: 10px; background: #800; color: #fff; border: none; border-radius: 5px; font-size: 12px; cursor: pointer;">RESET ALL LAG FIELDS</button>
         </div>
     </div>
 </div>
@@ -433,7 +436,7 @@ document.getElementById("opponent").addEventListener("change", function() {
     updateRoster(this, document.getElementById("opponentRoster"));
 });
 
-// 3. Player Selection Logic (Lag Winner/Loser with Modal)
+// 3. Player Selection Logic (Context-Aware Modal)
 let pendingPlayerData = null;
 
 document.addEventListener("click", e => {
@@ -442,45 +445,63 @@ document.addEventListener("click", e => {
 
     const name = playerDiv.getAttribute("data-p");
     const hc = playerDiv.getAttribute("data-hc");
-    const lwHeader = document.getElementById("lagWinnerHeader");
+    const lwHeader = document.getElementById("lagWinnerHeader").textContent;
 
-    // Check if Lag Winner is already filled
-    // (Assuming the default text is exactly "Lag Winner")
-    if (lwHeader.textContent === "Lag Winner") {
-        // Show modal to ask if they won the lag
-        pendingPlayerData = { name, hc };
-        document.getElementById("lagPlayerName").textContent = name;
+    pendingPlayerData = { name, hc };
+    document.getElementById("lagPlayerName").textContent = name;
+
+    if (lwHeader === "Lag Winner") {
+        // Step 1: Set the Winner
+        document.getElementById("lagQuestion").textContent = "Did this player win the lag?";
         document.getElementById("lagConfirmModal").style.display = "flex";
     } else {
-        // Lag winner is already set, so this person is the Lag Loser automatically
-        // Prevent clicking the same person twice for both slots
-        if (name === document.getElementById("lagWinner").value) {
-            alert("This player is already the Lag Winner!");
-            return;
-        }
-        fillLagLoser(name, hc);
+        // Step 2: Set the Loser and Start Match
+        // Prevent selecting the same person twice
+        if (name === document.getElementById("lagWinner").value) return;
+
+        document.getElementById("lagQuestion").textContent = "Set as Lag Loser and begin match?";
+        document.getElementById("lagConfirmModal").style.display = "flex";
     }
 });
 
 // Modal button listeners
 document.getElementById("lagYes").onclick = function() {
-    if (pendingPlayerData) {
+    if (!pendingPlayerData) return;
+    
+    const lwHeader = document.getElementById("lagWinnerHeader");
+
+    if (lwHeader.textContent === "Lag Winner") {
+        // Set Winner
         document.getElementById("lagWinner").value = pendingPlayerData.name;
         document.getElementById("pA_hc").value = pendingPlayerData.hc;
-        document.getElementById("lagWinnerHeader").textContent = pendingPlayerData.name;
-        closeLagModal();
-        saveNow();
+        lwHeader.textContent = pendingPlayerData.name;
+    } else {
+        // Set Loser
+        document.getElementById("lagLoser").value = pendingPlayerData.name;
+        document.getElementById("pB_hc").value = pendingPlayerData.hc;
+        document.getElementById("lagLoserHeader").textContent = pendingPlayerData.name;
+        
+        // Optional: Auto-increment innings to 1 to start the match UI
+        document.getElementById("matchInnings").value = 1;
+        checkRosterCollapse();
     }
+    
+    closeLagModal();
+    saveNow();
 };
 
-document.getElementById("lagNo").onclick = function() {
-    closeLagModal(); // Just exit as requested
-};
+document.getElementById("lagNo").onclick = closeLagModal;
 
-function fillLagLoser(name, hc) {
-    document.getElementById("lagLoser").value = name;
-    document.getElementById("pB_hc").value = hc;
-    document.getElementById("lagLoserHeader").textContent = name;
+function resetLagFields() {
+    document.getElementById("lagWinner").value = "";
+    document.getElementById("lagLoser").value = "";
+    document.getElementById("pA_hc").value = 0;
+    document.getElementById("pB_hc").value = 0;
+    document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
+    document.getElementById("lagLoserHeader").textContent = "Lag Loser";
+    document.getElementById("matchInnings").value = 0;
+    checkRosterCollapse();
+    closeLagModal();
     saveNow();
 }
 
