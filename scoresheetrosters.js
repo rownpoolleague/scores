@@ -14,7 +14,7 @@ const scoresheetrosters = {
     "Doug Misner":4,
     "Enrique Meza":2,
     "Felipe Ochoa":4,
-    "Francisco Ibarra":2,
+    "Francisco Ibarra":3,
     "Francisco Tinajero":4,
     "Freddy Izguerra":4,
     "Greg Wood":3,
@@ -28,7 +28,7 @@ const scoresheetrosters = {
     "Jim Berger":4,
     "Jim Czenk":3,
     "Jim Nevin":5,
-    "Joe Crutchfield":3,
+    "Joe Crutchfield":4,
     "Joe Neal":3,
     "Joey Sanchez":4,
     "John Amrein":3,
@@ -70,5 +70,5 @@ const scoresheetrosters = {
     "Tony Guthrie":6,
     "Tony Perelli":5,
     "Tony Perez":4,
-    "Yani Marinopoulos":4
+    "Yani Marinopoulos":3
 };
