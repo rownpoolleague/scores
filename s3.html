@@ -393,20 +393,8 @@ select, input, button { font-size:inherit; font-family:inherit; }
     </div>
 </div>
     
-<div style="text-align:center; padding-top:20px; font-size:20px;">
-    <label style="display:block; margin-bottom:10px;">Match Winner</label>
-    <input id="matchWinner" readonly 
-           style="display: inline-block;
-                  box-sizing: border-box; 
-                  text-align: center; 
-                  background-color: #000; 
-                  color: #00ff00; 
-                  font-size: 20px; 
-                  border: 1px solid #000;
-                  width: 180px; 
-                  height: 40px; 
-                  vertical-align: middle; 
-                  margin: 0 auto;">
+<div style="display: none;">
+    <input id="matchWinner" readonly>
 </div>
 <div style="margin-top:20px;border-radius:8px;">
 
@@ -431,8 +419,8 @@ select, input, button { font-size:inherit; font-family:inherit; }
 <div id="notesContainer" style="display:none; text-align:center; margin-top:12px;">
     <textarea 
         id="matchNotes" 
-        style="width:80%; max-width:500px; height:70px; font-size:16px; padding:8px;"
-        oninput="saveNow()">-</textarea>
+        style="width:80%; max-width:500px; height:70px; font-size:19px; padding:6px;"
+        oninput="saveNow()">-Type in here. Click Notes box again to close.</textarea>
 </div>
 </div>
 
@@ -584,17 +572,31 @@ function updateMatchWinner() {
     const bWins = parseInt(document.getElementById("pB_wins").value) || 0;
     const aHC = parseInt(document.getElementById("pA_hc").value) || 0;
     const bHC = parseInt(document.getElementById("pB_hc").value) || 0;
+    
     const winField = document.getElementById("matchWinner");
     const subBtn = document.getElementById("submitMatch");
 
+    let winnerName = "";
+
+    // Determine the winner based on wins reaching handicap
     if (aWins === aHC && aHC > 0) {
-        winField.value = document.getElementById("lagWinner").value;
+        winnerName = document.getElementById("lagWinner").value;
     } else if (bWins === bHC && bHC > 0) {
-        winField.value = document.getElementById("lagLoser").value;
-    } else {
-        winField.value = "";
+        winnerName = document.getElementById("lagLoser").value;
     }
-    subBtn.style.display = winField.value ? "inline-block" : "none";
+
+    // Keep the hidden input updated for your Google Sheets submit
+    winField.value = winnerName;
+
+    if (winnerName) {
+        // Update button text and show it
+        subBtn.textContent = `Winner: ${winnerName} - Submit Match`;
+        subBtn.style.display = "inline-block";
+    } else {
+        // Reset and hide button if no winner yet
+        subBtn.textContent = "Submit Match";
+        subBtn.style.display = "none";
+    }
 }
 
 // --- 4. History Management ---
@@ -744,9 +746,11 @@ document.getElementById("submitMatch").onclick = function() {
 
         document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
         document.getElementById("lagLoserHeader").textContent = "Lag Loser";
+        btn.textContent = "Submit Match";
         document.getElementById("matchNotes").value = "-";
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
+
         checkRosterCollapse();
 
         if ((scores.home + scores.away) >= 5) {
