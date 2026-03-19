@@ -885,10 +885,28 @@ function showHistory() {
     showMasterModal("Match History", tableHtml, historyButtons);
 }
 function clearHistory() {
-    if(confirm("Clear all match history for this evening?")) {
-        localStorage.removeItem("matchHistory");
-        showHistory();
-    }
+    // 1. Change the content of the modal to a warning
+    const warningHtml = `
+        <div style="text-align:center; padding: 20px 0;">
+            <p style="color:crimson; font-size:18px; font-weight:bold; margin-bottom:10px;">Are you sure?</p>
+            <p style="color:#ccc;">This will permanently delete all saved match results for this session.</p>
+        </div>
+    `;
+
+    // 2. Define the "Confirm" and "Go Back" buttons
+    const buttons = [
+        { text: "YES, DELETE ALL", action: "executeClearHistory()", color: "crimson" },
+        { text: "Go Back", action: "showHistory()", color: "#444" }
+    ];
+
+    // 3. Update the existing Master Modal
+    showMasterModal("Clear History", warningHtml, buttons);
+}
+
+function executeClearHistory() {
+    localStorage.removeItem("matchHistory");
+    // Show the "No matches yet" view
+    showHistory(); 
 }
 function addNewPlayerManual() {
     const homeName = document.getElementById("team").value || "Home Team";
