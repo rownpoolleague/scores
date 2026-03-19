@@ -434,11 +434,12 @@ function updateRoster(sel, div) {
     }).join("");
 }
 // 2. Event Listeners for Team Selection
-document.getElementById("team").addEventListener("change", function() {
-    updateRoster(this, document.getElementById("teamRoster"));
-});
-document.getElementById("opponent").addEventListener("change", function() {
-    updateRoster(this, document.getElementById("opponentRoster"));
+["team", "opponent"].forEach(id => {
+    document.getElementById(id).addEventListener("change", function() {
+        const divId = (id === "team") ? "teamRoster" : "opponentRoster";
+        updateRoster(this, document.getElementById(divId));
+        saveNow();
+    });
 });
 
 // 3. Player Selection Logic (Context-Aware Modal)
@@ -529,17 +530,19 @@ function changeStat(id, amount) {
     const el = document.getElementById(id);
     if (!el) return;
 
-    // Update the value (prevents negative numbers)
     el.value = Math.max(0, (parseInt(el.value) || 0) + amount);
 
-    // Specific logic for wins (reset coach checkboxes)
+    // Trigger the roster hide/show logic if Innings changed
+    if (id === 'matchInnings') {
+        checkRosterCollapse();
+    }
+
     if (id === 'pA_wins' || id === 'pB_wins') {
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
         updateMatchWinner();
     }
 
-    // Specific logic for handicap (re-calculate winner)
     if (id === 'pA_hc' || id === 'pB_hc') {
         updateMatchWinner();
     }
@@ -683,28 +686,26 @@ document.getElementById("lagLoserHeader").textContent = "Lag Loser";
     // 8. Save/Load Logic
 function saveNow() {
     if (isLoading) return;
-    const ids = ["team","opponent","lagWinner","lagLoser","matchInnings","matchWinner","pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8","pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8","pA_coach","pB_coach","matchNotes"];
     const data = {};
-    ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) data[id] = el.type === "checkbox" ? el.checked : el.value;
+
+    // Automatically grab every input, select, and textarea that has an ID
+    document.querySelectorAll("input[id], select[id], textarea[id]").forEach(el => {
+        data[el.id] = el.type === "checkbox" ? el.checked : el.value;
     });
 
-    // Save the text headers
+    // Save the text headers (the player names)
     data.lwH = document.getElementById("lagWinnerHeader").textContent;
     data.llH = document.getElementById("lagLoserHeader").textContent;
 
-    // ADDED: Save the current match score (Home vs Away)
+    // Save the overall team match scores
     data.mScores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
 
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
 function loadScoresheet() {
+    // 1. Restore manual roster additions
     const savedManual = localStorage.getItem("manual_roster_additions");
-    if (savedManual) {
-        const parsed = JSON.parse(savedManual);
-        Object.assign(scoresheetinfo, parsed);
-    }
+    if (savedManual) Object.assign(scoresheetinfo, JSON.parse(savedManual));
 
     const raw = localStorage.getItem(FORM_KEY);
     if (!raw) return;
@@ -712,6 +713,7 @@ function loadScoresheet() {
     isLoading = true;
     const data = JSON.parse(raw);
     
+    // 2. Automatically fill all fields found in the saved data
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -723,17 +725,18 @@ function loadScoresheet() {
         }
     });
 
-    // Restore the text headers
+    // 3. Restore the text headers (Names)
     if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
     if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
 
-    // ADDED: Restore match scores and update the global 'scores' variable
+    // 4. Restore team match scores
     if (data.mScores) {
         scores = data.mScores;
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-        updateScoreUI(); // This ensures the numbers at the bottom change immediately
+        updateScoreUI();
     }
 
+    // 5. Refresh the UI state
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
     checkRosterCollapse();
@@ -961,10 +964,7 @@ function confirmNewPlayer() {
     document.getElementById("weekDisplay").textContent = "Week " + activeWeek.week;
     document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
 }
-        window.addEventListener("load", updateCurrentWeekAndDate);
-
-
-               
+        window.addEventListener("load", updateCurrentWeekAndDate);        
 </script>
     <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
   <div style="background:#222; padding:20px; border-radius:8px; width:95%; max-width:600px; max-height:80vh; overflow-y:auto; border: 2px solid #1e90ff;">
