@@ -375,12 +375,11 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <button class="closeBtn" onclick="closeTimer()">X</button>
   </div>
 
-<div id="notesContainer"
-     style="display:none; text-align:center; margin-top:12px;">
-  <textarea
-  id="matchNotes"
-  style="width:60%; max-width:500px; height:70px; font-size:16px; padding:8px;"
->-</textarea>
+<div id="notesContainer" style="display:none; text-align:center; margin-top:12px;">
+    <textarea 
+        id="matchNotes" 
+        style="width:80%; max-width:500px; height:70px; font-size:16px; padding:8px;"
+        oninput="saveNow()">-</textarea>
 </div>
 </div>
 
