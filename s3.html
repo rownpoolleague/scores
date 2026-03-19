@@ -39,6 +39,61 @@ select, input, button { font-size:inherit; font-family:inherit; }
     border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
     box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
 }
+    /* --- Universal Master Modal --- */
+#masterModal {
+    display: none; 
+    position: fixed; 
+    inset: 0; 
+    background: rgba(0, 0, 0, 0.9); 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 100000;
+    padding: 10px;
+}
+
+.modal-container {
+    background: #111; 
+    padding: 20px; 
+    border: 2px solid #1e90ff; 
+    border-radius: 12px; 
+    width: 100%; 
+    max-width: 450px; 
+    max-height: 85vh; /* Prevents modal from cutting off on small screens */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    box-shadow: 0 0 20px rgba(30, 144, 255, 0.3);
+}
+
+#modalContent {
+    overflow-y: auto; /* Makes Match History scrollable */
+    margin-bottom: 20px;
+    color: #fff;
+    scrollbar-width: thin; /* Clean scrollbars for Firefox */
+    scrollbar-color: #1e90ff #111;
+}
+
+#modalFooter {
+    display: flex; 
+    gap: 10px; 
+    justify-content: center;
+    flex-wrap: wrap; /* Wraps buttons if they are too wide on small phones */
+}
+
+/* Standardizing Modal Buttons */
+#modalFooter button {
+    padding: 10px 18px; 
+    border: none; 
+    border-radius: 6px; 
+    font-weight: bold; 
+    font-size: 16px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+#modalFooter button:active {
+    opacity: 0.7;
+}
 
 .playerName {
   display: flex;           /* allow name and HC to be on same line */
@@ -148,9 +203,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-    #qrModal {
-    z-index: 1000000 !important; /* One level higher than your history modal */
-}
+   
 </style>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
     <script src="schedule.js"></script>
@@ -385,25 +438,12 @@ select, input, button { font-size:inherit; font-family:inherit; }
 
     <a class="back-button" style= "height:30px;"href="index.html">Main Menu</a>
 </div>
-    <!-- QR Code Popup -->
-<div id="qrModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:9999;">
-  <div style="background:#fff; padding:20px; border-radius:8px; position:relative; max-width:90%; max-height:90%; overflow:auto;">
-    <h3 style="text-align:center;color:#000;">Scan QR to Transfer</h3>
-    <div id="qrcode"></div>
-    <button onclick="closeQRModal()" style="margin-top:10px; padding:8px 16px; font-size:16px;">Close</button>
-  </div>
-</div>
-<div id="lagConfirmModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 2000000;">
-    <div style="background: #111; padding: 25px; border: 2px solid #1e90ff; border-radius: 10px; width: 85%; max-width: 320px; text-align: center;">
-        <h3 id="lagPlayerName" style="color: #fff; margin-bottom: 10px;">Player Name</h3>
-        <p id="lagQuestion" style="color: #ccc; margin-bottom: 25px;">Did this player win the lag?</p>
-        
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button id="lagYes" style="padding: 12px; background: #1e90ff; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">YES</button>
-            <button id="lagNo" style="padding: 12px; background: #444; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">NO / CANCEL</button>
-            <hr style="border: 0; border-top: 1px solid #333; margin: 5px 0;">
-            <button id="lagReset" onclick="resetLagFields()" style="padding: 10px; background: #800; color: #fff; border: none; border-radius: 5px; font-size: 12px; cursor: pointer;">RESET ALL LAG FIELDS</button>
-        </div>
+<div id="masterModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <div id="modalBody">
+            </div>
+        <div class="modal-footer" id="modalFooter">
+            </div>
     </div>
 </div>
     <script>
@@ -441,9 +481,7 @@ function updateRoster(sel, div) {
     });
 });
 
-// 3. Player Selection Logic (Context-Aware Modal)
-let pendingPlayerData = null;
-
+// 3. Player Selection Logic (Master Modal Version)
 document.addEventListener("click", e => {
     const playerDiv = e.target.closest(".playerName");
     if (!playerDiv) return;
@@ -453,51 +491,35 @@ document.addEventListener("click", e => {
     const lwHeader = document.getElementById("lagWinnerHeader").textContent;
 
     pendingPlayerData = { name, hc };
-    document.getElementById("lagPlayerName").textContent = name;
 
     if (lwHeader === "Lag Winner") {
-        // Step 1: Set the Winner
-        document.getElementById("lagQuestion").textContent = "Did this player win the lag?";
-        document.getElementById("lagConfirmModal").style.display = "flex";
+        showMasterModal("Confirm Lag Winner", `<p>Did <strong>${name}</strong> win the lag?</p>`, [
+            { text: "YES", action: "confirmLag(true)", color: "#1e90ff" }
+        ]);
     } else {
-        // Step 2: Set the Loser and Start Match
-        // Prevent selecting the same person twice
         if (name === document.getElementById("lagWinner").value) return;
-
-        document.getElementById("lagQuestion").textContent = "Set as Lag Loser and begin match?";
-        document.getElementById("lagConfirmModal").style.display = "flex";
+        showMasterModal("Confirm Lag Loser", `<p>Set <strong>${name}</strong> as Lag Loser and begin match?</p>`, [
+            { text: "YES", action: "confirmLag(false)", color: "#1e90ff" }
+        ]);
     }
 });
 
-// Modal button listeners
-document.getElementById("lagYes").onclick = function() {
-    if (!pendingPlayerData) return;
-    
-    const lwHeader = document.getElementById("lagWinnerHeader");
-
-    if (lwHeader.textContent === "Lag Winner") {
-        // Set Winner
+function confirmLag(isWinner) {
+    if (isWinner) {
         document.getElementById("lagWinner").value = pendingPlayerData.name;
         document.getElementById("pA_hc").value = pendingPlayerData.hc;
-        lwHeader.textContent = pendingPlayerData.name;
+        document.getElementById("lagWinnerHeader").textContent = pendingPlayerData.name;
     } else {
-        // Set Loser
         document.getElementById("lagLoser").value = pendingPlayerData.name;
         document.getElementById("pB_hc").value = pendingPlayerData.hc;
         document.getElementById("lagLoserHeader").textContent = pendingPlayerData.name;
-        
-        // Optional: Auto-increment innings to 1 to start the match UI
         document.getElementById("matchInnings").value = 0;
         checkRosterCollapse();
     }
-    
-    closeLagModal();
+    closeMasterModal();
     saveNow();
-};
-
-document.getElementById("lagNo").onclick = closeLagModal;
-
-function resetLagFields() {
+}
+    function resetLagFields() {
     document.getElementById("lagWinner").value = "";
     document.getElementById("lagLoser").value = "";
     document.getElementById("pA_hc").value = 0;
@@ -510,6 +532,8 @@ function resetLagFields() {
     saveNow();
 }
 
+// Close if clicking outside the box
+window.onclick = (e) => { if (e.target.id === "masterModal") closeModal(); };
 function closeLagModal() {
     document.getElementById("lagConfirmModal").style.display = "none";
     pendingPlayerData = null;
@@ -653,10 +677,6 @@ checkRosterCollapse();
         document.getElementById("matchNotes").value = "-";
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
-     
-document.getElementById("lagWinnerHeader").textContent = "Lag Winner"; // Important!
-document.getElementById("lagLoserHeader").textContent = "Lag Loser";
-
         // --- HANDLE 5TH MATCH SCENARIO ---
         if ((scores.home + scores.away) >= 5) {
             alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}. Resetting session fields, but history is saved.`);
@@ -749,12 +769,18 @@ function exportScoresheet() {
     if (!data) return alert("No data to transfer.");
     const baseUrl = window.location.href.split('?')[0];
     const fullUrl = `${baseUrl}?data=${encodeURIComponent(data)}`;
-    document.getElementById('qrModal').style.display = 'flex';
-    document.getElementById('qrcode').innerHTML = '';
-    new QRCode(document.getElementById('qrcode'), { text: fullUrl, width: 256, height: 256 });
-}
+    
+    const bodyHtml = `
+        <p style="margin-bottom:15px; font-size:14px; color:#ccc;">Scan to transfer the current scoresheet.</p>
+        <div id="qrcode" style="display:flex; justify-content:center; padding:10px; background:#fff; border-radius:8px; width:fit-content; margin: 0 auto;"></div>
+    `;
 
-function closeQRModal() { document.getElementById('qrModal').style.display = 'none'; }
+    showMasterModal("Transfer Scoresheet", bodyHtml);
+
+    setTimeout(() => {
+        new QRCode(document.getElementById('qrcode'), { text: fullUrl, width: 200, height: 200 });
+    }, 50);
+}
 function toggleNotes() { const box = document.getElementById("notesContainer"); box.style.display = box.style.display === "none" ? "block" : "none"; }
 
 let timerInterval, seconds = 0;
@@ -818,63 +844,81 @@ window.addEventListener("DOMContentLoaded", () => {
         // Function to show the history modal
 function showHistory() {
     const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
-    const tbody = document.getElementById("historyTableBody");
     
+    // 1. Build the Table HTML
+    let tableHtml = `
+        <table style="width:100%; border-collapse: collapse; color: white; font-size: 14px;">
+            <thead>
+                <tr style="border-bottom: 2px solid #444;">
+                    <th style="padding:8px; text-align:left;">Match</th>
+                    <th style="padding:8px; text-align:center;">Result</th>
+                    <th style="padding:8px; text-align:center;">Inn.</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
     if (history.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px;">No matches submitted yet.</td></tr>';
+        tableHtml += '<tr><td colspan="3" style="text-align:center; padding:20px;">No matches yet.</td></tr>';
     } else {
-        tbody.innerHTML = history.map((m, index) => `
+        tableHtml += history.map((m, index) => `
             <tr style="border-bottom: 1px solid #333;">
-                <td style="padding:10px;">
-                    <div style="font-weight:bold; color:#1e90ff;">Match ${index + 1}</div>
-                    ${m.lagWinner} vs ${m.lagLoser}
+                <td style="padding:8px; text-align:left;">
+                    <div style="font-weight:bold; color:#1e90ff;">M${index + 1}</div>
+                    <small>${m.lagWinner} vs ${m.lagLoser}</small>
                 </td>
-                <td style="padding:10px; text-align:center;">
+                <td style="padding:8px; text-align:center;">
                     ${m.pA.wins}-${m.pB.wins}<br>
-                    <small style="color:#0f0;">Winner: ${m.matchWinner}</small>
+                    <small style="color:#0f0;">${m.matchWinner}</small>
                 </td>
-                <td style="padding:10px; text-align:center;">${m.matchInnings}</td>
-            </tr>
-        `).join("");
+                <td style="padding:8px; text-align:center;">${m.matchInnings}</td>
+            </tr>`).join("");
     }
-    document.getElementById("historyModal").style.display = "flex";
+    tableHtml += `</tbody></table>`;
+
+    // 2. Define the buttons
+    const historyButtons = [
+        { text: "Transfer", action: "exportHistoryOnly()", color: "#1e90ff" },
+        { text: "Reset", action: "clearHistory()", color: "crimson" }
+    ];
+
+    // 3. Open the Universal Modal
+    showMasterModal("Match History", tableHtml, historyButtons);
 }
-
-function closeHistory() { document.getElementById("historyModal").style.display = "none"; }
-
 function clearHistory() {
     if(confirm("Clear all match history for this evening?")) {
         localStorage.removeItem("matchHistory");
         showHistory();
     }
 }
-        function addNewPlayerManual() {
-    const homeName = document.getElementById("team").value;
-    const awayName = document.getElementById("opponent").value;
+function addNewPlayerManual() {
+    const homeName = document.getElementById("team").value || "Home Team";
+    const awayName = document.getElementById("opponent").value || "Away Team";
 
-    // Check if teams are selected first
-    if (!homeName || homeName.includes("Select") || !awayName || awayName.includes("Select")) {
-        alert("Please select both teams first.");
-        return;
-    }
+    // The content inside the modal
+    const bodyHtml = `
+        <input type="text" id="manualPlayerName" placeholder="Enter Player Name" 
+               style="width:100%; padding:12px; font-size:18px; margin-bottom:20px; border-radius:6px; border:1px solid #444; background:#111; color:white; box-sizing: border-box;">
+        
+        <div style="margin-bottom: 5px; color:white; font-size:18px; display: flex; flex-direction: column; gap: 15px; align-items: flex-start; padding-left: 10px;">
+            <label style="cursor:pointer; color:#fff; text-transform:none;">
+                <input type="radio" name="npTeam" value="home" checked style="transform: scale(1.3); margin-right:10px;"> ${homeName}
+            </label>
+            <label style="cursor:pointer; color:#fff; text-transform:none;">
+                <input type="radio" name="npTeam" value="away" style="transform: scale(1.3); margin-right:10px;"> ${awayName}
+            </label>
+        </div>
+    `;
 
-    // Update the labels in the modal
-    document.getElementById("homeLabel").textContent = homeName;
-    document.getElementById("awayLabel").textContent = awayName;
+    // The buttons at the bottom
+    const buttons = [
+        { text: "Add to Roster", action: "confirmNewPlayer()", color: "#1e90ff" }
+    ];
 
-    // Show the modal
-    const modal = document.getElementById("playerModal");
-    if (modal) {
-        modal.style.display = "flex";
-        document.getElementById("manualPlayerName").value = "";
-        document.getElementById("manualPlayerName").focus();
-    }
+    showMasterModal("Add to Roster", bodyHtml, buttons);
+    
+    // Tiny delay to ensure the element exists before focusing
+    setTimeout(() => document.getElementById("manualPlayerName").focus(), 100);
 }
-
-function closePlayerModal() {
-    document.getElementById("playerModal").style.display = "none";
-}
-
 function confirmNewPlayer() {
     const nameInput = document.getElementById("manualPlayerName");
     const newName = nameInput.value.trim();
@@ -882,41 +926,44 @@ function confirmNewPlayer() {
     
     const side = document.querySelector('input[name="npTeam"]:checked').value;
     const teamDropdown = document.getElementById(side === 'home' ? "team" : "opponent");
-    const rosterDiv = document.getElementById(side === 'home' ? "teamRoster" : "opponentRoster");
     const teamName = teamDropdown.value;
-    
-    if (!teamName || teamName.includes("Select")) {
-        alert("Select a team first!");
-        return;
-    }
 
     if (!scoresheetinfo[teamName]) scoresheetinfo[teamName] = [];
     
-    const exists = scoresheetinfo[teamName].some(p => p.toLowerCase() === newName.toLowerCase());
-
-    if (!exists) {
-        // Insert as simple text string
+    if (!scoresheetinfo[teamName].some(p => p.toLowerCase() === newName.toLowerCase())) {
         scoresheetinfo[teamName].push(newName);
-        
-        // Save to localStorage so they stay on refresh
         localStorage.setItem("manual_roster_additions", JSON.stringify(scoresheetinfo));
-        
-        updateRoster(teamDropdown, rosterDiv);
+        updateRoster(teamDropdown, document.getElementById(side === 'home' ? "teamRoster" : "opponentRoster"));
         saveNow();
     }
-    closePlayerModal();
+    
+    closeMasterModal(); // Closes the universal modal
 }
         function exportHistoryOnly() {
     const history = localStorage.getItem("matchHistory");
     if (!history || history === "[]") return alert("No history to transfer.");
     
     const baseUrl = window.location.href.split('?')[0];
-    // We use a different key 'hdata' so it doesn't mess with the main form loader
     const fullUrl = `${baseUrl}?hdata=${encodeURIComponent(history)}`;
     
-    document.getElementById('qrModal').style.display = 'flex';
-    document.getElementById('qrcode').innerHTML = '';
-    new QRCode(document.getElementById('qrcode'), { text: fullUrl, width: 256, height: 256 });
+    // 1. Define the content: A title and a placeholder div for the QR code
+    const bodyHtml = `
+        <p style="margin-bottom:15px; font-size:14px; color:#ccc;">Scan to sync match history to another device.</p>
+        <div id="qrcode" style="display:flex; justify-content:center; padding:10px; background:#fff; border-radius:8px; width:fit-content; margin: 0 auto;"></div>
+    `;
+
+    // 2. Open the Universal Modal
+    showMasterModal("Transfer History", bodyHtml);
+
+    // 3. Generate the QR Code (Wait 50ms to ensure the div is rendered)
+    setTimeout(() => {
+        new QRCode(document.getElementById('qrcode'), { 
+            text: fullUrl, 
+            width: 200, 
+            height: 200,
+            correctLevel: QRCode.CorrectLevel.M
+        });
+    }, 50);
 }
         function checkRosterCollapse() {
     const innings = parseInt(document.getElementById("matchInnings").value) || 0;
@@ -965,53 +1012,7 @@ function confirmNewPlayer() {
 }
         window.addEventListener("load", updateCurrentWeekAndDate);        
 </script>
-    <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
-  <div style="background:#222; padding:20px; border-radius:8px; width:95%; max-width:600px; max-height:80vh; overflow-y:auto; border: 2px solid #1e90ff;">
-    <h3 style="text-align:center; color:#1e90ff;">Match History</h3>
-    <table style="width:100%; border-collapse: collapse; color: white; font-size: 14px;">
-      <thead>
-        <tr style="border-bottom: 2px solid #444;">
-          <th style="padding:8px; text-align:left;">Match</th>
-          <th style="padding:8px; text-align:center;">Result</th>
-          <th style="padding:8px; text-align:center;">Inn.</th>
-        </tr>
-      </thead>
-      <tbody id="historyTableBody">
-        </tbody>
-    </table>
-    <div style="text-align:center; margin-top:20px; display:flex; gap:10px; justify-content:center;">
-      <button onclick="closeHistory()" style="padding:10px 20px;">Close</button>
-        <button onclick="exportHistoryOnly()" style="background:#1e90ff; color:white; padding:10px;">Transfer</button>
-      <button onclick="clearHistory()" style="padding:10px 20px; background:crimson; color:white; border:none; border-radius:4px;">Reset</button>
-    </div>
-  </div>
 </div>
-<div id="playerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
-  <div style="background:#222; padding:25px; border-radius:12px; width:90%; max-width:400px; border: 2px solid #1e90ff; text-align:center; box-sizing: border-box;">
-    
-    <h3 style="color:#1e90ff; margin:0 0 15px 0;">Add to Roster</h3>
-    
-    <input type="text" id="manualPlayerName" placeholder="Enter Player Name" 
-           style="width:100%; padding:12px; font-size:18px; margin-bottom:20px; border-radius:6px; border:1px solid #444; background:#111; color:white; box-sizing: border-box;">
-    
-    <div style="margin-bottom: 25px; color:white; font-size:18px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; padding-left: 20px;">
-      <label style="cursor:pointer;">
-        <input type="radio" name="npTeam" value="home" checked style="transform: scale(1.2);"> <span id="homeLabel">Home Team</span>
-      </label>
-      <label style="cursor:pointer;">
-        <input type="radio" name="npTeam" value="away" style="transform: scale(1.2);"> <span id="awayLabel">Away Team</span>
-      </label>
-    </div>
-    
-    <div style="display:flex; gap:12px; justify-content:center;">
-      <button type="button" onclick="closePlayerModal()" 
-              style="padding:10px 20px; background:#444; color:white; border:none; border-radius:4px; font-size:16px; cursor:pointer;">
-        Cancel
-      </button>
-      <button type="button" onclick="confirmNewPlayer()" style="padding:10px 20px; background:#1e90ff; color:white; border:none; border-radius:4px; font-weight:bold; font-size:16px; cursor:pointer;">Add to Roster</button>
-    </div>
-    
-  </div>
 </div>
 </body>
 </html>
