@@ -857,6 +857,37 @@ function updateTimerDisplay() {
     const secs = seconds % 60;
     document.getElementById("timerValue").textContent = `${mins}:${secs < 10 ? '0' + secs : secs}`;
 }
+    function exportScoresheet() {
+    const data = localStorage.getItem(FORM_KEY);
+    if (!data) return alert("No data to transfer.");
+    
+    const baseUrl = window.location.href.split('?')[0];
+    const fullUrl = `${baseUrl}?data=${encodeURIComponent(data)}`;
+    
+    // 1. Define the HTML for the QR code container
+    const bodyHtml = `
+        <div style="text-align:center;">
+            <p style="margin-bottom:15px; font-size:14px; color:#ccc;">Scan to transfer the current scoresheet.</p>
+            <div id="qrcode" style="display:flex; justify-content:center; padding:10px; background:#fff; border-radius:8px; width:fit-content; margin: 0 auto;"></div>
+        </div>
+    `;
+
+    // 2. Show the Master Modal (No extra buttons needed, "Close" is built-in)
+    showMasterModal("Transfer Scoresheet", bodyHtml);
+
+    // 3. Generate the QR Code (Wait 50ms for the modal to render)
+    setTimeout(() => {
+        const qrContainer = document.getElementById('qrcode');
+        if (qrContainer) {
+            new QRCode(qrContainer, { 
+                text: fullUrl, 
+                width: 200, 
+                height: 200,
+                correctLevel: QRCode.CorrectLevel.M 
+            });
+        }
+    }, 50);
+}
 </script>
 </div>
 </div>
