@@ -844,6 +844,19 @@ window.addEventListener("DOMContentLoaded", () => {
     updateScoreUI();
     updateCurrentWeekAndDate();
 });
+    let timerInterval, seconds = 0;
+function startTimer() {
+    seconds = 0;
+    document.getElementById("timerBox").style.display = "block";
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => { seconds++; updateTimerDisplay(); }, 1000);
+}
+function closeTimer() { clearInterval(timerInterval); document.getElementById("timerBox").style.display = "none"; }
+function updateTimerDisplay() {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    document.getElementById("timerValue").textContent = `${mins}:${secs < 10 ? '0' + secs : secs}`;
+}
 </script>
 </div>
 </div>
