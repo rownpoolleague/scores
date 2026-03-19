@@ -525,50 +525,32 @@ function updateScoreUI() {
     }
 }
 
-// 5. Stat Increment/Decrement
+function changeStat(id, amount) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    // Update the value (prevents negative numbers)
+    el.value = Math.max(0, (parseInt(el.value) || 0) + amount);
+
+    // Specific logic for wins (reset coach checkboxes)
+    if (id === 'pA_wins' || id === 'pB_wins') {
+        document.getElementById('pA_coach').checked = false;
+        document.getElementById('pB_coach').checked = false;
+        updateMatchWinner();
+    }
+
+    // Specific logic for handicap (re-calculate winner)
+    if (id === 'pA_hc' || id === 'pB_hc') {
+        updateMatchWinner();
+    }
+
+    saveNow();
+}
+
+// Keep this for any existing Innings calls, or update buttons to changeStat('matchInnings', amount)
 function changeInnings(amount) {
-    let input = document.getElementById("matchInnings");
-    let val = Math.max(0, (parseInt(input.value) || 0) + amount);
-    input.value = val;
-
-    // Toggle roster visibility: hide if innings > 0, show if 0
-    const displayStyle = (val > 0) ? "none" : "block";
-    document.getElementById("teamRoster").style.display = displayStyle;
-    document.getElementById("opponentRoster").style.display = displayStyle;
-
-    saveNow();
+    changeStat('matchInnings', amount);
 }
-
-function changeWinsA(amount) {
-    let input = document.getElementById("pA_wins");
-    input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
-    document.getElementById('pA_coach').checked = false;
-    document.getElementById('pB_coach').checked = false;
-    updateMatchWinner();
-    saveNow();
-}
-
-function changeWinsB(amount) {
-    let input = document.getElementById("pB_wins");
-    input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
-    document.getElementById('pA_coach').checked = false;
-    document.getElementById('pB_coach').checked = false;
-    updateMatchWinner();
-    saveNow();
-}
-
-// Utility functions for other stats
-function changePASafeties(amount) { let input = document.getElementById("pA_safeties"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePA8B(amount) { let input = document.getElementById("pA_b8"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePABR(amount) { let input = document.getElementById("pA_br"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePAHC(amount) { let input = document.getElementById("pA_hc"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); updateMatchWinner(); saveNow(); }
-function changePAE8(amount) { let input = document.getElementById("pA_e8"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePBHC(amount) { let input = document.getElementById("pB_hc"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); updateMatchWinner(); saveNow(); }
-function changePBsafeties(amount) { let input = document.getElementById("pB_safeties"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePB8B(amount) { let input = document.getElementById("pB_b8"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePBBR(amount) { let input = document.getElementById("pB_br"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePBE8(amount) { let input = document.getElementById("pB_e8"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-
 // 6. Match Winner Logic
 function updateMatchWinner() {
     const aWins = parseInt(document.getElementById("pA_wins").value) || 0;
