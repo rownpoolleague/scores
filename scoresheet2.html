@@ -888,31 +888,18 @@ function exportHistoryOnly() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    // 1. Existing Reset Logic
-    const lastActivity = localStorage.getItem("lastSessionActivity");
-    if (lastActivity && (Date.now() - parseInt(lastActivity)) > (12 * 60 * 60 * 1000)) {
-        localStorage.removeItem("matchHistory");
-        localStorage.removeItem("manual_roster_additions");
-        localStorage.removeItem("teamMatchScores");
-        localStorage.removeItem(FORM_KEY);
-        scores = { home: 0, away: 0 };
-    }
+    // ... reset logic ...
 
-    // 2. Update the timestamp to "Now" so the 12-hour clock restarts
-    localStorage.setItem("lastSessionActivity", Date.now().toString());
+    const team = document.getElementById("team").value;
+    const opponent = document.getElementById("opponent").value;
 
-    // 3. New Team Selection Logic
-    const home = document.getElementById("homeTeam").value;
-    const away = document.getElementById("awayTeam").value;
-
-    if (!home || home === "" || !away || away === "") {
+    // Now it checks for the empty strings you created with <option value=""></option>
+    if (!team || !opponent) {
         const buttons = Object.keys(TEAM_MAP).map(num => ({
             text: TEAM_MAP[num],
             action: `setScoringTeam(${num})`,
             color: "#1e90ff"
         }));
-
-        buttons.push({ text: "Manual Selection", action: "closeMasterModal()", color: "#444" });
 
         showMasterModal(
             "Welcome", 
@@ -921,7 +908,6 @@ window.addEventListener("DOMContentLoaded", () => {
         );
     }
 });
-    
     const params = new URLSearchParams(window.location.search);
     if (params.has("hdata")) {
         localStorage.setItem("matchHistory", decodeURIComponent(params.get("hdata")));
@@ -976,7 +962,7 @@ function updateTimerDisplay() {
         }
     }, 50);
 }
- function setScoringTeam(myNum) {
+function setScoringTeam(myNum) {
     const currentDate = document.getElementById("dateDisplay").textContent.trim(); 
     const weekData = scheduleData.find(row => row.date === currentDate);
 
@@ -995,28 +981,25 @@ function updateTimerDisplay() {
     }
 
     if (matchString) {
-        const mainPart = matchString.split('(')[0];
-        const [homeNum, awayNum] = mainPart.split('v');
+        const match = matchString.match(/(\d+)v(\d+)/);
+        if (match) {
+            const h = match[1];
+            const a = match[2];
+            
+            // USE YOUR EXACT IDs HERE: "team" and "opponent"
+            const teamSelect = document.getElementById("team");
+            const opponentSelect = document.getElementById("opponent");
 
-        // 1. SET THE VALUES FIRST
-        const homeInput = document.getElementById("homeTeam");
-        const awayInput = document.getElementById("awayTeam");
-        
-        homeInput.value = TEAM_MAP[homeNum];
-        awayInput.value = TEAM_MAP[awayNum];
+            teamSelect.value = TEAM_MAP[h];
+            opponentSelect.value = TEAM_MAP[a];
 
-        // 2. SAVE IMMEDIATELY TO LOCALSTORAGE
-        // This ensures loadRosters() pulls the new names, not the old empty ones.
-        saveNow(); 
-
-        // 3. TRIGGER THE ROSTER LOADING
-        // We call this explicitly so the names appear behind the modal.
-        if (typeof loadRosters === "function") {
-            loadRosters(); 
+            // Trigger the visual change and rosters
+            saveNow();
+            if (typeof loadRosters === "function") {
+                loadRosters(); 
+            }
+            closeMasterModal();
         }
-
-        // 4. CLOSE THE MODAL LAST
-        closeMasterModal();
     } else {
         alert("Team " + myNum + " is not scheduled for " + currentDate);
     }
