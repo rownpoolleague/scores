@@ -110,10 +110,10 @@ select, input, button { font-size:inherit; font-family:inherit; }
   #lagWinnerHeader,
 #lagLoserHeader {
     font-size: 18px; visibility: hidden;
-    margin-bottom: 10px;
+    margin-bottom: 10px;color: #FFCC33;
 }
     #lagWinnerHeader.active, #lagLoserHeader.active {
-    visibility: visible;color: #0080FE;
+    visibility: visible;
 }
     .button-row {
     display: flex;         /* Align buttons in a row */
@@ -527,18 +527,37 @@ document.addEventListener("click", e => {
     }
 });
 function confirmLag(isWinner) {
+    if (!pendingPlayerData) return;
+
     if (isWinner) {
-        document.getElementById("lagWinner").value = pendingPlayerData.name;
-        document.getElementById("pA_hc").value = pendingPlayerData.hc;
-        document.getElementById("lagWinnerHeader").textContent = pendingPlayerData.name;
+        const name = pendingPlayerData.name;
+        const hc = pendingPlayerData.hc;
+        
+        document.getElementById("lagWinner").value = name;
+        document.getElementById("pA_hc").value = hc;
+        
+        const header = document.getElementById("lagWinnerHeader");
+        header.textContent = name;
+        header.classList.add("active");
+        header.style.visibility = "visible"; // Force immediate display
     } else {
-        document.getElementById("lagLoser").value = pendingPlayerData.name;
-        document.getElementById("pB_hc").value = pendingPlayerData.hc;
-        document.getElementById("lagLoserHeader").textContent = pendingPlayerData.name;
+        const name = pendingPlayerData.name;
+        const hc = pendingPlayerData.hc;
+        
+        document.getElementById("lagLoser").value = name;
+        document.getElementById("pB_hc").value = hc;
+        
+        const header = document.getElementById("lagLoserHeader");
+        header.textContent = name;
+        header.classList.add("active");
+        header.style.visibility = "visible"; // Force immediate display
+        
         document.getElementById("matchInnings").value = 0;
         checkRosterCollapse();
     }
+    
     closeMasterModal();
+    updateMatchWinner(); // Updates the Submit button text immediately
     saveNow();
 }
 
@@ -554,9 +573,11 @@ function resetLagFields() {
     lwH.textContent = "Lag Winner";
     llH.textContent = "Lag Loser";
 
-    // Hide them again
+    // Reset visibility and classes
     lwH.classList.remove("active");
     llH.classList.remove("active");
+    lwH.style.visibility = "hidden";
+    llH.style.visibility = "hidden";
 
     document.getElementById("matchInnings").value = 0;
     checkRosterCollapse();
