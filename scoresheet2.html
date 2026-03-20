@@ -840,11 +840,18 @@ function checkRosterCollapse() {
 }
 
 function updateCurrentWeekAndDate() {
-    if (typeof scheduleData === 'undefined') return;
+    // If scheduleData isn't loaded yet, wait 100ms and try again
+    if (typeof scheduleData === 'undefined') {
+        setTimeout(updateCurrentWeekAndDate, 100);
+        return;
+    }
+    
     const today = new Date();
     const cutoff = new Date(today);
     cutoff.setDate(cutoff.getDate() - 2);
+    
     let activeWeek = scheduleData.find(row => row.date && new Date(row.date) >= cutoff) || scheduleData[scheduleData.length - 1];
+    
     document.getElementById("weekDisplay").textContent = "-Week " + activeWeek.week + "-";
     document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
 }
@@ -888,27 +895,35 @@ function exportHistoryOnly() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    // 1. Force the Date Display to fill immediately
+    // 1. Run your date logic immediately
     if (typeof updateCurrentWeekAndDate === "function") {
         updateCurrentWeekAndDate();
     }
 
-    // 2. Existing Reset Logic
+    // 2. Reset Logic (Must happen before checking the values)
     const lastActivity = localStorage.getItem("lastSessionActivity");
-    if (lastActivity && (Date.now() - parseInt(lastActivity)) > (12 * 60 * 60 * 1000)) {
+    const twelveHours = 12 * 60 * 60 * 1000;
+    
+    if (lastActivity && (Date.now() - parseInt(lastActivity)) > twelveHours) {
+        // Clear Storage
         localStorage.removeItem("matchHistory");
         localStorage.removeItem("manual_roster_additions");
         localStorage.removeItem("teamMatchScores");
         localStorage.removeItem(FORM_KEY);
-        // If you have a global scores variable, reset it here
-        if (typeof scores !== 'undefined') scores = { home: 0, away: 0 };
+        
+        // CLEAR THE ACTUAL INPUTS PHYSICALLY
+        document.getElementById("team").value = "";
+        document.getElementById("opponent").value = "";
+        document.getElementById("teamRoster").innerHTML = "";
+        document.getElementById("opponentRoster").innerHTML = "";
     }
     localStorage.setItem("lastSessionActivity", Date.now().toString());
 
-    // 3. Modal Check
+    // 3. The Modal Check
     const teamEl = document.getElementById("team");
-    // If team is empty (meaning either it's a new load or was just wiped by the reset above)
-    if (teamEl && !teamEl.value) {
+    
+    // If it's empty (because of the reset above or a fresh start), SHOW MODAL
+    if (!teamEl || teamEl.value === "") {
         const buttons = Object.keys(TEAM_MAP).map(num => ({
             text: TEAM_MAP[num],
             action: `setScoringTeam(${num})`,
@@ -917,7 +932,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         showMasterModal(
             "Select Your Team", 
-            "<p style='text-align:center;'>Which team are you scoring for?</p>", 
+            "<p style='text-align:center;'>Which team are you scoring for today?</p>", 
             buttons
         );
     }
