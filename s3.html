@@ -503,18 +503,25 @@ document.addEventListener("click", e => {
 
     pendingPlayerData = { name, hc };
 
+    // Common Reset button for the footer
+    const resetBtn = { text: "Reset Lag", action: "resetLagFields()", color: "crimson" };
+
     if (lwHeader === "Lag Winner") {
-        showMasterModal("Confirm Lag Winner", `<p>Did <strong>${name}</strong> win the lag?</p>`, [
-            { text: "YES", action: "confirmLag(true)", color: "#1e90ff" }
+        // Step 1: Picking the Winner
+        showMasterModal("Confirm Lag Winner", `<p style="text-align:center; font-size:18px;">Did <strong>${name}</strong> win the lag?</p>`, [
+            { text: "YES, WINNER", action: "confirmLag(true)", color: "#1e90ff" },
+            resetBtn
         ]);
     } else {
-        if (name === document.getElementById("lagWinner").value) return;
-        showMasterModal("Confirm Lag Loser", `<p>Set <strong>${name}</strong> as Lag Loser and begin match?</p>`, [
-            { text: "YES", action: "confirmLag(false)", color: "#1e90ff" }
+        // Step 2: Picking the Loser
+        if (name === document.getElementById("lagWinner").value) return; // Prevent picking same person twice
+        
+        showMasterModal("Confirm Lag Loser", `<p style="text-align:center; font-size:18px;">Set <strong>${name}</strong> as Lag Loser and begin match?</p>`, [
+            { text: "YES, START MATCH", action: "confirmLag(false)", color: "#1e90ff" },
+            resetBtn
         ]);
     }
 });
-
 function confirmLag(isWinner) {
     if (isWinner) {
         document.getElementById("lagWinner").value = pendingPlayerData.name;
