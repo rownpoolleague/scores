@@ -21,6 +21,7 @@ body { font-family: Arial, sans-serif;font-size: 18px; background-color: #000; c
     white-space: pre-line;
     background-color: #000;
     color: #fff;
+             font-weight:bold;
     box-sizing: border-box; /* IMPORTANT: Keeps padding inside the width */
 }
 label { font-weight:bold; color:#color: #fff;; font-size:20px; }
@@ -792,7 +793,7 @@ function updateCurrentWeekAndDate() {
     const cutoff = new Date(today);
     cutoff.setDate(cutoff.getDate() - 2);
     let activeWeek = scheduleData.find(row => row.date && new Date(row.date) >= cutoff) || scheduleData[scheduleData.length - 1];
-    document.getElementById("weekDisplay").textContent = "Week " + activeWeek.week;
+    document.getElementById("weekDisplay").textContent = "-Week- " + activeWeek.week;
     document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
 }
 
