@@ -793,8 +793,8 @@ function updateCurrentWeekAndDate() {
     const cutoff = new Date(today);
     cutoff.setDate(cutoff.getDate() - 2);
     let activeWeek = scheduleData.find(row => row.date && new Date(row.date) >= cutoff) || scheduleData[scheduleData.length - 1];
-    document.getElementById("weekDisplay").textContent = "-Week " + activeWeek.week;
-    document.getElementById("dateDisplay").textContent = "- " + activeWeek.date;
+    document.getElementById("weekDisplay").textContent = "-Week " + activeWeek.week + "-";
+    document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
 }
 
 function addNewPlayerManual() {
