@@ -432,6 +432,18 @@ select, input, button { font-size:inherit; font-family:inherit; }
 </div>
 
 <script>
+    const TEAM_MAP = {
+    "1": "1 Halfway Crooks",
+    "2": "2 Haters Welcome",
+    "3": "3 Lynn's Amigos",
+    "4": "4 Rackless Behavior",
+    "5": "5 Dirty Ballers",
+    "6": "6 8 on Break",
+    "7": "7 Five Amigos",
+    "8": "8 Frank's Pizza",
+    "9": "9 Killer Instinct",
+    "10": "10 Pete's Bunch"
+}
 let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
@@ -876,6 +888,7 @@ function exportHistoryOnly() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+    // 1. Existing Reset Logic
     const lastActivity = localStorage.getItem("lastSessionActivity");
     if (lastActivity && (Date.now() - parseInt(lastActivity)) > (12 * 60 * 60 * 1000)) {
         localStorage.removeItem("matchHistory");
@@ -884,7 +897,30 @@ window.addEventListener("DOMContentLoaded", () => {
         localStorage.removeItem(FORM_KEY);
         scores = { home: 0, away: 0 };
     }
+
+    // 2. Update the timestamp to "Now" so the 12-hour clock restarts
     localStorage.setItem("lastSessionActivity", Date.now().toString());
+
+    // 3. New Team Selection Logic
+    const home = document.getElementById("homeTeam").value;
+    const away = document.getElementById("awayTeam").value;
+
+    if (!home || home === "" || !away || away === "") {
+        const buttons = Object.keys(TEAM_MAP).map(num => ({
+            text: TEAM_MAP[num],
+            action: `setScoringTeam(${num})`,
+            color: "#1e90ff"
+        }));
+
+        buttons.push({ text: "Manual Selection", action: "closeMasterModal()", color: "#444" });
+
+        showMasterModal(
+            "Welcome", 
+            "<p style='text-align:center;'>Which team are you scoring for today?</p>", 
+            buttons
+        );
+    }
+});
     
     const params = new URLSearchParams(window.location.search);
     if (params.has("hdata")) {
@@ -939,6 +975,46 @@ function updateTimerDisplay() {
             });
         }
     }, 50);
+}
+   function setScoringTeam(myNum) {
+    // 1. Get the date string exactly as it appears in your <div>
+    const currentDate = document.getElementById("dateDisplay").textContent.trim(); 
+
+    // 2. Find the row in scheduleData matching that date
+    const weekData = scheduleData.find(row => row.date === currentDate);
+
+    if (!weekData) {
+        alert("No schedule found for the date: " + currentDate);
+        return;
+    }
+
+    // 3. Look through m1 to m5 for the match containing your team number
+    let matchString = "";
+    for (let i = 1; i <= 5; i++) {
+        const m = weekData[`m${i}`];
+        // Checks for "1v10", "4v1", etc.
+        if (m && (m.startsWith(myNum + "v") || m.includes("v" + myNum + "("))) {
+            matchString = m;
+            break;
+        }
+    }
+
+    if (matchString) {
+        // 4. Parse "4v10(-)" -> [4, 10]
+        const mainPart = matchString.split('(')[0]; // Get the "4v10" part
+        const [homeNum, awayNum] = mainPart.split('v');
+
+        // 5. Populate the Home and Away inputs using the MAP
+        document.getElementById("homeTeam").value = TEAM_MAP[homeNum];
+        document.getElementById("awayTeam").value = TEAM_MAP[awayNum];
+
+        // 6. Save data and close
+        saveNow();
+        loadRosters(); 
+        closeMasterModal();
+    } else {
+        alert("Team " + myNum + " is not scheduled for a match on " + currentDate);
+    }
 }
 </script>
 </div>
