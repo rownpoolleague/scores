@@ -109,8 +109,11 @@ select, input, button { font-size:inherit; font-family:inherit; }
 }
   #lagWinnerHeader,
 #lagLoserHeader {
-    font-size: 18px;
-    margin-bottom: 10px;color: #0080FE;
+    font-size: 18px; visibility: hidden;
+    margin-bottom: 10px;
+}
+    #lagWinnerHeader.active, #lagLoserHeader.active {
+    visibility: visible;color: #0080FE;
 }
     .button-row {
     display: flex;         /* Align buttons in a row */
@@ -544,14 +547,22 @@ function resetLagFields() {
     document.getElementById("lagLoser").value = "";
     document.getElementById("pA_hc").value = 0;
     document.getElementById("pB_hc").value = 0;
-    document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
-    document.getElementById("lagLoserHeader").textContent = "Lag Loser";
+
+    const lwH = document.getElementById("lagWinnerHeader");
+    const llH = document.getElementById("lagLoserHeader");
+
+    lwH.textContent = "Lag Winner";
+    llH.textContent = "Lag Loser";
+
+    // Hide them again
+    lwH.classList.remove("active");
+    llH.classList.remove("active");
+
     document.getElementById("matchInnings").value = 0;
     checkRosterCollapse();
     closeMasterModal();
     saveNow();
 }
-
 // --- 3. Scoring & Stats ---
 function updateScoreUI() {
     const hScore = document.getElementById("homeScore");
@@ -679,11 +690,19 @@ function loadScoresheet() {
     });
     if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
     if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
+    // Inside loadScoresheet, after restoring lwH and llH text:
+if (data.lwH && data.lwH !== "Lag Winner") {
+    document.getElementById("lagWinnerHeader").classList.add("active");
+}
+if (data.llH && data.llH !== "Lag Loser") {
+    document.getElementById("lagLoserHeader").classList.add("active");
+}
     if (data.mScores) {
         scores = data.mScores;
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
     }
+    
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
     checkRosterCollapse();
