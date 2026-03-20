@@ -888,21 +888,26 @@ function exportHistoryOnly() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    // --- Your Existing 12-hour Reset Logic ---
+    // 1. Force the Date Display to fill immediately
+    if (typeof updateCurrentWeekAndDate === "function") {
+        updateCurrentWeekAndDate();
+    }
+
+    // 2. Existing Reset Logic
     const lastActivity = localStorage.getItem("lastSessionActivity");
     if (lastActivity && (Date.now() - parseInt(lastActivity)) > (12 * 60 * 60 * 1000)) {
         localStorage.removeItem("matchHistory");
         localStorage.removeItem("manual_roster_additions");
         localStorage.removeItem("teamMatchScores");
         localStorage.removeItem(FORM_KEY);
-        // Ensure scores reset if you use a global variable
+        // If you have a global scores variable, reset it here
         if (typeof scores !== 'undefined') scores = { home: 0, away: 0 };
     }
     localStorage.setItem("lastSessionActivity", Date.now().toString());
 
-    // --- Auto-Open Modal Logic ---
+    // 3. Modal Check
     const teamEl = document.getElementById("team");
-    // Only open if no team is selected
+    // If team is empty (meaning either it's a new load or was just wiped by the reset above)
     if (teamEl && !teamEl.value) {
         const buttons = Object.keys(TEAM_MAP).map(num => ({
             text: TEAM_MAP[num],
@@ -912,7 +917,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         showMasterModal(
             "Select Your Team", 
-            "<p style='text-align:center;'>Which team are you keeping score for?</p>", 
+            "<p style='text-align:center;'>Which team are you scoring for?</p>", 
             buttons
         );
     }
