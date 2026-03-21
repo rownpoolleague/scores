@@ -275,10 +275,6 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <input id="lagLoser" readonly style="width:135px; text-align:center;">
     </div>
 </div>
-<div style="text-align:center;padding-top:20px;">
-    <button id="submitMatch" style="display:none;background-color:#00FF00;width:200px;height:85px;border-radius: 6px; padding: 6px; color: #000;font-weight:bold;font-size:20px;">Submit Match</button> 
-</div>
-
 <div class="player-stats-container" style="margin-top:10px;">
     <div class="block">
         <h3 id="lagWinnerHeader">Lag Winner</h3>
@@ -300,6 +296,9 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <div class="stat-row"><label>E8</label><div class="innings-wrapper"><button onclick="changeStat('pB_e8',-1)">−</button><input id="pB_e8" type="number" value="0"><button onclick="changeStat('pB_e8',1)">+</button></div></div>
         <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach" onchange="saveNow()"></div>
     </div>
+</div>
+    <div style="text-align:center;padding-top:20px;">
+    <button id="submitMatch" style="display:none;background-color:#00FF00;width:200px;height:85px;border-radius: 6px; padding: 6px; color: #000;font-weight:bold;font-size:20px;">Submit Match</button> 
 </div>
     <div style="text-align:center;margin-top:10px;">
     <label>Innings</label><br>
