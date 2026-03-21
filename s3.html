@@ -311,12 +311,9 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach" onchange="saveNow()"></div>
     </div>
 </div>
-        <div class="stat-row">
-            <label>Coach</label>
-            <input type="checkbox" id="pB_coach" onchange="saveNow()">
-        </div>
-    </div>
-</div>
+        
+  
+
     
 <div style="display: none;">
     <input id="matchWinner" readonly>
@@ -341,16 +338,15 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <button class="closeBtn" onclick="closeTimer()">X</button>
   </div>
 
-<div id="notesContainer" style="display:none; text-align:center; margin-top:12px;">
+<div id="notesContainer" style="display:none; text-align:center; margin-top:12px;border: 2px solid #1e90ff;">
     <textarea 
         id="matchNotes" 
-        style="width:80%; max-width:500px; height:70px; font-size:19px; padding:6px;"
-        oninput="saveNow()">-Type in here. Click Notes box again to close.</textarea>
+        style="width:95%; max-width:500px; height:80px; font-size:16px;padding:10px; "
+        oninput="saveNow()">-Leave a message- Click Notes box again to close.</textarea>
 </div>
-</div>
-
     <a class="back-button" style= "height:30px;"href="index.html">Main Menu</a>
 </div>
+ 
 
 <script>
 let isLoading = false;
@@ -716,7 +712,7 @@ document.getElementById("submitMatch").onclick = function() {
         document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
         document.getElementById("lagLoserHeader").textContent = "Lag Loser";
         btn.textContent = "Submit Match";
-        document.getElementById("matchNotes").value = "-";
+        document.getElementById("matchNotes").value = "-Leave a message- Click Notes box again to close.";
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
 
@@ -840,7 +836,7 @@ function updateTimerDisplay() {
     // 1. Define the HTML for the QR code container
     const bodyHtml = `
         <div style="text-align:center;">
-            <p style="margin-bottom:15px; font-size:14px; color:#ccc;">Scan to transfer the current scoresheet.</p>
+            <p style="margin-bottom:15px; font-size:14px; color:#fff;">Scan to transfer the current scoresheet.</p>
             <div id="qrcode" style="display:flex; justify-content:center; padding:10px; background:#fff; border-radius:8px; width:fit-content; margin: 0 auto;"></div>
         </div>
     `;
@@ -861,6 +857,7 @@ function updateTimerDisplay() {
         }
     }, 50);
 }
+    function toggleNotes() { const box = document.getElementById("notesContainer"); box.style.display = box.style.display === "none" ? "block" : "none"; }
 </script>
 </div>
 </div>
