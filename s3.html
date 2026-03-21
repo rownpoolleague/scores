@@ -738,8 +738,8 @@ document.getElementById("submitMatch").onclick = function() {
 // --- 6. Helpers & Initializers ---
 function checkRosterCollapse() {
     const innings = parseInt(document.getElementById("matchInnings").value) || 0;
-    const hR = document.getElementById("teamRoster");
-    const aR = document.getElementById("opponentRoster");
+    const hR = document.getElementById("team");
+    const aR = document.getElementById("opponent");
     if (hR) hR.style.display = innings > 0 ? "none" : "block";
     if (aR) aR.style.display = innings > 0 ? "none" : "block";
 }
