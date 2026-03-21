@@ -740,8 +740,16 @@ function checkRosterCollapse() {
     const innings = parseInt(document.getElementById("matchInnings").value) || 0;
     const hR = document.getElementById("team");
     const aR = document.getElementById("opponent");
+    const hW = document.getElementById("weekDisplay");
+    const aD = document.getElementById("dateDisplay");
+    const hO = document.getElementById("teamRoster");
+    const aB = document.getElementById("opponentRoster");
     if (hR) hR.style.display = innings > 0 ? "none" : "block";
     if (aR) aR.style.display = innings > 0 ? "none" : "block";
+    if (hW) hW.style.display = innings > 0 ? "none" : "block";
+    if (aD) aD.style.display = innings > 0 ? "none" : "block";
+    if (hO) hO.style.display = innings > 0 ? "none" : "block";
+    if (aB) aB.style.display = innings > 0 ? "none" : "block";
 }
 
 function updateCurrentWeekAndDate() {
