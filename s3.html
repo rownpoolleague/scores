@@ -275,16 +275,6 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <input id="lagLoser" readonly style="width:135px; text-align:center;">
     </div>
 </div>
-
-<div style="text-align:center;margin-top:10px;">
-    <label>Innings</label><br>
-    <div class="innings-wrapper">
-        <button type="button" class="btn-minus" onclick="changeStat('matchInnings', -1)">−</button>
-        <input type="number" id="matchInnings" value="0" min="0">
-        <button type="button" class="btn-plus" onclick="changeStat('matchInnings', 1)">+</button>
-    </div>
-</div>
-
 <div style="text-align:center;padding-top:20px;">
     <button id="submitMatch" style="display:none;background-color:#00FF00;width:200px;height:85px;border-radius: 6px; padding: 6px; color: #000;font-weight:bold;font-size:20px;">Submit Match</button> 
 </div>
@@ -311,10 +301,14 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach" onchange="saveNow()"></div>
     </div>
 </div>
-        
-  
-
-    
+    <div style="text-align:center;margin-top:10px;">
+    <label>Innings</label><br>
+    <div class="innings-wrapper">
+        <button type="button" class="btn-minus" onclick="changeStat('matchInnings', -1)">−</button>
+        <input type="number" id="matchInnings" value="0" min="0">
+        <button type="button" class="btn-plus" onclick="changeStat('matchInnings', 1)">+</button>
+    </div>
+</div>
 <div style="display: none;">
     <input id="matchWinner" readonly>
 </div>
