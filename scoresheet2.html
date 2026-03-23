@@ -493,6 +493,7 @@ function confirmLag(isWinner) {
             const el = document.getElementById(id);
             if (el) el.style.display = "none";
         });
+        localStorage.setItem("matchStarted", "true");
         // --- NEW HIDING LOGIC ENDS HERE ---
     }
     
@@ -531,7 +532,14 @@ function resetLagFields() {
     llH.style.visibility = "hidden";
 
     document.getElementById("matchInnings").value = 0;
-    checkRosterCollapse();
+
+    // --- NEW: Force everything to show again ---
+    const toShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+    toShow.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "block";
+    });
+
     closeMasterModal();
     saveNow();
 }
@@ -548,13 +556,14 @@ function updateScoreUI() {
 function changeStat(id, amount) {
     const el = document.getElementById(id);
     if (!el) return;
-    el.value = Math.max(0, (parseInt(el.value) || 0) + amount);
-    if (id === 'matchInnings') checkRosterCollapse();
+    
+    el.value = Math.max(0, (parseInt(el.value) || 0) + amount);    
     if (id === 'pA_wins' || id === 'pB_wins' || id === 'pA_hc' || id === 'pB_hc') {
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
         updateMatchWinner();
     }
+    
     saveNow();
 }
 
@@ -649,10 +658,13 @@ function saveNow() {
 function loadScoresheet() {
     const savedManual = localStorage.getItem("manual_roster_additions");
     if (savedManual) Object.assign(scoresheetinfo, JSON.parse(savedManual));
+    
     const raw = localStorage.getItem(FORM_KEY);
     if (!raw) return;
+    
     isLoading = true;
     const data = JSON.parse(raw);
+    
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -660,15 +672,27 @@ function loadScoresheet() {
             else el.value = data[id];
         }
     });
+
     if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
     if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
-    // Inside loadScoresheet, after restoring lwH and llH text:
-if (data.lwH && data.lwH !== "Lag Winner") {
-    document.getElementById("lagWinnerHeader").classList.add("active");
-}
-if (data.llH && data.llH !== "Lag Loser") {
-    document.getElementById("lagLoserHeader").classList.add("active");
-}
+
+    if (data.lwH && data.lwH !== "Lag Winner") {
+        document.getElementById("lagWinnerHeader").classList.add("active");
+    }
+
+    if (data.llH && data.llH !== "Lag Loser") {
+        const llHeader = document.getElementById("lagLoserHeader");
+        llHeader.classList.add("active");
+
+        /* --- NEW PERSISTENT HIDE LOGIC --- */
+        // If the Lag Loser is set (active), hide the roster/week fields automatically on refresh
+        const fields = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+        fields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "none";
+        });
+    }
+
     if (data.mScores) {
         scores = data.mScores;
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
@@ -677,7 +701,6 @@ if (data.llH && data.llH !== "Lag Loser") {
     
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
-    checkRosterCollapse();
     updateMatchWinner();
     isLoading = false;
 }
@@ -736,21 +759,34 @@ document.getElementById("submitMatch").onclick = function() {
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
 
-        // Standard reset
+        // Standard reset of input values
         const fieldsToReset = ["lagWinner", "lagLoser", "matchInnings", "matchWinner", "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8", "pB_hc", "pB_wins", "pB_safeties", "pB_b8", "pB_br", "pB_e8"];
         fieldsToReset.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.value = el.type === "number" ? 0 : "";
         });
 
-        document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
-        document.getElementById("lagLoserHeader").textContent = "Lag Loser";
+        // Reset Lag Headers (Text and Active state)
+        const lwH = document.getElementById("lagWinnerHeader");
+        const llH = document.getElementById("lagLoserHeader");
+        lwH.textContent = "Lag Winner";
+        llH.textContent = "Lag Loser";
+        lwH.classList.remove("active");
+        llH.classList.remove("active");
+
+        // Force all hidden fields to show again for the next match
+        const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+        fieldsToShow.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "block";
+        });
+
         btn.textContent = "Submit Match";
         document.getElementById("matchNotes").value = "-Leave a message- Click Notes box again to close.";
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
 
-        checkRosterCollapse();
+      
 
         if ((scores.home + scores.away) >= 5) {
             alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}.`);
@@ -758,6 +794,7 @@ document.getElementById("submitMatch").onclick = function() {
             localStorage.setItem("teamMatchScores", JSON.stringify(scores));
             updateScoreUI();
         }
+
         btn.style.display = "none";
         btn.disabled = false;
         saveNow();
@@ -769,22 +806,6 @@ document.getElementById("submitMatch").onclick = function() {
     });
 };
 
-// --- 6. Helpers & Initializers ---
-function checkRosterCollapse() {
-    const innings = parseInt(document.getElementById("matchInnings").value) || 0;
-    const hR = document.getElementById("team");
-    const aR = document.getElementById("opponent");
-    const hW = document.getElementById("weekDisplay");
-    const aD = document.getElementById("dateDisplay");
-    const hO = document.getElementById("teamRoster");
-    const aB = document.getElementById("opponentRoster");
-    if (hR) hR.style.display = innings > 0 ? "none" : "block";
-    if (aR) aR.style.display = innings > 0 ? "none" : "block";
-    if (hW) hW.style.display = innings > 0 ? "none" : "block";
-    if (aD) aD.style.display = innings > 0 ? "none" : "block";
-    if (hO) hO.style.display = innings > 0 ? "none" : "block";
-    if (aB) aB.style.display = innings > 0 ? "none" : "block";
-}
     function findMatchup(teamNumber) {
     if (typeof scheduleData === 'undefined') return null;
     
