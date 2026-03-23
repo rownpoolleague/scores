@@ -370,7 +370,12 @@ function showMasterModal(title, bodyHtml, buttons = []) {
 
 function closeMasterModal() {
     const modalDiv = document.getElementById("masterModal");
-    if (modalDiv) modalDiv.style.display = "none";
+    if (modalDiv) {
+        modalDiv.style.display = "none";
+        // Reset alignment so other modals stay centered
+        modalDiv.style.alignItems = "center";
+        modalDiv.style.paddingTop = "10px";
+    }
     pendingPlayerData = null;
 }
 
@@ -884,21 +889,36 @@ function addNewPlayerManual() {
     setTimeout(() => { const inp = document.getElementById("manualPlayerName"); if(inp) inp.focus(); }, 100);
 }
 
-function confirmNewPlayer() {
-    const nameInput = document.getElementById("manualPlayerName");
-    const newName = nameInput ? nameInput.value.trim() : "";
-    if (!newName) return;
-    const side = document.querySelector('input[name="npTeam"]:checked').value;
-    const teamDropdown = document.getElementById(side === 'home' ? "team" : "opponent");
-    const teamName = teamDropdown.value;
-    if (!scoresheetinfo[teamName]) scoresheetinfo[teamName] = [];
-    if (!scoresheetinfo[teamName].some(p => p.toLowerCase() === newName.toLowerCase())) {
-        scoresheetinfo[teamName].push(newName);
-        localStorage.setItem("manual_roster_additions", JSON.stringify(scoresheetinfo));
-        updateRoster(teamDropdown, document.getElementById(side === 'home' ? "teamRoster" : "opponentRoster"));
-        saveNow();
+function addNewPlayerManual() {
+    const homeName = document.getElementById("team").value || "Home Team";
+    const awayName = document.getElementById("opponent").value || "Away Team";
+    
+    // The "margin-top: 20px" and "align-self: flex-start" move it to the top 
+    // without changing the CSS for other modals.
+    const bodyHtml = `
+        <div style="align-self: flex-start; margin-top: 20px; width: 100%;">
+            <input type="text" id="manualPlayerName" placeholder="Enter Player Name" 
+                   style="width:100%; padding:12px; font-size:18px; margin-bottom:20px; border-radius:6px; border:1px solid #444; background:#111; color:white; box-sizing: border-box;">
+            
+            <div style="margin-bottom: 5px; color:white; font-size:18px; display: flex; flex-direction: column; gap: 15px; align-items: flex-start; padding-left: 10px;">
+                <label><input type="radio" name="npTeam" value="home" checked style="transform: scale(1.3); margin-right:10px;"> ${homeName}</label>
+                <label><input type="radio" name="npTeam" value="away" style="transform: scale(1.3); margin-right:10px;"> ${awayName}</label>
+            </div>
+        </div>`;
+
+    showMasterModal("Add to Roster", bodyHtml, [{ text: "Add to Roster", action: "confirmNewPlayer()", color: "#1e90ff" }]);
+    
+    // This forces the parent container to align to the top just for this instance
+    const container = document.querySelector(".modal-container");
+    if (container) {
+        container.parentElement.style.alignItems = "flex-start";
+        container.parentElement.style.paddingTop = "20px";
     }
-    closeMasterModal();
+
+    setTimeout(() => { 
+        const inp = document.getElementById("manualPlayerName"); 
+        if(inp) inp.focus(); 
+    }, 100);
 }
 
 function exportHistoryOnly() {
