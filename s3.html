@@ -276,8 +276,8 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <h3 id="lagWinnerHeader" class="block">Lag Winner</h3>
     <h3 id="lagLoserHeader" class="block">Lag Loser</h3>
 </div>
-
-<div class="player-stats-container" style="margin-top:10px;display:none;">
+<div id="gamePlayArea" style="display:none;">
+<div class="player-stats-container" style="margin-top:10px;">
     <div class="block">
         <div class="stat-row"><label>HC</label><div class="innings-wrapper"><button onclick="changeStat('pA_hc',-1)">−</button><input id="pA_hc" type="number" value="0"><button onclick="changeStat('pA_hc',1)">+</button></div></div>
         <div class="stat-row"><label>Wins</label><div class="innings-wrapper"><button onclick="changeStat('pA_wins',-1)">−</button><input id="pA_wins" type="number" value="0"><button onclick="changeStat('pA_wins',1)">+</button></div></div>
@@ -300,7 +300,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <div style="text-align:center;padding-top:20px;">
     <button id="submitMatch" style="display:none;background-color:#00FF00;width:200px;height:85px;border-radius: 6px; padding: 6px; color: #000;font-weight:bold;font-size:20px;">Submit Match</button> 
 </div>
-<div id="inningsContainer" style="text-align:center;margin-top:10px;display:none;">
+<div id="inningsContainer" style="text-align:center;margin-top:10px;">
     <label>Innings</label><br>
     <div class="innings-wrapper">
         <button type="button" class="btn-minus" onclick="changeStat('matchInnings', -1)">−</button>
@@ -322,8 +322,8 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <button type="button" class="startBtn" onclick="startTimer()">Timer</button>
     <button type="button" onclick="showHistory()">History</button>
     <button type="button" onclick="addNewPlayerManual()">Add Player</button>
+</div>    
 </div>
-    
 </div>
   <div id="timerBox">
     <span id="timerValue">0</span> sec
@@ -502,12 +502,7 @@ function confirmLag(isWinner) {
             const el = document.getElementById(id);
             if (el) el.style.display = "none";
         });
-
-        // --- SHOW SCORING INTERFACE ---
-        const statsCont = document.querySelector(".player-stats-container");
-        if (statsCont) statsCont.style.display = "flex";
-        document.getElementById("inningsContainer").style.display = "block";
-
+        document.getElementById("gamePlayArea").style.display = "block";
         localStorage.setItem("matchStarted", "true");
     }
     
