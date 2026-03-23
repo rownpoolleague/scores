@@ -433,20 +433,29 @@ document.addEventListener("click", e => {
         ]);
     }
 });
-    function checkInitialSelection() {
+   function checkInitialSelection() {
     const teamEl = document.getElementById("team");
     
-    // Only show if the home team dropdown is empty
-    if (teamEl && !teamEl.value) {
-        const buttons = Object.keys(TEAM_MAP).map(num => ({
-            text: TEAM_MAP[num],
-            action: `setScoringTeam(${num})`,
-            color: "#1e90ff"
-        }));
+    // Check if the current selection is the default placeholder text
+    if (teamEl && teamEl.value === "Select Home Team" || teamEl.value === "") {
+        
+        // Build buttons for the modal using your existing HTML options
+        const options = teamEl.options;
+        let buttons = [];
+        
+        for (let i = 1; i < options.length; i++) { // skip index 0 (the placeholder)
+            const teamText = options[i].text;
+            const teamNum = teamText.split(" ")[0]; // Gets "1" from "1 Halfway..."
+            
+            buttons.push({
+                text: teamText,
+                action: `setScoringTeam(${teamNum})`
+            });
+        }
 
         showMasterModal(
-            "Select Your Team", 
-            "<p style='text-align:center;'>Which team are you scoring for today?</p>", 
+            "Who are you scoring for?", 
+            "Select your team to auto-fill the matchup.", 
             buttons
         );
     }
@@ -484,6 +493,17 @@ function confirmLag(isWinner) {
     closeMasterModal();
     updateMatchWinner(); // Updates the Submit button text immediately
     saveNow();
+}
+    function getTeamNameByNumber(num) {
+    const select = document.getElementById("team");
+    const options = select.options;
+    for (let i = 0; i < options.length; i++) {
+        // Checks if the option text starts with "1 ", "2 ", etc.
+        if (options[i].text.startsWith(num + " ")) {
+            return options[i].text;
+        }
+    }
+    return null;
 }
 
 function resetLagFields() {
@@ -770,37 +790,26 @@ function updateCurrentWeekAndDate() {
     document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
 }
     function setScoringTeam(myNum) {
-    // 1. Find the matchup for the selected team number
-    const matchup = findMatchup(myNum);
+    const matchup = findMatchup(myNum); 
+    if (!matchup) return;
 
-    if (!matchup) {
-        alert("No matchup found for your team this week.");
-        return;
-    }
+    const homeName = getTeamNameByNumber(matchup.home);
+    const awayName = getTeamNameByNumber(matchup.away);
 
-    // 2. Get the full names from your TEAM_MAP
-    const homeName = TEAM_MAP[matchup.home];
-    const awayName = TEAM_MAP[matchup.away];
-
-    // 3. Fill the dropdowns
     const homeSelect = document.getElementById("team");
     const awaySelect = document.getElementById("opponent");
 
-    if (homeSelect && awaySelect) {
+    if (homeName && awayName) {
         homeSelect.value = homeName;
         awaySelect.value = awayName;
-    }
 
-    // 4. Trigger your existing logic to load rosters and save the state
-    if (typeof handleTeamChange === "function") {
-        handleTeamChange("team");
-        handleTeamChange("opponent");
+        // Trigger your roster loading logic
+        homeSelect.dispatchEvent(new Event('change'));
+        awaySelect.dispatchEvent(new Event('change'));
+        
+        closeMasterModal();
     }
-
-    // 5. Close the modal
-    closeMasterModal();
 }
-
 function addNewPlayerManual() {
     const homeName = document.getElementById("team").value || "Home Team";
     const awayName = document.getElementById("opponent").value || "Away Team";
