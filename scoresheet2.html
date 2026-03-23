@@ -713,6 +713,8 @@ document.getElementById("submitMatch").onclick = function() {
     loader.style.display = "flex";
 
     const data = {
+        // This captures the specific team chosen from the dropdown (set by the modal)
+        scoringTeam: document.getElementById("team").value, 
         team: document.getElementById("team").value,
         opponent: document.getElementById("opponent").value,
         lagWinner: document.getElementById("lagWinner").value,
@@ -738,7 +740,7 @@ document.getElementById("submitMatch").onclick = function() {
         matchNotes: document.getElementById("matchNotes").value
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbxjPd21vbwaqtxnDHyiwq-232S6vxdG-t6JPd2nQrdi9bbH8EakOr4S_11jDF9uvu4/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbwfW8db6j3ZxRNHmsLKFxDSlHpeA8Sl7MzfDvYFwFYAZhIXVZzj3EU1ynZ88J86Qgjm/exec", {
         method: "POST",
         mode: "no-cors", 
         body: JSON.stringify(data)
@@ -759,6 +761,8 @@ document.getElementById("submitMatch").onclick = function() {
 
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
+        
+        // ... (remaining reset logic)
 
         // Standard reset of input values
         const fieldsToReset = ["lagWinner", "lagLoser", "matchInnings", "matchWinner", "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8", "pB_hc", "pB_wins", "pB_safeties", "pB_b8", "pB_br", "pB_e8"];
@@ -863,6 +867,7 @@ function updateCurrentWeekAndDate() {
         awaySelect.dispatchEvent(new Event('change'));
         
         closeMasterModal();
+        saveNow(); // ADDED: This saves the selection so it survives a refresh
     }
 }
     
