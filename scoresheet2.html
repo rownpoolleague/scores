@@ -472,7 +472,7 @@ function confirmLag(isWinner) {
         const header = document.getElementById("lagWinnerHeader");
         header.textContent = name;
         header.classList.add("active");
-        header.style.visibility = "visible"; // Force immediate display
+        header.style.visibility = "visible";
     } else {
         const name = pendingPlayerData.name;
         const hc = pendingPlayerData.hc;
@@ -483,14 +483,21 @@ function confirmLag(isWinner) {
         const header = document.getElementById("lagLoserHeader");
         header.textContent = name;
         header.classList.add("active");
-        header.style.visibility = "visible"; // Force immediate display
+        header.style.visibility = "visible";
         
         document.getElementById("matchInnings").value = 0;
-        checkRosterCollapse();
+
+        // --- NEW HIDING LOGIC STARTS HERE ---
+        const toHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+        toHide.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "none";
+        });
+        // --- NEW HIDING LOGIC ENDS HERE ---
     }
     
     closeMasterModal();
-    updateMatchWinner(); // Updates the Submit button text immediately
+    updateMatchWinner(); 
     saveNow();
 }
     function getTeamNameByNumber(num) {
