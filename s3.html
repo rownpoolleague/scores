@@ -227,7 +227,8 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <div id="dateDisplay" style="font-size:22px; font-weight:bold;"></div>
 </div>
 </div>
-<div class="row">
+<div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
+    
     <div class="block">
         <select id="team">
             <option value="">Select Home Team</option>
@@ -244,6 +245,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
         </select>
         <div id="teamRoster" class="roster-box"></div>
     </div>
+
     <div class="block">
         <select id="opponent">
             <option value="">Select Away Team</option>
@@ -261,9 +263,8 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <div id="opponentRoster" class="roster-box"></div>
     </div>
 
+    <div style="width: 100%; text-align: center; margin-top: 10px; color: #gold;">Tap a Player to Choose Lag Winner/Loser</div>
 </div>
-    <div style="text-align:center;margin-top: 10px;#FFD700;">Click a Player To Choose Lag Winner/Loser</div>
-
 <div class="lag-row" style="display:none;justify-content:center;gap:40px;margin-top:10px;color: #gold;">
     <div class="center-label">
         <label>Lag Winner</label>
