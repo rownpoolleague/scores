@@ -272,7 +272,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <input id="lagLoser" readonly style="width:135px; text-align:center;">
     </div>
 </div>
-<div class="player-stats-container" style="margin-top:10px;">
+<div class="player-stats-container" style="margin-top:10px;display:none;">
     <div class="block">
         <h3 id="lagWinnerHeader">Lag Winner</h3>
         <div class="stat-row"><label>HC</label><div class="innings-wrapper"><button onclick="changeStat('pA_hc',-1)">−</button><input id="pA_hc" type="number" value="0"><button onclick="changeStat('pA_hc',1)">+</button></div></div>
@@ -493,14 +493,18 @@ function confirmLag(isWinner) {
         
         document.getElementById("matchInnings").value = 0;
 
-        // --- NEW HIDING LOGIC STARTS HERE ---
+        // --- HIDE ROSTERS/HEADERS ---
         const toHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
         toHide.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "none";
         });
+
+        // --- SHOW SCORING INTERFACE ---
+        const statsCont = document.querySelector(".player-stats-container");
+        if (statsCont) statsCont.style.display = "block";
+
         localStorage.setItem("matchStarted", "true");
-        // --- NEW HIDING LOGIC ENDS HERE ---
     }
     
     closeMasterModal();
