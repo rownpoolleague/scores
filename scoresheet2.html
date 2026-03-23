@@ -24,6 +24,13 @@ body { font-family: Arial, sans-serif;font-size: 18px; background-color: #000; c
              font-weight:bold;
     box-sizing: border-box; /* IMPORTANT: Keeps padding inside the width */
 }
+  
+    .innings-wrapper {
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 5px; /* Adjust this number to get the exact spacing you want */
+}
 label { font-weight:bold; color:#color: #fff;; font-size:20px; }
 .playerName { cursor:pointer; padding:2px 0; }
 .playerName:hover { background-color:#333; }
@@ -35,7 +42,7 @@ input[type="number"] { width:35px; padding:4px 6px; font-size:20px; background-c
 select, input, button { font-size:inherit; font-family:inherit; }
 .form-wrapper {
     width: 100%; /* Spans full width */
-    padding: 2px;
+   padding: 2px;
     border: 4px solid #1e90ff;
     border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
     box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
@@ -135,18 +142,14 @@ select, input, button { font-size:inherit; font-family:inherit; }
 /* MOBILE STYLES */
 @media (max-width:600px) {
 
-.form-wrapper { margin:1px;}
-.roster-box { overflow-wrap: break-word;
-    text-align: left; 
+
+  .roster-box {
     width: 90%;       /* take up most of the screen on mobile */
     max-width: 300px; /* optional: don’t let it get too wide on large phones */
     margin: 0 auto;   /* center it horizontally */
-  }
 }
 .button-row button {font-size: 14px;}
 .lag-row {gap:10px; width:100%; margin-top:20px; align-items:center; text-align:center;display: none;}
-.stat-row { display:flex; flex-direction:column; align-items:center; margin-bottom:4px; }
-.stat-row label { width:auto; text-align:center; margin-bottom:4px; }
 .player-stats-container { position:relative; display:flex; justify-content:center; gap:60px; }
 .player-stats-container::after { content:""; position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:2px; background-color:#fff; opacity:0.7; pointer-events:none; }
 .back-button { display: block; margin: 15px auto 0 auto; background-color: #1e90ff; color: #fff; border-radius: 6px; text-decoration: none; font-size: 24px; text-align: center; }
@@ -227,7 +230,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
 <div class="row">
     <div class="block">
         <select id="team">
-            <option value=""></option>
+            <option value="">Select Home Team</option>
             <option>1 Halfway Crooks</option>
             <option>2 Haters Welcome</option>
             <option>3 Lynn's Amigos</option>
@@ -243,7 +246,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
     </div>
     <div class="block">
         <select id="opponent">
-            <option value=""></option>
+            <option value="">Select Away Team</option>
             <option>1 Halfway Crooks</option>
             <option>2 Haters Welcome</option>
             <option>3 Lynn's Amigos</option>
@@ -269,134 +272,39 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <input id="lagLoser" readonly style="width:135px; text-align:center;">
     </div>
 </div>
-
-<div style="text-align:center;margin-top:10px;">
-    <label>Innings</label><br>
-    <div class="innings-wrapper">
-        <button type="button" class="btn-minus" onclick="changeStat('matchInnings', -1)">−</button>
-        <input type="number" id="matchInnings" value="0" min="0">
-        <button type="button" class="btn-plus" onclick="changeStat('matchInnings', 1)">+</button>
-    </div>
-</div>
-
-<div style="text-align:center;padding-top:20px;">
-    <button id="submitMatch" style="display:none;background-color:#00FF00;width:300px;height:100px;border-radius: 6px; padding: 6px; color: #000;font-weight:bold;font-size:24px;">Submit Match</button> 
-</div>
-
 <div class="player-stats-container" style="margin-top:10px;">
     <div class="block">
         <h3 id="lagWinnerHeader">Lag Winner</h3>
-        <div class="stat-row">
-            <label>HC</label>
-            <div class="innings-wrapper">
-                <button onclick="changeStat('pA_hc', -1)">−</button>
-                <input id="pA_hc" type="number" value="0" min="0">
-                <button onclick="changeStat('pA_hc', 1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>Wins</label>
-            <div class="innings-wrapper">
-                <button onclick="changeStat('pA_wins', -1)">−</button>
-                <input id="pA_wins" type="number" value="0" min="0">
-                <button onclick="changeStat('pA_wins', 1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>Safeties</label>
-            <div class="innings-wrapper">
-                <button onclick="changeStat('pA_safeties', -1)">−</button>
-                <input id="pA_safeties" type="number" value="0" min="0">
-                <button onclick="changeStat('pA_safeties', 1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>8B</label>
-            <div class="innings-wrapper">
-                <button onclick="changeStat('pA_b8', -1)">−</button>
-                <input id="pA_b8" type="number" value="0" min="0">
-                <button onclick="changeStat('pA_b8', 1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>B+R</label>
-            <div class="innings-wrapper">
-                <button onclick="changeStat('pA_br', -1)">−</button>
-                <input id="pA_br" type="number" value="0" min="0">
-                <button onclick="changeStat('pA_br', 1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>E8</label>
-            <div class="innings-wrapper">
-                <button onclick="changeStat('pA_e8', -1)">−</button>
-                <input id="pA_e8" type="number" value="0" min="0">
-                <button onclick="changeStat('pA_e8', 1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>Coach</label>
-            <input type="checkbox" id="pA_coach" onchange="saveNow()">
-        </div>
+        <div class="stat-row"><label>HC</label><div class="innings-wrapper"><button onclick="changeStat('pA_hc',-1)">−</button><input id="pA_hc" type="number" value="0"><button onclick="changeStat('pA_hc',1)">+</button></div></div>
+        <div class="stat-row"><label>Wins</label><div class="innings-wrapper"><button onclick="changeStat('pA_wins',-1)">−</button><input id="pA_wins" type="number" value="0"><button onclick="changeStat('pA_wins',1)">+</button></div></div>
+        <div class="stat-row"><label>Safeties</label><div class="innings-wrapper"><button onclick="changeStat('pA_safeties',-1)">−</button><input id="pA_safeties" type="number" value="0"><button onclick="changeStat('pA_safeties',1)">+</button></div></div>
+        <div class="stat-row"><label>8B</label><div class="innings-wrapper"><button onclick="changeStat('pA_b8',-1)">−</button><input id="pA_b8" type="number" value="0"><button onclick="changeStat('pA_b8',1)">+</button></div></div>
+        <div class="stat-row"><label>B+R</label><div class="innings-wrapper"><button onclick="changeStat('pA_br',-1)">−</button><input id="pA_br" type="number" value="0"><button onclick="changeStat('pA_br',1)">+</button></div></div>
+        <div class="stat-row"><label>E8</label><div class="innings-wrapper"><button onclick="changeStat('pA_e8',-1)">−</button><input id="pA_e8" type="number" value="0"><button onclick="changeStat('pA_e8',1)">+</button></div></div>
+        <div class="stat-row"><label>Coach</label><input type="checkbox" id="pA_coach" onchange="saveNow()"></div>
     </div>
-
     <div class="block">
         <h3 id="lagLoserHeader">Lag Loser</h3>
-        <div class="stat-row">
-            <label>HC</label>
-            <div class="innings-wrapper">
-                <button onclick="changeStat('pB_hc', -1)">−</button>
-                <input id="pB_hc" type="number" value="0" min="0">
-                <button onclick="changeStat('pB_hc', 1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>Wins</label>
-            <div class="innings-wrapper">
-                <button onclick="changeStat('pB_wins', -1)">−</button>
-                <input id="pB_wins" type="number" value="0" min="0">
-                <button onclick="changeStat('pB_wins', 1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>Safeties</label>
-            <div class="innings-wrapper">
-                <button onclick="changeStat('pB_safeties', -1)">−</button>
-                <input id="pB_safeties" type="number" value="0" min="0">
-                <button onclick="changeStat('pB_safeties', 1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>8B</label>
-            <div class="innings-wrapper">
-                <button onclick="changeStat('pB_b8', -1)">−</button>
-                <input id="pB_b8" type="number" value="0" min="0">
-                <button onclick="changeStat('pB_b8', 1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>B+R</label>
-            <div class="innings-wrapper">
-                <button onclick="changeStat('pB_br', -1)">−</button>
-                <input id="pB_br" type="number" value="0" min="0">
-                <button onclick="changeStat('pB_br', 1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>E8</label>
-            <div class="innings-wrapper">
-                <button onclick="changeStat('pB_e8', -1)">−</button>
-                <input id="pB_e8" type="number" value="0" min="0">
-                <button onclick="changeStat('pB_e8', 1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>Coach</label>
-            <input type="checkbox" id="pB_coach" onchange="saveNow()">
-        </div>
+        <div class="stat-row"><label>HC</label><div class="innings-wrapper"><button onclick="changeStat('pB_hc',-1)">−</button><input id="pB_hc" type="number" value="0"><button onclick="changeStat('pB_hc',1)">+</button></div></div>
+        <div class="stat-row"><label>Wins</label><div class="innings-wrapper"><button onclick="changeStat('pB_wins',-1)">−</button><input id="pB_wins" type="number" value="0"><button onclick="changeStat('pB_wins',1)">+</button></div></div>
+        <div class="stat-row"><label>Safeties</label><div class="innings-wrapper"><button onclick="changeStat('pB_safeties',-1)">−</button><input id="pB_safeties" type="number" value="0"><button onclick="changeStat('pB_safeties',1)">+</button></div></div>
+        <div class="stat-row"><label>8B</label><div class="innings-wrapper"><button onclick="changeStat('pB_b8',-1)">−</button><input id="pB_b8" type="number" value="0"><button onclick="changeStat('pB_b8',1)">+</button></div></div>
+        <div class="stat-row"><label>B+R</label><div class="innings-wrapper"><button onclick="changeStat('pB_br',-1)">−</button><input id="pB_br" type="number" value="0"><button onclick="changeStat('pB_br',1)">+</button></div></div>
+        <div class="stat-row"><label>E8</label><div class="innings-wrapper"><button onclick="changeStat('pB_e8',-1)">−</button><input id="pB_e8" type="number" value="0"><button onclick="changeStat('pB_e8',1)">+</button></div></div>
+        <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach" onchange="saveNow()"></div>
     </div>
 </div>
-    
+    <div style="text-align:center;padding-top:20px;">
+    <button id="submitMatch" style="display:none;background-color:#00FF00;width:200px;height:85px;border-radius: 6px; padding: 6px; color: #000;font-weight:bold;font-size:20px;">Submit Match</button> 
+</div>
+    <div style="text-align:center;margin-top:10px;">
+    <label>Innings</label><br>
+    <div class="innings-wrapper">
+        <button type="button" class="btn-minus" onclick="changeStat('matchInnings', -1)">−</button>
+        <input type="number" id="matchInnings" style="margin-top:4px;" value="0" min="0">
+        <button type="button" class="btn-plus" onclick="changeStat('matchInnings', 1)">+</button>
+    </div>
+</div>
 <div style="display: none;">
     <input id="matchWinner" readonly>
 </div>
@@ -420,30 +328,17 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <button class="closeBtn" onclick="closeTimer()">X</button>
   </div>
 
-<div id="notesContainer" style="display:none; text-align:center; margin-top:12px;">
+<div id="notesContainer" style="display:none; text-align:center; margin-top:12px;border: 2px solid #1e90ff;">
     <textarea 
         id="matchNotes" 
-        style="width:80%; max-width:500px; height:70px; font-size:19px; padding:6px;"
-        oninput="saveNow()">-Type in here. Click Notes box again to close.</textarea>
+        style="width:95%; max-width:500px; height:80px; font-size:16px;padding:10px; "
+        oninput="saveNow()">-Leave a message- Click Notes box again to close.</textarea>
 </div>
-</div>
-
     <a class="back-button" style= "height:30px;"href="index.html">Main Menu</a>
 </div>
+ 
 
 <script>
-    const TEAM_MAP = {
-    "1": "1 Halfway Crooks",
-    "2": "2 Haters Welcome",
-    "3": "3 Lynn's Amigos",
-    "4": "4 Rackless Behavior",
-    "5": "5 Dirty Ballers",
-    "6": "6 8 on Break",
-    "7": "7 Five Amigos",
-    "8": "8 Frank's Pizza",
-    "9": "9 Killer Instinct",
-    "10": "10 Pete's Bunch"
-}
 let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
@@ -538,6 +433,24 @@ document.addEventListener("click", e => {
         ]);
     }
 });
+    function checkInitialSelection() {
+    const teamEl = document.getElementById("team");
+    
+    // Only show if the home team dropdown is empty
+    if (teamEl && !teamEl.value) {
+        const buttons = Object.keys(TEAM_MAP).map(num => ({
+            text: TEAM_MAP[num],
+            action: `setScoringTeam(${num})`,
+            color: "#1e90ff"
+        }));
+
+        showMasterModal(
+            "Select Your Team", 
+            "<p style='text-align:center;'>Which team are you scoring for today?</p>", 
+            buttons
+        );
+    }
+}
 function confirmLag(isWinner) {
     if (!pendingPlayerData) return;
 
@@ -807,7 +720,7 @@ document.getElementById("submitMatch").onclick = function() {
         document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
         document.getElementById("lagLoserHeader").textContent = "Lag Loser";
         btn.textContent = "Submit Match";
-        document.getElementById("matchNotes").value = "-";
+        document.getElementById("matchNotes").value = "-Leave a message- Click Notes box again to close.";
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
 
@@ -833,27 +746,59 @@ document.getElementById("submitMatch").onclick = function() {
 // --- 6. Helpers & Initializers ---
 function checkRosterCollapse() {
     const innings = parseInt(document.getElementById("matchInnings").value) || 0;
-    const hR = document.getElementById("teamRoster");
-    const aR = document.getElementById("opponentRoster");
+    const hR = document.getElementById("team");
+    const aR = document.getElementById("opponent");
+    const hW = document.getElementById("weekDisplay");
+    const aD = document.getElementById("dateDisplay");
+    const hO = document.getElementById("teamRoster");
+    const aB = document.getElementById("opponentRoster");
     if (hR) hR.style.display = innings > 0 ? "none" : "block";
     if (aR) aR.style.display = innings > 0 ? "none" : "block";
+    if (hW) hW.style.display = innings > 0 ? "none" : "block";
+    if (aD) aD.style.display = innings > 0 ? "none" : "block";
+    if (hO) hO.style.display = innings > 0 ? "none" : "block";
+    if (aB) aB.style.display = innings > 0 ? "none" : "block";
 }
 
 function updateCurrentWeekAndDate() {
-    // If scheduleData isn't loaded yet, wait 100ms and try again
-    if (typeof scheduleData === 'undefined') {
-        setTimeout(updateCurrentWeekAndDate, 100);
-        return;
-    }
-    
+    if (typeof scheduleData === 'undefined') return;
     const today = new Date();
     const cutoff = new Date(today);
     cutoff.setDate(cutoff.getDate() - 2);
-    
     let activeWeek = scheduleData.find(row => row.date && new Date(row.date) >= cutoff) || scheduleData[scheduleData.length - 1];
-    
     document.getElementById("weekDisplay").textContent = "-Week " + activeWeek.week + "-";
     document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
+}
+    function setScoringTeam(myNum) {
+    // 1. Find the matchup for the selected team number
+    const matchup = findMatchup(myNum);
+
+    if (!matchup) {
+        alert("No matchup found for your team this week.");
+        return;
+    }
+
+    // 2. Get the full names from your TEAM_MAP
+    const homeName = TEAM_MAP[matchup.home];
+    const awayName = TEAM_MAP[matchup.away];
+
+    // 3. Fill the dropdowns
+    const homeSelect = document.getElementById("team");
+    const awaySelect = document.getElementById("opponent");
+
+    if (homeSelect && awaySelect) {
+        homeSelect.value = homeName;
+        awaySelect.value = awayName;
+    }
+
+    // 4. Trigger your existing logic to load rosters and save the state
+    if (typeof handleTeamChange === "function") {
+        handleTeamChange("team");
+        handleTeamChange("opponent");
+    }
+
+    // 5. Close the modal
+    closeMasterModal();
 }
 
 function addNewPlayerManual() {
@@ -895,48 +840,16 @@ function exportHistoryOnly() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    // 1. Run your date logic immediately
-    if (typeof updateCurrentWeekAndDate === "function") {
-        updateCurrentWeekAndDate();
-    }
-
-    // 2. Reset Logic (Must happen before checking the values)
     const lastActivity = localStorage.getItem("lastSessionActivity");
-    const twelveHours = 12 * 60 * 60 * 1000;
-    
-    if (lastActivity && (Date.now() - parseInt(lastActivity)) > twelveHours) {
-        // Clear Storage
+    if (lastActivity && (Date.now() - parseInt(lastActivity)) > (12 * 60 * 60 * 1000)) {
         localStorage.removeItem("matchHistory");
         localStorage.removeItem("manual_roster_additions");
         localStorage.removeItem("teamMatchScores");
         localStorage.removeItem(FORM_KEY);
-        
-        // CLEAR THE ACTUAL INPUTS PHYSICALLY
-        document.getElementById("team").value = "";
-        document.getElementById("opponent").value = "";
-        document.getElementById("teamRoster").innerHTML = "";
-        document.getElementById("opponentRoster").innerHTML = "";
+        scores = { home: 0, away: 0 };
     }
     localStorage.setItem("lastSessionActivity", Date.now().toString());
-
-    // 3. The Modal Check
-    const teamEl = document.getElementById("team");
     
-    // If it's empty (because of the reset above or a fresh start), SHOW MODAL
-    if (!teamEl || teamEl.value === "") {
-        const buttons = Object.keys(TEAM_MAP).map(num => ({
-            text: TEAM_MAP[num],
-            action: `setScoringTeam(${num})`,
-            color: "#1e90ff"
-        }));
-
-        showMasterModal(
-            "Select Your Team", 
-            "<p style='text-align:center;'>Which team are you scoring for today?</p>", 
-            buttons
-        );
-    }
-});
     const params = new URLSearchParams(window.location.search);
     if (params.has("hdata")) {
         localStorage.setItem("matchHistory", decodeURIComponent(params.get("hdata")));
@@ -970,7 +883,7 @@ function updateTimerDisplay() {
     // 1. Define the HTML for the QR code container
     const bodyHtml = `
         <div style="text-align:center;">
-            <p style="margin-bottom:15px; font-size:14px; color:#ccc;">Scan to transfer the current scoresheet.</p>
+            <p style="margin-bottom:15px; font-size:14px; color:#fff;">Scan to transfer the current scoresheet.</p>
             <div id="qrcode" style="display:flex; justify-content:center; padding:10px; background:#fff; border-radius:8px; width:fit-content; margin: 0 auto;"></div>
         </div>
     `;
@@ -991,51 +904,7 @@ function updateTimerDisplay() {
         }
     }, 50);
 }
-function setScoringTeam(myNum) {
-    const dateBox = document.getElementById("dateDisplay");
-    if (!dateBox) return;
-    
-    // Trim to ensure no hidden spaces break the lookup
-    const currentDate = dateBox.textContent.trim(); 
-    const weekData = scheduleData.find(row => row.date === currentDate);
-
-    if (!weekData) return;
-
-    let matchString = "";
-    for (let i = 1; i <= 5; i++) {
-        const m = weekData[`m${i}`];
-        if (m && (m.startsWith(myNum + "v") || m.includes("v" + myNum + "("))) {
-            matchString = m;
-            break;
-        }
-    }
-
-    if (matchString) {
-        const match = matchString.match(/(\d+)v(\d+)/);
-        if (match) {
-            const hNum = match[1];
-            const aNum = match[2];
-
-            const teamEl = document.getElementById("team");
-            const opponentEl = document.getElementById("opponent");
-
-            // 1. Set the values
-            teamEl.value = TEAM_MAP[hNum];
-            opponentEl.value = TEAM_MAP[aNum];
-
-            // 2. Manually trigger your roster updates
-            updateRoster(teamEl, document.getElementById("teamRoster"));
-            updateRoster(opponentEl, document.getElementById("opponentRoster"));
-
-            // 3. Save the state
-            saveNow();
-            
-            // 4. Close modal
-            const modalDiv = document.getElementById("masterModal");
-            if (modalDiv) modalDiv.style.display = "none";
-        }
-    }
-}
+    function toggleNotes() { const box = document.getElementById("notesContainer"); box.style.display = box.style.display === "none" ? "block" : "none"; }
 </script>
 </div>
 </div>
