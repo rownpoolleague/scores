@@ -272,9 +272,13 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <input id="lagLoser" readonly style="width:135px; text-align:center;">
     </div>
 </div>
+<div id="playerNamesHeader" style="display:flex; justify-content:center; gap:60px; text-align:center;">
+    <h3 id="lagWinnerHeader" class="block">Lag Winner</h3>
+    <h3 id="lagLoserHeader" class="block">Lag Loser</h3>
+</div>
+
 <div class="player-stats-container" style="margin-top:10px;display:none;">
     <div class="block">
-        <h3 id="lagWinnerHeader">Lag Winner</h3>
         <div class="stat-row"><label>HC</label><div class="innings-wrapper"><button onclick="changeStat('pA_hc',-1)">−</button><input id="pA_hc" type="number" value="0"><button onclick="changeStat('pA_hc',1)">+</button></div></div>
         <div class="stat-row"><label>Wins</label><div class="innings-wrapper"><button onclick="changeStat('pA_wins',-1)">−</button><input id="pA_wins" type="number" value="0"><button onclick="changeStat('pA_wins',1)">+</button></div></div>
         <div class="stat-row"><label>Safeties</label><div class="innings-wrapper"><button onclick="changeStat('pA_safeties',-1)">−</button><input id="pA_safeties" type="number" value="0"><button onclick="changeStat('pA_safeties',1)">+</button></div></div>
@@ -284,7 +288,6 @@ select, input, button { font-size:inherit; font-family:inherit; }
         <div class="stat-row"><label>Coach</label><input type="checkbox" id="pA_coach" onchange="saveNow()"></div>
     </div>
     <div class="block">
-        <h3 id="lagLoserHeader">Lag Loser</h3>
         <div class="stat-row"><label>HC</label><div class="innings-wrapper"><button onclick="changeStat('pB_hc',-1)">−</button><input id="pB_hc" type="number" value="0"><button onclick="changeStat('pB_hc',1)">+</button></div></div>
         <div class="stat-row"><label>Wins</label><div class="innings-wrapper"><button onclick="changeStat('pB_wins',-1)">−</button><input id="pB_wins" type="number" value="0"><button onclick="changeStat('pB_wins',1)">+</button></div></div>
         <div class="stat-row"><label>Safeties</label><div class="innings-wrapper"><button onclick="changeStat('pB_safeties',-1)">−</button><input id="pB_safeties" type="number" value="0"><button onclick="changeStat('pB_safeties',1)">+</button></div></div>
