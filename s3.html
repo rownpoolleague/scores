@@ -265,7 +265,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
 <div class="lag-row" style="display:none;justify-content:center;gap:40px;margin-top:10px;color: #gold">
     <div class="center-label">
         <label>Lag Winner</label>
-        <input id="lagWinner" readonly style="width:135px; text-align:center;">
+        <input id="lagWinner" readonly style="width:135px; text-align:center;margin-top: 10px;">
     </div>
     <div class="center-label">
         <label>Lag Loser</label>
@@ -300,7 +300,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <div style="text-align:center;padding-top:20px;">
     <button id="submitMatch" style="display:none;background-color:#00FF00;width:200px;height:85px;border-radius: 6px; padding: 6px; color: #000;font-weight:bold;font-size:20px;">Submit Match</button> 
 </div>
-    <div style="text-align:center;margin-top:10px;">
+<div id="inningsContainer" style="text-align:center;margin-top:10px;display:none;">
     <label>Innings</label><br>
     <div class="innings-wrapper">
         <button type="button" class="btn-minus" onclick="changeStat('matchInnings', -1)">−</button>
@@ -506,6 +506,7 @@ function confirmLag(isWinner) {
         // --- SHOW SCORING INTERFACE ---
         const statsCont = document.querySelector(".player-stats-container");
         if (statsCont) statsCont.style.display = "flex";
+        document.getElementById("inningsContainer").style.display = "block";
 
         localStorage.setItem("matchStarted", "true");
     }
