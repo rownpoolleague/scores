@@ -263,16 +263,16 @@ select, input, button { font-size:inherit; font-family:inherit; }
 </div>
 
 <div class="lag-row" style="display:none;justify-content:center;gap:40px;margin-top:10px;color: #gold">
-    <div class="block center-label">
+    <div class="center-label">
         <label>Lag Winner</label>
         <input id="lagWinner" readonly style="width:135px; text-align:center;">
     </div>
-    <div class="block center-label">
+    <div class="center-label">
         <label>Lag Loser</label>
         <input id="lagLoser" readonly style="width:135px; text-align:center;">
     </div>
 </div>
-<div class="player-stats-container" style="margin-top:10px;">
+<div class="player-stats-container" style="margin-top:10px;display:none;">
     <div class="block">
         <h3 id="lagWinnerHeader">Lag Winner</h3>
         <div class="stat-row"><label>HC</label><div class="innings-wrapper"><button onclick="changeStat('pA_hc',-1)">−</button><input id="pA_hc" type="number" value="0"><button onclick="changeStat('pA_hc',1)">+</button></div></div>
@@ -370,7 +370,12 @@ function showMasterModal(title, bodyHtml, buttons = []) {
 
 function closeMasterModal() {
     const modalDiv = document.getElementById("masterModal");
-    if (modalDiv) modalDiv.style.display = "none";
+    if (modalDiv) {
+        modalDiv.style.display = "none";
+        // Reset alignment so other modals stay centered
+        modalDiv.style.alignItems = "center";
+        modalDiv.style.paddingTop = "10px";
+    }
     pendingPlayerData = null;
 }
 
@@ -433,6 +438,33 @@ document.addEventListener("click", e => {
         ]);
     }
 });
+   function checkInitialSelection() {
+    const teamEl = document.getElementById("team");
+    
+    if (teamEl && (teamEl.value === "Select Home Team" || teamEl.value === "")) {
+        const options = teamEl.options;
+        let teamButtonsHtml = `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">`;
+
+        for (let i = 1; i < options.length; i++) {
+            const teamText = options[i].text;
+            const teamNum = teamText.split(" ")[0];
+            
+            // We build the buttons directly into the HTML string for better layout control
+            teamButtonsHtml += `
+                <button onclick="setScoringTeam('${teamNum}')" 
+                        style="background:#1e90ff; color:#fff; border:none; padding:12px 5px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:14px;">
+                    ${teamText}
+                </button>`;
+        }
+        teamButtonsHtml += `</div>`;
+
+        showMasterModal(
+            "Choose Your Team", 
+            `<div style='text-align:center; margin-bottom:10px;'>Match and rosters will auto-fill after your selection.</div>${teamButtonsHtml}`, 
+            [] // Keep footer buttons empty so they don't clutter the bottom
+        );
+    }
+}
 function confirmLag(isWinner) {
     if (!pendingPlayerData) return;
 
@@ -446,7 +478,7 @@ function confirmLag(isWinner) {
         const header = document.getElementById("lagWinnerHeader");
         header.textContent = name;
         header.classList.add("active");
-        header.style.visibility = "visible"; // Force immediate display
+        header.style.visibility = "visible";
     } else {
         const name = pendingPlayerData.name;
         const hc = pendingPlayerData.hc;
@@ -457,15 +489,38 @@ function confirmLag(isWinner) {
         const header = document.getElementById("lagLoserHeader");
         header.textContent = name;
         header.classList.add("active");
-        header.style.visibility = "visible"; // Force immediate display
+        header.style.visibility = "visible";
         
         document.getElementById("matchInnings").value = 0;
-        checkRosterCollapse();
+
+        // --- HIDE ROSTERS/HEADERS ---
+        const toHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+        toHide.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "none";
+        });
+
+        // --- SHOW SCORING INTERFACE ---
+        const statsCont = document.querySelector(".player-stats-container");
+        if (statsCont) statsCont.style.display = "flex";
+
+        localStorage.setItem("matchStarted", "true");
     }
     
     closeMasterModal();
-    updateMatchWinner(); // Updates the Submit button text immediately
+    updateMatchWinner(); 
     saveNow();
+}
+    function getTeamNameByNumber(num) {
+    const select = document.getElementById("team");
+    const options = select.options;
+    for (let i = 0; i < options.length; i++) {
+        // Checks if the option text starts with "1 ", "2 ", etc.
+        if (options[i].text.startsWith(num + " ")) {
+            return options[i].text;
+        }
+    }
+    return null;
 }
 
 function resetLagFields() {
@@ -487,7 +542,14 @@ function resetLagFields() {
     llH.style.visibility = "hidden";
 
     document.getElementById("matchInnings").value = 0;
-    checkRosterCollapse();
+
+    // --- NEW: Force everything to show again ---
+    const toShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+    toShow.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "block";
+    });
+
     closeMasterModal();
     saveNow();
 }
@@ -504,13 +566,14 @@ function updateScoreUI() {
 function changeStat(id, amount) {
     const el = document.getElementById(id);
     if (!el) return;
-    el.value = Math.max(0, (parseInt(el.value) || 0) + amount);
-    if (id === 'matchInnings') checkRosterCollapse();
+    
+    el.value = Math.max(0, (parseInt(el.value) || 0) + amount);    
     if (id === 'pA_wins' || id === 'pB_wins' || id === 'pA_hc' || id === 'pB_hc') {
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
         updateMatchWinner();
     }
+    
     saveNow();
 }
 
@@ -605,10 +668,13 @@ function saveNow() {
 function loadScoresheet() {
     const savedManual = localStorage.getItem("manual_roster_additions");
     if (savedManual) Object.assign(scoresheetinfo, JSON.parse(savedManual));
+    
     const raw = localStorage.getItem(FORM_KEY);
     if (!raw) return;
+    
     isLoading = true;
     const data = JSON.parse(raw);
+    
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -616,15 +682,27 @@ function loadScoresheet() {
             else el.value = data[id];
         }
     });
+
     if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
     if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
-    // Inside loadScoresheet, after restoring lwH and llH text:
-if (data.lwH && data.lwH !== "Lag Winner") {
-    document.getElementById("lagWinnerHeader").classList.add("active");
-}
-if (data.llH && data.llH !== "Lag Loser") {
-    document.getElementById("lagLoserHeader").classList.add("active");
-}
+
+    if (data.lwH && data.lwH !== "Lag Winner") {
+        document.getElementById("lagWinnerHeader").classList.add("active");
+    }
+
+    if (data.llH && data.llH !== "Lag Loser") {
+        const llHeader = document.getElementById("lagLoserHeader");
+        llHeader.classList.add("active");
+
+        /* --- NEW PERSISTENT HIDE LOGIC --- */
+        // If the Lag Loser is set (active), hide the roster/week fields automatically on refresh
+        const fields = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+        fields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "none";
+        });
+    }
+
     if (data.mScores) {
         scores = data.mScores;
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
@@ -633,7 +711,6 @@ if (data.llH && data.llH !== "Lag Loser") {
     
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
-    checkRosterCollapse();
     updateMatchWinner();
     isLoading = false;
 }
@@ -645,6 +722,8 @@ document.getElementById("submitMatch").onclick = function() {
     loader.style.display = "flex";
 
     const data = {
+        // This captures the specific team chosen from the dropdown (set by the modal)
+        scoringTeam: document.getElementById("team").value, 
         team: document.getElementById("team").value,
         opponent: document.getElementById("opponent").value,
         lagWinner: document.getElementById("lagWinner").value,
@@ -670,7 +749,7 @@ document.getElementById("submitMatch").onclick = function() {
         matchNotes: document.getElementById("matchNotes").value
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbxjPd21vbwaqtxnDHyiwq-232S6vxdG-t6JPd2nQrdi9bbH8EakOr4S_11jDF9uvu4/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbwfW8db6j3ZxRNHmsLKFxDSlHpeA8Sl7MzfDvYFwFYAZhIXVZzj3EU1ynZ88J86Qgjm/exec", {
         method: "POST",
         mode: "no-cors", 
         body: JSON.stringify(data)
@@ -691,22 +770,37 @@ document.getElementById("submitMatch").onclick = function() {
 
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
+        
+        // ... (remaining reset logic)
 
-        // Standard reset
+        // Standard reset of input values
         const fieldsToReset = ["lagWinner", "lagLoser", "matchInnings", "matchWinner", "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8", "pB_hc", "pB_wins", "pB_safeties", "pB_b8", "pB_br", "pB_e8"];
         fieldsToReset.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.value = el.type === "number" ? 0 : "";
         });
 
-        document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
-        document.getElementById("lagLoserHeader").textContent = "Lag Loser";
+        // Reset Lag Headers (Text and Active state)
+        const lwH = document.getElementById("lagWinnerHeader");
+        const llH = document.getElementById("lagLoserHeader");
+        lwH.textContent = "Lag Winner";
+        llH.textContent = "Lag Loser";
+        lwH.classList.remove("active");
+        llH.classList.remove("active");
+
+        // Force all hidden fields to show again for the next match
+        const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+        fieldsToShow.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "block";
+        });
+
         btn.textContent = "Submit Match";
         document.getElementById("matchNotes").value = "-Leave a message- Click Notes box again to close.";
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
 
-        checkRosterCollapse();
+      
 
         if ((scores.home + scores.away) >= 5) {
             alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}.`);
@@ -714,6 +808,7 @@ document.getElementById("submitMatch").onclick = function() {
             localStorage.setItem("teamMatchScores", JSON.stringify(scores));
             updateScoreUI();
         }
+
         btn.style.display = "none";
         btn.disabled = false;
         saveNow();
@@ -725,21 +820,31 @@ document.getElementById("submitMatch").onclick = function() {
     });
 };
 
-// --- 6. Helpers & Initializers ---
-function checkRosterCollapse() {
-    const innings = parseInt(document.getElementById("matchInnings").value) || 0;
-    const hR = document.getElementById("team");
-    const aR = document.getElementById("opponent");
-    const hW = document.getElementById("weekDisplay");
-    const aD = document.getElementById("dateDisplay");
-    const hO = document.getElementById("teamRoster");
-    const aB = document.getElementById("opponentRoster");
-    if (hR) hR.style.display = innings > 0 ? "none" : "block";
-    if (aR) aR.style.display = innings > 0 ? "none" : "block";
-    if (hW) hW.style.display = innings > 0 ? "none" : "block";
-    if (aD) aD.style.display = innings > 0 ? "none" : "block";
-    if (hO) hO.style.display = innings > 0 ? "none" : "block";
-    if (aB) aB.style.display = innings > 0 ? "none" : "block";
+    function findMatchup(teamNumber) {
+    if (typeof scheduleData === 'undefined') return null;
+    
+    const today = new Date();
+    const cutoff = new Date(today);
+    cutoff.setDate(cutoff.getDate() - 2);
+    const activeWeek = scheduleData.find(row => row.date && new Date(row.date) >= cutoff) || scheduleData[scheduleData.length - 1];
+
+    for (let i = 1; i <= 5; i++) {
+        const match = activeWeek["m" + i];
+        if (!match) continue;
+
+        // Split "1v10(4-1)" at the "(" to get "1v10"
+        const teamsPart = match.split('(')[0]; 
+        // Split "1v10" at the "v" to get ["1", "10"]
+        const teams = teamsPart.split('v'); 
+        
+        const home = teams[0].trim();
+        const away = teams[1].trim();
+
+        if (home == teamNumber || away == teamNumber) {
+            return { home: home, away: away };
+        }
+    }
+    return null;
 }
 
 function updateCurrentWeekAndDate() {
@@ -750,8 +855,31 @@ function updateCurrentWeekAndDate() {
     let activeWeek = scheduleData.find(row => row.date && new Date(row.date) >= cutoff) || scheduleData[scheduleData.length - 1];
     document.getElementById("weekDisplay").textContent = "-Week " + activeWeek.week + "-";
     document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
+    checkInitialSelection();
 }
+    function setScoringTeam(myNum) {
+    const matchup = findMatchup(myNum); 
+    if (!matchup) return;
 
+    const homeName = getTeamNameByNumber(matchup.home);
+    const awayName = getTeamNameByNumber(matchup.away);
+
+    const homeSelect = document.getElementById("team");
+    const awaySelect = document.getElementById("opponent");
+
+    if (homeName && awayName) {
+        homeSelect.value = homeName;
+        awaySelect.value = awayName;
+
+        // Trigger your roster loading logic
+        homeSelect.dispatchEvent(new Event('change'));
+        awaySelect.dispatchEvent(new Event('change'));
+        
+        closeMasterModal();
+        saveNow(); // ADDED: This saves the selection so it survives a refresh
+    }
+}
+    
 function addNewPlayerManual() {
     const homeName = document.getElementById("team").value || "Home Team";
     const awayName = document.getElementById("opponent").value || "Away Team";
@@ -765,21 +893,36 @@ function addNewPlayerManual() {
     setTimeout(() => { const inp = document.getElementById("manualPlayerName"); if(inp) inp.focus(); }, 100);
 }
 
-function confirmNewPlayer() {
-    const nameInput = document.getElementById("manualPlayerName");
-    const newName = nameInput ? nameInput.value.trim() : "";
-    if (!newName) return;
-    const side = document.querySelector('input[name="npTeam"]:checked').value;
-    const teamDropdown = document.getElementById(side === 'home' ? "team" : "opponent");
-    const teamName = teamDropdown.value;
-    if (!scoresheetinfo[teamName]) scoresheetinfo[teamName] = [];
-    if (!scoresheetinfo[teamName].some(p => p.toLowerCase() === newName.toLowerCase())) {
-        scoresheetinfo[teamName].push(newName);
-        localStorage.setItem("manual_roster_additions", JSON.stringify(scoresheetinfo));
-        updateRoster(teamDropdown, document.getElementById(side === 'home' ? "teamRoster" : "opponentRoster"));
-        saveNow();
+function addNewPlayerManual() {
+    const homeName = document.getElementById("team").value || "Home Team";
+    const awayName = document.getElementById("opponent").value || "Away Team";
+    
+    // The "margin-top: 20px" and "align-self: flex-start" move it to the top 
+    // without changing the CSS for other modals.
+    const bodyHtml = `
+        <div style="align-self: flex-start; margin-top: 20px; width: 100%;">
+            <input type="text" id="manualPlayerName" placeholder="Enter Player Name" 
+                   style="width:100%; padding:12px; font-size:18px; margin-bottom:20px; border-radius:6px; border:1px solid #444; background:#111; color:white; box-sizing: border-box;">
+            
+            <div style="margin-bottom: 5px; color:white; font-size:18px; display: flex; flex-direction: column; gap: 15px; align-items: flex-start; padding-left: 10px;">
+                <label><input type="radio" name="npTeam" value="home" checked style="transform: scale(1.3); margin-right:10px;"> ${homeName}</label>
+                <label><input type="radio" name="npTeam" value="away" style="transform: scale(1.3); margin-right:10px;"> ${awayName}</label>
+            </div>
+        </div>`;
+
+    showMasterModal("Add to Roster", bodyHtml, [{ text: "Add to Roster", action: "confirmNewPlayer()", color: "#1e90ff" }]);
+    
+    // This forces the parent container to align to the top just for this instance
+    const container = document.querySelector(".modal-container");
+    if (container) {
+        container.parentElement.style.alignItems = "flex-start";
+        container.parentElement.style.paddingTop = "20px";
     }
-    closeMasterModal();
+
+    setTimeout(() => { 
+        const inp = document.getElementById("manualPlayerName"); 
+        if(inp) inp.focus(); 
+    }, 100);
 }
 
 function exportHistoryOnly() {
@@ -856,6 +999,30 @@ function updateTimerDisplay() {
     }, 50);
 }
     function toggleNotes() { const box = document.getElementById("notesContainer"); box.style.display = box.style.display === "none" ? "block" : "none"; }
+   function confirmNewPlayer() {
+    const nameInput = document.getElementById("manualPlayerName");
+    const newName = nameInput ? nameInput.value.trim() : "";
+    if (!newName) return;
+
+    const side = document.querySelector('input[name="npTeam"]:checked').value;
+    const teamDropdown = document.getElementById(side === 'home' ? "team" : "opponent");
+    const teamName = teamDropdown.value;
+
+    if (!scoresheetinfo[teamName]) scoresheetinfo[teamName] = [];
+
+    // Check if name is already in the list
+    const isDuplicate = scoresheetinfo[teamName].some(p => p.toLowerCase() === newName.toLowerCase());
+
+    if (!isDuplicate) {
+        scoresheetinfo[teamName].push(newName);
+        localStorage.setItem("manual_roster_additions", JSON.stringify(scoresheetinfo));
+        updateRoster(teamDropdown, document.getElementById(side === 'home' ? "teamRoster" : "opponentRoster"));
+    }
+
+    // These MUST be outside the IF block so the modal always closes
+    saveNow();
+    closeMasterModal();
+} // <--- This was the missing bracket breaking your other logic!
 </script>
 </div>
 </div>
