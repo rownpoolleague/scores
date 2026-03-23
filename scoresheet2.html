@@ -995,6 +995,20 @@ function updateTimerDisplay() {
     }, 50);
 }
     function toggleNotes() { const box = document.getElementById("notesContainer"); box.style.display = box.style.display === "none" ? "block" : "none"; }
+    function confirmNewPlayer() {
+    const nameInput = document.getElementById("manualPlayerName");
+    const newName = nameInput ? nameInput.value.trim() : "";
+    if (!newName) return;
+    const side = document.querySelector('input[name="npTeam"]:checked').value;
+    const teamDropdown = document.getElementById(side === 'home' ? "team" : "opponent");
+    const teamName = teamDropdown.value;
+    if (!scoresheetinfo[teamName]) scoresheetinfo[teamName] = [];
+    if (!scoresheetinfo[teamName].some(p => p.toLowerCase() === newName.toLowerCase())) {
+        scoresheetinfo[teamName].push(newName);
+        localStorage.setItem("manual_roster_additions", JSON.stringify(scoresheetinfo));
+        updateRoster(teamDropdown, document.getElementById(side === 'home' ? "teamRoster" : "opponentRoster"));
+        saveNow();
+        closeMasterModal();
 </script>
 </div>
 </div>
