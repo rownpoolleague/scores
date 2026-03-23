@@ -436,26 +436,25 @@ document.addEventListener("click", e => {
    function checkInitialSelection() {
     const teamEl = document.getElementById("team");
     
-    // Check if the current selection is the default placeholder text
-    if (teamEl && teamEl.value === "Select Home Team" || teamEl.value === "") {
-        
-        // Build buttons for the modal using your existing HTML options
+    if (teamEl && (teamEl.value === "Select Home Team" || teamEl.value === "")) {
         const options = teamEl.options;
         let buttons = [];
-        
-        for (let i = 1; i < options.length; i++) { // skip index 0 (the placeholder)
+
+        for (let i = 1; i < options.length; i++) {
             const teamText = options[i].text;
-            const teamNum = teamText.split(" ")[0]; // Gets "1" from "1 Halfway..."
+            const teamNum = teamText.split(" ")[0]; // Gets the number part
             
             buttons.push({
                 text: teamText,
-                action: `setScoringTeam(${teamNum})`
+                // Wrap teamNum in single quotes so JS treats it as a string
+                action: `setScoringTeam('${teamNum}')`,
+                color: "#1e90ff"
             });
         }
 
         showMasterModal(
             "Who are you scoring for?", 
-            "Select your team to auto-fill the matchup.", 
+            "<div style='text-align:center;'>Select your team to auto-fill tonight's matchup.</div>", 
             buttons
         );
     }
@@ -779,6 +778,32 @@ function checkRosterCollapse() {
     if (hO) hO.style.display = innings > 0 ? "none" : "block";
     if (aB) aB.style.display = innings > 0 ? "none" : "block";
 }
+    function findMatchup(teamNumber) {
+    if (typeof scheduleData === 'undefined') return null;
+    
+    const today = new Date();
+    const cutoff = new Date(today);
+    cutoff.setDate(cutoff.getDate() - 2);
+    const activeWeek = scheduleData.find(row => row.date && new Date(row.date) >= cutoff) || scheduleData[scheduleData.length - 1];
+
+    for (let i = 1; i <= 5; i++) {
+        const match = activeWeek["m" + i];
+        if (!match) continue;
+
+        // Split "1v10(4-1)" at the "(" to get "1v10"
+        const teamsPart = match.split('(')[0]; 
+        // Split "1v10" at the "v" to get ["1", "10"]
+        const teams = teamsPart.split('v'); 
+        
+        const home = teams[0].trim();
+        const away = teams[1].trim();
+
+        if (home == teamNumber || away == teamNumber) {
+            return { home: home, away: away };
+        }
+    }
+    return null;
+}
 
 function updateCurrentWeekAndDate() {
     if (typeof scheduleData === 'undefined') return;
@@ -811,6 +836,7 @@ function updateCurrentWeekAndDate() {
         closeMasterModal();
     }
 }
+    
 function addNewPlayerManual() {
     const homeName = document.getElementById("team").value || "Home Team";
     const awayName = document.getElementById("opponent").value || "Away Team";
