@@ -41,11 +41,15 @@ input[type="number"] { width:35px; padding:4px 6px; font-size:20px; background-c
 .center-label { display:flex; flex-direction:column; align-items:center; }
 select, input, button { font-size:inherit; font-family:inherit; }
 .form-wrapper {
-    width: 100%; /* Spans full width */
-   padding: 2px;
+    width: 100%;
+    padding: 2px;
     border: 4px solid #1e90ff;
-    border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
-    box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
+    border-radius: 0;
+    box-sizing: border-box;
+    /* This keeps the box from collapsing when elements are hidden */
+    min-height: 650px; 
+    display: flex;
+    flex-direction: column;
 }
     /* --- Universal Master Modal --- */
 #masterModal {
