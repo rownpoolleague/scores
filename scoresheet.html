@@ -233,44 +233,29 @@ select, input, button { font-size:inherit; font-family:inherit; }
         </div>
     </div>
 </div>
-<div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
-    
-    <div class="block">
-        <select id="team">
-            <option value="">Select Home Team</option>
-            <option>1 Halfway Crooks</option>
-            <option>2 Haters Welcome</option>
-            <option>3 Lynn's Amigos</option>
-            <option>4 Rackless Behavior</option>
-            <option>5 Dirty Ballers</option>
-            <option>6 8 on Break</option>
-            <option>7 Five Amigos</option>
-            <option>8 Frank's Pizza</option>
-            <option>9 Killer Instinct</option>
-            <option>10 Pete's Bunch</option>
-        </select>
-        <div id="teamRoster" class="roster-box"></div>
+<div class="row" style="display: flex; flex-wrap: wrap; justify-content: center; flex-direction: column; align-items: center; gap: 20px;">
+    <div style="display: flex; gap: 20px;">
+        <div class="block">
+            <select id="team">
+                <option value="">Select Home Team</option>
+                <!-- options... -->
+            </select>
+            <div id="teamRoster" class="roster-box"></div>
+        </div>
+        <div class="block">
+            <select id="opponent">
+                <option value="">Select Away Team</option>
+                <!-- options... -->
+            </select>
+            <div id="opponentRoster" class="roster-box"></div>
+        </div>
     </div>
-
-    <div class="block">
-        <select id="opponent">
-            <option value="">Select Away Team</option>
-            <option>1 Halfway Crooks</option>
-            <option>2 Haters Welcome</option>
-            <option>3 Lynn's Amigos</option>
-            <option>4 Rackless Behavior</option>
-            <option>5 Dirty Ballers</option>
-            <option>6 8 on Break</option>
-            <option>7 Five Amigos</option>
-            <option>8 Frank's Pizza</option>
-            <option>9 Killer Instinct</option>
-            <option>10 Pete's Bunch</option>
-        </select>
-        <div id="opponentRoster" class="roster-box"></div>
-         </div>
-
-   
+    <!-- Button container -->
+    <div class="button-container">
+        <button type="button" onclick="addNewPlayerManual()">Add Player</button>
+    </div>
 </div>
+
 <div class="lag-row" style="display:none;justify-content:center;gap:40px;margin-top:10px;color: #gold;">
     <div class="center-label">
         <label>Lag Winner</label>
@@ -330,7 +315,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <button type="button" onclick="toggleNotes()">Notes</button>
     <button type="button" class="startBtn" onclick="startTimer()">Timer</button>
     <button type="button" onclick="showHistory()">History</button>
-    <button type="button" onclick="addNewPlayerManual()">Add Player</button>
+    
 </div>    
 </div>
 </div>
