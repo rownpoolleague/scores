@@ -507,13 +507,16 @@ function confirmLag(isWinner) {
             const el = document.getElementById(id);
             if (el) el.style.display = "none";
         });
+
+        // REVEAL the master wrapper
         document.getElementById("gamePlayArea").style.display = "block";
-        localStorage.setItem("matchStarted", "true");
     }
     
     closeMasterModal();
     updateMatchWinner(); 
-    saveNow();
+
+    // This captures the new "gamePlayArea" display state immediately
+    saveNow(); 
 }
     function getTeamNameByNumber(num) {
     const select = document.getElementById("team");
@@ -663,6 +666,10 @@ function saveNow() {
     document.querySelectorAll("input[id], select[id], textarea[id]").forEach(el => {
         data[el.id] = el.type === "checkbox" ? el.checked : el.value;
     });
+    
+    // Save whether the match area is currently visible
+    data.gameVisible = document.getElementById("gamePlayArea").style.display === "block";
+
     data.lwH = document.getElementById("lagWinnerHeader").textContent;
     data.llH = document.getElementById("lagLoserHeader").textContent;
     data.mScores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
@@ -679,6 +686,7 @@ function loadScoresheet() {
     isLoading = true;
     const data = JSON.parse(raw);
     
+    // Restore all standard inputs/selects
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -687,6 +695,7 @@ function loadScoresheet() {
         }
     });
 
+    // Restore Lag Headers
     if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
     if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
 
@@ -694,28 +703,36 @@ function loadScoresheet() {
         document.getElementById("lagWinnerHeader").classList.add("active");
     }
 
-    if (data.llH && data.llH !== "Lag Loser") {
-        const llHeader = document.getElementById("lagLoserHeader");
-        llHeader.classList.add("active");
+    // Handle Persistent Visibility based on your saveNow flag
+    if (data.gameVisible === true) {
+        // Show gameplay area
+        document.getElementById("gamePlayArea").style.display = "block";
+        
+        // Ensure Lag Loser is marked active if it has a value
+        if (data.llH && data.llH !== "Lag Loser") {
+            document.getElementById("lagLoserHeader").classList.add("active");
+        }
 
-        /* --- NEW PERSISTENT HIDE LOGIC --- */
-        // If the Lag Loser is set (active), hide the roster/week fields automatically on refresh
-        const fields = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
-        fields.forEach(id => {
+        // Keep selection fields hidden during the match
+        const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+        fieldsToHide.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "none";
         });
     }
 
+    // Restore Team Match Scores
     if (data.mScores) {
         scores = data.mScores;
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
     }
     
+    // Refresh Rosters and Winner dropdowns
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
     updateMatchWinner();
+    
     isLoading = false;
 }
 
@@ -726,7 +743,6 @@ document.getElementById("submitMatch").onclick = function() {
     loader.style.display = "flex";
 
     const data = {
-        // This captures the specific team chosen from the dropdown (set by the modal)
         scoringTeam: document.getElementById("team").value, 
         team: document.getElementById("team").value,
         opponent: document.getElementById("opponent").value,
@@ -774,8 +790,17 @@ document.getElementById("submitMatch").onclick = function() {
 
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
-        
-        // ... (remaining reset logic)
+
+        // --- RESET VISIBILITY ---
+        // Hide the play area for the next match
+        document.getElementById("gamePlayArea").style.display = "none";
+
+        // Show the selection fields again
+        const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+        fieldsToShow.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "block";
+        });
 
         // Standard reset of input values
         const fieldsToReset = ["lagWinner", "lagLoser", "matchInnings", "matchWinner", "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8", "pB_hc", "pB_wins", "pB_safeties", "pB_b8", "pB_br", "pB_e8"];
@@ -784,7 +809,6 @@ document.getElementById("submitMatch").onclick = function() {
             if (el) el.value = el.type === "number" ? 0 : "";
         });
 
-        // Reset Lag Headers (Text and Active state)
         const lwH = document.getElementById("lagWinnerHeader");
         const llH = document.getElementById("lagLoserHeader");
         lwH.textContent = "Lag Winner";
@@ -792,19 +816,10 @@ document.getElementById("submitMatch").onclick = function() {
         lwH.classList.remove("active");
         llH.classList.remove("active");
 
-        // Force all hidden fields to show again for the next match
-        const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
-        fieldsToShow.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.style.display = "block";
-        });
-
         btn.textContent = "Submit Match";
         document.getElementById("matchNotes").value = "-Leave a message- Click Notes box again to close.";
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
-
-      
 
         if ((scores.home + scores.away) >= 5) {
             alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}.`);
