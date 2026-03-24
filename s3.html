@@ -44,11 +44,11 @@ select, input, button { font-size:inherit; font-family:inherit; }
     display: flex;
     flex-direction: column;
     width: 100%;
+    /* Set this to the height of your longest roster so it never shrinks */
+    min-height: 750px; 
     padding: 2px;
     border: 4px solid #1e90ff;
-    border-radius: 0;
     box-sizing: border-box;
-    min-height: 700px; /* Adjust this to your tallest screen height */
 }
     /* --- Universal Master Modal --- */
 #masterModal {
@@ -155,19 +155,18 @@ select, input, button { font-size:inherit; font-family:inherit; }
 .lag-row {gap:10px; width:100%; margin-top:20px; align-items:center; text-align:center;display: none;}
 .player-stats-container { position:relative; display:flex; justify-content:center; gap:60px; }
 .player-stats-container::after { content:""; position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:2px; background-color:#fff; opacity:0.7; pointer-events:none; }
-.back-button { 
-    display: block; 
-    /* 20px space on TOP to separate from other buttons, auto on sides, 10px on bottom */
-    margin: 20px auto 10px auto; 
-    background-color: #1e90ff; 
-    color: #fff; 
-    /* Internal spacing: 15px top/bottom, 10px sides */
-    padding: 15px 10px; 
-    border-radius: 6px; 
-    text-decoration: none; 
-    font-size: 24px; 
-    text-align: center; 
-    width: 90%; /* Ensures it doesn't touch the blue border edges */
+.back-button {
+    display: block;
+    /* margin-top: auto is the 'anchor' that keeps it at the bottom */
+    margin: auto auto 15px auto; 
+    background-color: #1e90ff;
+    color: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 24px;
+    text-align: center;
+    width: 90%;
 }
  /* Floating timer box */
 #timerBox {
