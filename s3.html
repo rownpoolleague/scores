@@ -41,15 +41,14 @@ input[type="number"] { width:35px; padding:4px 6px; font-size:20px; background-c
 .center-label { display:flex; flex-direction:column; align-items:center; }
 select, input, button { font-size:inherit; font-family:inherit; }
 .form-wrapper {
+    display: flex;
+    flex-direction: column;
     width: 100%;
     padding: 2px;
     border: 4px solid #1e90ff;
     border-radius: 0;
     box-sizing: border-box;
-    /* This keeps the box from collapsing when elements are hidden */
-    min-height: 650px; 
-    display: flex;
-    flex-direction: column;
+    min-height: 700px; /* Adjust this to your tallest screen height */
 }
     /* --- Universal Master Modal --- */
 #masterModal {
@@ -156,7 +155,18 @@ select, input, button { font-size:inherit; font-family:inherit; }
 .lag-row {gap:10px; width:100%; margin-top:20px; align-items:center; text-align:center;display: none;}
 .player-stats-container { position:relative; display:flex; justify-content:center; gap:60px; }
 .player-stats-container::after { content:""; position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:2px; background-color:#fff; opacity:0.7; pointer-events:none; }
-.back-button { display: block; margin: 15px auto 0 auto; background-color: #1e90ff; color: #fff; border-radius: 6px; text-decoration: none; font-size: 24px; text-align: center; }
+.back-button {
+    display: block;
+    margin: auto auto 10px auto; /* "auto" on top pushes it to the bottom */
+    width: 90%; /* Optional: keeps it from hitting the blue border edges */
+    background-color: #1e90ff;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 24px;
+    text-align: center;
+}
  /* Floating timer box */
 #timerBox {
   display: none;
@@ -229,9 +239,9 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <div style="display:flex; justify-content:center; gap:12px; font-size:22px; font-weight:bold;">
         <div id="weekDisplay"></div>
         <div id="dateDisplay" style="font-size:22px; font-weight:bold;">
-            <br><span style="font-size:20px; font-weight:normal;">!!HAPPY NATIONAL COCKTAIL DAY!!</span>
-        </div>
-    </div>
+</div>
+</div>
+    <br>!!HAPPY NATIONAL COCKTAIL DAY!!
 </div>
 <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
     
