@@ -168,6 +168,23 @@ select, input, button { font-size:inherit; font-family:inherit; }
     text-align: center;
     width: 90%;
 }
+    .floating-buttons {
+        position: fixed;
+        bottom: 5px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 25px; /* Space between buttons */
+        z-index: 999;
+    }
+     .fab {
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    border-radius: 6px; /* small rounded corners, optional */
+    padding: 12px 20px; /* controls size */
+    font-size: 18px;}
  /* Floating timer box */
 #timerBox {
   display: none;
@@ -357,7 +374,9 @@ select, input, button { font-size:inherit; font-family:inherit; }
         style="width:95%; max-width:500px; height:80px; font-size:16px;padding:10px; "
         oninput="saveNow()">-Leave a message- Click Notes box again to close.</textarea>
 </div>
-    <a class="back-button" style= "height:30px;"href="index.html">Main Menu</a>
+    <div class="floating-buttons">
+       <button class="fab" onclick="window.location.href='index.html'">Main Menu</button>
+</div>
 </div>
  
 
