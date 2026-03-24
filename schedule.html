@@ -1,1030 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Scoresheet</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="scoresheetrosters.js"></script>
-    <script src="scoresheetinfo.js"></script>
-<style>
-/* --- Styles unchanged from your version --- */
-body { font-family: Arial, sans-serif;font-size: 18px; background-color: #000; color: #fff; }
-.row {overflow-wrap: break-word; display: flex; justify-content: center; gap: 5px; margin-top: 10px;font-size:17px; }
-.block {overflow-wrap: break-word; text-align: center;flex: 1; max-width: 50%; }
-.roster-box {overflow-wrap: break-word;
-    text-align: left;
-    width: 100%;       /* Fill the block it's inside */
-    margin-top: 10px;
-    padding: 8px 6px;
-    min-height: 1px;
-    font-size: 18px;
-    white-space: pre-line;
-    background-color: #000;
-    color: #fff;
-    box-sizing: border-box; /* IMPORTANT: Keeps padding inside the width */
-}
-label { font-weight:bold; color:#fff; font-size:20px; }
-.playerName { cursor:pointer; padding:2px 0; }
-.playerName:hover { background-color:#333; }
-h3 { margin:0 0 8px 0; color:#fff; }
-input[type="number"] { width:35px; padding:4px 6px; font-size:20px; background-color:#fff; color:#000; border:1px solid #fff; border-radius:4px; margin-bottom:4px; text-align:center; }
-.stat-row { display:flex; flex-direction:column; align-items:center; margin-bottom:4px; }
-.stat-row label { width:auto; text-align:center; margin-bottom:4px; }
-.center-label { display:flex; flex-direction:column; align-items:center; }
-select, input, button { font-size:inherit; font-family:inherit; }
-.form-wrapper {
+  <meta charset="UTF-8">
+  <title>Winter 26' Tuesday Night Schedule</title>
+  <meta name="viewport" content="width=device-width, initial-scale=0.8">
+  <style>
+    body {
+      background-color: #fff;
+      color: #000;
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+      font-weight: bold;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+    }
+    th, td {
+      border: 1px solid #555;
+      padding: 6px;
+      text-align: center;
+      font-size: 14px;
+    }
+    th {
+      background-color: #111; color:#fff;
+    }
+    .section-title {
+      font-size: 20px;
+      margin-top: 40px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #555;
+      padding-bottom: 5px;
+      text-align:center;
+    }
+    .back-button {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 8px 16px;
+      background-color: #1e90ff;
+      color: #000;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 22px;
+      height:30px;
+    }
+    .back-button:hover {
+      background-color: #ddd;
+    }
+    .form-wrapper {
     width: 100%; /* Spans full width */
-    padding: 2px;
-    border: 4px solid #1e90ff;
-    border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
+    border: 4px solid #000;
     box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
 }
 
-.playerName {
-  display: flex;           /* allow name and HC to be on same line */
-  justify-content: space-between; /* push HC to right */
-  padding: 2px 0;
-  cursor: pointer;
-}
+    @media (max-width: 600px) {
+      body {
+        font-size: 16px;
+        padding: 1px;
+      }
 
-.playerName span.hc {
-  color: #fff;             /* lighter color for HC */
-  -weight: normal;
-}
-  #lagWinnerHeader,
-#lagLoserHeader {
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-    .button-row {
-    display: flex;         /* Align buttons in a row */
-    justify-content: space-between; /* Evenly space them */
-    gap: 5px;              /* Tiny gap between buttons */
-    width: 100%;           /* Fill the container */
-    margin-top: 20px;
-    box-sizing: border-box;
-}
+      h1 {
+        font-size: 22px;
+      }
 
-.button-row button {
-    flex: 1;               /* Forces all 4 buttons to be exactly the same width */
-    height: 40px;
-    font-size: 18px;       /* Slightly smaller to ensure "Transfer" fits on small phones */
-    padding: 0;            /* Remove internal padding to save space */
+      th, td {
+        font-size: 12px;
+        padding: 4px;
+      }
+
+      .section-title {
+        font-size: 28px; font-color:#000;font-weight: bold;
+      }
+
+     .back-button {
+    display: block;
+    margin: 30px auto 0 auto;
+    padding: 8px 16px;
+    background-color: #1e90ff;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 22px;
     text-align: center;
-    white-space: nowrap;   /* Prevents text from wrapping to a second line */
-}
-/* MOBILE STYLES */
-@media (max-width:600px) {
+  height:30px;
+     }
 
-.form-wrapper { margin:1px;}
-.roster-box { overflow-wrap: break-word;
-    text-align: left; 
-    width: 90%;       /* take up most of the screen on mobile */
-    max-width: 300px; /* optional: don’t let it get too wide on large phones */
-    margin: 0 auto;   /* center it horizontally */
-  }
-}
-.button-row button {font-size: 14px;}
-.lag-row {gap:10px; width:100%; margin-top:20px; align-items:center; text-align:center;display: none;}
-.stat-row { display:flex; flex-direction:column; align-items:center; margin-bottom:4px; }
-.stat-row label { width:auto; text-align:center; margin-bottom:4px; }
-.player-stats-container { position:relative; display:flex; justify-content:center; gap:60px; }
-.player-stats-container::after { content:""; position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:2px; background-color:#fff; opacity:0.7; pointer-events:none; }
-.back-button { display: block; margin: 15px auto 0 auto; background-color: #1e90ff; color: #fff; border-radius: 6px; text-decoration: none; font-size: 24px; text-align: center; }
- /* Floating timer box */
-#timerBox {
-  display: none;
-  width:125px;
-  top: 50%;
-  right: calc(50% - 10px); /* ← nudge RIGHT */
-  background: #000;
-  color: #fff;
-  border-radius: 8px;
-  border-color: #1e90ff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  z-index: 1000;
-}
-  #timerValue {
-    font-size: 1.5em;
-    font-weight: bold;
-  }
-  .closeBtn {
-    background: crimson;
-    border: none;
-    color: white;
-    margin-left: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .startBtn {
-    font-size: 1em;
-    cursor: pointer;
-  }
-    /* Spinner Overlay */
-#loadingOverlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 10000;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-}
-
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #333;
-    border-top: 5px solid #1e90ff; /* Theme blue */
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 15px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-    #qrModal {
-    z-index: 1000000 !important; /* One level higher than your history modal */
-}
-</style>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-    <script src="schedule.js"></script>
+  </style>
 </head>
 <body>
-    <div id="loadingOverlay">
-    <div class="spinner"></div>
-    <div>Submitting Results...</div>
-</div>
 <div class="form-wrapper">
-<div id="matchHeader" style="text-align:center; margin-top:10px; margin-bottom:20px;">
-    <div style="display:flex; justify-content:center; gap:12px; font-size:22px; font-weight:bold;">
-    <div id="weekDisplay"></div>
-    <div id="dateDisplay" style="font-size:22px; font-weight:bold;"></div>
-</div>
-</div>
-<div class="row">
-    <div class="block">
-        <select id="team">
-            <option value="">Select Home Team</option>
-            <option>1 Halfway Crooks</option>
-            <option>2 Haters Welcome</option>
-            <option>3 Lynn's Amigos</option>
-            <option>4 Rackless Behavior</option>
-            <option>5 Dirty Ballers</option>
-            <option>6 8 on Break</option>
-            <option>7 Five Amigos</option>
-            <option>8 Frank's Pizza</option>
-            <option>9 Killer Instinct</option>
-            <option>10 Pete's Bunch</option>
-        </select>
-        <div id="teamRoster" class="roster-box"></div>
-    </div>
-    <div class="block">
-        <select id="opponent">
-            <option value="">Select Away Team</option>
-            <option>1 Halfway Crooks</option>
-            <option>2 Haters Welcome</option>
-            <option>3 Lynn's Amigos</option>
-            <option>4 Rackless Behavior</option>
-            <option>5 Dirty Ballers</option>
-            <option>6 8 on Break</option>
-            <option>7 Five Amigos</option>
-            <option>8 Frank's Pizza</option>
-            <option>9 Killer Instinct</option>
-            <option>10 Pete's Bunch</option>
-        </select>
-        <div id="opponentRoster" class="roster-box"></div>
-    </div>
-</div>
+<h1>Winter 26' Tuesday Night Schedule</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Week</th><th>Date</th><th>Match 1</th><th>Match 2</th><th>Match 3</th><th>Match 4</th><th>Match 5</th>
+    </tr>
+  </thead>
+<tbody>
+<tr><td>1</td><td>1/20/2026</td><td>1v10(4-1)</td><td>2v9(2-3)</td><td>3v8(5-0)</td><td>7v4(1-4)</td><td>5v6(2-3)</td></tr>
+<tr><td>2</td><td>1/27/2026</td><td>10v2(3-2)</td><td>3v1(2-3)</td><td>4v9(3-2)</td><td>8v5(3-2)</td><td>6v7(3-2)</td></tr>
+<tr><td>3</td><td>2/3/2026</td><td>10v3(4-1)</td><td>2v4(3-2)</td><td>5v1(4-1)</td><td>9v6(3-2)</td><td>7v8(3-2)</td></tr>
+<tr><td>4</td><td>2/10/2026</td><td>4v10(4-1)</td><td>3v5(1-4)</td><td>6v2(2-3)</td><td>1v7(2-3)</td><td>8v9(0-5)</td></tr>
+<tr><td>5</td><td>2/17/2026</td><td>5v10(3-2)</td><td>6v4(3-2)</td><td>7v3(2-3)</td><td>8v2(3-2)</td><td>9v1(2-3)</td></tr>
+<tr><td>6</td><td>2/24/2026</td><td>10v6(3-2)</td><td>7v5(3-2)</td><td>4v8(4-1)</td><td>3v9(0-5)</td><td>1v2(4-1)</td></tr>
+<tr><td>7</td><td>3/3/2026</td><td>10v7(2-3)</td><td>6v8(3-2)</td><td>9v5(5-0)</td><td>1v4(0-5)</td><td>2v3(3-2)</td></tr>
+<tr><td>8</td><td>3/10/2026</td><td>8v10(4-1)</td><td>7v9(3-2)</td><td>1v6(4-1)</td><td>5v2(4-1)</td><td>4v3(4-1)</td></tr>
+<tr><td>9</td><td>3/17/2026</td><td>9v10(2-3)</td><td>8v1(2-3)</td><td>2v7(3-2)</td><td>3v6(3-2)</td><td>5v4(3-2)</td></tr>
+<tr><td>10</td><td>3/24/2026</td><td>10v1(-)</td><td>9v2(-)</td><td>3v8(-)</td><td>4v7(-)</td><td>6v5(-)</td></tr>
+<tr><td>11</td><td>3/31/2026</td><td>2v10(-)</td><td>1v3(-)</td><td>9v4(-)</td><td>5v8(-)</td><td>6v7(-)</td></tr>
+<tr><td>12</td><td>4/7/2026</td><td>3v10(-)</td><td>4v2(-)</td><td>5v1(-)</td><td>6v9(-)</td><td>8v7(-)</td></tr>
+<tr><td>13</td><td>4/14/2026</td><td>10v4(-)</td><td>3v5(-)</td><td>2v6(-)</td><td>7v1(-)</td><td>9v8(-)</td></tr>
+<tr><td>14</td><td>4/21/2026</td><td>5v10(-)</td><td>4v6(-)</td><td>7v3(-)</td><td>8v2(-)</td><td>1v9(-)</td></tr>
+<tr><td>15</td><td>4/28/2026</td><td>10v6(-)</td><td>7v5(-)</td><td>8v4(-)</td><td>9v3(-)</td><td>2v1(-)</td></tr>
+<tr><td>16</td><td>5/5/2026</td><td colspan=5></td></tr>
+
+</tbody>
+
+</table>
+
+ <div class="section-title">Standings</div>
+<table>
+  <thead>
+    <tr>
+      <th>Team #</th><th>Team Name</th><th>Points</th><th>Home Base</th><th>Phone #</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr><td>4</td><td>Rackless Behavior</td><td>30</td><td>Nite Games</td><td>(708) 385-5697</td></tr>
+<tr><td>9</td><td>Killer Instinct</td><td>29</td><td>Coaches</td><td>708-629-0685</td></tr>
+<tr><td>5</td><td>Dirty Ballers</td><td>24</td><td>Dirty D's</td><td>708-824-0285</td></tr>
+<tr><td>1</td><td>Halfway Crooks</td><td>24</td><td>Red Shoe Billiard's</td><td>708-388-3700</td></tr>
+<tr><td>7</td><td>Five Amigos</td><td>22</td><td>Half Time</td><td>708-371-9992</td></tr>
+<tr><td>6</td><td>Eight on Break</td><td>21</td><td>Half Time</td><td>708-371-9992</td></tr>
+<tr><td>10</td><td>Pete's Bunch</td><td>20</td><td>Dirty D's</td><td>708-824-0285</td></tr>
+<tr><td>2</td><td>Haters Welcome</td><td>20</td><td>Half Time</td><td>708-371-9992</td></tr>
+<tr><td>3</td><td>Lynn's Amigo's</td><td>18</td><td>Dirty D's</td><td>708-824-0285</td></tr>
+<tr><td>8</td><td>Frank's Pizza</td><td>17</td><td>Frank's Pizza</td><td>708-389-1143</td></tr>
+
+</tbody>
+</table>
+
+<a class="back-button" href="index.html">Main Menu</a>
 
-<div class="lag-row" style="display:none;justify-content:center;gap:40px;margin-top:10px;">
-    <div class="block center-label">
-        <label>Lag Winner</label>
-        <input id="lagWinner" readonly style="width:135px; text-align:center;">
-    </div>
-    <div class="block center-label">
-        <label>Lag Loser</label>
-        <input id="lagLoser" readonly style="width:135px; text-align:center;">
-    </div>
-</div>
-
-<div style="text-align:center;margin-top:10px;">
-    <label>Innings</label><br>
-    <div class="innings-wrapper">
-        <button type="button" class="btn-minus" onclick="changeInnings(-1)">−</button>
-        <input type="number" id="matchInnings" value="0" min="0">
-        <button type="button" class="btn-plus" onclick="changeInnings(1)">+</button>
-    </div>
-</div>
- <div style="text-align:center;padding-top:20px;;">
-    <button id="submitMatch" style="display:none;background-color:#00FF00;width:200px;height:55px;border-radius: 6px;color: #000;font-weight:bold;font-size:24px;">Submit Match</button> 
-</div>
-
-<div class="player-stats-container" style="margin-top:10px;">
-    <div class="block">
-        <h3 id="lagWinnerHeader">Lag Winner</h3>
-        <div class="stat-row">
-            <label>HC</label>
-            <div class="innings-wrapper">
-                <button onclick="changePAHC(-1)">−</button>
-                <input id="pA_hc" type="number" value="0" min="0">
-                <button onclick="changePAHC(1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>Wins</label>
-            <div class="innings-wrapper">
-                <button onclick="changeWinsA(-1)">−</button>
-                <input id="pA_wins" type="number" value="0" min="0">
-                <button onclick="changeWinsA(1)">+</button>
-            </div>
-        </div>
-       
-        <div class="stat-row">
-            <label>Safeties</label>
-            <div class="innings-wrapper">
-                <button onclick="changePASafeties(-1)">−</button>
-                <input id="pA_safeties" type="number" value="0" min="0">
-                <button onclick="changePASafeties(1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>8B</label>
-            <div class="innings-wrapper">
-                <button onclick="changePA8B(-1)">−</button>
-                <input id="pA_b8" type="number" value="0" min="0">
-                <button onclick="changePA8B(1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>B+R</label>
-            <div class="innings-wrapper">
-                <button onclick="changePABR(-1)">−</button>
-                <input id="pA_br" type="number" value="0" min="0">
-                <button onclick="changePABR(1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>E8</label>
-            <div class="innings-wrapper">
-                <button onclick="changePAE8(-1)">−</button>
-                <input id="pA_e8" type="number" value="0" min="0">
-                <button onclick="changePAE8(1)">+</button>
-            </div>
-        </div>
-                 <div class="stat-row"><label>Coach</label><input type="checkbox" id="pA_coach" onchange="saveNow()">
-</div>
-    </div>
-
-    <div class="block">
-        <h3 id="lagLoserHeader">Lag Loser</h3>
-        <div class="stat-row">
-            <label>HC</label>
-            <div class="innings-wrapper">
-                <button onclick="changePBHC(-1)">−</button>
-                <input id="pB_hc" type="number" value="0" min="0">
-                <button onclick="changePBHC(1)">+</button>
-            </div>
-        </div>
-      <div class="stat-row">
-            <label>Wins</label>
-            <div class="innings-wrapper">
-                <button onclick="changeWinsB(-1)">−</button>
-                <input id="pB_wins" type="number" value="0" min="0">
-                <button onclick="changeWinsB(1)">+</button>
-               </div>
-        </div>
-        <div class="stat-row">
-            <label>Safeties</label>
-            <div class="innings-wrapper">
-                <button onclick="changePBsafeties(-1)">−</button>
-                <input id="pB_safeties" type="number" value="0" min="0">
-                <button onclick="changePBsafeties(1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>8B</label>
-            <div class="innings-wrapper">
-                <button onclick="changePB8B(-1)">−</button>
-                <input id="pB_b8" type="number" value="0" min="0">
-                <button onclick="changePB8B(1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row">
-            <label>B+R</label>
-            <div class="innings-wrapper">
-                <button onclick="changePBBR(-1)">−</button>
-                <input id="pB_br" type="number" value="0" min="0">
-                <button onclick="changePBBR(1)">+</button>
-            </div>
-        </div>
-              <div class="stat-row">
-            <label>E8</label>
-            <div class="innings-wrapper">
-                <button onclick="changePBE8(-1)">−</button>
-                <input id="pB_e8" type="number" value="0" min="0">
-                <button onclick="changePBE8(1)">+</button>
-            </div>
-        </div>
-        <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach" onchange="saveNow()"></div>
-    </div>
-</div>
-    
-<div style="text-align:center; padding-top:20px; font-size:20px;">
-    <label style="display:block; margin-bottom:10px;">Match Winner</label>
-    <input id="matchWinner" readonly 
-           style="display: inline-block;
-                  box-sizing: border-box; 
-                  text-align: center; 
-                  background-color: #000; 
-                  color: #00ff00; 
-                  font-size: 20px; 
-                  border: 1px solid #000;
-                  width: 180px; 
-                  height: 40px; 
-                  vertical-align: middle; 
-                  margin: 0 auto;">
-</div>
-<div style="margin-top:20px;border-radius:8px;">
-
-    <div id="teamScoreDisplay" style="text-align:center; font-size:28px; font-weight:bold; margin-bottom:10px; color:#1e90ff;">Match Score: <span id="homeScore">0</span> - <span id="awayScore">0</span>
-</div>
-
-  <div class="button-row">
-    <button type="button" onclick="exportScoresheet()">Transfer</button>
-    <button type="button" onclick="toggleNotes()">Notes</button>
-    <button type="button" class="startBtn" onclick="startTimer()">Timer</button>
-    <button type="button" onclick="showHistory()">History</button>
-    <button type="button" onclick="addNewPlayerManual()">Add Player</button>
-</div>
-    
-</div>
-  <div id="timerBox">
-    <span id="timerValue">0</span> sec
-
-    <button class="closeBtn" onclick="closeTimer()">X</button>
-  </div>
-
-<div id="notesContainer"
-     style="display:none; text-align:center; margin-top:12px;border: 2px solid #1e90ff; border-radius: 10px;">
-  <textarea
-  id="matchNotes"
-  style="width:95%; max-width:500px; height:70px; font-size:16px; padding:8px;"
->Notes to L.O. such as roster removals, complaints, ect...</textarea>
-</div>
-</div>
-
-    <a class="back-button" style= "height:30px;"href="index.html">Main Menu</a>
-</div>
-    <!-- QR Code Popup -->
-<div id="qrModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:9999;">
-  <div style="background:#fff; padding:20px; border-radius:8px; position:relative; max-width:90%; max-height:90%; overflow:auto;">
-    <h3 style="text-align:center;color:#000;">Scan QR to Transfer</h3>
-    <div id="qrcode"></div>
-    <button onclick="closeQRModal()" style="margin-top:10px; padding:8px 16px; font-size:16px;">Close</button>
-  </div>
-</div>
-<div id="lagConfirmModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 2000000;">
-    <div style="background: #111; padding: 25px; border: 2px solid #1e90ff; border-radius: 10px; width: 85%; max-width: 320px; text-align: center;">
-        <h3 id="lagPlayerName" style="color: #fff; margin-bottom: 10px;">Player Name</h3>
-        <p id="lagQuestion" style="color: #ccc; margin-bottom: 25px;">Did this player win the lag?</p>
-        
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button id="lagYes" style="padding: 12px; background: #1e90ff; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">YES</button>
-            <button id="lagNo" style="padding: 12px; background: #444; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">NO / CANCEL</button>
-            <button id="lagReset" onclick="resetLagFields()" style="padding: 10px; background: #800; color: #fff; border: none; border-radius: 5px; font-size: 12px; cursor: pointer;">RESET ALL LAG FIELDS</button>
-        </div>
-    </div>
-</div>
-    <script>
-let isLoading = false;
-const FORM_KEY = "scoresheetData";
-let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
-let flip = false;
-
-// 1. Populate roster when team selects
-function updateRoster(sel, div) {
-    if (!sel.value) {
-        div.innerHTML = "";
-        return;
-    }
-    
-    const rosterData = scoresheetinfo[sel.value] || [];
-    
-    div.innerHTML = rosterData.map(p => {
-        // If name isn't in your scoresheetrosters.js file, it's a 3
-        const lookupHC = scoresheetrosters[p];
-        const hc = (lookupHC !== undefined && lookupHC !== 0) ? lookupHC : 3;
-
-        return `<div class="playerName" data-p="${p}" data-hc="${hc}">
-                    <span class="name">${p}</span>
-                    <span class="hc">${hc}</span>
-                </div>`;
-    }).join("");
-}
-// 2. Event Listeners for Team Selection
-document.getElementById("team").addEventListener("change", function() {
-    updateRoster(this, document.getElementById("teamRoster"));
-});
-document.getElementById("opponent").addEventListener("change", function() {
-    updateRoster(this, document.getElementById("opponentRoster"));
-});
-
-// 3. Player Selection Logic (Context-Aware Modal)
-let pendingPlayerData = null;
-
-document.addEventListener("click", e => {
-    const playerDiv = e.target.closest(".playerName");
-    if (!playerDiv) return;
-
-    const name = playerDiv.getAttribute("data-p");
-    const hc = playerDiv.getAttribute("data-hc");
-    const lwHeader = document.getElementById("lagWinnerHeader").textContent;
-
-    pendingPlayerData = { name, hc };
-    document.getElementById("lagPlayerName").textContent = name;
-
-    if (lwHeader === "Lag Winner") {
-        // Step 1: Set the Winner
-        document.getElementById("lagQuestion").textContent = "Did this player win the lag?";
-        document.getElementById("lagConfirmModal").style.display = "flex";
-    } else {
-        // Step 2: Set the Loser and Start Match
-        // Prevent selecting the same person twice
-        if (name === document.getElementById("lagWinner").value) return;
-
-        document.getElementById("lagQuestion").textContent = "Set as Lag Loser and begin match?";
-        document.getElementById("lagConfirmModal").style.display = "flex";
-    }
-});
-
-// Modal button listeners
-document.getElementById("lagYes").onclick = function() {
-    if (!pendingPlayerData) return;
-    
-    const lwHeader = document.getElementById("lagWinnerHeader");
-
-    if (lwHeader.textContent === "Lag Winner") {
-        // Set Winner
-        document.getElementById("lagWinner").value = pendingPlayerData.name;
-        document.getElementById("pA_hc").value = pendingPlayerData.hc;
-        lwHeader.textContent = pendingPlayerData.name;
-    } else {
-        // Set Loser
-        document.getElementById("lagLoser").value = pendingPlayerData.name;
-        document.getElementById("pB_hc").value = pendingPlayerData.hc;
-        document.getElementById("lagLoserHeader").textContent = pendingPlayerData.name;
-        
-        // Optional: Auto-increment innings to 1 to start the match UI
-        document.getElementById("matchInnings").value = 0;
-        checkRosterCollapse();
-    }
-    
-    closeLagModal();
-    saveNow();
-};
-
-document.getElementById("lagNo").onclick = closeLagModal;
-
-function resetLagFields() {
-    document.getElementById("lagWinner").value = "";
-    document.getElementById("lagLoser").value = "";
-    document.getElementById("pA_hc").value = 0;
-    document.getElementById("pB_hc").value = 0;
-    document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
-    document.getElementById("lagLoserHeader").textContent = "Lag Loser";
-    document.getElementById("matchInnings").value = 0;
-    checkRosterCollapse();
-    closeLagModal();
-    saveNow();
-}
-
-function closeLagModal() {
-    document.getElementById("lagConfirmModal").style.display = "none";
-    pendingPlayerData = null;
-}
-
-// 4. Scoring UI Update
-function updateScoreUI() {
-    const hScore = document.getElementById("homeScore");
-    const aScore = document.getElementById("awayScore");
-    if (hScore && aScore) {
-        hScore.textContent = scores.home;
-        aScore.textContent = scores.away;
-    }
-}
-
-// 5. Stat Increment/Decrement
-function changeInnings(amount) {
-    let input = document.getElementById("matchInnings");
-    let val = Math.max(0, (parseInt(input.value) || 0) + amount);
-    input.value = val;
-
-    // Toggle roster visibility: hide if innings > 0, show if 0
-    const displayStyle = (val > 0) ? "none" : "block";
-    document.getElementById("teamRoster").style.display = displayStyle;
-    document.getElementById("opponentRoster").style.display = displayStyle;
-
-    saveNow();
-}
-
-function changeWinsA(amount) {
-    let input = document.getElementById("pA_wins");
-    input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
-    document.getElementById('pA_coach').checked = false;
-    document.getElementById('pB_coach').checked = false;
-    updateMatchWinner();
-    saveNow();
-}
-
-function changeWinsB(amount) {
-    let input = document.getElementById("pB_wins");
-    input.value = Math.max(0, (parseInt(input.value) || 0) + amount);
-    document.getElementById('pA_coach').checked = false;
-    document.getElementById('pB_coach').checked = false;
-    updateMatchWinner();
-    saveNow();
-}
-
-// Utility functions for other stats
-function changePASafeties(amount) { let input = document.getElementById("pA_safeties"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePA8B(amount) { let input = document.getElementById("pA_b8"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePABR(amount) { let input = document.getElementById("pA_br"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePAHC(amount) { let input = document.getElementById("pA_hc"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); updateMatchWinner(); saveNow(); }
-function changePAE8(amount) { let input = document.getElementById("pA_e8"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePBHC(amount) { let input = document.getElementById("pB_hc"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); updateMatchWinner(); saveNow(); }
-function changePBsafeties(amount) { let input = document.getElementById("pB_safeties"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePB8B(amount) { let input = document.getElementById("pB_b8"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePBBR(amount) { let input = document.getElementById("pB_br"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-function changePBE8(amount) { let input = document.getElementById("pB_e8"); input.value = Math.max(0, (parseInt(input.value) || 0) + amount); saveNow(); }
-
-// 6. Match Winner Logic
-function updateMatchWinner() {
-    const aWins = parseInt(document.getElementById("pA_wins").value) || 0;
-    const bWins = parseInt(document.getElementById("pB_wins").value) || 0;
-    const aHC = parseInt(document.getElementById("pA_hc").value) || 0;
-    const bHC = parseInt(document.getElementById("pB_hc").value) || 0;
-    const winField = document.getElementById("matchWinner");
-    const subBtn = document.getElementById("submitMatch");
-
-    if (aWins === aHC && aHC > 0) {
-        winField.value = document.getElementById("lagWinner").value;
-    } else if (bWins === bHC && bHC > 0) {
-        winField.value = document.getElementById("lagLoser").value;
-    } else {
-        winField.value = "";
-    }
-    subBtn.style.display = winField.value ? "inline-block" : "none";
-}
-
-// 7. Submit to Google Sheets
-document.getElementById("submitMatch").onclick = function() {
-    const btn = this;
-    const loader = document.getElementById("loadingOverlay");
-
-    // Start Loading State
-    btn.disabled = true;
-    loader.style.display = "flex"; // Show the spinner overlay
-
-    const data = {
-        team: document.getElementById("team").value,
-        opponent: document.getElementById("opponent").value,
-        lagWinner: document.getElementById("lagWinner").value,
-        lagLoser: document.getElementById("lagLoser").value,
-        matchInnings: document.getElementById("matchInnings").value,
-        pA: {
-            handicap: document.getElementById("pA_hc").value,
-            wins: document.getElementById("pA_wins").value,
-            safeties: document.getElementById("pA_safeties").value,
-            b8: document.getElementById("pA_b8").value,
-            br: document.getElementById("pA_br").value,
-            e8: document.getElementById("pA_e8").value
-        },
-        pB: {
-            handicap: document.getElementById("pB_hc").value,
-            wins: document.getElementById("pB_wins").value,
-            safeties: document.getElementById("pB_safeties").value,
-            b8: document.getElementById("pB_b8").value,
-            br: document.getElementById("pB_br").value,
-            e8: document.getElementById("pB_e8").value
-        },
-        matchWinner: document.getElementById("matchWinner").value,
-        matchNotes: document.getElementById("matchNotes").value
-    };
-
-    fetch("https://script.google.com/macros/s/AKfycbxjPd21vbwaqtxnDHyiwq-232S6vxdG-t6JPd2nQrdi9bbH8EakOr4S_11jDF9uvu4/exec", {
-        method: "POST",
-        mode: "no-cors", 
-        body: JSON.stringify(data)
-    })
-    .then(() => {
-        // --- End Loading State ---
-        loader.style.display = "none"; 
-
-        // --- SAVE TO HISTORY ---
-        const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
-        history.push(data); 
-        localStorage.setItem("matchHistory", JSON.stringify(history));
-        
-        localStorage.setItem("lastSessionActivity", Date.now().toString());
-
-        // --- Update Team Scores ---
-        const winnerName = document.getElementById("matchWinner").value;
-        const homeTeamName = document.getElementById("team").value;
-        const homeRoster = scoresheetinfo[homeTeamName] || [];
-
-        if (homeRoster.includes(winnerName)) {
-            scores.home++;
-        } else {
-            scores.away++;
-        }
-        localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-        updateScoreUI();
-
-        // --- RESET PLAYER FIELDS ---
-        const fieldsToReset = [
-            "lagWinner", "lagLoser", "matchInnings", "matchWinner",
-            "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8",
-            "pB_hc", "pB_wins", "pB_safeties", "pB_b8", "pB_br", "pB_e8"
-        ];
-
-        fieldsToReset.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.value = el.type === "number" ? 0 : "";
-        });
-checkRosterCollapse();
-        document.getElementById("lagWinnerHeader").textContent = "Lag Winner";
-        document.getElementById("lagLoserHeader").textContent = "Lag Loser";
-        document.getElementById("matchNotes").value = "-";
-        document.getElementById('pA_coach').checked = false;
-        document.getElementById('pB_coach').checked = false;
-     
-document.getElementById("lagWinnerHeader").textContent = "Lag Winner"; // Important!
-document.getElementById("lagLoserHeader").textContent = "Lag Loser";
-
-        // --- HANDLE 5TH MATCH SCENARIO ---
-        if ((scores.home + scores.away) >= 5) {
-            alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}. Resetting session fields, but history is saved.`);
-            document.getElementById("team").selectedIndex = 0;
-            document.getElementById("opponent").selectedIndex = 0;
-            updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
-            updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
-            scores = { home: 0, away: 0 };
-            localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-            updateScoreUI();
-        }
-
-        btn.style.display = "none";
-        btn.disabled = false;
-        btn.style.opacity = "1";
-
-        saveNow();
-        alert("Match submitted!"); // Final confirmation alert
-    })
-    .catch(err => {
-        loader.style.display = "none";
-        alert("Error submitting match.");
-        btn.disabled = false;
-    });
-};
-    // 8. Save/Load Logic
-function saveNow() {
-    if (isLoading) return;
-    const ids = ["team","opponent","lagWinner","lagLoser","matchInnings","matchWinner","pA_hc","pA_wins","pA_safeties","pA_b8","pA_br","pA_e8","pB_hc","pB_wins","pB_safeties","pB_b8","pB_br","pB_e8","pA_coach","pB_coach","matchNotes"];
-    const data = {};
-    ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) data[id] = el.type === "checkbox" ? el.checked : el.value;
-    });
-
-    // Save the text headers
-    data.lwH = document.getElementById("lagWinnerHeader").textContent;
-    data.llH = document.getElementById("lagLoserHeader").textContent;
-
-    // ADDED: Save the current match score (Home vs Away)
-    data.mScores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
-
-    localStorage.setItem(FORM_KEY, JSON.stringify(data));
-}
-function loadScoresheet() {
-    const savedManual = localStorage.getItem("manual_roster_additions");
-    if (savedManual) {
-        const parsed = JSON.parse(savedManual);
-        Object.assign(scoresheetinfo, parsed);
-    }
-
-    const raw = localStorage.getItem(FORM_KEY);
-    if (!raw) return;
-    
-    isLoading = true;
-    const data = JSON.parse(raw);
-    
-    Object.keys(data).forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            if (el.type === "checkbox") {
-                el.checked = data[id] === true;
-            } else {
-                el.value = data[id];
-            }
-        }
-    });
-
-    // Restore the text headers
-    if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
-    if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
-
-    // ADDED: Restore match scores and update the global 'scores' variable
-    if (data.mScores) {
-        scores = data.mScores;
-        localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-        updateScoreUI(); // This ensures the numbers at the bottom change immediately
-    }
-
-    updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
-    updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
-    checkRosterCollapse();
-    updateMatchWinner();
-    
-    isLoading = false;
-}
-// 9. Extra UI Helpers
-function exportScoresheet() {
-    const data = localStorage.getItem(FORM_KEY);
-    if (!data) return alert("No data to transfer.");
-    const baseUrl = window.location.href.split('?')[0];
-    const fullUrl = `${baseUrl}?data=${encodeURIComponent(data)}`;
-    document.getElementById('qrModal').style.display = 'flex';
-    document.getElementById('qrcode').innerHTML = '';
-    new QRCode(document.getElementById('qrcode'), { text: fullUrl, width: 256, height: 256 });
-}
-
-function closeQRModal() { document.getElementById('qrModal').style.display = 'none'; }
-function toggleNotes() { const box = document.getElementById("notesContainer"); box.style.display = box.style.display === "none" ? "block" : "none"; }
-
-let timerInterval, seconds = 0;
-function startTimer() {
-    seconds = 0;
-    document.getElementById("timerBox").style.display = "block";
-    clearInterval(timerInterval);
-    timerInterval = setInterval(() => { seconds++; updateTimerDisplay(); }, 1000);
-}
-function closeTimer() { clearInterval(timerInterval); document.getElementById("timerBox").style.display = "none"; }
-function updateTimerDisplay() {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    document.getElementById("timerValue").textContent = `${mins}:${secs < 10 ? '0' + secs : secs}`;
-}
-// 10. Initialization
-window.addEventListener("DOMContentLoaded", () => {
-    // Check for 12-hour expiration since last activity
-    const lastActivity = localStorage.getItem("lastSessionActivity");
-    const twelveHours = 12 * 60 * 60 * 1000;
-
-    if (lastActivity && (Date.now() - parseInt(lastActivity)) > twelveHours) {
-        console.log("Session expired. Clearing history and manual players.");
-        localStorage.removeItem("matchHistory");
-        localStorage.removeItem("manual_roster_additions");
-        localStorage.removeItem("teamMatchScores");
-        localStorage.removeItem(FORM_KEY);
-        localStorage.removeItem("lastSessionActivity");
-        scores = { home: 0, away: 0 };
-    } else {
-        // If within 12 hours, update activity timestamp to "now"
-        localStorage.setItem("lastSessionActivity", Date.now().toString());
-    }
-
-    const params = new URLSearchParams(window.location.search);
-    
-    // --- HANDLE MAIN FORM TRANSFER ---
-    if (params.has("data")) {
-        localStorage.setItem(FORM_KEY, decodeURIComponent(params.get("data")));
-        // Clean URL immediately
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-    
-    // --- HANDLE HISTORY ONLY TRANSFER ---
-    if (params.has("hdata")) {
-        const hRaw = decodeURIComponent(params.get("hdata"));
-        localStorage.setItem("matchHistory", hRaw);
-        
-        // Clean URL immediately
-        window.history.replaceState({}, document.title, window.location.pathname);
-        
-        alert("Match History Sync Successful!");
-        // Refresh history modal if it's currently open
-        if (typeof showHistory === "function") showHistory(); 
-    }
-    
-    // Final UI Refresh
-    loadScoresheet();
-    updateScoreUI();
-});
-        // Function to show the history modal
-function showHistory() {
-    const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
-    const tbody = document.getElementById("historyTableBody");
-    
-    if (history.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px;">No matches submitted yet.</td></tr>';
-    } else {
-        tbody.innerHTML = history.map((m, index) => `
-            <tr style="border-bottom: 1px solid #333;">
-                <td style="padding:10px;">
-                    <div style="font-weight:bold; color:#1e90ff;">Match ${index + 1}</div>
-                    ${m.lagWinner} vs ${m.lagLoser}
-                </td>
-                <td style="padding:10px; text-align:center;">
-                    ${m.pA.wins}-${m.pB.wins}<br>
-                    <small style="color:#0f0;">Winner: ${m.matchWinner}</small>
-                </td>
-                <td style="padding:10px; text-align:center;">${m.matchInnings}</td>
-            </tr>
-        `).join("");
-    }
-    document.getElementById("historyModal").style.display = "flex";
-}
-
-function closeHistory() { document.getElementById("historyModal").style.display = "none"; }
-
-function clearHistory() {
-    if(confirm("Clear all match history for this evening?")) {
-        localStorage.removeItem("matchHistory");
-        showHistory();
-    }
-}
-        function addNewPlayerManual() {
-    const homeName = document.getElementById("team").value;
-    const awayName = document.getElementById("opponent").value;
-
-    // Check if teams are selected first
-    if (!homeName || homeName.includes("Select") || !awayName || awayName.includes("Select")) {
-        alert("Please select both teams first.");
-        return;
-    }
-
-    // Update the labels in the modal
-    document.getElementById("homeLabel").textContent = homeName;
-    document.getElementById("awayLabel").textContent = awayName;
-
-    // Show the modal
-    const modal = document.getElementById("playerModal");
-    if (modal) {
-        modal.style.display = "flex";
-        document.getElementById("manualPlayerName").value = "";
-        document.getElementById("manualPlayerName").focus();
-    }
-}
-
-function closePlayerModal() {
-    document.getElementById("playerModal").style.display = "none";
-}
-
-function confirmNewPlayer() {
-    const nameInput = document.getElementById("manualPlayerName");
-    const newName = nameInput.value.trim();
-    if (!newName) return;
-    
-    const side = document.querySelector('input[name="npTeam"]:checked').value;
-    const teamDropdown = document.getElementById(side === 'home' ? "team" : "opponent");
-    const rosterDiv = document.getElementById(side === 'home' ? "teamRoster" : "opponentRoster");
-    const teamName = teamDropdown.value;
-    
-    if (!teamName || teamName.includes("Select")) {
-        alert("Select a team first!");
-        return;
-    }
-
-    if (!scoresheetinfo[teamName]) scoresheetinfo[teamName] = [];
-    
-    const exists = scoresheetinfo[teamName].some(p => p.toLowerCase() === newName.toLowerCase());
-
-    if (!exists) {
-        // Insert as simple text string
-        scoresheetinfo[teamName].push(newName);
-        
-        // Save to localStorage so they stay on refresh
-        localStorage.setItem("manual_roster_additions", JSON.stringify(scoresheetinfo));
-        
-        updateRoster(teamDropdown, rosterDiv);
-        saveNow();
-    }
-    closePlayerModal();
-}
-        function exportHistoryOnly() {
-    const history = localStorage.getItem("matchHistory");
-    if (!history || history === "[]") return alert("No history to transfer.");
-    
-    const baseUrl = window.location.href.split('?')[0];
-    // We use a different key 'hdata' so it doesn't mess with the main form loader
-    const fullUrl = `${baseUrl}?hdata=${encodeURIComponent(history)}`;
-    
-    document.getElementById('qrModal').style.display = 'flex';
-    document.getElementById('qrcode').innerHTML = '';
-    new QRCode(document.getElementById('qrcode'), { text: fullUrl, width: 256, height: 256 });
-}
-        function checkRosterCollapse() {
-    const innings = parseInt(document.getElementById("matchInnings").value) || 0;
-    const homeRoster = document.getElementById("teamRoster");
-    const awayRoster = document.getElementById("opponentRoster");
-
-    if (innings > 0) {
-        // Hide rosters once the match starts
-        if (homeRoster) homeRoster.style.display = "none";
-        if (awayRoster) awayRoster.style.display = "none";
-    } else {
-        // Show rosters when innings are 0 (match not started or reset)
-        if (homeRoster) homeRoster.style.display = "block";
-        if (awayRoster) awayRoster.style.display = "block";
-    }
-}
-    function updateCurrentWeekAndDate() {
-    const today = new Date();
-
-    // Today minus 2 days
-    const cutoff = new Date(today);
-    cutoff.setDate(cutoff.getDate() - 2);
-
-    let activeWeek = null;
-
-    for (const row of scheduleData) {
-        if (!row.date) continue;
-
-        const matchDate = new Date(row.date);
-
-        // ✔ Correct rule:
-        // Show this week until 2 days AFTER its match date
-        if (matchDate >= cutoff) {
-            activeWeek = row;
-            break;
-        }
-    }
-
-    // If we passed all weeks, use the last one
-    if (!activeWeek) {
-        activeWeek = scheduleData[scheduleData.length - 1];
-    }
-
-    document.getElementById("weekDisplay").textContent = "Week " + activeWeek.week;
-    document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
-}
-        window.addEventListener("load", updateCurrentWeekAndDate);
-
-
-               
-</script>
-    <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
-  <div style="background:#222; padding:20px; border-radius:8px; width:95%; max-width:600px; max-height:80vh; overflow-y:auto; border: 2px solid #1e90ff;">
-    <h3 style="text-align:center; color:#1e90ff;">Match History</h3>
-    <table style="width:100%; border-collapse: collapse; color: white; font-size: 14px;">
-      <thead>
-        <tr style="border-bottom: 2px solid #444;">
-          <th style="padding:8px; text-align:left;">Match</th>
-          <th style="padding:8px; text-align:center;">Result</th>
-          <th style="padding:8px; text-align:center;">Inn.</th>
-        </tr>
-      </thead>
-      <tbody id="historyTableBody">
-        </tbody>
-    </table>
-    <div style="text-align:center; margin-top:20px; display:flex; gap:10px; justify-content:center;">
-      <button onclick="closeHistory()" style="padding:10px 20px;">Close</button>
-        <button onclick="exportHistoryOnly()" style="background:#1e90ff; color:white; padding:10px;">Transfer</button>
-      <button onclick="clearHistory()" style="padding:10px 20px; background:crimson; color:white; border:none; border-radius:4px;">Reset</button>
-    </div>
-  </div>
-</div>
-<div id="playerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
-  <div style="background:#222; padding:25px; border-radius:12px; width:90%; max-width:400px; border: 2px solid #1e90ff; text-align:center; box-sizing: border-box;">
-    
-    <h3 style="color:#1e90ff; margin:0 0 15px 0;">Add to Roster</h3>
-    
-    <input type="text" id="manualPlayerName" placeholder="Enter New Player Name" 
-           style="width:100%; padding:12px; font-size:18px; margin-bottom:20px; border-radius:6px; border:1px solid #444; background:#111; color:white; box-sizing: border-box;">
-    
-    <div style="margin-bottom: 25px; color:white; font-size:18px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; padding-left: 20px;">
-      <label style="cursor:pointer;">
-        <input type="radio" name="npTeam" value="home" checked style="transform: scale(1.2);"> <span id="homeLabel">Home Team</span>
-      </label>
-      <label style="cursor:pointer;">
-        <input type="radio" name="npTeam" value="away" style="transform: scale(1.2);"> <span id="awayLabel">Away Team</span>
-      </label>
-    </div>
-    
-    <div style="display:flex; gap:12px; justify-content:center;">
-      <button type="button" onclick="closePlayerModal()" 
-              style="padding:10px 20px; background:#444; color:white; border:none; border-radius:4px; font-size:16px; cursor:pointer;">
-        Cancel
-      </button>
-      <button type="button" onclick="confirmNewPlayer()" style="padding:10px 20px; background:#1e90ff; color:white; border:none; border-radius:4px; font-weight:bold; font-size:16px; cursor:pointer;">Add to Roster</button>
-    </div>
-    
-  </div>
-</div>
 </body>
 </html>
