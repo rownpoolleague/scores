@@ -225,8 +225,11 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <div style="display:flex; justify-content:center; gap:12px; font-size:22px; font-weight:bold;">
         <div id="weekDisplay"></div>
         <div id="dateDisplay" style="font-size:22px; font-weight:bold;">
-            <br><span style="font-size:16px; font-weight:normal;">Tap a Name to Choose Lag Winner/Loser</span>
-        </div>
+    <span id="actualDateText"></span>
+    <div style="font-size:16px; font-weight:normal; margin-top:5px;">
+        Tap a Name to Choose Lag Winner/Loser
+    </div>
+</div>
     </div>
 </div>
 <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
@@ -871,9 +874,19 @@ function updateCurrentWeekAndDate() {
     const today = new Date();
     const cutoff = new Date(today);
     cutoff.setDate(cutoff.getDate() - 2);
+    
     let activeWeek = scheduleData.find(row => row.date && new Date(row.date) >= cutoff) || scheduleData[scheduleData.length - 1];
-    document.getElementById("weekDisplay").textContent = "-Week " + activeWeek.week + "-";
-    document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
+    
+    // Update the week display
+    const weekEl = document.getElementById("weekDisplay");
+    if (weekEl) weekEl.textContent = "-Week " + activeWeek.week + "-";
+    
+    // Update ONLY the date span, preserving the "Tap a Name" text
+    const dateTextEl = document.getElementById("actualDateText");
+    if (dateTextEl) {
+        dateTextEl.textContent = " " + activeWeek.date;
+    }
+    
     checkInitialSelection();
 }
     function setScoringTeam(myNum) {
