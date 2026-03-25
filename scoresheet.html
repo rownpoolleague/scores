@@ -538,7 +538,7 @@ function confirmLag(isWinner) {
         document.getElementById("matchInnings").value = 0;
 
         // --- HIDE ROSTERS/HEADERS ---
-        const toHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","uiText","statustext"];
+        const toHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","uiText"];
         toHide.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "none";
