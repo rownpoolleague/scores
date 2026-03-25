@@ -582,7 +582,7 @@ function resetLagFields() {
     document.getElementById("matchInnings").value = 0;
 
     // --- NEW: Force everything to show again ---
-    const toShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+    const toShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
     toShow.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = "block";
@@ -745,7 +745,7 @@ function loadScoresheet() {
         }
 
         // Keep selection fields hidden during the match
-        const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+        const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
         fieldsToHide.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "none";
@@ -827,7 +827,7 @@ document.getElementById("submitMatch").onclick = function() {
         document.getElementById("gamePlayArea").style.display = "none";
 
         // Show the selection fields again
-        const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+        const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
         fieldsToShow.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "block";
