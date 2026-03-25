@@ -7,6 +7,6 @@ const scoresheetinfo = {
     "6 8 on Break":["Doc Halek","Juergen Jackert","Danny Plowman","John Amrein","Kevin Ward","Shawn Mcbride","Don Murphy","Kenny Esposito"],
     "7 Five Amigos":["Francisco Tinajero","Sergio Sanchez","Mario Orenday","Felipe Ochoa","Jeronimo Ramirez","Kevin Joyner","Tony Perez"],
     "8 Frank's Pizza":["Jose Gonzalez","Luis Asavedo","Ricardo Urvina","Jariel Diaz","Miguel Arias","Jose Silva"],
-    "9 Killer Instinct":["Mike Uhlean","Alex Gomez","Jim Berger","Shawn Vitolka","Mike Zbonski Jr.","Luke Valenzuela"],
-    "10 Pete's Bunch":["Tom Schroeder","Chuck Harding","Dan Schroeder","Rob Zwart","Pete Steele","Buster Fuller","Ron Podborny","Tony Castro"]
+    "9 Killer Instinct":["Mike Uhlean","Alex Gomez","Jim Berger","Shawn Vitolka","Mike Zbonski Jr.","Luke Valenzuela","Daniel Castaneda","Joe Cooper"],
+    "10 Pete's Bunch":["Tom Schroeder","Chuck Harding","Dan Schroeder","Rob Zwart","Pete Steele","Buster Fuller","Ron Podborny","Roger Gault"]
 };
