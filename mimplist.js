@@ -1,12 +1,12 @@
 const mimpList = [
+  {"Player Name":"Chuck Harding","Points":"30.65%"},
   {"Player Name":"Kevin Pattenaude","Points":"26.94%"},
-  {"Player Name":"Chuck Harding","Points":"26.93%"},
-  {"Player Name":"Don Rak","Points":"17.83%"},
-  {"Player Name":"Jim Czenk","Points":"14.35%"},
-  {"Player Name":"Mike Zbonski Jr.","Points":"11.81%"},
-  {"Player Name":"Shawn Mcbride","Points":"10.43%"},
-  {"Player Name":"Doug Andrus","Points":"9.38%"},
-  {"Player Name":"Felipe Ochoa","Points":"6.40%"},
-  {"Player Name":"Doc Halek","Points":"4.90%"},
-  {"Player Name":"Francisco Ibarra","Points":"3.70%"}
+  {"Player Name":"Don Young","Points":"25.87%"},
+  {"Player Name":"Mario Orenday","Points":"22.06%"},
+  {"Player Name":"Jim Czenk","Points":"19.91%"},
+  {"Player Name":"Mike Zbonski Jr.","Points":"19.41%"},
+  {"Player Name":"Francisco Ibarra","Points":"18.93%"},
+  {"Player Name":"Phil Nelson","Points":"17.45%"},
+  {"Player Name":"Don Rak","Points":"11.89%"},
+  {"Player Name":"Shawn Mcbride","Points":"10.43%"}
 ];
