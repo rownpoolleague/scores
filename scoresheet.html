@@ -172,6 +172,16 @@ select, input, button { font-size:inherit; font-family:inherit; }
 .player-stats-container { position:relative; display:flex; justify-content:center; gap:60px; }
 .player-stats-container::after { content:""; position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:2px; background-color:#fff; opacity:0.7; pointer-events:none; }
 .back-button { display: block;  background-color: #1e90ff; color: #fff;  text-decoration: none; font-size: 24px; text-align: center; }
+    .uiText {
+    font-size: 18px;
+    text-align: center;   /* centers the text */
+    margin: 10px auto;    /* centers the block */
+    display: block;
+}
+
+.uiText.hidden {
+    display: none !important;
+}
  /* Floating timer box */
 #timerBox {
   display: none;
@@ -285,6 +295,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
 
    
 </div>
+    <p id="statusText" class="uiText">Tap a Player to Set Lag Winner/Loser</p>
     <button id="addPlayerBtn" class="uiButton" type="button" onclick="addNewPlayerManual()">
     Add Player
 </button>
