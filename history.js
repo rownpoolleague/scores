@@ -300,7 +300,7 @@ const history = [
   {
     "name": "Larry Casper",
     "currentHash": "6.300",
-    "winPct": "60%",
+    "winPct": "50%",
     "hc": 3,
     "history": [
       {"date": "2/10/2026", "gw": 3, "innings": 16, "hash": "5.333", "week": 5},
@@ -662,7 +662,7 @@ const history = [
   {
     "name": "Felipe Ochoa",
     "currentHash": "6.333",
-    "winPct": "60%",
+    "winPct": "70%",
     "hc": 4,
     "history": [
       {"date": "12/23/2025", "gw": 3, "innings": 18, "hash": "6.000", "week": 10},
