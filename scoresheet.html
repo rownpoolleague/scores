@@ -51,6 +51,21 @@ select, input, button { font-size:inherit; font-family:inherit; }
     display: flex;
     flex-direction: column;
 }
+.uiButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    background-color: #1e90ff;
+    color: white;
+    display: block;          /* allows centering */
+    margin: 20px auto;       /* centers horizontally */
+}
+
+.uiButton.hidden {
+    display: none !important;
+}
     /* --- Universal Master Modal --- */
 #masterModal {
     display: none; 
@@ -228,10 +243,9 @@ select, input, button { font-size:inherit; font-family:inherit; }
 <div id="matchHeader" style="text-align:center; margin-top:10px; margin-bottom:20px;">
     <div style="display:flex; justify-content:center; gap:12px; font-size:22px; font-weight:bold;">
         <div id="weekDisplay"></div>
-        <div id="dateDisplay" style="font-size:22px; font-weight:bold;">
-            <br><span style="font-size:20px; font-weight:normal;">!!HAPPY NATIONAL COCKTAIL DAY!!</span>
-        </div>
-    </div>
+        <div id="dateDisplay"></div>
+       
+</div>
 </div>
 <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
     
@@ -271,6 +285,9 @@ select, input, button { font-size:inherit; font-family:inherit; }
 
    
 </div>
+    <button id="addPlayerBtn" class="uiButton" type="button" onclick="addNewPlayerManual()">
+    Add Player
+</button>
 <div class="lag-row" style="display:none;justify-content:center;gap:40px;margin-top:10px;color: #gold;">
     <div class="center-label">
         <label>Lag Winner</label>
@@ -330,8 +347,7 @@ select, input, button { font-size:inherit; font-family:inherit; }
     <button type="button" onclick="toggleNotes()">Notes</button>
     <button type="button" class="startBtn" onclick="startTimer()">Timer</button>
     <button type="button" onclick="showHistory()">History</button>
-    <button type="button" onclick="addNewPlayerManual()">Add Player</button>
-</div>    
+   </div>    
 </div>
 </div>
   <div id="timerBox">
@@ -511,7 +527,7 @@ function confirmLag(isWinner) {
         document.getElementById("matchInnings").value = 0;
 
         // --- HIDE ROSTERS/HEADERS ---
-        const toHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster"];
+        const toHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn"];
         toHide.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "none";
