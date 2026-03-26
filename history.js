@@ -365,7 +365,7 @@ const history = [
   {
     "name": "Ross Giannino",
     "currentHash": "3.083",
-    "winPct": "33%",
+    "winPct": "67%",
     "hc": 5,
     "history": [
       {"date": "New Player", "gw": 0, "innings": 0, "hash": "2.500", "week": 1},
