@@ -518,6 +518,12 @@ function confirmLag(isWinner) {
         header.textContent = name;
         header.classList.add("active");
         header.style.visibility = "visible";
+
+        // Only change the text as requested
+        const statusEl = document.getElementById("statusText");
+        if (statusEl) {
+            statusEl.textContent = "Tap a Player to Set Lag Loser and Begin Match";
+        }
     } else {
         const name = pendingPlayerData.name;
         const hc = pendingPlayerData.hc;
@@ -545,8 +551,6 @@ function confirmLag(isWinner) {
     
     closeMasterModal();
     updateMatchWinner(); 
-
-    // This captures the new "gamePlayArea" display state immediately
     saveNow(); 
 }
     function getTeamNameByNumber(num) {
