@@ -19,17 +19,16 @@ body {
 
 .form-wrapper {
     width: 100%;
-    max-width: 550px; /* Keeps it looking like a mobile app on laptop */
+    max-width: 550px; 
     margin: 0 auto;
     padding: 10px;
-    border: 4px solid #1e90ff;
+    border: 4px solid #1e90ff; /* This is your blue frame */
     box-sizing: border-box;
     min-height: 650px; 
     display: flex;
     flex-direction: column;
 }
 
-/* Layout Blocks */
 .row { display: flex; justify-content: center; gap: 5px; margin-top: 10px; font-size: 17px; }
 .block { flex: 1; max-width: 50%; text-align: center; overflow-wrap: break-word; }
 
@@ -44,10 +43,8 @@ body {
     color: #fff;
     font-weight: bold;
     box-sizing: border-box;
-    border: 1px solid #333;
 }
 
-/* Inputs & Labels */
 label { font-weight: bold; color: #fff; font-size: 20px; }
 h3 { margin: 0 0 8px 0; color: #fff; }
 input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; background-color: #fff; color: #000; border: 1px solid #fff; border-radius: 4px; text-align: center; }
@@ -55,14 +52,26 @@ input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; backgroun
 .innings-wrapper { display: flex; align-items: center; justify-content: center; gap: 5px; }
 .stat-row { display: flex; flex-direction: column; align-items: center; margin-bottom: 8px; }
 
-/* Player List Styling */
 .playerName { display: flex; justify-content: space-between; padding: 4px 0; cursor: pointer; }
 .playerName:hover { background-color: #333; }
-.playerName span.hc { color: #aaa; font-weight: normal; }
+.playerName span.hc { color: #fff; font-weight: normal; }
 
-/* Buttons & Navigation */
 .uiButton { padding: 10px 20px; font-size: 20px; cursor: pointer; border-radius: 6px; border: none; background-color: #1e90ff; color: white; display: block; margin: 20px auto; }
-.back-button { display: block; background-color: #1e90ff; color: #fff; text-decoration: none; font-size: 24px; text-align: center; padding: 10px 0; }
+
+/* Back Button - Width fixed to match form */
+.back-button { 
+    display: block;
+    background-color: #1e90ff; 
+    color: #fff; 
+    text-decoration: none; 
+    font-size: 24px; 
+    text-align: center; 
+    padding: 10px 0;
+    width: 100%;
+    max-width: 550px;
+    margin: 10px auto; 
+}
+
 .uiText { font-size: 22px; text-align: center; margin: 10px auto; display: block; color: gold; }
 
 .button-row {
@@ -84,14 +93,13 @@ input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; backgroun
     cursor: pointer;
 }
 
-/* Floating Timer Box - FIXED FOR BOTH */
 #timerBox {
     display: none;
     position: fixed;
     width: 130px;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Centers exactly on screen */
+    transform: translate(-50%, -50%);
     background: #000;
     color: #fff;
     padding: 15px;
@@ -105,11 +113,9 @@ input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; backgroun
 #timerValue { font-size: 1.8em; font-weight: bold; display: block; margin-bottom: 5px; }
 .closeBtn { background: crimson; border: none; color: white; border-radius: 4px; cursor: pointer; padding: 5px 10px; }
 
-/* Player Stats Container Divider */
 .player-stats-container { position: relative; display: flex; justify-content: center; gap: 40px; }
 .player-stats-container::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 2px; background-color: #fff; opacity: 0.5; pointer-events: none; }
 
-/* Loading Overlay */
 #loadingOverlay {
     display: none;
     position: fixed;
@@ -136,7 +142,6 @@ input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; backgroun
 
 /* --- MOBILE ONLY OVERRIDES --- */
 @media (max-width:600px) {
-    .form-wrapper { border: none; }
     .roster-box { width: 95%; }
     .button-row button { font-size: 12px; }
 }
