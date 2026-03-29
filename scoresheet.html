@@ -7,50 +7,63 @@
     <script src="scoresheetrosters.js"></script>
     <script src="scoresheetinfo.js"></script>
 <style>
-/* --- Styles unchanged from your version --- */
-body { font-family: Arial, sans-serif;font-size: 18px; background-color: #000; color: #fff; }
-.row {overflow-wrap: break-word; display: flex; justify-content: center; gap: 5px; margin-top: 10px;font-size:17px; }
-.block {overflow-wrap: break-word; text-align: center;flex: 1; max-width: 50%; }
-.roster-box {overflow-wrap: break-word;
-    text-align: left;
-    width: 100%;       /* Fill the block it's inside */
-    margin-top: 10px;
-    padding: 8px 6px;
-    min-height: 1px;
-    font-size: 18px;
-    white-space: pre-line;
-    background-color: #000;
-    color: #fff;
-             font-weight:bold;
-    box-sizing: border-box; /* IMPORTANT: Keeps padding inside the width */
+/* --- Global Styles (Applied to Laptop & Mobile) --- */
+body { 
+    font-family: Arial, sans-serif; 
+    font-size: 18px; 
+    background-color: #000; 
+    color: #fff; 
+    margin: 0; 
+    padding: 0;
 }
-  
-    .innings-wrapper {
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    gap: 5px; /* Adjust this number to get the exact spacing you want */
-}
-label { font-weight:bold; color:#color: #fff;; font-size:20px; }
-.playerName { cursor:pointer; padding:2px 0; }
-.playerName:hover { background-color:#333; }
-h3 { margin:0 0 8px 0; color:#fff; }
-input[type="number"] { width:35px; padding:4px 6px; font-size:20px; background-color:#fff; color:#000; border:1px solid #fff; border-radius:4px; margin-bottom:4px; text-align:center; }
-.stat-row { display:flex; flex-direction:column; align-items:center; margin-bottom:4px; }
-.stat-row label { width:auto; text-align:center; margin-bottom:4px;color: #fff; }
-.center-label { display:flex; flex-direction:column; align-items:center; }
-select, input, button { font-size:inherit; font-family:inherit; }
+
 .form-wrapper {
     width: 100%;
-    padding: 2px;
+    max-width: 600px; /* Limits width on laptop so it looks like a mobile app */
+    margin: 0 auto;
+    padding: 10px;
     border: 4px solid #1e90ff;
-    border-radius: 0;
     box-sizing: border-box;
-    /* This keeps the box from collapsing when elements are hidden */
     min-height: 650px; 
     display: flex;
     flex-direction: column;
 }
+
+/* Typography & Labels */
+h3 { margin: 0 0 8px 0; color: #fff; }
+label { font-weight: bold; color: #fff; font-size: 20px; }
+.uiText { font-size: 22px; text-align: center; margin: 10px auto; display: block; color: gold; }
+
+/* Grid & Layout */
+.row { display: flex; justify-content: center; gap: 5px; margin-top: 10px; font-size: 17px; }
+.block { flex: 1; max-width: 50%; text-align: center; }
+
+.roster-box {
+    text-align: left;
+    width: 100%;
+    margin: 10px auto;
+    padding: 8px 6px;
+    font-size: 18px;
+    white-space: pre-line;
+    background-color: #000;
+    color: #fff;
+    font-weight: bold;
+    border: 1px solid #333;
+    box-sizing: border-box;
+}
+
+/* Player List & Stats */
+.playerName { display: flex; justify-content: space-between; padding: 4px 0; cursor: pointer; }
+.playerName:hover { background-color: #333; }
+.playerName span.hc { color: #aaa; font-weight: normal; }
+
+.player-stats-container { position: relative; display: flex; justify-content: center; gap: 40px; }
+.player-stats-container::after { 
+    content: ""; position: absolute; top: 0; bottom: 0; left: 50%; 
+    transform: translateX(-50%); width: 2px; background-color: #fff; opacity: 0.3; 
+}
+
+/* Buttons */
 .uiButton {
     padding: 10px 20px;
     font-size: 20px;
@@ -59,12 +72,47 @@ select, input, button { font-size:inherit; font-family:inherit; }
     border: none;
     background-color: #1e90ff;
     color: white;
-    display: block;          /* allows centering */
-    margin: 20px auto;       /* centers horizontally */
+    display: block;
+    margin: 20px auto;
 }
 
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    width: 100%;
+    margin-top: 20px;
+}
 
-    /* --- Universal Master Modal --- */
+.button-row button {
+    flex: 1;
+    height: 45px;
+    font-size: 16px;
+    padding: 0;
+    text-align: center;
+}
+
+/* Timer Box (Fixed for Laptop & Mobile) */
+#timerBox {
+    display: none;
+    position: fixed;
+    width: 140px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centers it perfectly */
+    background: #111;
+    color: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px solid #1e90ff;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    z-index: 10000;
+    text-align: center;
+}
+
+#timerValue { font-size: 2em; font-weight: bold; display: block; margin-bottom: 10px; }
+
+/* Modals */
 #masterModal {
     display: none; 
     position: fixed; 
@@ -73,7 +121,6 @@ select, input, button { font-size:inherit; font-family:inherit; }
     justify-content: center; 
     align-items: center; 
     z-index: 100000;
-    padding: 10px;
 }
 
 .modal-container {
@@ -81,162 +128,41 @@ select, input, button { font-size:inherit; font-family:inherit; }
     padding: 20px; 
     border: 2px solid #1e90ff; 
     border-radius: 12px; 
-    width: 100%; 
-    max-width: 450px; 
-    max-height: 85vh; /* Prevents modal from cutting off on small screens */
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    box-shadow: 0 0 20px rgba(30, 144, 255, 0.3);
-}
-
-#modalContent {
-    overflow-y: auto; /* Makes Match History scrollable */
-    margin-bottom: 20px;
-    color: #fff;
-    scrollbar-width: thin; /* Clean scrollbars for Firefox */
-    scrollbar-color: #1e90ff #111;
-}
-
-#modalFooter {
-    display: flex; 
-    gap: 10px; 
-    justify-content: center;
-    flex-wrap: wrap; /* Wraps buttons if they are too wide on small phones */
-}
-
-/* Standardizing Modal Buttons */
-#modalFooter button {
-    padding: 10px 18px; 
-    border: none; 
-    border-radius: 6px; 
-    font-weight: bold; 
-    font-size: 16px;
-    cursor: pointer;
-    transition: opacity 0.2s;
-}
-
-#modalFooter button:active {
-    opacity: 0.7;
-}
-
-.playerName {
-  display: flex;           /* allow name and HC to be on same line */
-  justify-content: space-between; /* push HC to right */
-  padding: 2px 0;
-  cursor: pointer;
-}
-
-.playerName span.hc {
-  color: #fff;             /* lighter color for HC */
-  -weight: normal;
-}
-  #lagWinnerHeader,
-#lagLoserHeader {
-    font-size: 18px; visibility: hidden;
-    margin-bottom: 10px;color: #FFCC33;
-}
-    #lagWinnerHeader.active, #lagLoserHeader.active {
-    visibility: visible;
-}
-    .button-row {
-    display: flex;         /* Align buttons in a row */
-    justify-content: space-between; /* Evenly space them */
-    gap: 5px;              /* Tiny gap between buttons */
-    width: 100%;           /* Fill the container */
-    margin-top: 20px;
+    width: 90%; 
+    max-width: 400px;
     box-sizing: border-box;
 }
 
-.button-row button {
-    flex: 1;               /* Forces all 4 buttons to be exactly the same width */
-    height: 40px;
-    font-size: 18px;       /* Slightly smaller to ensure "Transfer" fits on small phones */
-    padding: 0;            /* Remove internal padding to save space */
-    text-align: center;
-    white-space: nowrap;   /* Prevents text from wrapping to a second line */
-}
-/* MOBILE STYLES */
-@media (max-width:600px) {
-
-
-  .roster-box {
-    width: 90%;       /* take up most of the screen on mobile */
-    max-width: 300px; /* optional: don’t let it get too wide on large phones */
-    margin: 0 auto;   /* center it horizontally */
-}
-.button-row button {font-size: 14px;}
-.lag-row {gap:10px; width:100%; margin-top:20px; align-items:center; text-align:center;display: none;}
-.player-stats-container { position:relative; display:flex; justify-content:center; gap:60px; }
-.player-stats-container::after { content:""; position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:2px; background-color:#fff; opacity:0.7; pointer-events:none; }
-.back-button { display: block;  background-color: #1e90ff; color: #fff;  text-decoration: none; font-size: 24px; text-align: center; }
-    .uiText {
-    font-size: 22px;
-    text-align: center;   /* centers the text */
-    margin: 10px auto;    /* centers the block */
-    display: block;
-    color: gold;
-}
- /* Floating timer box */
-#timerBox {
-  display: none;
-  width:125px;
-  top: 50%;
-  right: calc(50% - 10px); /* ← nudge RIGHT */
-  background: #000;
-  color: #fff;
-  border-radius: 8px;
-  border-color: #1e90ff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  z-index: 1000;
-}
-  #timerValue {
-    font-size: 1.5em;
-    font-weight: bold;
-  }
-  .closeBtn {
-    background: crimson;
-    border: none;
-    color: white;
-    margin-left: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .startBtn {
-    font-size: 1em;
-    cursor: pointer;
-  }
-    /* Spinner Overlay */
+/* Loading Spinner */
 #loadingOverlay {
     display: none;
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.8);
-    z-index: 10000;
+    z-index: 20000;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: white;
 }
 
 .spinner {
-    width: 50px;
-    height: 50px;
+    width: 50px; height: 50px;
     border: 5px solid #333;
-    border-top: 5px solid #1e90ff; /* Theme blue */
+    border-top: 5px solid #1e90ff;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-bottom: 15px;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* --- Mobile Specific Overrides --- */
+@media (max-width: 600px) {
+    .form-wrapper { border: none; }
+    .button-row button { font-size: 14px; }
+    .roster-box { width: 95%; }
 }
-   
-</style>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+</style>    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
     <script src="schedule.js"></script>
 </head>
 <body>
