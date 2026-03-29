@@ -276,7 +276,7 @@ input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; backgroun
 </div>
 <div id="playerNamesHeader" style="display:flex; justify-content:center; gap:30px; text-align:center; align-items: center;">
     <h3 id="lagWinnerHeader" class="block" style="margin:0;">Lag Winner</h3>    
-   <p id="vsText" style=display:flex;>vs</p>   
+   <p id="vsText" style="display:flex;">vs</p>   
     <h3 id="lagLoserHeader" class="block" style="margin:0;">Lag Loser</h3>
 </div>
 <div id="gamePlayArea" style="display:none;">
@@ -904,20 +904,6 @@ function updateCurrentWeekAndDate() {
         saveNow(); // ADDED: This saves the selection so it survives a refresh
     }
 }
-    
-function addNewPlayerManual() {
-    const homeName = document.getElementById("team").value || "Home Team";
-    const awayName = document.getElementById("opponent").value || "Away Team";
-    const bodyHtml = `
-        <input type="text" id="manualPlayerName" placeholder="Enter Player Name" style="width:100%; padding:12px; font-size:18px; margin-bottom:20px; border-radius:6px; border:1px solid #444; background:#111; color:white; box-sizing: border-box;">
-        <div style="margin-bottom: 5px; color:white; font-size:18px; display: flex; flex-direction: column; gap: 15px; align-items: flex-start; padding-left: 10px;">
-            <label><input type="radio" name="npTeam" value="home" checked style="transform: scale(1.3); margin-right:10px;"> ${homeName}</label>
-            <label><input type="radio" name="npTeam" value="away" style="transform: scale(1.3); margin-right:10px;"> ${awayName}</label>
-        </div>`;
-    showMasterModal("Add to Roster", bodyHtml, [{ text: "Add to Roster", action: "confirmNewPlayer()", color: "#1e90ff" }]);
-    setTimeout(() => { const inp = document.getElementById("manualPlayerName"); if(inp) inp.focus(); }, 100);
-}
-
 function addNewPlayerManual() {
     const homeName = document.getElementById("team").value || "Home Team";
     const awayName = document.getElementById("opponent").value || "Away Team";
