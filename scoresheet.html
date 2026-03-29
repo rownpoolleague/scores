@@ -512,7 +512,7 @@ function confirmLag(isWinner) {
         document.getElementById("matchInnings").value = 0;
 
         // --- HIDE ROSTERS/HEADERS ---
-        const toHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText","vsText"];
+        const toHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
         toHide.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "none";
@@ -559,7 +559,7 @@ function resetLagFields() {
     document.getElementById("matchInnings").value = 0;
 
     // --- NEW: Force everything to show again ---
-    const toShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText","vsText"];
+    const toShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
     toShow.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = "block";
@@ -721,7 +721,7 @@ function loadScoresheet() {
             document.getElementById("lagLoserHeader").classList.add("active");
         }
 
-        const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText","vsText"];
+        const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText"];
         fieldsToHide.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "none";
@@ -802,7 +802,7 @@ document.getElementById("submitMatch").onclick = function() {
         document.getElementById("gamePlayArea").style.display = "none";
 
         // Show the selection fields again
-        const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText","vsText"];
+        const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
         fieldsToShow.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "block";
