@@ -7,19 +7,19 @@
     <script src="scoresheetrosters.js"></script>
     <script src="scoresheetinfo.js"></script>
 <style>
-/* --- Global Styles (Applied to Laptop & Mobile) --- */
+/* --- GLOBAL STYLES (Applies to Laptop & Mobile) --- */
 body { 
     font-family: Arial, sans-serif; 
     font-size: 18px; 
     background-color: #000; 
     color: #fff; 
     margin: 0; 
-    padding: 0;
+    padding: 0; 
 }
 
 .form-wrapper {
     width: 100%;
-    max-width: 600px; /* Limits width on laptop so it looks like a mobile app */
+    max-width: 550px; /* Keeps it looking like a mobile app on laptop */
     margin: 0 auto;
     padding: 10px;
     border: 4px solid #1e90ff;
@@ -29,14 +29,9 @@ body {
     flex-direction: column;
 }
 
-/* Typography & Labels */
-h3 { margin: 0 0 8px 0; color: #fff; }
-label { font-weight: bold; color: #fff; font-size: 20px; }
-.uiText { font-size: 22px; text-align: center; margin: 10px auto; display: block; color: gold; }
-
-/* Grid & Layout */
+/* Layout Blocks */
 .row { display: flex; justify-content: center; gap: 5px; margin-top: 10px; font-size: 17px; }
-.block { flex: 1; max-width: 50%; text-align: center; }
+.block { flex: 1; max-width: 50%; text-align: center; overflow-wrap: break-word; }
 
 .roster-box {
     text-align: left;
@@ -48,102 +43,84 @@ label { font-weight: bold; color: #fff; font-size: 20px; }
     background-color: #000;
     color: #fff;
     font-weight: bold;
-    border: 1px solid #333;
     box-sizing: border-box;
+    border: 1px solid #333;
 }
 
-/* Player List & Stats */
+/* Inputs & Labels */
+label { font-weight: bold; color: #fff; font-size: 20px; }
+h3 { margin: 0 0 8px 0; color: #fff; }
+input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; background-color: #fff; color: #000; border: 1px solid #fff; border-radius: 4px; text-align: center; }
+
+.innings-wrapper { display: flex; align-items: center; justify-content: center; gap: 5px; }
+.stat-row { display: flex; flex-direction: column; align-items: center; margin-bottom: 8px; }
+
+/* Player List Styling */
 .playerName { display: flex; justify-content: space-between; padding: 4px 0; cursor: pointer; }
 .playerName:hover { background-color: #333; }
 .playerName span.hc { color: #aaa; font-weight: normal; }
 
-.player-stats-container { position: relative; display: flex; justify-content: center; gap: 40px; }
-.player-stats-container::after { 
-    content: ""; position: absolute; top: 0; bottom: 0; left: 50%; 
-    transform: translateX(-50%); width: 2px; background-color: #fff; opacity: 0.3; 
-}
-
-/* Buttons */
-.uiButton {
-    padding: 10px 20px;
-    font-size: 20px;
-    cursor: pointer;
-    border-radius: 6px;
-    border: none;
-    background-color: #1e90ff;
-    color: white;
-    display: block;
-    margin: 20px auto;
-}
+/* Buttons & Navigation */
+.uiButton { padding: 10px 20px; font-size: 20px; cursor: pointer; border-radius: 6px; border: none; background-color: #1e90ff; color: white; display: block; margin: 20px auto; }
+.back-button { display: block; background-color: #1e90ff; color: #fff; text-decoration: none; font-size: 24px; text-align: center; padding: 10px 0; }
+.uiText { font-size: 22px; text-align: center; margin: 10px auto; display: block; color: gold; }
 
 .button-row {
     display: flex;
     justify-content: space-between;
-    gap: 5px;
+    gap: 4px;
     width: 100%;
     margin-top: 20px;
+    box-sizing: border-box;
 }
 
 .button-row button {
     flex: 1;
-    height: 45px;
-    font-size: 16px;
+    height: 40px;
+    font-size: 14px;
     padding: 0;
     text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
 }
 
-/* Timer Box (Fixed for Laptop & Mobile) */
+/* Floating Timer Box - FIXED FOR BOTH */
 #timerBox {
     display: none;
     position: fixed;
-    width: 140px;
+    width: 130px;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Centers it perfectly */
-    background: #111;
+    transform: translate(-50%, -50%); /* Centers exactly on screen */
+    background: #000;
     color: #fff;
     padding: 15px;
-    border-radius: 12px;
+    border-radius: 8px;
     border: 2px solid #1e90ff;
-    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.8);
     z-index: 10000;
     text-align: center;
 }
 
-#timerValue { font-size: 2em; font-weight: bold; display: block; margin-bottom: 10px; }
+#timerValue { font-size: 1.8em; font-weight: bold; display: block; margin-bottom: 5px; }
+.closeBtn { background: crimson; border: none; color: white; border-radius: 4px; cursor: pointer; padding: 5px 10px; }
 
-/* Modals */
-#masterModal {
-    display: none; 
-    position: fixed; 
-    inset: 0; 
-    background: rgba(0, 0, 0, 0.9); 
-    justify-content: center; 
-    align-items: center; 
-    z-index: 100000;
-}
+/* Player Stats Container Divider */
+.player-stats-container { position: relative; display: flex; justify-content: center; gap: 40px; }
+.player-stats-container::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 2px; background-color: #fff; opacity: 0.5; pointer-events: none; }
 
-.modal-container {
-    background: #111; 
-    padding: 20px; 
-    border: 2px solid #1e90ff; 
-    border-radius: 12px; 
-    width: 90%; 
-    max-width: 400px;
-    box-sizing: border-box;
-}
-
-/* Loading Spinner */
+/* Loading Overlay */
 #loadingOverlay {
     display: none;
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.8);
-    z-index: 20000;
+    z-index: 10000;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    color: white;
 }
 
 .spinner {
@@ -152,17 +129,19 @@ label { font-weight: bold; color: #fff; font-size: 20px; }
     border-top: 5px solid #1e90ff;
     border-radius: 50%;
     animation: spin 1s linear infinite;
+    margin-bottom: 15px;
 }
 
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* --- Mobile Specific Overrides --- */
-@media (max-width: 600px) {
+/* --- MOBILE ONLY OVERRIDES --- */
+@media (max-width:600px) {
     .form-wrapper { border: none; }
-    .button-row button { font-size: 14px; }
     .roster-box { width: 95%; }
+    .button-row button { font-size: 12px; }
 }
-</style>    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+</style>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
     <script src="schedule.js"></script>
 </head>
 <body>
