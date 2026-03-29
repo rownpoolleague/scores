@@ -137,6 +137,60 @@ input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; backgroun
     animation: spin 1s linear infinite;
     margin-bottom: 15px;
 }
+    #masterModal {
+    display: none; 
+    position: fixed; 
+    inset: 0; 
+    background: rgba(0, 0, 0, 0.9); 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 100000;
+    padding: 10px;
+}
+
+.modal-container {
+    background: #111; 
+    padding: 20px; 
+    border: 2px solid #1e90ff; 
+    border-radius: 12px; 
+    width: 100%; 
+    max-width: 450px; 
+    max-height: 85vh; /* Prevents modal from cutting off on small screens */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    box-shadow: 0 0 20px rgba(30, 144, 255, 0.3);
+}
+
+#modalContent {
+    overflow-y: auto; /* Makes Match History scrollable */
+    margin-bottom: 20px;
+    color: #fff;
+    scrollbar-width: thin; /* Clean scrollbars for Firefox */
+    scrollbar-color: #1e90ff #111;
+}
+
+#modalFooter {
+    display: flex; 
+    gap: 10px; 
+    justify-content: center;
+    flex-wrap: wrap; /* Wraps buttons if they are too wide on small phones */
+}
+
+/* Standardizing Modal Buttons */
+#modalFooter button {
+    padding: 10px 18px; 
+    border: none; 
+    border-radius: 6px; 
+    font-weight: bold; 
+    font-size: 16px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+#modalFooter button:active {
+    opacity: 0.7;
+}
 
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
