@@ -276,7 +276,7 @@ input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; backgroun
 </div>
 <div id="playerNamesHeader" style="display:flex; justify-content:center; gap:30px; text-align:center; align-items: center;">
     <h3 id="lagWinnerHeader" class="block" style="margin:0;">Lag Winner</h3>    
-    <div style=" font-size: 20px; color: gold;">vs</div>    
+   <p id="vsText" class="uiText">vs</p>   
     <h3 id="lagLoserHeader" class="block" style="margin:0;">Lag Loser</h3>
 </div>
 <div id="gamePlayArea" style="display:none;">
@@ -512,7 +512,7 @@ function confirmLag(isWinner) {
         document.getElementById("matchInnings").value = 0;
 
         // --- HIDE ROSTERS/HEADERS ---
-        const toHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
+        const toHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText","vsText"];
         toHide.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "none";
@@ -559,7 +559,7 @@ function resetLagFields() {
     document.getElementById("matchInnings").value = 0;
 
     // --- NEW: Force everything to show again ---
-    const toShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
+    const toShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText","vsText"];
     toShow.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = "block";
@@ -721,7 +721,7 @@ function loadScoresheet() {
             document.getElementById("lagLoserHeader").classList.add("active");
         }
 
-        const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText"];
+        const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText","vsText"];
         fieldsToHide.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "none";
@@ -802,7 +802,7 @@ document.getElementById("submitMatch").onclick = function() {
         document.getElementById("gamePlayArea").style.display = "none";
 
         // Show the selection fields again
-        const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
+        const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText","vsText"];
         fieldsToShow.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "block";
