@@ -693,71 +693,101 @@ function saveNow() {
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
 function loadScoresheet() {
-    const savedManual = localStorage.getItem("manual_roster_additions");
-    if (savedManual) Object.assign(scoresheetinfo, JSON.parse(savedManual));
-    
-    const raw = localStorage.getItem(FORM_KEY);
-    if (!raw) return;
-    
-    isLoading = true;
-    const data = JSON.parse(raw);
-    
-    if (data.scoringTeam) {
-        localStorage.setItem("scoringTeamName", data.scoringTeam);
-    }
-
-    Object.keys(data).forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            if (el.type === "checkbox") el.checked = data[id] === true;
-            else el.value = data[id];
+    try {
+        // 1. Load manual roster additions
+        const savedManual = localStorage.getItem("manual_roster_additions");
+        if (savedManual) {
+            try {
+                Object.assign(scoresheetinfo, JSON.parse(savedManual));
+            } catch(e) { console.error("Manual Roster Parse Error", e); }
         }
-    });
-
-    if (data.lwH) {
-        const lwH = document.getElementById("lagWinnerHeader");
-        lwH.textContent = data.lwH;
-        if (data.lwH !== "Lag Winner") {
-            lwH.classList.add("active");
-            lwH.style.visibility = "visible"; // FORCE VISIBILITY
-        }
-    }
-
-    if (data.mScores) {
-        scores = data.mScores;
-        localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-    }
-
-    if (data.gameVisible === true) {
-        document.getElementById("gamePlayArea").style.display = "block";
         
-        if (data.llH) {
-            const llH = document.getElementById("lagLoserHeader");
-            llH.textContent = data.llH;
-            if (data.llH !== "Lag Loser") {
-                llH.classList.add("active");
-                llH.style.visibility = "visible"; // FORCE VISIBILITY
+        // 2. Get the raw data and STOP if it's empty
+        const raw = localStorage.getItem(FORM_KEY);
+        if (!raw || raw === "undefined" || raw === "null") {
+            console.log("No data found in localStorage for:", FORM_KEY);
+            return;
+        }
+        
+        isLoading = true;
+        
+        // 3. Try to parse the data. If this fails, the QR/URL was bad.
+        let data;
+        try {
+            data = JSON.parse(raw);
+        } catch(e) {
+            console.error("Critical JSON Parse Error:", e);
+            isLoading = false;
+            return alert("Error: The transferred data is corrupted.");
+        }
+        
+        // 4. Restore Identity
+        if (data.scoringTeam) {
+            localStorage.setItem("scoringTeamName", data.scoringTeam);
+        }
+
+        // 5. Restore Inputs
+        Object.keys(data).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                if (el.type === "checkbox") el.checked = data[id] === true;
+                else el.value = data[id];
+            }
+        });
+
+        // 6. Restore Lag Headers with forced visibility
+        if (data.lwH) {
+            const lwH = document.getElementById("lagWinnerHeader");
+            lwH.textContent = data.lwH;
+            if (data.lwH !== "Lag Winner") {
+                lwH.classList.add("active");
+                lwH.style.visibility = "visible"; 
             }
         }
 
-        const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText"];
-        fieldsToHide.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.style.display = "none";
-        });
+        // 7. Restore Match Totals
+        if (data.mScores) {
+            scores = data.mScores;
+            localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+        }
+
+        // 8. Handle Visibility and hiding setup fields
+        if (data.gameVisible === true) {
+            document.getElementById("gamePlayArea").style.display = "block";
+            
+            if (data.llH) {
+                const llH = document.getElementById("lagLoserHeader");
+                llH.textContent = data.llH;
+                if (data.llH !== "Lag Loser") {
+                    llH.classList.add("active");
+                    llH.style.visibility = "visible";
+                }
+            }
+
+            const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText"];
+            fieldsToHide.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = "none";
+            });
+        }
+        
+        // 9. Final UI Refresh
+        const hSelect = document.getElementById("team");
+        const aSelect = document.getElementById("opponent");
+        
+        if (hSelect && hSelect.value) updateRoster(hSelect, document.getElementById("teamRoster"));
+        if (aSelect && aSelect.value) updateRoster(aSelect, document.getElementById("opponentRoster"));
+        
+        updateScoreUI();      
+        updateMatchWinner();  
+        
+        isLoading = false;
+        console.log("Scoresheet loaded successfully.");
+
+    } catch (globalError) {
+        console.error("loadScoresheet failed entirely:", globalError);
+        isLoading = false;
     }
-    
-    // REFRESH ROSTERS - Pass the values directly to be safe
-    const hSelect = document.getElementById("team");
-    const aSelect = document.getElementById("opponent");
-    
-    if (hSelect.value) updateRoster(hSelect, document.getElementById("teamRoster"));
-    if (aSelect.value) updateRoster(aSelect, document.getElementById("opponentRoster"));
-    
-    updateScoreUI();      
-    updateMatchWinner();  
-    
-    isLoading = false;
 }
 document.getElementById("submitMatch").onclick = function() {
     const btn = this;
