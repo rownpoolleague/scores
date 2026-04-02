@@ -696,7 +696,12 @@ function loadScoresheet() {
     isLoading = true;
     const data = JSON.parse(raw);
     
-    // Restore all standard inputs/selects
+    // 1. Restore the Scoring Team Identity to localStorage immediately
+    if (data.scoringTeam) {
+        localStorage.setItem("scoringTeamName", data.scoringTeam);
+    }
+
+    // 2. Restore all standard inputs/selects
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -705,22 +710,30 @@ function loadScoresheet() {
         }
     });
 
-    // Restore Lag Headers
-    if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
-    if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
-
-    if (data.lwH && data.lwH !== "Lag Winner") {
-        document.getElementById("lagWinnerHeader").classList.add("active");
+    // 3. Restore Lag Headers with forced visibility for transfers
+    if (data.lwH) {
+        const lwH = document.getElementById("lagWinnerHeader");
+        lwH.textContent = data.lwH;
+        if (data.lwH !== "Lag Winner") {
+            lwH.classList.add("active");
+            lwH.style.visibility = "visible"; // Force it to show
+        }
     }
 
-    // Handle Persistent Visibility based on saveNow flag
+    // 4. Handle Persistent Visibility based on saveNow flag
     if (data.gameVisible === true) {
         document.getElementById("gamePlayArea").style.display = "block";
         
-        if (data.llH && data.llH !== "Lag Loser") {
-            document.getElementById("lagLoserHeader").classList.add("active");
+        if (data.llH) {
+            const llH = document.getElementById("lagLoserHeader");
+            llH.textContent = data.llH;
+            if (data.llH !== "Lag Loser") {
+                llH.classList.add("active");
+                llH.style.visibility = "visible"; // Force it to show
+            }
         }
 
+        // Force-hide setup fields to bypass the "choose team" logic
         const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText"];
         fieldsToHide.forEach(id => {
             const el = document.getElementById(id);
@@ -728,16 +741,16 @@ function loadScoresheet() {
         });
     }
 
-    // Restore Team Match Scores from data package
+    // 5. Restore Team Match Scores from data package
     if (data.mScores) {
         scores = data.mScores;
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-        updateScoreUI();
     }
     
-    // Refresh Rosters and Winner dropdowns
+    // 6. Final UI Refresh in the correct order
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
+    updateScoreUI(); 
     updateMatchWinner();
     
     isLoading = false;
