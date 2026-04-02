@@ -967,6 +967,7 @@ function exportHistoryOnly() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+    // 1. Session Expiry Logic (Keep this exactly as you had it)
     const lastActivity = localStorage.getItem("lastSessionActivity");
     if (lastActivity && (Date.now() - parseInt(lastActivity)) > (12 * 60 * 60 * 1000)) {
         localStorage.removeItem("matchHistory");
@@ -977,15 +978,32 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     localStorage.setItem("lastSessionActivity", Date.now().toString());
     
+    // 2. THE BRIDGE: Check URL for NEW Transfer Data
     const params = new URLSearchParams(window.location.search);
+    
+    // Check for the main scoresheet data (QR Transfer)
+    if (params.has("data")) {
+        const decoded = decodeURIComponent(params.get("data"));
+        localStorage.setItem(FORM_KEY, decoded); // Overwrites old local data with the QR data
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    // Check for the history data separately
     if (params.has("hdata")) {
         localStorage.setItem("matchHistory", decodeURIComponent(params.get("hdata")));
         window.history.replaceState({}, document.title, window.location.pathname);
     }
     
+    // 3. RUN THE LOAD
     loadScoresheet();
     updateScoreUI();
     updateCurrentWeekAndDate();
+
+    // 4. THE MODAL BLOCKER
+    // Give the UI 150ms to finish loadScoresheet() before checking if the modal is needed
+    setTimeout(() => {
+        checkInitialSelection();
+    }, 150);
 });
     let timerInterval, seconds = 0;
 function startTimer() {
