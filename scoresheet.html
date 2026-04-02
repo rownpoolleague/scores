@@ -674,23 +674,25 @@ function executeClearHistory() {
 function saveNow() {
     if (isLoading) return;
     const data = {};
+    
+    // 1. Collect all standard inputs
     document.querySelectorAll("input[id], select[id], textarea[id]").forEach(el => {
         data[el.id] = el.type === "checkbox" ? el.checked : el.value;
     });
     
-    // --- ADD THIS ---
-    data.mScores = scores; // Save the current scores object directly
-    // ----------------
-    data.scoringTeam = localStorage.getItem("scoringTeamName") || "Unknown";
+    // 2. CRITICAL: Add the hidden identity and match scores
+    data.scoringTeam = localStorage.getItem("scoringTeamName") || "";
+    data.mScores = scores; // This is your {home: X, away: Y} object
+    
+    // 3. Add visibility flags so the second phone knows where you left off
     data.gameVisible = document.getElementById("gamePlayArea").style.display === "block";
     data.lwH = document.getElementById("lagWinnerHeader").textContent;
     data.llH = document.getElementById("lagLoserHeader").textContent;
 
+    // 4. Save to the main key that the QR code reads
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
-
 function loadScoresheet() {
-    // 1. Load manual roster additions first so players exist before UI looks for them
     const savedManual = localStorage.getItem("manual_roster_additions");
     if (savedManual) Object.assign(scoresheetinfo, JSON.parse(savedManual));
     
@@ -700,12 +702,10 @@ function loadScoresheet() {
     isLoading = true;
     const data = JSON.parse(raw);
     
-    // 2. Restore the Scoring Team Identity immediately
     if (data.scoringTeam) {
         localStorage.setItem("scoringTeamName", data.scoringTeam);
     }
 
-    // 3. Restore standard inputs/selects (Teams, Innings, etc.)
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -714,26 +714,30 @@ function loadScoresheet() {
         }
     });
 
-    // 4. Restore Lag Headers
-    if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
-    if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
-
-    if (data.lwH && data.lwH !== "Lag Winner") {
-        document.getElementById("lagWinnerHeader").classList.add("active");
+    if (data.lwH) {
+        const lwH = document.getElementById("lagWinnerHeader");
+        lwH.textContent = data.lwH;
+        if (data.lwH !== "Lag Winner") {
+            lwH.classList.add("active");
+            lwH.style.visibility = "visible"; // FORCE VISIBILITY
+        }
     }
 
-    // 5. Restore Match Totals (0-0, 1-0, etc.)
     if (data.mScores) {
         scores = data.mScores;
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
     }
 
-    // 6. Handle Persistent Visibility (Hide setup fields if match is in progress)
     if (data.gameVisible === true) {
         document.getElementById("gamePlayArea").style.display = "block";
         
-        if (data.llH && data.llH !== "Lag Loser") {
-            document.getElementById("lagLoserHeader").classList.add("active");
+        if (data.llH) {
+            const llH = document.getElementById("lagLoserHeader");
+            llH.textContent = data.llH;
+            if (data.llH !== "Lag Loser") {
+                llH.classList.add("active");
+                llH.style.visibility = "visible"; // FORCE VISIBILITY
+            }
         }
 
         const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText"];
@@ -743,15 +747,18 @@ function loadScoresheet() {
         });
     }
     
-    // 7. Refresh UI components in the correct order
-    updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
-    updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
-    updateScoreUI();      // Syncs the big score display
-    updateMatchWinner();  // Syncs the winner dropdown
+    // REFRESH ROSTERS - Pass the values directly to be safe
+    const hSelect = document.getElementById("team");
+    const aSelect = document.getElementById("opponent");
+    
+    if (hSelect.value) updateRoster(hSelect, document.getElementById("teamRoster"));
+    if (aSelect.value) updateRoster(aSelect, document.getElementById("opponentRoster"));
+    
+    updateScoreUI();      
+    updateMatchWinner();  
     
     isLoading = false;
 }
-
 document.getElementById("submitMatch").onclick = function() {
     const btn = this;
     const loader = document.getElementById("loadingOverlay");
@@ -995,14 +1002,16 @@ function updateTimerDisplay() {
     const secs = seconds % 60;
     document.getElementById("timerValue").textContent = `${mins}:${secs < 10 ? '0' + secs : secs}`;
 }
-    function exportScoresheet() {
+   function exportScoresheet() {
+    // 1. FORCE A SAVE first so the data is fresh
+    saveNow(); 
+
     const data = localStorage.getItem(FORM_KEY);
     if (!data) return alert("No data to transfer.");
     
     const baseUrl = window.location.href.split('?')[0];
     const fullUrl = `${baseUrl}?data=${encodeURIComponent(data)}`;
     
-    // 1. Define the HTML for the QR code container
     const bodyHtml = `
         <div style="text-align:center;">
             <p style="margin-bottom:15px; font-size:14px; color:#fff;">Scan to transfer the current scoresheet.</p>
@@ -1010,21 +1019,21 @@ function updateTimerDisplay() {
         </div>
     `;
 
-    // 2. Show the Master Modal (No extra buttons needed, "Close" is built-in)
     showMasterModal("Transfer Scoresheet", bodyHtml);
 
-    // 3. Generate the QR Code (Wait 50ms for the modal to render)
+    // Generate the QR Code (Increased timeout to 150ms to ensure Modal is fully rendered)
     setTimeout(() => {
         const qrContainer = document.getElementById('qrcode');
         if (qrContainer) {
+            qrContainer.innerHTML = ""; // Clear any old QR first
             new QRCode(qrContainer, { 
                 text: fullUrl, 
                 width: 200, 
                 height: 200,
-                correctLevel: QRCode.CorrectLevel.M 
+                correctLevel: QRCode.CorrectLevel.L // 'L' allows for more data capacity
             });
         }
-    }, 50);
+    }, 150);
 }
     function toggleNotes() { const box = document.getElementById("notesContainer"); box.style.display = box.style.display === "none" ? "block" : "none"; }
    function confirmNewPlayer() {
