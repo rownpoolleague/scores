@@ -265,7 +265,7 @@ input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; backgroun
 
    
 </div>
-    <p id="statusText" class="uiText">Tap a Player to Set Lag Winner/Loser</p>
+    <p id="statusText" class="uiText">Tap a Player to Set Lag Winner</p>
     
 <div class="lag-row" style="display:none;justify-content:center;gap:40px;margin-top:10px;color: #gold;">
     <div class="center-label">
@@ -474,8 +474,8 @@ document.addEventListener("click", e => {
         teamButtonsHtml += `</div>`;
 
         showMasterModal(
-            "Choose Your Team", 
-            `<div style='text-align:center; margin-bottom:10px;'>Match and rosters will auto-fill after your selection.</div>${teamButtonsHtml}`, 
+            "Select Your Team", 
+            `<div style='text-align:center; margin-bottom:10px;'>Opponent and Rosters will fill automatically.</div>${teamButtonsHtml}`, 
             [] // Keep footer buttons empty so they don't clutter the bottom
         );
     }
@@ -690,6 +690,7 @@ function saveNow() {
 }
 
 function loadScoresheet() {
+    // 1. Load manual roster additions first so players exist before UI looks for them
     const savedManual = localStorage.getItem("manual_roster_additions");
     if (savedManual) Object.assign(scoresheetinfo, JSON.parse(savedManual));
     
@@ -699,7 +700,12 @@ function loadScoresheet() {
     isLoading = true;
     const data = JSON.parse(raw);
     
-    // Restore all standard inputs/selects
+    // 2. Restore the Scoring Team Identity immediately
+    if (data.scoringTeam) {
+        localStorage.setItem("scoringTeamName", data.scoringTeam);
+    }
+
+    // 3. Restore standard inputs/selects (Teams, Innings, etc.)
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -707,10 +713,8 @@ function loadScoresheet() {
             else el.value = data[id];
         }
     });
-if (data.scoringTeam) {
-        localStorage.setItem("scoringTeamName", data.scoringTeam);
-    }
-    // Restore Lag Headers
+
+    // 4. Restore Lag Headers
     if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
     if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
 
@@ -718,7 +722,13 @@ if (data.scoringTeam) {
         document.getElementById("lagWinnerHeader").classList.add("active");
     }
 
-    // Handle Persistent Visibility based on saveNow flag
+    // 5. Restore Match Totals (0-0, 1-0, etc.)
+    if (data.mScores) {
+        scores = data.mScores;
+        localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+    }
+
+    // 6. Handle Persistent Visibility (Hide setup fields if match is in progress)
     if (data.gameVisible === true) {
         document.getElementById("gamePlayArea").style.display = "block";
         
@@ -732,28 +742,23 @@ if (data.scoringTeam) {
             if (el) el.style.display = "none";
         });
     }
-
-    // Restore Team Match Scores from data package
-    if (data.mScores) {
-        scores = data.mScores;
-        localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-        updateScoreUI();
-    }
     
-    // Refresh Rosters and Winner dropdowns
+    // 7. Refresh UI components in the correct order
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
-    updateMatchWinner();
+    updateScoreUI();      // Syncs the big score display
+    updateMatchWinner();  // Syncs the winner dropdown
     
     isLoading = false;
 }
+
 document.getElementById("submitMatch").onclick = function() {
     const btn = this;
     const loader = document.getElementById("loadingOverlay");
     btn.disabled = true;
     loader.style.display = "flex";
 
-    // Grab the scoring team from localStorage, NOT an element ID
+    // Grab identity from Storage, not a missing HTML element
     const scoringTeamStored = localStorage.getItem("scoringTeamName") || "Unknown";
 
     const data = {
@@ -793,12 +798,11 @@ document.getElementById("submitMatch").onclick = function() {
         const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
         history.push(data); 
         localStorage.setItem("matchHistory", JSON.stringify(history));
-        localStorage.setItem("lastSessionActivity", Date.now().toString());
 
         const winnerName = document.getElementById("matchWinner").value;
         const homeTeamName = document.getElementById("team").value;
         
-        // Logical check for score update
+        // Accurate score incrementing based on roster lookup
         if (winnerName && homeTeamName) {
             const homeRoster = scoresheetinfo[homeTeamName] || [];
             const isHomeWinner = homeRoster.some(p => p.name === winnerName);
@@ -809,7 +813,7 @@ document.getElementById("submitMatch").onclick = function() {
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
 
-        // --- RESET VISIBILITY ---
+        // RESET UI FOR NEXT MATCH
         document.getElementById("gamePlayArea").style.display = "none";
 
         const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
@@ -818,7 +822,6 @@ document.getElementById("submitMatch").onclick = function() {
             if (el) el.style.display = "block";
         });
 
-        // Reset values
         const fieldsToReset = ["lagWinner", "lagLoser", "matchInnings", "matchWinner", "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8", "pB_hc", "pB_wins", "pB_safeties", "pB_b8", "pB_br", "pB_e8"];
         fieldsToReset.forEach(id => {
             const el = document.getElementById(id);
@@ -851,11 +854,9 @@ document.getElementById("submitMatch").onclick = function() {
     .catch(err => {
         loader.style.display = "none";
         btn.disabled = false;
-        console.error("Submission Error:", err);
-        alert("Submission Error - Check Console");
+        alert("Submission Error");
     });
 };
-
     function findMatchup(teamNumber) {
     if (typeof scheduleData === 'undefined') return null;
     
