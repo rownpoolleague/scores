@@ -801,62 +801,72 @@ document.getElementById("submitMatch").onclick = function() {
         body: JSON.stringify(data)
     })
     .then(() => {
-        loader.style.display = "none"; 
-        const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
-        history.push(data); 
-        localStorage.setItem("matchHistory", JSON.stringify(history));
+        // 1. Update Loader Text to show success
+        const loaderText = loader.querySelector('p') || loader; 
+        const originalText = loaderText.textContent;
+        loaderText.textContent = "Submitted! Begin Next Match";
 
-        const winnerName = document.getElementById("matchWinner").value;
-        const homeTeamName = document.getElementById("team").value;
-        
-        // Accurate score incrementing based on roster lookup
-        if (winnerName && homeTeamName) {
-            const homeRoster = scoresheetinfo[homeTeamName] || [];
-            const isHomeWinner = homeRoster.some(p => p.name === winnerName);
-            if (isHomeWinner) scores.home++;
-            else scores.away++;
-        }
+        // 2. Wait 2 seconds so they can read it, then reset everything
+        setTimeout(() => {
+            loader.style.display = "none";
+            loaderText.textContent = originalText; // Reset for next time
 
-        localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-        updateScoreUI();
+            const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
+            history.push(data); 
+            localStorage.setItem("matchHistory", JSON.stringify(history));
 
-        // RESET UI FOR NEXT MATCH
-        document.getElementById("gamePlayArea").style.display = "none";
+            const winnerName = document.getElementById("matchWinner").value;
+            const homeTeamName = document.getElementById("team").value;
+            
+            // Accurate score incrementing based on roster lookup
+            if (winnerName && homeTeamName) {
+                const homeRoster = scoresheetinfo[homeTeamName] || [];
+                const isHomeWinner = homeRoster.some(p => p.name === winnerName);
+                if (isHomeWinner) scores.home++;
+                else scores.away++;
+            }
 
-        const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
-        fieldsToShow.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.style.display = "block";
-        });
-
-        const fieldsToReset = ["lagWinner", "lagLoser", "matchInnings", "matchWinner", "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8", "pB_hc", "pB_wins", "pB_safeties", "pB_b8", "pB_br", "pB_e8"];
-        fieldsToReset.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.value = (el.type === "number" || el.id.includes('_')) ? 0 : "";
-        });
-
-        const lwH = document.getElementById("lagWinnerHeader");
-        const llH = document.getElementById("lagLoserHeader");
-        lwH.textContent = "Lag Winner";
-        llH.textContent = "Lag Loser";
-        lwH.classList.remove("active");
-        llH.classList.remove("active");
-
-        btn.textContent = "Submit Match";
-        document.getElementById("matchNotes").value = "-";
-        document.getElementById('pA_coach').checked = false;
-        document.getElementById('pB_coach').checked = false;
-
-        if ((scores.home + scores.away) >= 5) {
-            alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}.`);
-            scores = { home: 0, away: 0 };
             localStorage.setItem("teamMatchScores", JSON.stringify(scores));
             updateScoreUI();
-        }
 
-        btn.style.display = "none";
-        btn.disabled = false;
-        saveNow();
+            // RESET UI FOR NEXT MATCH
+            document.getElementById("gamePlayArea").style.display = "none";
+
+            const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
+            fieldsToShow.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = "block";
+            });
+
+            const fieldsToReset = ["lagWinner", "lagLoser", "matchInnings", "matchWinner", "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8", "pB_hc", "pB_wins", "pB_safeties", "pB_b8", "pB_br", "pB_e8"];
+            fieldsToReset.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = (el.type === "number" || el.id.includes('_')) ? 0 : "";
+            });
+
+            const lwH = document.getElementById("lagWinnerHeader");
+            const llH = document.getElementById("lagLoserHeader");
+            lwH.textContent = "Lag Winner";
+            llH.textContent = "Lag Loser";
+            lwH.classList.remove("active");
+            llH.classList.remove("active");
+
+            btn.textContent = "Submit Match";
+            document.getElementById("matchNotes").value = "-";
+            document.getElementById('pA_coach').checked = false;
+            document.getElementById('pB_coach').checked = false;
+
+            if ((scores.home + scores.away) >= 5) {
+                alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}.`);
+                scores = { home: 0, away: 0 };
+                localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+                updateScoreUI();
+            }
+
+            btn.style.display = "none";
+            btn.disabled = false;
+            saveNow();
+        }, 2000);
     })
     .catch(err => {
         loader.style.display = "none";
