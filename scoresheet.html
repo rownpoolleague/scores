@@ -355,7 +355,29 @@ let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
 let pendingPlayerData = null; // Essential for player selection logic
+// --- AUTO-LOADER & URL CHECKER ---
+window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const transferredData = urlParams.get('data');
 
+    if (transferredData) {
+        try {
+            // 1. Take data from URL and put it into LocalStorage
+            localStorage.setItem(FORM_KEY, decodeURIComponent(transferredData));
+            
+            // 2. Clean the URL so it looks professional again
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            // 3. Force the load
+            loadScoresheet();
+        } catch (e) {
+            console.error("QR Transfer failed:", e);
+        }
+    } else {
+        // No transfer? Just load whatever was already on this phone
+        loadScoresheet();
+    }
+});
 // --- 1. Universal Modal Engine ---
 function showMasterModal(title, bodyHtml, buttons = []) {
     const modalDiv = document.getElementById("masterModal");
