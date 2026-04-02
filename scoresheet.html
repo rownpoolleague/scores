@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Scoresheet</title>
-    <link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="scoresheetrosters.js"></script>
     <script src="scoresheetinfo.js"></script>
@@ -474,8 +471,8 @@ document.addEventListener("click", e => {
         teamButtonsHtml += `</div>`;
 
         showMasterModal(
-            "Select Your Team", 
-            `<div style='text-align:center; margin-bottom:10px;'>Opponent and Rosters will fill automatically.</div>${teamButtonsHtml}`, 
+            "Choose Your Team", 
+            `<div style='text-align:center; margin-bottom:10px;'>Match and rosters will auto-fill after your selection.</div>${teamButtonsHtml}`, 
             [] // Keep footer buttons empty so they don't clutter the bottom
         );
     }
@@ -674,120 +671,76 @@ function executeClearHistory() {
 function saveNow() {
     if (isLoading) return;
     const data = {};
-    
-    // 1. Collect all standard inputs
     document.querySelectorAll("input[id], select[id], textarea[id]").forEach(el => {
         data[el.id] = el.type === "checkbox" ? el.checked : el.value;
     });
     
-    // 2. CRITICAL: Add the hidden identity and match scores
-    data.scoringTeam = localStorage.getItem("scoringTeamName") || "";
-    data.mScores = scores; // This is your {home: X, away: Y} object
+    // --- ADD THIS ---
+    data.mScores = scores; // Save the current scores object directly
+    // ----------------
     
-    // 3. Add visibility flags so the second phone knows where you left off
     data.gameVisible = document.getElementById("gamePlayArea").style.display === "block";
     data.lwH = document.getElementById("lagWinnerHeader").textContent;
     data.llH = document.getElementById("lagLoserHeader").textContent;
 
-    // 4. Save to the main key that the QR code reads
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
+
 function loadScoresheet() {
-    try {
-        // 1. Load manual roster additions
-        const savedManual = localStorage.getItem("manual_roster_additions");
-        if (savedManual) {
-            try {
-                Object.assign(scoresheetinfo, JSON.parse(savedManual));
-            } catch(e) { console.error("Manual Roster Parse Error", e); }
+    const savedManual = localStorage.getItem("manual_roster_additions");
+    if (savedManual) Object.assign(scoresheetinfo, JSON.parse(savedManual));
+    
+    const raw = localStorage.getItem(FORM_KEY);
+    if (!raw) return;
+    
+    isLoading = true;
+    const data = JSON.parse(raw);
+    
+    // Restore all standard inputs/selects
+    Object.keys(data).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            if (el.type === "checkbox") el.checked = data[id] === true;
+            else el.value = data[id];
         }
-        
-        // 2. Get the raw data and STOP if it's empty
-        const raw = localStorage.getItem(FORM_KEY);
-        if (!raw || raw === "undefined" || raw === "null") {
-            console.log("No data found in localStorage for:", FORM_KEY);
-            return;
-        }
-        
-        isLoading = true;
-        
-        // 3. Try to parse the data. If this fails, the QR/URL was bad.
-        let data;
-        try {
-            data = JSON.parse(raw);
-        } catch(e) {
-            console.error("Critical JSON Parse Error:", e);
-            isLoading = false;
-            return alert("Error: The transferred data is corrupted.");
-        }
-        
-        // 4. Restore Identity
-        if (data.scoringTeam) {
-            localStorage.setItem("scoringTeamName", data.scoringTeam);
-        }
+    });
 
-        // 5. Restore Inputs
-        Object.keys(data).forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                if (el.type === "checkbox") el.checked = data[id] === true;
-                else el.value = data[id];
-            }
-        });
+    // Restore Lag Headers
+    if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
+    if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
 
-        // 6. Restore Lag Headers with forced visibility
-        if (data.lwH) {
-            const lwH = document.getElementById("lagWinnerHeader");
-            lwH.textContent = data.lwH;
-            if (data.lwH !== "Lag Winner") {
-                lwH.classList.add("active");
-                lwH.style.visibility = "visible"; 
-            }
-        }
-
-        // 7. Restore Match Totals
-        if (data.mScores) {
-            scores = data.mScores;
-            localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-        }
-
-        // 8. Handle Visibility and hiding setup fields
-        if (data.gameVisible === true) {
-            document.getElementById("gamePlayArea").style.display = "block";
-            
-            if (data.llH) {
-                const llH = document.getElementById("lagLoserHeader");
-                llH.textContent = data.llH;
-                if (data.llH !== "Lag Loser") {
-                    llH.classList.add("active");
-                    llH.style.visibility = "visible";
-                }
-            }
-
-            const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText"];
-            fieldsToHide.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = "none";
-            });
-        }
-        
-        // 9. Final UI Refresh
-        const hSelect = document.getElementById("team");
-        const aSelect = document.getElementById("opponent");
-        
-        if (hSelect && hSelect.value) updateRoster(hSelect, document.getElementById("teamRoster"));
-        if (aSelect && aSelect.value) updateRoster(aSelect, document.getElementById("opponentRoster"));
-        
-        updateScoreUI();      
-        updateMatchWinner();  
-        
-        isLoading = false;
-        console.log("Scoresheet loaded successfully.");
-
-    } catch (globalError) {
-        console.error("loadScoresheet failed entirely:", globalError);
-        isLoading = false;
+    if (data.lwH && data.lwH !== "Lag Winner") {
+        document.getElementById("lagWinnerHeader").classList.add("active");
     }
+
+    // Handle Persistent Visibility based on saveNow flag
+    if (data.gameVisible === true) {
+        document.getElementById("gamePlayArea").style.display = "block";
+        
+        if (data.llH && data.llH !== "Lag Loser") {
+            document.getElementById("lagLoserHeader").classList.add("active");
+        }
+
+        const fieldsToHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText"];
+        fieldsToHide.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "none";
+        });
+    }
+
+    // Restore Team Match Scores from data package
+    if (data.mScores) {
+        scores = data.mScores;
+        localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+        updateScoreUI();
+    }
+    
+    // Refresh Rosters and Winner dropdowns
+    updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
+    updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
+    updateMatchWinner();
+    
+    isLoading = false;
 }
 document.getElementById("submitMatch").onclick = function() {
     const btn = this;
@@ -795,11 +748,8 @@ document.getElementById("submitMatch").onclick = function() {
     btn.disabled = true;
     loader.style.display = "flex";
 
-    // Grab identity from Storage, not a missing HTML element
-    const scoringTeamStored = localStorage.getItem("scoringTeamName") || "Unknown";
-
     const data = {
-        scoringTeam: scoringTeamStored, 
+        scoringTeam: document.getElementById("team").value, 
         team: document.getElementById("team").value,
         opponent: document.getElementById("opponent").value,
         lagWinner: document.getElementById("lagWinner").value,
@@ -831,72 +781,62 @@ document.getElementById("submitMatch").onclick = function() {
         body: JSON.stringify(data)
     })
     .then(() => {
-        // 1. Update Loader Text to show success
-        const loaderText = loader.querySelector('p') || loader; 
-        const originalText = loaderText.textContent;
-        loaderText.textContent = "Submitted! Begin Next Match";
+        loader.style.display = "none"; 
+        const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
+        history.push(data); 
+        localStorage.setItem("matchHistory", JSON.stringify(history));
+        localStorage.setItem("lastSessionActivity", Date.now().toString());
 
-        // 2. Wait 2 seconds so they can read it, then reset everything
-        setTimeout(() => {
-            loader.style.display = "none";
-            loaderText.textContent = originalText; // Reset for next time
+        const winnerName = document.getElementById("matchWinner").value;
+        const homeTeamName = document.getElementById("team").value;
+        const homeRoster = scoresheetinfo[homeTeamName] || [];
 
-            const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
-            history.push(data); 
-            localStorage.setItem("matchHistory", JSON.stringify(history));
+        if (homeRoster.includes(winnerName)) scores.home++;
+        else scores.away++;
 
-            const winnerName = document.getElementById("matchWinner").value;
-            const homeTeamName = document.getElementById("team").value;
-            
-            // Accurate score incrementing based on roster lookup
-            if (winnerName && homeTeamName) {
-                const homeRoster = scoresheetinfo[homeTeamName] || [];
-                const isHomeWinner = homeRoster.some(p => p.name === winnerName);
-                if (isHomeWinner) scores.home++;
-                else scores.away++;
-            }
+        localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+        updateScoreUI();
 
+        // --- RESET VISIBILITY ---
+        // Hide the play area for the next match
+        document.getElementById("gamePlayArea").style.display = "none";
+
+        // Show the selection fields again
+        const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
+        fieldsToShow.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "block";
+        });
+
+        // Standard reset of input values
+        const fieldsToReset = ["lagWinner", "lagLoser", "matchInnings", "matchWinner", "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8", "pB_hc", "pB_wins", "pB_safeties", "pB_b8", "pB_br", "pB_e8"];
+        fieldsToReset.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = el.type === "number" ? 0 : "";
+        });
+
+        const lwH = document.getElementById("lagWinnerHeader");
+        const llH = document.getElementById("lagLoserHeader");
+        lwH.textContent = "Lag Winner";
+        llH.textContent = "Lag Loser";
+        lwH.classList.remove("active");
+        llH.classList.remove("active");
+
+        btn.textContent = "Submit Match";
+        document.getElementById("matchNotes").value = "-Leave a message- Click Notes box again to close.";
+        document.getElementById('pA_coach').checked = false;
+        document.getElementById('pB_coach').checked = false;
+
+        if ((scores.home + scores.away) >= 5) {
+            alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}.`);
+            scores = { home: 0, away: 0 };
             localStorage.setItem("teamMatchScores", JSON.stringify(scores));
             updateScoreUI();
+        }
 
-            // RESET UI FOR NEXT MATCH
-            document.getElementById("gamePlayArea").style.display = "none";
-
-            const fieldsToShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
-            fieldsToShow.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = "block";
-            });
-
-            const fieldsToReset = ["lagWinner", "lagLoser", "matchInnings", "matchWinner", "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8", "pB_hc", "pB_wins", "pB_safeties", "pB_b8", "pB_br", "pB_e8"];
-            fieldsToReset.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = (el.type === "number" || el.id.includes('_')) ? 0 : "";
-            });
-
-            const lwH = document.getElementById("lagWinnerHeader");
-            const llH = document.getElementById("lagLoserHeader");
-            lwH.textContent = "Lag Winner";
-            llH.textContent = "Lag Loser";
-            lwH.classList.remove("active");
-            llH.classList.remove("active");
-
-            btn.textContent = "Submit Match";
-            document.getElementById("matchNotes").value = "-";
-            document.getElementById('pA_coach').checked = false;
-            document.getElementById('pB_coach').checked = false;
-
-            if ((scores.home + scores.away) >= 5) {
-                alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}.`);
-                scores = { home: 0, away: 0 };
-                localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-                updateScoreUI();
-            }
-
-            btn.style.display = "none";
-            btn.disabled = false;
-            saveNow();
-        }, 2000);
+        btn.style.display = "none";
+        btn.disabled = false;
+        saveNow();
     })
     .catch(err => {
         loader.style.display = "none";
@@ -904,6 +844,7 @@ document.getElementById("submitMatch").onclick = function() {
         alert("Submission Error");
     });
 };
+
     function findMatchup(teamNumber) {
     if (typeof scheduleData === 'undefined') return null;
     
@@ -941,12 +882,10 @@ function updateCurrentWeekAndDate() {
     document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
     checkInitialSelection();
 }
-   function setScoringTeam(myNum) {
+    function setScoringTeam(myNum) {
     const matchup = findMatchup(myNum); 
     if (!matchup) return;
 
-    // Identify which team belongs to the user who clicked
-    const userTeamName = getTeamNameByNumber(myNum);
     const homeName = getTeamNameByNumber(matchup.home);
     const awayName = getTeamNameByNumber(matchup.away);
 
@@ -957,15 +896,12 @@ function updateCurrentWeekAndDate() {
         homeSelect.value = homeName;
         awaySelect.value = awayName;
 
-        // --- ADD THIS LINE ---
-        // Save the specific team name of the person who initialized this
-        localStorage.setItem("scoringTeamName", userTeamName); 
-
+        // Trigger your roster loading logic
         homeSelect.dispatchEvent(new Event('change'));
         awaySelect.dispatchEvent(new Event('change'));
         
         closeMasterModal();
-        saveNow(); 
+        saveNow(); // ADDED: This saves the selection so it survives a refresh
     }
 }
 function addNewPlayerManual() {
@@ -1042,16 +978,14 @@ function updateTimerDisplay() {
     const secs = seconds % 60;
     document.getElementById("timerValue").textContent = `${mins}:${secs < 10 ? '0' + secs : secs}`;
 }
-   function exportScoresheet() {
-    // 1. FORCE A SAVE first so the data is fresh
-    saveNow(); 
-
+    function exportScoresheet() {
     const data = localStorage.getItem(FORM_KEY);
     if (!data) return alert("No data to transfer.");
     
     const baseUrl = window.location.href.split('?')[0];
     const fullUrl = `${baseUrl}?data=${encodeURIComponent(data)}`;
     
+    // 1. Define the HTML for the QR code container
     const bodyHtml = `
         <div style="text-align:center;">
             <p style="margin-bottom:15px; font-size:14px; color:#fff;">Scan to transfer the current scoresheet.</p>
@@ -1059,21 +993,21 @@ function updateTimerDisplay() {
         </div>
     `;
 
+    // 2. Show the Master Modal (No extra buttons needed, "Close" is built-in)
     showMasterModal("Transfer Scoresheet", bodyHtml);
 
-    // Generate the QR Code (Increased timeout to 150ms to ensure Modal is fully rendered)
+    // 3. Generate the QR Code (Wait 50ms for the modal to render)
     setTimeout(() => {
         const qrContainer = document.getElementById('qrcode');
         if (qrContainer) {
-            qrContainer.innerHTML = ""; // Clear any old QR first
             new QRCode(qrContainer, { 
                 text: fullUrl, 
                 width: 200, 
                 height: 200,
-                correctLevel: QRCode.CorrectLevel.L // 'L' allows for more data capacity
+                correctLevel: QRCode.CorrectLevel.M 
             });
         }
-    }, 150);
+    }, 50);
 }
     function toggleNotes() { const box = document.getElementById("notesContainer"); box.style.display = box.style.display === "none" ? "block" : "none"; }
    function confirmNewPlayer() {
