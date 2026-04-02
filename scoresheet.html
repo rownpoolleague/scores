@@ -678,7 +678,7 @@ function saveNow() {
     // --- ADD THIS ---
     data.mScores = scores; // Save the current scores object directly
     // ----------------
-    
+    data.scoringTeam = localStorage.getItem("scoringTeamName") || "Unknown";
     data.gameVisible = document.getElementById("gamePlayArea").style.display === "block";
     data.lwH = document.getElementById("lagWinnerHeader").textContent;
     data.llH = document.getElementById("lagLoserHeader").textContent;
@@ -704,7 +704,9 @@ function loadScoresheet() {
             else el.value = data[id];
         }
     });
-
+if (data.scoringTeam) {
+        localStorage.setItem("scoringTeamName", data.scoringTeam);
+    }
     // Restore Lag Headers
     if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
     if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
@@ -749,7 +751,7 @@ document.getElementById("submitMatch").onclick = function() {
     loader.style.display = "flex";
 
     const data = {
-        scoringTeam: document.getElementById("team").value, 
+        scoringTeam: document.getElementById("scoringTeamName").value, 
         team: document.getElementById("team").value,
         opponent: document.getElementById("opponent").value,
         lagWinner: document.getElementById("lagWinner").value,
@@ -882,10 +884,12 @@ function updateCurrentWeekAndDate() {
     document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
     checkInitialSelection();
 }
-    function setScoringTeam(myNum) {
+   function setScoringTeam(myNum) {
     const matchup = findMatchup(myNum); 
     if (!matchup) return;
 
+    // Identify which team belongs to the user who clicked
+    const userTeamName = getTeamNameByNumber(myNum);
     const homeName = getTeamNameByNumber(matchup.home);
     const awayName = getTeamNameByNumber(matchup.away);
 
@@ -896,12 +900,15 @@ function updateCurrentWeekAndDate() {
         homeSelect.value = homeName;
         awaySelect.value = awayName;
 
-        // Trigger your roster loading logic
+        // --- ADD THIS LINE ---
+        // Save the specific team name of the person who initialized this
+        localStorage.setItem("scoringTeamName", userTeamName); 
+
         homeSelect.dispatchEvent(new Event('change'));
         awaySelect.dispatchEvent(new Event('change'));
         
         closeMasterModal();
-        saveNow(); // ADDED: This saves the selection so it survives a refresh
+        saveNow(); 
     }
 }
 function addNewPlayerManual() {
