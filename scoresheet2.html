@@ -401,6 +401,409 @@ select, input, button { font-size:inherit; font-family:inherit; }
         </div>
     </div>
 </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Scoresheet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="scoresheetrosters.js"></script>
+    <script src="scoresheetinfo.js"></script>
+<style>
+/* --- Styles unchanged from your version --- */
+body { font-family: Arial, sans-serif;font-size: 18px; background-color: #000; color: #fff; }
+.row {overflow-wrap: break-word; display: flex; justify-content: center; gap: 5px; margin-top: 10px;font-size:17px; }
+.block {overflow-wrap: break-word; text-align: center;flex: 1; max-width: 50%; }
+.roster-box {overflow-wrap: break-word;
+    text-align: left;
+    width: 100%;       /* Fill the block it's inside */
+    margin-top: 10px;
+    padding: 8px 6px;
+    min-height: 1px;
+    font-size: 18px;
+    white-space: pre-line;
+    background-color: #000;
+    color: #fff;
+    box-sizing: border-box; /* IMPORTANT: Keeps padding inside the width */
+}
+label { font-weight:bold; color:#fff; font-size:20px; }
+.playerName { cursor:pointer; padding:2px 0; }
+.playerName:hover { background-color:#333; }
+h3 { margin:0 0 8px 0; color:#fff; }
+input[type="number"] { width:35px; padding:4px 6px; font-size:20px; background-color:#fff; color:#000; border:1px solid #fff; border-radius:4px; margin-bottom:4px; text-align:center; }
+.stat-row { display:flex; flex-direction:column; align-items:center; margin-bottom:4px; }
+.stat-row label { width:auto; text-align:center; margin-bottom:4px; }
+.center-label { display:flex; flex-direction:column; align-items:center; }
+select, input, button { font-size:inherit; font-family:inherit; }
+.form-wrapper {
+    width: 100%; /* Spans full width */
+    padding: 2px;
+    border: 4px solid #1e90ff;
+    border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
+    box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
+}
+
+.playerName {
+  display: flex;           /* allow name and HC to be on same line */
+  justify-content: space-between; /* push HC to right */
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.playerName span.hc {
+  color: #fff;             /* lighter color for HC */
+  -weight: normal;
+}
+  #lagWinnerHeader,
+#lagLoserHeader {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+    .button-row {
+    display: flex;         /* Align buttons in a row */
+    justify-content: space-between; /* Evenly space them */
+    gap: 5px;              /* Tiny gap between buttons */
+    width: 100%;           /* Fill the container */
+    margin-top: 20px;
+    box-sizing: border-box;
+}
+
+.button-row button {
+    flex: 1;               /* Forces all 4 buttons to be exactly the same width */
+    height: 40px;
+    font-size: 18px;       /* Slightly smaller to ensure "Transfer" fits on small phones */
+    padding: 0;            /* Remove internal padding to save space */
+    text-align: center;
+    white-space: nowrap;   /* Prevents text from wrapping to a second line */
+}
+/* MOBILE STYLES */
+@media (max-width:600px) {
+
+.form-wrapper { margin:1px;}
+.roster-box { overflow-wrap: break-word;
+    text-align: left; 
+    width: 90%;       /* take up most of the screen on mobile */
+    max-width: 300px; /* optional: don’t let it get too wide on large phones */
+    margin: 0 auto;   /* center it horizontally */
+  }
+}
+.button-row button {font-size: 14px;}
+.lag-row {gap:10px; width:100%; margin-top:20px; align-items:center; text-align:center;display: none;}
+.stat-row { display:flex; flex-direction:column; align-items:center; margin-bottom:4px; }
+.stat-row label { width:auto; text-align:center; margin-bottom:4px; }
+.player-stats-container { position:relative; display:flex; justify-content:center; gap:60px; }
+.player-stats-container::after { content:""; position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:2px; background-color:#fff; opacity:0.7; pointer-events:none; }
+.back-button { display: block; margin: 15px auto 0 auto; background-color: #1e90ff; color: #fff; border-radius: 6px; text-decoration: none; font-size: 24px; text-align: center; }
+ /* Floating timer box */
+#timerBox {
+  display: none;
+  width:125px;
+  top: 50%;
+  right: calc(50% - 10px); /* ← nudge RIGHT */
+  background: #000;
+  color: #fff;
+  border-radius: 8px;
+  border-color: #1e90ff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+  #timerValue {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  .closeBtn {
+    background: crimson;
+    border: none;
+    color: white;
+    margin-left: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .startBtn {
+    font-size: 1em;
+    cursor: pointer;
+  }
+    /* Spinner Overlay */
+#loadingOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #333;
+    border-top: 5px solid #1e90ff; /* Theme blue */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+    #qrModal {
+    z-index: 1000000 !important; /* One level higher than your history modal */
+}
+</style>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+    <script src="schedule.js"></script>
+</head>
+<body>
+    <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div>Submitting Results...</div>
+</div>
+<div class="form-wrapper">
+<div id="matchHeader" style="text-align:center; margin-top:10px; margin-bottom:20px;">
+    <div style="display:flex; justify-content:center; gap:12px; font-size:22px; font-weight:bold;">
+    <div id="weekDisplay"></div>
+    <div id="dateDisplay" style="font-size:22px; font-weight:bold;"></div>
+</div>
+</div>
+<div class="row">
+    <div class="block">
+        <select id="team">
+            <option value="">Select Home Team</option>
+            <option>1 Halfway Crooks</option>
+            <option>2 Haters Welcome</option>
+            <option>3 Lynn's Amigos</option>
+            <option>4 Rackless Behavior</option>
+            <option>5 Dirty Ballers</option>
+            <option>6 8 on Break</option>
+            <option>7 Five Amigos</option>
+            <option>8 Frank's Pizza</option>
+            <option>9 Killer Instinct</option>
+            <option>10 Pete's Bunch</option>
+        </select>
+        <div id="teamRoster" class="roster-box"></div>
+    </div>
+    <div class="block">
+        <select id="opponent">
+            <option value="">Select Away Team</option>
+            <option>1 Halfway Crooks</option>
+            <option>2 Haters Welcome</option>
+            <option>3 Lynn's Amigos</option>
+            <option>4 Rackless Behavior</option>
+            <option>5 Dirty Ballers</option>
+            <option>6 8 on Break</option>
+            <option>7 Five Amigos</option>
+            <option>8 Frank's Pizza</option>
+            <option>9 Killer Instinct</option>
+            <option>10 Pete's Bunch</option>
+        </select>
+        <div id="opponentRoster" class="roster-box"></div>
+    </div>
+</div>
+
+<div class="lag-row" style="display:none;justify-content:center;gap:40px;margin-top:10px;">
+    <div class="block center-label">
+        <label>Lag Winner</label>
+        <input id="lagWinner" readonly style="width:135px; text-align:center;">
+    </div>
+    <div class="block center-label">
+        <label>Lag Loser</label>
+        <input id="lagLoser" readonly style="width:135px; text-align:center;">
+    </div>
+</div>
+
+<div style="text-align:center;margin-top:10px;">
+    <label>Innings</label><br>
+    <div class="innings-wrapper">
+        <button type="button" class="btn-minus" onclick="changeInnings(-1)">−</button>
+        <input type="number" id="matchInnings" value="0" min="0">
+        <button type="button" class="btn-plus" onclick="changeInnings(1)">+</button>
+    </div>
+</div>
+ <div style="text-align:center;padding-top:20px;;">
+    <button id="submitMatch" style="display:none;background-color:#00FF00;width:200px;height:55px;border-radius: 6px;color: #000;font-weight:bold;font-size:24px;">Submit Match</button> 
+</div>
+
+<div class="player-stats-container" style="margin-top:10px;">
+    <div class="block">
+        <h3 id="lagWinnerHeader">Lag Winner</h3>
+        <div class="stat-row">
+            <label>HC</label>
+            <div class="innings-wrapper">
+                <button onclick="changePAHC(-1)">−</button>
+                <input id="pA_hc" type="number" value="0" min="0">
+                <button onclick="changePAHC(1)">+</button>
+            </div>
+        </div>
+        <div class="stat-row">
+            <label>Wins</label>
+            <div class="innings-wrapper">
+                <button onclick="changeWinsA(-1)">−</button>
+                <input id="pA_wins" type="number" value="0" min="0">
+                <button onclick="changeWinsA(1)">+</button>
+            </div>
+        </div>
+       
+        <div class="stat-row">
+            <label>Safeties</label>
+            <div class="innings-wrapper">
+                <button onclick="changePASafeties(-1)">−</button>
+                <input id="pA_safeties" type="number" value="0" min="0">
+                <button onclick="changePASafeties(1)">+</button>
+            </div>
+        </div>
+        <div class="stat-row">
+            <label>8B</label>
+            <div class="innings-wrapper">
+                <button onclick="changePA8B(-1)">−</button>
+                <input id="pA_b8" type="number" value="0" min="0">
+                <button onclick="changePA8B(1)">+</button>
+            </div>
+        </div>
+        <div class="stat-row">
+            <label>B+R</label>
+            <div class="innings-wrapper">
+                <button onclick="changePABR(-1)">−</button>
+                <input id="pA_br" type="number" value="0" min="0">
+                <button onclick="changePABR(1)">+</button>
+            </div>
+        </div>
+        <div class="stat-row">
+            <label>E8</label>
+            <div class="innings-wrapper">
+                <button onclick="changePAE8(-1)">−</button>
+                <input id="pA_e8" type="number" value="0" min="0">
+                <button onclick="changePAE8(1)">+</button>
+            </div>
+        </div>
+                 <div class="stat-row"><label>Coach</label><input type="checkbox" id="pA_coach" onchange="saveNow()">
+</div>
+    </div>
+
+    <div class="block">
+        <h3 id="lagLoserHeader">Lag Loser</h3>
+        <div class="stat-row">
+            <label>HC</label>
+            <div class="innings-wrapper">
+                <button onclick="changePBHC(-1)">−</button>
+                <input id="pB_hc" type="number" value="0" min="0">
+                <button onclick="changePBHC(1)">+</button>
+            </div>
+        </div>
+      <div class="stat-row">
+            <label>Wins</label>
+            <div class="innings-wrapper">
+                <button onclick="changeWinsB(-1)">−</button>
+                <input id="pB_wins" type="number" value="0" min="0">
+                <button onclick="changeWinsB(1)">+</button>
+               </div>
+        </div>
+        <div class="stat-row">
+            <label>Safeties</label>
+            <div class="innings-wrapper">
+                <button onclick="changePBsafeties(-1)">−</button>
+                <input id="pB_safeties" type="number" value="0" min="0">
+                <button onclick="changePBsafeties(1)">+</button>
+            </div>
+        </div>
+        <div class="stat-row">
+            <label>8B</label>
+            <div class="innings-wrapper">
+                <button onclick="changePB8B(-1)">−</button>
+                <input id="pB_b8" type="number" value="0" min="0">
+                <button onclick="changePB8B(1)">+</button>
+            </div>
+        </div>
+        <div class="stat-row">
+            <label>B+R</label>
+            <div class="innings-wrapper">
+                <button onclick="changePBBR(-1)">−</button>
+                <input id="pB_br" type="number" value="0" min="0">
+                <button onclick="changePBBR(1)">+</button>
+            </div>
+        </div>
+              <div class="stat-row">
+            <label>E8</label>
+            <div class="innings-wrapper">
+                <button onclick="changePBE8(-1)">−</button>
+                <input id="pB_e8" type="number" value="0" min="0">
+                <button onclick="changePBE8(1)">+</button>
+            </div>
+        </div>
+        <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach" onchange="saveNow()"></div>
+    </div>
+</div>
+    
+<div style="text-align:center; padding-top:20px; font-size:20px;">
+    <label style="display:block; margin-bottom:10px;">Match Winner</label>
+    <input id="matchWinner" readonly 
+           style="display: inline-block;
+                  box-sizing: border-box; 
+                  text-align: center; 
+                  background-color: #000; 
+                  color: #00ff00; 
+                  font-size: 20px; 
+                  border: 1px solid #000;
+                  width: 180px; 
+                  height: 40px; 
+                  vertical-align: middle; 
+                  margin: 0 auto;">
+</div>
+<div style="margin-top:20px;border-radius:8px;">
+
+    <div id="teamScoreDisplay" style="text-align:center; font-size:28px; font-weight:bold; margin-bottom:10px; color:#1e90ff;">Match Score: <span id="homeScore">0</span> - <span id="awayScore">0</span>
+</div>
+
+  <div class="button-row">
+    <button type="button" onclick="exportScoresheet()">Transfer</button>
+    <button type="button" onclick="toggleNotes()">Notes</button>
+    <button type="button" class="startBtn" onclick="startTimer()">Timer</button>
+    <button type="button" onclick="showHistory()">History</button>
+    <button type="button" onclick="addNewPlayerManual()">Add Player</button>
+</div>
+    
+</div>
+  <div id="timerBox">
+    <span id="timerValue">0</span> sec
+
+    <button class="closeBtn" onclick="closeTimer()">X</button>
+  </div>
+
+<div id="notesContainer"
+     style="display:none; text-align:center; margin-top:12px;border: 2px solid #1e90ff; border-radius: 10px;">
+  <textarea
+  id="matchNotes"
+  style="width:95%; max-width:500px; height:70px; font-size:16px; padding:8px;"
+>Notes to L.O. such as roster removals, complaints, ect...</textarea>
+</div>
+</div>
+
+    <a class="back-button" style= "height:30px;"href="index.html">Main Menu</a>
+</div>
+    <!-- QR Code Popup -->
+<div id="qrModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:9999;">
+  <div style="background:#fff; padding:20px; border-radius:8px; position:relative; max-width:90%; max-height:90%; overflow:auto;">
+    <h3 style="text-align:center;color:#000;">Scan QR to Transfer</h3>
+    <div id="qrcode"></div>
+    <button onclick="closeQRModal()" style="margin-top:10px; padding:8px 16px; font-size:16px;">Close</button>
+  </div>
+</div>
+<div id="lagConfirmModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 2000000;">
+    <div style="background: #111; padding: 25px; border: 2px solid #1e90ff; border-radius: 10px; width: 85%; max-width: 320px; text-align: center;">
+        <h3 id="lagPlayerName" style="color: #fff; margin-bottom: 10px;">Player Name</h3>
+        <p id="lagQuestion" style="color: #ccc; margin-bottom: 25px;">Did this player win the lag?</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button id="lagYes" style="padding: 12px; background: #1e90ff; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">YES</button>
+            <button id="lagNo" style="padding: 12px; background: #444; color: #fff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">NO / CANCEL</button>
+            <button id="lagReset" onclick="resetLagFields()" style="padding: 10px; background: #800; color: #fff; border: none; border-radius: 5px; font-size: 12px; cursor: pointer;">RESET ALL LAG FIELDS</button>
+        </div>
+    </div>
+</div>
 <script>
 let isLoading = false;
 const FORM_KEY = "scoresheetData";
@@ -939,6 +1342,57 @@ function updateCurrentWeekAndDate() {
     document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
 }
 </script>
+    <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
+  <div style="background:#222; padding:20px; border-radius:8px; width:95%; max-width:600px; max-height:80vh; overflow-y:auto; border: 2px solid #1e90ff;">
+    <h3 style="text-align:center; color:#1e90ff;">Match History</h3>
+    <table style="width:100%; border-collapse: collapse; color: white; font-size: 14px;">
+      <thead>
+        <tr style="border-bottom: 2px solid #444;">
+          <th style="padding:8px; text-align:left;">Match</th>
+          <th style="padding:8px; text-align:center;">Result</th>
+          <th style="padding:8px; text-align:center;">Inn.</th>
+        </tr>
+      </thead>
+      <tbody id="historyTableBody">
+        </tbody>
+    </table>
+    <div style="text-align:center; margin-top:20px; display:flex; gap:10px; justify-content:center;">
+      <button onclick="closeHistory()" style="padding:10px 20px;">Close</button>
+        <button onclick="exportHistoryOnly()" style="background:#1e90ff; color:white; padding:10px;">Transfer</button>
+      <button onclick="clearHistory()" style="padding:10px 20px; background:crimson; color:white; border:none; border-radius:4px;">Reset</button>
+    </div>
+  </div>
+</div>
+<div id="playerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
+  <div style="background:#222; padding:25px; border-radius:12px; width:90%; max-width:400px; border: 2px solid #1e90ff; text-align:center; box-sizing: border-box;">
+    
+    <h3 style="color:#1e90ff; margin:0 0 15px 0;">Add to Roster</h3>
+    
+    <input type="text" id="manualPlayerName" placeholder="Enter New Player Name" 
+           style="width:100%; padding:12px; font-size:18px; margin-bottom:20px; border-radius:6px; border:1px solid #444; background:#111; color:white; box-sizing: border-box;">
+    
+    <div style="margin-bottom: 25px; color:white; font-size:18px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; padding-left: 20px;">
+      <label style="cursor:pointer;">
+        <input type="radio" name="npTeam" value="home" checked style="transform: scale(1.2);"> <span id="homeLabel">Home Team</span>
+      </label>
+      <label style="cursor:pointer;">
+        <input type="radio" name="npTeam" value="away" style="transform: scale(1.2);"> <span id="awayLabel">Away Team</span>
+      </label>
+    </div>
+    
+    <div style="display:flex; gap:12px; justify-content:center;">
+      <button type="button" onclick="closePlayerModal()" 
+              style="padding:10px 20px; background:#444; color:white; border:none; border-radius:4px; font-size:16px; cursor:pointer;">
+        Cancel
+      </button>
+      <button type="button" onclick="confirmNewPlayer()" style="padding:10px 20px; background:#1e90ff; color:white; border:none; border-radius:4px; font-weight:bold; font-size:16px; cursor:pointer;">Add to Roster</button>
+    </div>
+    
+  </div>
+</div>
+</body>
+</html>
+
     <div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000;">
   <div style="background:#222; padding:20px; border-radius:8px; width:95%; max-width:600px; max-height:80vh; overflow-y:auto; border: 2px solid #1e90ff;">
     <h3 style="text-align:center; color:#1e90ff;">Match History</h3>
