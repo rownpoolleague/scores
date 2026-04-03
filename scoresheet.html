@@ -358,7 +358,45 @@ let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
 let pendingPlayerData = null; // Essential for player selection logic
+window.addEventListener("DOMContentLoaded", () => {
+    // 1. Session Expiry Logic (Keep this exactly as you had it)
+    const lastActivity = localStorage.getItem("lastSessionActivity");
+    if (lastActivity && (Date.now() - parseInt(lastActivity)) > (12 * 60 * 60 * 1000)) {
+        localStorage.removeItem("matchHistory");
+        localStorage.removeItem("manual_roster_additions");
+        localStorage.removeItem("teamMatchScores");
+        localStorage.removeItem(FORM_KEY);
+        scores = { home: 0, away: 0 };
+    }
+    localStorage.setItem("lastSessionActivity", Date.now().toString());
+    
+    // 2. THE BRIDGE: Check URL for NEW Transfer Data
+    const params = new URLSearchParams(window.location.search);
+    
+    // Check for the main scoresheet data (QR Transfer)
+    if (params.has("data")) {
+        const decoded = decodeURIComponent(params.get("data"));
+        localStorage.setItem(FORM_KEY, decoded); // Overwrites old local data with the QR data
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    // Check for the history data separately
+    if (params.has("hdata")) {
+        localStorage.setItem("matchHistory", decodeURIComponent(params.get("hdata")));
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    // 3. RUN THE LOAD
+    loadScoresheet();
+    updateScoreUI();
+    updateCurrentWeekAndDate();
 
+    // 4. THE MODAL BLOCKER
+    // Give the UI 150ms to finish loadScoresheet() before checking if the modal is needed
+    setTimeout(() => {
+        checkInitialSelection();
+    }, 150);
+});
 // --- 1. Universal Modal Engine ---
 function showMasterModal(title, bodyHtml, buttons = []) {
     const modalDiv = document.getElementById("masterModal");
@@ -696,16 +734,27 @@ function saveNow() {
 }
 
 function loadScoresheet() {
+    // 1. IMMEDIATE QR CATCH: Check the URL before checking LocalStorage
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("data")) {
+        const decoded = decodeURIComponent(params.get("data"));
+        localStorage.setItem(FORM_KEY, decoded);
+        // Clean URL so it doesn't re-trigger on refresh
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // 2. Load manual roster additions
     const savedManual = localStorage.getItem("manual_roster_additions");
     if (savedManual) Object.assign(scoresheetinfo, JSON.parse(savedManual));
     
+    // 3. Now pull from storage (it's guaranteed to be there now)
     const raw = localStorage.getItem(FORM_KEY);
     if (!raw) return;
     
     isLoading = true;
     const data = JSON.parse(raw);
     
-    // Restore all standard inputs/selects
+    // 4. Restore all standard inputs/selects
     Object.keys(data).forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -713,10 +762,12 @@ function loadScoresheet() {
             else el.value = data[id];
         }
     });
-if (data.scoringTeam) {
+
+    if (data.scoringTeam) {
         localStorage.setItem("scoringTeamName", data.scoringTeam);
     }
-    // Restore Lag Headers
+
+    // 5. Restore Lag Headers & Visibility
     if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
     if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
 
@@ -724,7 +775,7 @@ if (data.scoringTeam) {
         document.getElementById("lagWinnerHeader").classList.add("active");
     }
 
-    // Handle Persistent Visibility based on saveNow flag
+    // 6. Force Game Area Visibility
     if (data.gameVisible === true) {
         document.getElementById("gamePlayArea").style.display = "block";
         
@@ -739,14 +790,14 @@ if (data.scoringTeam) {
         });
     }
 
-    // Restore Team Match Scores from data package
+    // 7. Restore Team Match Scores
     if (data.mScores) {
         scores = data.mScores;
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
     }
     
-    // Refresh Rosters and Winner dropdowns
+    // 8. Refresh Rosters and Winner dropdowns
     updateRoster(document.getElementById("team"), document.getElementById("teamRoster"));
     updateRoster(document.getElementById("opponent"), document.getElementById("opponentRoster"));
     updateMatchWinner();
@@ -966,45 +1017,7 @@ function exportHistoryOnly() {
     setTimeout(() => { new QRCode(document.getElementById('qrcode'), { text: fullUrl, width: 200, height: 200 }); }, 50);
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-    // 1. Session Expiry Logic (Keep this exactly as you had it)
-    const lastActivity = localStorage.getItem("lastSessionActivity");
-    if (lastActivity && (Date.now() - parseInt(lastActivity)) > (12 * 60 * 60 * 1000)) {
-        localStorage.removeItem("matchHistory");
-        localStorage.removeItem("manual_roster_additions");
-        localStorage.removeItem("teamMatchScores");
-        localStorage.removeItem(FORM_KEY);
-        scores = { home: 0, away: 0 };
-    }
-    localStorage.setItem("lastSessionActivity", Date.now().toString());
-    
-    // 2. THE BRIDGE: Check URL for NEW Transfer Data
-    const params = new URLSearchParams(window.location.search);
-    
-    // Check for the main scoresheet data (QR Transfer)
-    if (params.has("data")) {
-        const decoded = decodeURIComponent(params.get("data"));
-        localStorage.setItem(FORM_KEY, decoded); // Overwrites old local data with the QR data
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-    
-    // Check for the history data separately
-    if (params.has("hdata")) {
-        localStorage.setItem("matchHistory", decodeURIComponent(params.get("hdata")));
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-    
-    // 3. RUN THE LOAD
-    loadScoresheet();
-    updateScoreUI();
-    updateCurrentWeekAndDate();
 
-    // 4. THE MODAL BLOCKER
-    // Give the UI 150ms to finish loadScoresheet() before checking if the modal is needed
-    setTimeout(() => {
-        checkInitialSelection();
-    }, 150);
-});
     let timerInterval, seconds = 0;
 function startTimer() {
     seconds = 0;
