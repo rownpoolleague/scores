@@ -463,6 +463,12 @@ function updateRoster(sel, div) {
 });
 
 document.addEventListener("click", e => {
+    // 1. GATE: If the match is already visible/active, ignore this entire script
+    const gameArea = document.getElementById("gamePlayArea");
+    if (gameArea && gameArea.style.display === "block") {
+        return; 
+    }
+
     const playerDiv = e.target.closest(".playerName");
     if (!playerDiv) return;
 
@@ -483,7 +489,8 @@ document.addEventListener("click", e => {
         ]);
     } else {
         // Step 2: Picking the Loser
-        if (name === document.getElementById("lagWinner").value) return; // Prevent picking same person twice
+        const lagWinnerVal = document.getElementById("lagWinner").value;
+        if (name === lagWinnerVal) return; // Prevent picking same person twice
         
         showMasterModal("Confirm Lag Loser", `<p style="text-align:center; font-size:18px;">Set <strong>${name}</strong> as Lag Loser and begin match?</p>`, [
             { text: "YES, START MATCH", action: "confirmLag(false)", color: "#1e90ff" },
