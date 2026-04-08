@@ -363,20 +363,21 @@ let pendingPlayerData = null;
 (function() {
     const params = new URLSearchParams(window.location.search);
     
-    // Main Scoresheet Data
     if (params.has("data")) {
-        localStorage.setItem(FORM_KEY, decodeURIComponent(params.get("data")));
-    }
-    
-    // History Data
-    if (params.has("hdata")) {
-        localStorage.setItem("matchHistory", decodeURIComponent(params.get("hdata")));
-    }
+        const decodedData = JSON.parse(decodeURIComponent(params.get("data")));
+        
+        // 1. If history exists inside the data object, save it separately
+        if (decodedData.hdata) {
+            localStorage.setItem("matchHistory", JSON.stringify(decodedData.hdata));
+            delete decodedData.hdata; // Clean it out before saving main scoresheet
+        }
+        
+        // 2. Save the main scoresheet data
+        localStorage.setItem(FORM_KEY, JSON.stringify(decodedData));
 
-    // Clean URL only if we actually found data
-    if (params.has("data") || params.has("hdata")) {
+        // 3. Clean the URL
         window.history.replaceState({}, document.title, window.location.pathname);
-        console.log("QR Data Synchronized");
+        console.log("Full Session Synchronized");
     }
 })();
 
@@ -975,27 +976,37 @@ function exportScoresheet() {
     if (!rawData) return alert("No data to transfer.");
     
     const data = JSON.parse(rawData);
-    // Remove heavy roster HTML before sending to keep URL short
+    
+    // 1. Strip the heavy HTML to keep the URL short
     delete data.teamRoster;
     delete data.opponentRoster;
+
+    // 2. Attach Match History to the same object
+    const history = localStorage.getItem("matchHistory");
+    data.hdata = history ? JSON.parse(history) : [];
 
     const baseUrl = window.location.href.split('?')[0];
     const fullUrl = `${baseUrl}?data=${encodeURIComponent(JSON.stringify(data))}`;
     
     const bodyHtml = `
         <div style="text-align:center;">
-            <p style="margin-bottom:15px; font-size:14px; color:#fff;">Scan to transfer scoresheet.</p>
+            <p style="margin-bottom:15px; font-size:14px; color:#fff;">Scan to sync Scoresheet & History.</p>
             <div id="qrcode" style="display:flex; justify-content:center; padding:10px; background:#fff; border-radius:8px; width:fit-content; margin: 0 auto;"></div>
         </div>
     `;
-    showMasterModal("Transfer Scoresheet", bodyHtml);
+    
+    showMasterModal("Full Sync Transfer", bodyHtml);
+    
     setTimeout(() => {
-        new QRCode(document.getElementById('qrcode'), { 
-            text: fullUrl, 
-            width: 220, 
-            height: 220, 
-            correctLevel: QRCode.CorrectLevel.L // Lower correction = simpler/smaller QR pattern
-        });
+        const qrContainer = document.getElementById('qrcode');
+        if (qrContainer) {
+            new QRCode(qrContainer, { 
+                text: fullUrl, 
+                width: 230, 
+                height: 230, 
+                correctLevel: QRCode.CorrectLevel.L 
+            });
+        }
     }, 50);
 }
 
