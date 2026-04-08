@@ -103,7 +103,18 @@ input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; backgroun
     white-space: nowrap;
     cursor: pointer;
 }
+input[readonly] {
+    background-color: transparent; /* Or keep your dark theme color */
+    color: white;
+    cursor: default;
+    outline: none;
+    border: none; /* Keeps that minimalist look you like */
+}
 
+/* Specifically for Chrome/Safari/Mobile to prevent the "focus" blue ring */
+input[readonly]:focus {
+    outline: none;
+}
 #timerBox {
     display: none;
     position: fixed;
@@ -285,21 +296,21 @@ input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; backgroun
  <div id="gamePlayArea" style="display:none;">
 <div class="player-stats-container" style="margin-top:10px;">
     <div class="block">
-        <div class="stat-row"><label>HC</label><div class="innings-wrapper"><button onclick="changeStat('pA_hc',-1)">−</button><input id="pA_hc" type="number" value="0"><button onclick="changeStat('pA_hc',1)">+</button></div></div>
-        <div class="stat-row"><label>Wins</label><div class="innings-wrapper"><button onclick="changeStat('pA_wins',-1)">−</button><input id="pA_wins" type="number" value="0"><button onclick="changeStat('pA_wins',1)">+</button></div></div>
-        <div class="stat-row"><label>Safeties</label><div class="innings-wrapper"><button onclick="changeStat('pA_safeties',-1)">−</button><input id="pA_safeties" type="number" value="0"><button onclick="changeStat('pA_safeties',1)">+</button></div></div>
-        <div class="stat-row"><label>8B</label><div class="innings-wrapper"><button onclick="changeStat('pA_b8',-1)">−</button><input id="pA_b8" type="number" value="0"><button onclick="changeStat('pA_b8',1)">+</button></div></div>
-        <div class="stat-row"><label>B+R</label><div class="innings-wrapper"><button onclick="changeStat('pA_br',-1)">−</button><input id="pA_br" type="number" value="0"><button onclick="changeStat('pA_br',1)">+</button></div></div>
-        <div class="stat-row"><label>E8</label><div class="innings-wrapper"><button onclick="changeStat('pA_e8',-1)">−</button><input id="pA_e8" type="number" value="0"><button onclick="changeStat('pA_e8',1)">+</button></div></div>
+        <div class="stat-row"><label>HC</label><div class="innings-wrapper"><button onclick="changeStat('pA_hc',-1)">−</button><input id="pA_hc" type="number" value="0" readonly><button onclick="changeStat('pA_hc',1)">+</button></div></div>
+        <div class="stat-row"><label>Wins</label><div class="innings-wrapper"><button onclick="changeStat('pA_wins',-1)">−</button><input id="pA_wins" type="number" value="0" readonly><button onclick="changeStat('pA_wins',1)">+</button></div></div>
+        <div class="stat-row"><label>Safeties</label><div class="innings-wrapper"><button onclick="changeStat('pA_safeties',-1)">−</button><input id="pA_safeties" type="number" value="0" readonly><button onclick="changeStat('pA_safeties',1)">+</button></div></div>
+        <div class="stat-row"><label>8B</label><div class="innings-wrapper"><button onclick="changeStat('pA_b8',-1)">−</button><input id="pA_b8" type="number" value="0" readonly><button onclick="changeStat('pA_b8',1)">+</button></div></div>
+        <div class="stat-row"><label>B+R</label><div class="innings-wrapper"><button onclick="changeStat('pA_br',-1)">−</button><input id="pA_br" type="number" value="0" readonly><button onclick="changeStat('pA_br',1)">+</button></div></div>
+        <div class="stat-row"><label>E8</label><div class="innings-wrapper"><button onclick="changeStat('pA_e8',-1)">−</button><input id="pA_e8" type="number" value="0" readonly><button onclick="changeStat('pA_e8',1)">+</button></div></div>
         <div class="stat-row"><label>Coach</label><input type="checkbox" id="pA_coach" onchange="saveNow()"></div>
     </div>
     <div class="block">
-        <div class="stat-row"><label>HC</label><div class="innings-wrapper"><button onclick="changeStat('pB_hc',-1)">−</button><input id="pB_hc" type="number" value="0"><button onclick="changeStat('pB_hc',1)">+</button></div></div>
-        <div class="stat-row"><label>Wins</label><div class="innings-wrapper"><button onclick="changeStat('pB_wins',-1)">−</button><input id="pB_wins" type="number" value="0"><button onclick="changeStat('pB_wins',1)">+</button></div></div>
-        <div class="stat-row"><label>Safeties</label><div class="innings-wrapper"><button onclick="changeStat('pB_safeties',-1)">−</button><input id="pB_safeties" type="number" value="0"><button onclick="changeStat('pB_safeties',1)">+</button></div></div>
-        <div class="stat-row"><label>8B</label><div class="innings-wrapper"><button onclick="changeStat('pB_b8',-1)">−</button><input id="pB_b8" type="number" value="0"><button onclick="changeStat('pB_b8',1)">+</button></div></div>
-        <div class="stat-row"><label>B+R</label><div class="innings-wrapper"><button onclick="changeStat('pB_br',-1)">−</button><input id="pB_br" type="number" value="0"><button onclick="changeStat('pB_br',1)">+</button></div></div>
-        <div class="stat-row"><label>E8</label><div class="innings-wrapper"><button onclick="changeStat('pB_e8',-1)">−</button><input id="pB_e8" type="number" value="0"><button onclick="changeStat('pB_e8',1)">+</button></div></div>
+        <div class="stat-row"><label>HC</label><div class="innings-wrapper"><button onclick="changeStat('pB_hc',-1)">−</button><input id="pB_hc" type="number" value="0" readonly><button onclick="changeStat('pB_hc',1)">+</button></div></div>
+        <div class="stat-row"><label>Wins</label><div class="innings-wrapper"><button onclick="changeStat('pB_wins',-1)">−</button><input id="pB_wins" type="number" value="0" readonly><button onclick="changeStat('pB_wins',1)">+</button></div></div>
+        <div class="stat-row"><label>Safeties</label><div class="innings-wrapper"><button onclick="changeStat('pB_safeties',-1)">−</button><input id="pB_safeties" type="number" value="0" readonly><button onclick="changeStat('pB_safeties',1)">+</button></div></div>
+        <div class="stat-row"><label>8B</label><div class="innings-wrapper"><button onclick="changeStat('pB_b8',-1)">−</button><input id="pB_b8" type="number" value="0" readonly><button onclick="changeStat('pB_b8',1)">+</button></div></div>
+        <div class="stat-row"><label>B+R</label><div class="innings-wrapper"><button onclick="changeStat('pB_br',-1)">−</button><input id="pB_br" type="number" value="0" readonly><button onclick="changeStat('pB_br',1)">+</button></div></div>
+        <div class="stat-row"><label>E8</label><div class="innings-wrapper"><button onclick="changeStat('pB_e8',-1)">−</button><input id="pB_e8" type="number" value="0" readonly><button onclick="changeStat('pB_e8',1)">+</button></div></div>
         <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach" onchange="saveNow()"></div>
     </div>
 </div>
@@ -310,7 +321,7 @@ input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; backgroun
     <label>Innings</label><br>
     <div class="innings-wrapper">
         <button type="button" class="btn-minus" onclick="changeStat('matchInnings', -1)">−</button>
-        <input type="number" id="matchInnings" style="margin-top:4px;" value="0" min="0">
+        <input type="number" id="matchInnings" style="margin-top:4px;" value="0" min="0" readonly>
         <button type="button" class="btn-plus" onclick="changeStat('matchInnings', 1)">+</button>
     </div>
 </div>
