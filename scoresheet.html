@@ -1017,16 +1017,22 @@ function exportScoresheet() {
     showMasterModal("Full Sync Transfer", bodyHtml);
     
     setTimeout(() => {
-        const qrContainer = document.getElementById('qrcode');
-        if (qrContainer) {
-            new QRCode(qrContainer, { 
-                text: fullUrl, 
-                width: 230, 
-                height: 230, 
-                correctLevel: QRCode.CorrectLevel.L 
-            });
-        }
-    }, 50);
+       const qrContainer = document.getElementById('qrcode');
+if (qrContainer) {
+    // Hardcode your league's URL here to ensure it works in "App Mode"
+    const fallbackUrl = "https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME/";
+    
+    // Use the variable 'fullUrl' if it exists and looks valid, otherwise use the fallback
+    const finalUrl = (typeof fullUrl !== 'undefined' && fullUrl.startsWith('http')) ? fullUrl : fallbackUrl;
+
+    new QRCode(qrContainer, { 
+        text: finalUrl, 
+        width: 230, 
+        height: 230, 
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H // Changed to H for better scanning from phone screens
+    });
 }
 
 function confirmNewPlayer() {
