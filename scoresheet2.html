@@ -1096,7 +1096,7 @@ let lastProcessedRow = localStorage.getItem("lastTickerRow") || "";
 
 function checkForFeats() {
     // Adding a cache-buster (?cb=...) ensures we get fresh data from Google
-    fetch(`${SHEET_CSV_URL}?cb=${Date.now()}`)
+    fetch(`${https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv}?cb=${Date.now()}`)
         .then(response => response.text())
         .then(csvText => {
             const rows = csvText.split('\n').filter(row => row.trim() !== "");
