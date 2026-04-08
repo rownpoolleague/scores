@@ -597,14 +597,16 @@ function getTeamNameByNumber(num) {
 }
 
 function resetLagFields() {
-    document.getElementById("lagWinner").value = "";
-    document.getElementById("lagLoser").value = "";
-    document.getElementById("pA_hc").value = 0;
-    document.getElementById("pB_hc").value = 0;
+    // 1. Clear all data fields
+    const fieldsToClear = ["lagWinner", "lagLoser", "pA_hc", "pB_hc", "pA_wins", "pB_wins", "matchInnings", "matchWinner"];
+    fieldsToClear.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = (el.type === "number" || id.includes('_')) ? 0 : "";
+    });
 
+    // 2. Reset Headers
     const lwH = document.getElementById("lagWinnerHeader");
     const llH = document.getElementById("lagLoserHeader");
-
     lwH.textContent = "Lag Winner";
     llH.textContent = "Lag Loser";
     lwH.classList.remove("active");
@@ -612,16 +614,19 @@ function resetLagFields() {
     lwH.style.visibility = "hidden";
     llH.style.visibility = "hidden";
 
-    document.getElementById("matchInnings").value = 0;
-
-    const toShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"];
+    // 3. Reset UI Visibility (Crucial for unlocking)
+    document.getElementById("gamePlayArea").style.display = "none";
+    const toShow = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText"];
     toShow.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = "block";
     });
 
+    const statusEl = document.getElementById("statusText");
+    if (statusEl) statusEl.textContent = "Tap a Player to Set Lag Winner";
+
     closeMasterModal();
-    saveNow();
+    saveNow(); // Save the "Empty" state so refresh doesn't bring back the old match
 }
 
 function updateScoreUI() {
@@ -737,15 +742,30 @@ function loadScoresheet() {
             }
         });
 
+        // REFRESH FIX: Restore the visible Header text and visibility
+        const lw = document.getElementById("lagWinner").value;
+        const ll = document.getElementById("lagLoser").value;
+        const lwH = document.getElementById("lagWinnerHeader");
+        const llH = document.getElementById("lagLoserHeader");
+
+        if (lw && lw !== "") {
+            lwH.textContent = lw;
+            lwH.style.visibility = "visible";
+            lwH.classList.add("active");
+        }
+        if (ll && ll !== "") {
+            llH.textContent = ll;
+            llH.style.visibility = "visible";
+            llH.classList.add("active");
+        }
+
         if (data.gameVisible === true) {
             document.getElementById("gamePlayArea").style.display = "block";
-            ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText"].forEach(id => {
+            const toHide = ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster", "addPlayerBtn", "statusText"];
+            toHide.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.style.display = "none";
             });
-
-            if (data.lwH) document.getElementById("lagWinnerHeader").textContent = data.lwH;
-            if (data.llH) document.getElementById("lagLoserHeader").textContent = data.llH;
         }
 
         if (data.mScores) scores = data.mScores;
@@ -807,12 +827,14 @@ document.getElementById("submitMatch").onclick = function() {
         const winnerName = document.getElementById("matchWinner").value;
         const homeTeamName = document.getElementById("team").value;
         
-        if (winnerName && homeTeamName) {
-            const homeRoster = scoresheetinfo[homeTeamName] || [];
-            const isHomeWinner = homeRoster.some(p => p.name === winnerName);
-            if (isHomeWinner) scores.home++;
-            else scores.away++;
-        }
+       if (winnerName && homeTeamName) {
+    const homeRoster = scoresheetinfo[homeTeamName] || [];
+    // Correct check for simple string arrays:
+    const isHomeWinner = homeRoster.includes(winnerName); 
+    
+    if (isHomeWinner) scores.home++;
+    else scores.away++;
+}
 
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
