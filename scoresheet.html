@@ -866,18 +866,39 @@ document.getElementById("submitMatch").onclick = function() {
         llH.textContent = "Lag Loser";
         lwH.classList.remove("active");
         llH.classList.remove("active");
-
+lwH.style.visibility = "hidden";
+llH.style.visibility = "hidden";
         btn.textContent = "Submit Match";
         document.getElementById("matchNotes").value = "-";
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
 
         if ((scores.home + scores.away) >= 5) {
-            alert(`Match 5 complete! Final Score: ${scores.home} - ${scores.away}.`);
-            scores = { home: 0, away: 0 };
-            localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-            updateScoreUI();
-        }
+    const homeTeamName = document.getElementById("team").value;
+    const awayTeamName = document.getElementById("opponent").value;
+    
+    // Determine the winning team name based on the scores
+    let winnerTeamText = "";
+    if (scores.home > scores.away) {
+        winnerTeamText = `${homeTeamName} Wins ${scores.home}-${scores.away}`;
+    } else {
+        winnerTeamText = `${awayTeamName} Wins ${scores.away}-${scores.home}`;
+    }
+
+    // Use your Master Modal instead of an alert
+    showMasterModal(
+        "Match Night Complete", 
+        `<div style="text-align:center; font-size:22px; padding:20px;">
+            <span style="color:gold; font-weight:bold;">${winnerTeamText}</span>
+         </div>`, 
+        []
+    );
+
+    // Reset session scores for next week
+    scores = { home: 0, away: 0 };
+    localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+    updateScoreUI();
+}
 
         btn.style.display = "none";
         btn.disabled = false;
@@ -1015,12 +1036,24 @@ function confirmNewPlayer() {
     closeMasterModal();
 }
      function toggleNotes() { const box = document.getElementById("notesContainer"); box.style.display = box.style.display === "none" ? "block" : "none"; }
-    let timerInterval, seconds = 0;
-    function startTimer() {
+   let timerInterval, seconds = 0;
+
+function startTimer() {
     seconds = 0;
+    // 1. Immediately update the text to 0 so you don't see the old time
+    document.getElementById("timerValue").textContent = "0";
+    
+    // 2. Show the box
     document.getElementById("timerBox").style.display = "block";
+    
+    // 3. Clear any existing interval to prevent "double-speed" ticking
     clearInterval(timerInterval);
-    timerInterval = setInterval(() => { seconds++; updateTimerDisplay(); }, 1000);
+    
+    // 4. Start the new count
+    timerInterval = setInterval(() => { 
+        seconds++; 
+        document.getElementById("timerValue").textContent = seconds; 
+    }, 1000);
 }
 function closeTimer() { clearInterval(timerInterval); document.getElementById("timerBox").style.display = "none"; }
 function updateTimerDisplay() {
