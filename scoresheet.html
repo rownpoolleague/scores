@@ -971,22 +971,31 @@ function exportHistoryOnly() {
 }
 
 function exportScoresheet() {
-    const data = localStorage.getItem(FORM_KEY);
-    if (!data) return alert("No data to transfer.");
+    const rawData = localStorage.getItem(FORM_KEY);
+    if (!rawData) return alert("No data to transfer.");
+    
+    const data = JSON.parse(rawData);
+    // Remove heavy roster HTML before sending to keep URL short
+    delete data.teamRoster;
+    delete data.opponentRoster;
+
     const baseUrl = window.location.href.split('?')[0];
-    const fullUrl = `${baseUrl}?data=${encodeURIComponent(data)}`;
+    const fullUrl = `${baseUrl}?data=${encodeURIComponent(JSON.stringify(data))}`;
+    
     const bodyHtml = `
         <div style="text-align:center;">
-            <p style="margin-bottom:15px; font-size:14px; color:#fff;">Scan to transfer the current scoresheet.</p>
+            <p style="margin-bottom:15px; font-size:14px; color:#fff;">Scan to transfer scoresheet.</p>
             <div id="qrcode" style="display:flex; justify-content:center; padding:10px; background:#fff; border-radius:8px; width:fit-content; margin: 0 auto;"></div>
         </div>
     `;
     showMasterModal("Transfer Scoresheet", bodyHtml);
     setTimeout(() => {
-        const qrContainer = document.getElementById('qrcode');
-        if (qrContainer) {
-            new QRCode(qrContainer, { text: fullUrl, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M });
-        }
+        new QRCode(document.getElementById('qrcode'), { 
+            text: fullUrl, 
+            width: 220, 
+            height: 220, 
+            correctLevel: QRCode.CorrectLevel.L // Lower correction = simpler/smaller QR pattern
+        });
     }, 50);
 }
 
