@@ -1146,18 +1146,7 @@ function processTickerRow(row) {
     if (pB_bnr > 0) messages.push(`${playerB}: Break & Run!`);
 
     if (messages.length > 0) {
-        const container = document.getElementById("ticker-container");
-        const text = document.getElementById("ticker-text");
-        
-        // Join all feats with a separator for a clean scroll
-        text.textContent = `*** MATCH ALERT: ${messages.join("  |  ")} ***`;
-        
-        container.style.display = "block";
-        
-        // Hide after 60 seconds (roughly 3-4 passes of the animation)
-        setTimeout(() => { 
-            container.style.display = "none"; 
-        }, 60000);
+        showTicker(messages.join("  |  "));
     }
 }
     function showTicker(msg) {
