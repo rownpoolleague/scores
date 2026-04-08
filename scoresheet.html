@@ -707,10 +707,9 @@ function showHistory() {
             </tr>`).join("");
     }
     tableHtml += `</tbody></table>`;
-    showMasterModal("Match History", tableHtml, [
-        { text: "Transfer", action: "exportHistoryOnly()", color: "#1e90ff" },
-        { text: "Reset", action: "clearHistory()", color: "crimson" }
-    ]);
+showMasterModal("Match History", tableHtml, [
+    { text: "Close", action: "closeMasterModal()", color: "#444" }
+]);
 }
 function clearHistory() {
     if(confirm("Clear all match history?")) {
@@ -962,15 +961,6 @@ function addNewPlayerManual() {
         if(inp) inp.focus(); 
     }, 100);
 }
-
-function exportHistoryOnly() {
-    const history = localStorage.getItem("matchHistory");
-    if (!history || history === "[]") return alert("No history.");
-    const fullUrl = `${window.location.href.split('?')[0]}?hdata=${encodeURIComponent(history)}`;
-    showMasterModal("Transfer History", `<div id="qrcode" style="display:flex; justify-content:center; padding:10px; background:#fff; border-radius:8px; margin: 0 auto;"></div>`);
-    setTimeout(() => { new QRCode(document.getElementById('qrcode'), { text: fullUrl, width: 200, height: 200 }); }, 50);
-}
-
 function exportScoresheet() {
     const rawData = localStorage.getItem(FORM_KEY);
     if (!rawData) return alert("No data to transfer.");
