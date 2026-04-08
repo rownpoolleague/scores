@@ -1095,22 +1095,31 @@ function updateTimerDisplay() {
 let lastProcessedRow = localStorage.getItem("lastTickerRow") || "";
 
 function checkForFeats() {
-    // Adding a cache-buster (?cb=...) ensures we get fresh data from Google
-    fetch(`${https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv}?cb=${Date.now()}`)
+    // Corrected the template literal syntax here
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv";
+    
+    fetch(`${sheetUrl}&cb=${Date.now()}`)
         .then(response => response.text())
         .then(csvText => {
             const rows = csvText.split('\n').filter(row => row.trim() !== "");
             const lastRow = rows[rows.length - 1];
 
-            // If the last row is different from what we saw last time
+            // If this is the first time we are loading the app, 
+            // set the lastRow but DON'T show the ticker yet.
+            if (!lastProcessedRow) {
+                lastProcessedRow = lastRow;
+                localStorage.setItem("lastTickerRow", lastRow);
+                return;
+            }
+
             if (lastRow !== lastProcessedRow) {
                 processTickerRow(lastRow);
                 lastProcessedRow = lastRow;
                 localStorage.setItem("lastTickerRow", lastRow);
             }
-        });
+        })
+        .catch(err => console.error("Ticker fetch failed:", err));
 }
-
 function processTickerRow(row) {
     // Column indices based on your mapping:
     // 4: Player A, 10: A-8ob, 11: A-BnR
@@ -1150,6 +1159,19 @@ function processTickerRow(row) {
             container.style.display = "none"; 
         }, 60000);
     }
+}
+    function showTicker(msg) {
+    const container = document.getElementById("ticker-container");
+    const text = document.getElementById("ticker-text");
+    if (!container || !text) return;
+
+    text.textContent = `*** MATCH ALERT: ${msg} ***`;
+    container.style.display = "block";
+    
+    // Auto-hide after 60 seconds
+    setTimeout(() => { 
+        container.style.display = "none"; 
+    }, 60000);
 }
 
 // Check every 60 seconds so we don't hit Google's rate limits
