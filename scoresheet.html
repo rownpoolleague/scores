@@ -707,9 +707,7 @@ function showHistory() {
             </tr>`).join("");
     }
     tableHtml += `</tbody></table>`;
-showMasterModal("Match History", tableHtml, [
-    { text: "Close", action: "closeMasterModal()", color: "#444" }
-]);
+showMasterModal("Match History", tableHtml, []);
 }
 function clearHistory() {
     if(confirm("Clear all match history?")) {
