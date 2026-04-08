@@ -1097,24 +1097,43 @@ function checkForFeats() {
 }
 
 function processTickerRow(row) {
-    // Adjust these indices (0, 1, 2...) based on which columns in your sheet 
-    // hold the Player Name, 8-on-Breaks, and Break-and-Runs.
+    // Column indices based on your mapping:
+    // 4: Player A, 10: A-8ob, 11: A-BnR
+    // Assuming Player B follows a similar pattern in your sheet:
     const cols = row.split(',');
-    const playerA = cols[2]; 
-    const pA_8ob = parseInt(cols[5]); 
-    const pA_bnr = parseInt(cols[6]);
+    
+    const playerA = cols[4]; 
+    const pA_8ob = parseInt(cols[10]) || 0; 
+    const pA_bnr = parseInt(cols[11]) || 0;
+
+    // Adjust these indices (e.g., 5, 12, 13) to match Player B's position in your CSV
+    const playerB = cols[5]; 
+    const pB_8ob = parseInt(cols[16]) || 0; 
+    const pB_bnr = parseInt(cols[17]) || 0;
 
     let messages = [];
-    if (pA_8ob > 0) messages.push(`${playerA} snapped the 8 on the break!`);
-    if (pA_bnr > 0) messages.push(`${playerA} with the Break & Run!`);
+
+    // Player A Checks
+    if (pA_8ob > 0) messages.push(`${playerA}: 8-on-Break!`);
+    if (pA_bnr > 0) messages.push(`${playerA}: Break & Run!`);
+
+    // Player B Checks
+    if (pB_8ob > 0) messages.push(`${playerB}: 8-on-Break!`);
+    if (pB_bnr > 0) messages.push(`${playerB}: Break & Run!`);
 
     if (messages.length > 0) {
+        const container = document.getElementById("ticker-container");
         const text = document.getElementById("ticker-text");
-        text.textContent = `*** MATCH ALERT: ${messages.join(" | ")} ***`;
-        document.getElementById("ticker-container").style.display = "block";
         
-        // Hide after 60 seconds
-        setTimeout(() => { document.getElementById("ticker-container").style.display = "none"; }, 60000);
+        // Join all feats with a separator for a clean scroll
+        text.textContent = `*** MATCH ALERT: ${messages.join("  |  ")} ***`;
+        
+        container.style.display = "block";
+        
+        // Hide after 60 seconds (roughly 3-4 passes of the animation)
+        setTimeout(() => { 
+            container.style.display = "none"; 
+        }, 60000);
     }
 }
 
