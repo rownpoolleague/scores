@@ -373,7 +373,7 @@ let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
 let pendingPlayerData = null; 
-
+let lastProcessedRow = localStorage.getItem("lastTickerRow") || "";
 // 1. THE BRIDGE: Run this IMMEDIATELY before anything else
 (function() {
     const params = new URLSearchParams(window.location.search);
