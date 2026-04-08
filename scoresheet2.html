@@ -809,6 +809,25 @@ document.getElementById("submitMatch").onclick = function() {
     btn.disabled = true;
     loader.style.display = "flex";
 
+    // --- NEW: INSTANT TICKER LOGIC ---
+    const pA_Name = document.getElementById("lagWinner").value; // Adjust if your name fields differ
+    const pB_Name = document.getElementById("lagLoser").value;
+    const pA_8ob = parseInt(document.getElementById("pA_b8").value) || 0;
+    const pA_bnr = parseInt(document.getElementById("pA_br").value) || 0;
+    const pB_8ob = parseInt(document.getElementById("pB_b8").value) || 0;
+    const pB_bnr = parseInt(document.getElementById("pB_br").value) || 0;
+
+    let feats = [];
+    if (pA_8ob > 0) feats.push(`${pA_Name}: ${pA_8ob > 1 ? pA_8ob + 'x ' : ''}8-on-Break`);
+    if (pA_bnr > 0) feats.push(`${pA_Name}: ${pA_bnr > 1 ? pA_bnr + 'x ' : ''}Break & Run`);
+    if (pB_8ob > 0) feats.push(`${pB_Name}: ${pB_8ob > 1 ? pB_8ob + 'x ' : ''}8-on-Break`);
+    if (pB_bnr > 0) feats.push(`${pB_Name}: ${pB_bnr > 1 ? pB_bnr + 'x ' : ''}Break & Run`);
+
+    if (feats.length > 0) {
+        showTicker(feats.join(" | "));
+    }
+    // ---------------------------------
+
     const scoringTeamStored = localStorage.getItem("scoringTeamName") || "Unknown";
     const data = {
         scoringTeam: scoringTeamStored, 
@@ -851,14 +870,13 @@ document.getElementById("submitMatch").onclick = function() {
         const winnerName = document.getElementById("matchWinner").value;
         const homeTeamName = document.getElementById("team").value;
         
-       if (winnerName && homeTeamName) {
-    const homeRoster = scoresheetinfo[homeTeamName] || [];
-    // Correct check for simple string arrays:
-    const isHomeWinner = homeRoster.includes(winnerName); 
-    
-    if (isHomeWinner) scores.home++;
-    else scores.away++;
-}
+        if (winnerName && homeTeamName) {
+            const homeRoster = scoresheetinfo[homeTeamName] || [];
+            const isHomeWinner = homeRoster.includes(winnerName); 
+            
+            if (isHomeWinner) scores.home++;
+            else scores.away++;
+        }
 
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
@@ -881,39 +899,36 @@ document.getElementById("submitMatch").onclick = function() {
         llH.textContent = "Lag Loser";
         lwH.classList.remove("active");
         llH.classList.remove("active");
-lwH.style.visibility = "hidden";
-llH.style.visibility = "hidden";
+        lwH.style.visibility = "hidden";
+        llH.style.visibility = "hidden";
         btn.textContent = "Submit Match";
         document.getElementById("matchNotes").value = "-";
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
 
         if ((scores.home + scores.away) >= 5) {
-    const homeTeamName = document.getElementById("team").value;
-    const awayTeamName = document.getElementById("opponent").value;
-    
-    // Determine the winning team name based on the scores
-    let winnerTeamText = "";
-    if (scores.home > scores.away) {
-        winnerTeamText = `${homeTeamName} Wins ${scores.home}-${scores.away}`;
-    } else {
-        winnerTeamText = `${awayTeamName} Wins ${scores.away}-${scores.home}`;
-    }
+            const homeTeamName = document.getElementById("team").value;
+            const awayTeamName = document.getElementById("opponent").value;
+            
+            let winnerTeamText = "";
+            if (scores.home > scores.away) {
+                winnerTeamText = `${homeTeamName} Wins ${scores.home}-${scores.away}`;
+            } else {
+                winnerTeamText = `${awayTeamName} Wins ${scores.away}-${scores.home}`;
+            }
 
-    // Use your Master Modal instead of an alert
-    showMasterModal(
-        "Match Night Complete", 
-        `<div style="text-align:center; font-size:22px; padding:20px;">
-            <span style="color:gold; font-weight:bold;">${winnerTeamText}</span>
-         </div>`, 
-        []
-    );
+            showMasterModal(
+                "Match Night Complete", 
+                `<div style="text-align:center; font-size:22px; padding:20px;">
+                    <span style="color:gold; font-weight:bold;">${winnerTeamText}</span>
+                 </div>`, 
+                []
+            );
 
-    // Reset session scores for next week
-    scores = { home: 0, away: 0 };
-    localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-    updateScoreUI();
-}
+            scores = { home: 0, away: 0 };
+            localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+            updateScoreUI();
+        }
 
         btn.style.display = "none";
         btn.disabled = false;
