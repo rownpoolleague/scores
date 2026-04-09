@@ -1107,8 +1107,6 @@ function showTicker(msg) {
 
 let lastSeenFeats = [];
 
-let lastSeenFeats = [];
-
 async function checkForFeats() {
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv";
     
@@ -1119,42 +1117,49 @@ async function checkForFeats() {
         
         let currentFeats = [];
 
-        rows.forEach(row => {
-            const cols = row.split(",");
-            if (cols.length < 20) return; // Ensure row is full
+        for (let i = 0; i < rows.length; i++) {
+            const cols = rows[i].split(",");
+            
+            // --- THE HARD STOP ---
+            // If the Player A Name cell (Col 4) is empty, stop the entire loop.
+            // This is the "End of Information" gate.
+            const pAName = cols[4] ? cols[4].trim() : "";
+            if (!pAName) {
+                console.log("Empty row reached at index " + i + ". Stopping scan.");
+                break; 
+            }
 
             // --- LAYER 1: Player A (Winner Side) ---
-            const pAName = cols[4]?.trim();
             const pA8B = parseInt(cols[10]) || 0;
             const pABR = parseInt(cols[11]) || 0;
-            if (pAName) {
-                if (pA8B > 0) currentFeats.push(`${pAName} (8-on-Break!)`);
-                if (pABR > 0) currentFeats.push(`${pAName} (Break & Run!)`);
-                   }
+
+            if (pA8B > 0) currentFeats.push(`${pAName} (8-on-Break!)`);
+            if (pABR > 0) currentFeats.push(`${pAName} (Break & Run!)`);
+
             // --- LAYER 2: Player B (Loser Side) ---
-            const pBName = cols[5]?.trim();
-            const pB8B = parseInt(cols[15]) || 0;
-            const pBBR = parseInt(cols[16]) || 0;
-           
+            if (cols.length >= 17) {
+                const pBName = cols[5] ? cols[5].trim() : "";
+                const pB8B = parseInt(cols[15]) || 0;
+                const pBBR = parseInt(cols[16]) || 0;
 
-            if (pBName) {
-                if (pB8B > 0) currentFeats.push(`${pBName} (8-on-Break!)`);
-                if (pBBR > 0) currentFeats.push(`${pBName} (Break & Run!)`);
-       }
-        });
+                if (pBName) {
+                    if (pB8B > 0) currentFeats.push(`${pBName} (8-on-Break!)`);
+                    if (pBBR > 0) currentFeats.push(`${pBName} (Break & Run!)`);
+                }
+            }
+        }
 
-        // Only update if something new happened
         if (currentFeats.length > 0 && JSON.stringify(currentFeats) !== JSON.stringify(lastSeenFeats)) {
             lastSeenFeats = currentFeats;
             showTicker("*** RECENT FEATS: " + currentFeats.join(" | ") + " ***");
         }
     } catch (err) {
-        console.error("Feat Check Failed:", err);
+        console.warn("Ticker update skipped:", err);
     }
 }
 
 setInterval(checkForFeats, 60000);
-setTimeout(checkForFeats, 2000);
+setTimeout(checkForFeats, 3000);
 </script>
 </div>
 </div>
