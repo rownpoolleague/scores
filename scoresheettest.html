@@ -1246,11 +1246,9 @@ async function showScoreBoard() {
         const data = await response.text();
         const rows = data.split(/\r?\n/).filter(r => r.trim() !== "").slice(1);
         
-        let matchDetailsHTML = '<h4 style="color:gold; margin-top:20px;">INDIVIDUAL MATCHES</h4>';
         let teamWins = {}; 
-        let foundAny = false;
-
-        // Prep the win counter using your scoresheetinfo object
+        let uniqueMatches = new Map(); // Key: sorted player names, Value: row data
+        
         Object.keys(scoresheetinfo).forEach(team => teamWins[team] = 0);
 
         for (let i = 0; i < rows.length; i++) {
@@ -1259,50 +1257,60 @@ async function showScoreBoard() {
                 
                 const pAName = cols[3]?.replace(/"/g, "").trim();
                 const pBName = cols[4]?.replace(/"/g, "").trim();
-                const winnerName = cols[18]?.replace(/"/g, "").trim(); // Column S
-                
-                if (!pAName) continue;
+                if (!pAName || !pBName) continue;
 
-                // Lookup winner in scoresheetinfo
-                if (winnerName) {
-                    for (const [teamName, players] of Object.entries(scoresheetinfo)) {
-                        if (players.includes(winnerName)) {
-                            teamWins[teamName]++;
-                            break; 
-                        }
-                    }
+                // Create a unique ID for the match (Sort names so A-vs-B is same as B-vs-A)
+                const matchID = [pAName, pBName].sort().join("|");
+
+                // Only store the match if we haven't seen it, or if this entry has a winner
+                // This handles the "one team submitted, one didn't" or "both submitted" logic
+                if (!uniqueMatches.has(matchID) || cols[18]) {
+                    uniqueMatches.set(matchID, cols);
                 }
-
-                const pAScore = cols[7] || 0;
-                const pBScore = cols[8] || 0;
-                matchDetailsHTML += `<div class="score-row">${pAName} ${pAScore} - ${pBScore} ${pBName}</div>`;
-                foundAny = true;
             }
         }
 
-        // Build Team Standings Table
+        let matchDetailsHTML = '<h4 style="color:gold; margin-top:20px;">INDIVIDUAL MATCHES</h4>';
+        
+        // Process the UNIQUE matches only
+        uniqueMatches.forEach((cols) => {
+            const pAName = cols[3]?.replace(/"/g, "").trim();
+            const pBName = cols[4]?.replace(/"/g, "").trim();
+            const pAScore = cols[7] || 0;
+            const pBScore = cols[8] || 0;
+            const winnerName = cols[18]?.replace(/"/g, "").trim();
+
+            // Tally Team Wins
+            if (winnerName) {
+                for (const [teamName, players] of Object.entries(scoresheetinfo)) {
+                    if (players.includes(winnerName)) {
+                        teamWins[teamName]++;
+                        break; 
+                    }
+                }
+            }
+            matchDetailsHTML += `<div class="score-row">${pAName} ${pAScore} - ${pBScore} ${pBName}</div>`;
+        });
+
+        // Build Table (Same as before)
         let teamHTML = '<h3>TONIGHT\'S STANDINGS</h3><table class="team-table">';
         teamHTML += '<tr><th style="text-align:left;">Team Name</th><th>Wins</th></tr>';
         
-        let hasWins = false;
         Object.entries(teamWins)
-            .sort((a, b) => b[1] - a[1]) // Top score first
+            .sort((a, b) => b[1] - a[1]) 
             .forEach(([team, wins]) => {
                 if (wins > 0) {
                     teamHTML += `<tr><td style="text-align:left;">${team}</td><td><strong>${wins}</strong></td></tr>`;
-                    hasWins = true;
                 }
             });
         teamHTML += '</table>';
 
-        if (!foundAny) {
-            board.innerHTML = '<h3>No matches recorded today.</h3><div class="score-close" onclick="this.parentElement.style.display=\'none\'">[ CLOSE ]</div>';
-        } else {
-            board.innerHTML = teamHTML + matchDetailsHTML + '<div class="score-close" onclick="this.parentElement.style.display=\'none\'">[ CLOSE ]</div>';
-        }
+        board.innerHTML = uniqueMatches.size === 0 
+            ? '<h3>No matches recorded today.</h3><div class="score-close" onclick="this.parentElement.style.display=\'none\'">[ CLOSE ]</div>'
+            : teamHTML + matchDetailsHTML + '<div class="score-close" onclick="this.parentElement.style.display=\'none\'">[ CLOSE ]</div>';
 
     } catch (err) {
-        board.innerHTML = '<h3 style="color:red;">Error loading scores.</h3><div class="score-close" onclick="this.parentElement.style.display=\'none\'">[ CLOSE ]</div>';
+        board.innerHTML = '<h3 style="color:red;">Error loading scores.</h3>';
     }
 }
 </script>
