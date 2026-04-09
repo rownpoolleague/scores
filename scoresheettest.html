@@ -1071,6 +1071,58 @@ function updateTimerDisplay() {
     const secs = seconds % 60;
     document.getElementById("timerValue").textContent = `${mins}:${secs < 10 ? '0' + secs : secs}`;
 }
+    // --- CONNECTION TEST TICKER ENGINE ---
+(function injectTicker() {
+    // 1. Inject Ticker Styles
+    const style = document.createElement('style');
+    style.textContent = `
+        #ticker-container {
+            display: none; position: fixed; top: 0; left: 0; width: 100%;
+            background: #c00; color: #fff; padding: 10px 0; font-weight: bold;
+            z-index: 200000; overflow: hidden; white-space: nowrap;
+            border-bottom: 2px solid gold; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        #ticker-text { display: inline-block; padding-left: 100%; animation: ticker-kb 20s linear infinite; }
+        @keyframes ticker-kb { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+    `;
+    document.head.appendChild(style);
+
+    // 2. Inject Ticker HTML
+    const tickerWrap = document.createElement('div');
+    tickerWrap.id = 'ticker-container';
+    tickerWrap.innerHTML = '<div id="ticker-text"></div>';
+    document.body.prepend(tickerWrap);
+})();
+
+function showTicker(msg) {
+    const container = document.getElementById('ticker-container');
+    const textEl = document.getElementById('ticker-text');
+    if (container && textEl) {
+        textEl.textContent = msg;
+        container.style.display = 'block';
+        // Auto-hide after 30 seconds to keep the screen clean
+        setTimeout(() => { container.style.display = 'none'; }, 30000);
+    }
+}
+
+async function testGoogleConnection() {
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv"; 
+    // Note: Use your actual published CSV link above
+    
+    try {
+        const response = await fetch(csvUrl + "&cachebust=" + Date.now());
+        if (response.ok) {
+            showTicker("*** SYSTEM: Google Data Link Verified - Connection Active ***");
+        } else {
+            console.log("Sheet found but returned error status.");
+        }
+    } catch (err) {
+        console.error("Ticker Connection Test Failed:", err);
+    }
+}
+
+// Run the test 3 seconds after the app loads
+setTimeout(testGoogleConnection, 30000);
 </script>
 </div>
 </div>
