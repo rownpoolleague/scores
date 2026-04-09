@@ -724,7 +724,15 @@ function showHistory() {
             </tr>`).join("");
     }
     tableHtml += `</tbody></table>`;
-showMasterModal("Match History", tableHtml, []);
+
+    // Pass the button as an object in the third argument (the buttons array)
+    showMasterModal("Match History", tableHtml, [
+        {
+            text: "TEAM STANDINGS",
+            color: "#c00",
+            onclick: () => showScoreBoard()
+        }
+    ]);
 }
 function clearHistory() {
     if(confirm("Clear all match history?")) {
@@ -1199,44 +1207,31 @@ setTimeout(checkForFeats, 3000);
 // 2. Set it to run automatically every 60 seconds
 setInterval(checkForFeats, 60000);
     // 1. INJECT STYLES AND HTML (Button and Box)
-(function injectScoreboardUI() {
-    const style = document.createElement('style');
-    style.textContent = `
-        #score-btn {
-            position: fixed; bottom: 20px; right: 20px;
-            background: #c00; color: gold; border: 2px solid gold;
-            padding: 10px 15px; font-weight: bold; cursor: pointer;
-            z-index: 10000; border-radius: 5px; font-family: sans-serif;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        #score-board {
-            display: none; position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); width: 90%; max-width: 450px;
-            background: #111; color: #fff; border: 3px solid gold;
-            padding: 20px; z-index: 10001; max-height: 80vh; overflow-y: auto;
-            box-shadow: 0 0 30px rgba(0,0,0,0.9); text-align: center;
-            font-family: sans-serif;
-        }
-        .score-row { border-bottom: 1px solid #333; padding: 8px 0; font-size: 14px; }
-        .score-close { margin-top: 20px; color: gold; cursor: pointer; font-weight: bold; text-decoration: underline; }
-        .team-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .team-table th { border-bottom: 2px solid gold; color: gold; padding: 10px; }
-        .team-table td { padding: 8px; border-bottom: 1px solid #333; }
-    `;
-    document.head.appendChild(style);
+// 1. STYLES ONLY (Box is hidden by default)
+const scoreboardStyle = document.createElement('style');
+scoreboardStyle.textContent = `
+    #score-board {
+        display: none; position: fixed; top: 50%; left: 50%;
+        transform: translate(-50%, -50%); width: 90%; max-width: 450px;
+        background: #111; color: #fff; border: 3px solid gold;
+        padding: 20px; z-index: 10001; max-height: 80vh; overflow-y: auto;
+        box-shadow: 0 0 30px rgba(0,0,0,0.9); text-align: center;
+        font-family: sans-serif;
+    }
+    .score-row { border-bottom: 1px solid #333; padding: 8px 0; font-size: 14px; }
+    .score-close { margin-top: 20px; color: gold; cursor: pointer; font-weight: bold; text-decoration: underline; }
+    .team-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .team-table th { border-bottom: 2px solid gold; color: gold; padding: 10px; }
+    .team-table td { padding: 8px; border-bottom: 1px solid #333; }
+`;
+document.head.appendChild(scoreboardStyle);
 
-    const btn = document.createElement('button');
-    btn.id = 'score-btn';
-    btn.textContent = 'TEAM STANDINGS';
-    btn.onclick = showScoreBoard;
-    document.body.appendChild(btn);
+// Create the container but keep it hidden
+const boardContainer = document.createElement('div');
+boardContainer.id = 'score-board';
+document.body.appendChild(boardContainer);
 
-    const board = document.createElement('div');
-    board.id = 'score-board';
-    document.body.appendChild(board);
-})();
-
-// 2. THE LOGIC (The Math)
+// 2. THE LOGIC
 async function showScoreBoard() {
     const board = document.getElementById('score-board');
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv";
@@ -1256,7 +1251,7 @@ async function showScoreBoard() {
         let teamWins = {}; 
         let foundAny = false;
 
-        // Prep the win counter
+        // Prep the win counter using your scoresheetinfo object
         Object.keys(scoresheetinfo).forEach(team => teamWins[team] = 0);
 
         for (let i = 0; i < rows.length; i++) {
