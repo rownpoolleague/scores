@@ -1116,8 +1116,7 @@ function showTicker(msg) {
 let announcedFeats = JSON.parse(localStorage.getItem("announcedFeats")) || [];
 
 async function checkForFeats() {
-    const csvUrl = "// Replace the old PACX-xxx link with this format:
-const csvUrl = "https://docs.google.com/spreadsheets/d/1-8E9WHCgLIKrLCs3HACiEHhx-lf5q0SZaIIGrmHgoB0/export?format=csv";
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv";
     
     // Get today's date in M/D/YYYY format to match Google Sheets default
     const today = new Date();
