@@ -1153,15 +1153,33 @@ async function checkForFeats() {
                 }
             };
 
-            // 3. CHECK FEATS (J=9, K=10, O=14, P=15)
+            // 3. CHECK FEATS
+            
+            // --- PLAYER A LOGIC ---
             checkFeat(pAName, "8-on-Break", cols[9]);
             checkFeat(pAName, "Break & Run", cols[10]);
 
-            if (cols.length >= 16) {
+            // Mini-Slam Player A (Both 8B and BR > 0)
+            if (parseInt(cols[9]) > 0 && parseInt(cols[10]) > 0) {
+                checkFeat(pAName, "Mini-Slam", 1);
+            }
+
+            // Rackless Player A (Only if Player B Score in Col I/Index 8 is 0)
+            if (parseInt(cols[13]) === 0) {
+                checkFeat(pAName, "Rackless", 1);
+            }
+
+            // --- PLAYER B LOGIC ---
+            if (cols.length >= 17) {
                 const pBName = cols[4] ? cols[4].replace(/"/g, "").trim() : "";
                 if (pBName) {
                     checkFeat(pBName, "8-on-Break", cols[15]);
                     checkFeat(pBName, "Break & Run", cols[16]);
+
+                    // Mini-Slam Player B (Both 8B and BR > 0)
+                    if (parseInt(cols[15]) > 0 && parseInt(cols[16]) > 0) {
+                        checkFeat(pBName, "Mini-Slam", 1);
+                    }
                 }
             }
         }
