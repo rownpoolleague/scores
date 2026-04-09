@@ -1112,7 +1112,7 @@ function showTicker(msg) {
     }
 }
 
-// Load previously seen feats from this session so they don't repeat on refresh
+// Load previously seen feats from this session
 let announcedFeats = JSON.parse(localStorage.getItem("announcedFeats")) || [];
 
 async function checkForFeats() {
@@ -1121,47 +1121,52 @@ async function checkForFeats() {
     try {
         const response = await fetch(csvUrl + "&cachebust=" + Date.now());
         const data = await response.text();
-        const rows = data.split("\n").slice(1); 
+        // Split rows and filter out any completely empty lines
+        const rows = data.split(/\r?\n/).filter(r => r.trim() !== "").slice(1); 
         
         let newFeatsFound = [];
 
         for (let i = 0; i < rows.length; i++) {
             const cols = rows[i].split(",");
+            
+            // Lock in the Name from Column 4
             const pAName = cols[4] ? cols[4].trim() : "";
             
-            if (!pAName) break; // Hard Stop
+            // Hard Stop: if there is no name, we've hit the end of the night's data
+            if (!pAName || pAName === "") break; 
 
-            // Helper to check and track
+            // Helper to validate the number and the name
             const checkFeat = (playerName, featType, val) => {
-                if (val > 0) {
-                    // Create a unique ID for this specific feat (e.g., "JohnDoe-8B")
-                    const featID = `${playerName}-${featType}`;
-                    
-                    if (!announcedFeats.includes(featID)) {
-                        newFeatsFound.push(`${playerName} (${featType}!)`);
-                        announcedFeats.push(featID);
-                    }
+                const numericVal = parseInt(val);
+                // If it's not a number, or it's 0, skip it
+                if (isNaN(numericVal) || numericVal <= 0) return;
+
+                // Ensure the name isn't just a stray number (the "9" fix)
+                if (!isNaN(playerName) && playerName.length < 3) return;
+
+                const featID = `${playerName}-${featType}`;
+                if (!announcedFeats.includes(featID)) {
+                    newFeatsFound.push(`${playerName} (${featType}!)`);
+                    announcedFeats.push(featID);
                 }
             };
 
-            // Layer 1: Player A
-            checkFeat(pAName, "8-on-Break", parseInt(cols[10]));
-            checkFeat(pAName, "Break & Run", parseInt(cols[11]));
+            // Player A (Winner Side)
+            checkFeat(pAName, "8-on-Break", cols[10]);
+            checkFeat(pAName, "Break & Run", cols[11]);
 
-            // Layer 2: Player B
+            // Player B (Loser Side) - Only if the row is long enough
             if (cols.length >= 17) {
                 const pBName = cols[5] ? cols[5].trim() : "";
-                if (pBName) {
-                    checkFeat(pBName, "8-on-Break", parseInt(cols[15]));
-                    checkFeat(pBName, "Break & Run", parseInt(cols[16]));
+                if (pBName && pBName !== "") {
+                    checkFeat(pBName, "8-on-Break", cols[15]);
+                    checkFeat(pBName, "Break & Run", cols[16]);
                 }
             }
         }
 
-        // Only show the ticker if there is actually something NEW
         if (newFeatsFound.length > 0) {
-            showTicker("*** NEW FEATS: " + newFeatsFound.join(" | ") + " ***");
-            // Save the updated "Seen List" to memory
+            showTicker("*** Just Now: " + newFeatsFound.join(" | ") + " ***");
             localStorage.setItem("announcedFeats", JSON.stringify(announcedFeats));
         }
         
