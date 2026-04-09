@@ -526,6 +526,14 @@ function checkInitialSelection() {
 
     const teamEl = document.getElementById("team");
     if (teamEl && (teamEl.value === "Select Home Team" || teamEl.value === "")) {
+        
+        // --- NEW RESET LOGIC ---
+        // If we are at the "Select Team" stage, it's a new session.
+        // Clear the ticker flags so tonight's feats can be announced.
+        localStorage.removeItem("announcedFeats");
+        announcedFeats = []; 
+        // -----------------------
+
         const options = teamEl.options;
         let teamButtonsHtml = `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">`;
 
@@ -548,7 +556,6 @@ function checkInitialSelection() {
         );
     }
 }
-
 function confirmLag(isWinner) {
     if (!pendingPlayerData) return;
 
@@ -717,7 +724,14 @@ function showHistory() {
             </tr>`).join("");
     }
     tableHtml += `</tbody></table>`;
-showMasterModal("Match History", tableHtml, []);
+
+    showMasterModal("Match History", tableHtml, [
+        {
+            text: "TEAM STANDINGS",
+            color: "#c00",
+            action: "closeMasterModal(); showScoreBoard();"
+        }
+    ]);
 }
 function clearHistory() {
     if(confirm("Clear all match history?")) {
@@ -1070,6 +1084,238 @@ function updateTimerDisplay() {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     document.getElementById("timerValue").textContent = `${mins}:${secs < 10 ? '0' + secs : secs}`;
+}
+    // --- CONNECTION TEST TICKER ENGINE ---
+(function injectTicker() {
+    // 1. Inject Ticker Styles
+    const style = document.createElement('style');
+    style.textContent = `
+        #ticker-container {
+            display: none; position: fixed; top: 0; left: 0; width: 100%;
+            background: #c00; color: #fff; padding: 10px 0; font-weight: bold;
+            z-index: 200000; overflow: hidden; white-space: nowrap;
+            border-bottom: 2px solid gold; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        #ticker-text { display: inline-block; padding-left: 100%; animation: ticker-kb 40s linear infinite; }
+        @keyframes ticker-kb { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+    `;
+    document.head.appendChild(style);
+
+    // 2. Inject Ticker HTML
+    const tickerWrap = document.createElement('div');
+    tickerWrap.id = 'ticker-container';
+    tickerWrap.innerHTML = '<div id="ticker-text"></div>';
+    document.body.prepend(tickerWrap);
+})();
+
+function showTicker(msg) {
+    const container = document.getElementById('ticker-container');
+    const textEl = document.getElementById('ticker-text');
+    if (container && textEl) {
+        textEl.textContent = msg;
+        container.style.display = 'block';
+        // Auto-hide after 30 seconds to keep the screen clean
+        setTimeout(() => { container.style.display = 'none'; }, 40000);
+    }
+}
+
+// Load previously seen feats from this session
+let announcedFeats = JSON.parse(localStorage.getItem("announcedFeats")) || [];
+
+async function checkForFeats() {
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv";
+    
+    // Get today's date in M/D/YYYY format to match Google Sheets default
+    const today = new Date();
+    const todayString = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+
+    try {
+        const response = await fetch(csvUrl + "&cachebust=" + Date.now());
+        const data = await response.text();
+        const rows = data.split(/\r?\n/).filter(r => r.trim() !== "").slice(1); 
+        
+        let newFeatsFound = [];
+
+        for (let i = 0; i < rows.length; i++) {
+            const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            
+            // 1. CHECK THE DATE (Column A = Index 0)
+            const rowDate = cols[0] ? cols[0].trim() : "";
+            if (!rowDate.startsWith(todayString)) {
+                continue; // Skip this row if it's not from today
+            }
+
+            // 2. GET NAMES (Column D = Index 3, Column E = Index 4)
+            const pAName = cols[3] ? cols[3].replace(/"/g, "").trim() : "";
+            if (!pAName) break; 
+
+            const checkFeat = (playerName, featType, val) => {
+                const numericVal = parseInt(val);
+                if (isNaN(numericVal) || numericVal <= 0) return;
+                
+                const featID = `${playerName}-${featType}`;
+                if (!announcedFeats.includes(featID)) {
+                    newFeatsFound.push(`${playerName} ${featType}!`);
+                    announcedFeats.push(featID);
+                }
+            };
+
+            // 3. CHECK FEATS
+            
+            // --- PLAYER A LOGIC ---
+            checkFeat(pAName, "8-on-Break", cols[9]);
+            checkFeat(pAName, "Break & Run", cols[10]);
+
+            // Mini-Slam Player A (Both 8B and BR > 0)
+            if (parseInt(cols[9]) > 0 && parseInt(cols[10]) > 0) {
+                checkFeat(pAName, "Mini-Slam", 1);
+            }
+
+            // Rackless Player A (Only if Player B Score in Col I/Index 8 is 0)
+            if (parseInt(cols[13]) === 0) {
+                checkFeat(pAName, "Rackless/Undefeated", 1);
+            }
+
+            // --- PLAYER B LOGIC ---
+            if (cols.length >= 17) {
+                const pBName = cols[4] ? cols[4].replace(/"/g, "").trim() : "";
+                if (pBName) {
+                    checkFeat(pBName, "8-on-Break", cols[15]);
+                    checkFeat(pBName, "Break & Run", cols[16]);
+
+                    // Mini-Slam Player B (Both 8B and BR > 0)
+                    if (parseInt(cols[15]) > 0 && parseInt(cols[16]) > 0) {
+                        checkFeat(pBName, "Mini-Slam", 1);
+                    }
+                    // Undefeated Player B 
+            if (parseInt(cols[7]) === 0) {
+                checkFeat(pBName, "Undefeated", 1);
+            }
+                }
+            }
+        }
+
+        if (newFeatsFound.length > 0) {
+            showTicker("*** Congratulations " + newFeatsFound.join(" --- ") + " ***");
+            localStorage.setItem("announcedFeats", JSON.stringify(announcedFeats));
+        }
+        
+    } catch (err) {
+        console.warn("Ticker update skipped:", err);
+    }
+}
+    // 1. Kick off the first check 3 seconds after the page loads
+setTimeout(checkForFeats, 3000);
+
+// 2. Set it to run automatically every 60 seconds
+setInterval(checkForFeats, 60000);
+    // 1. INJECT STYLES AND HTML (Button and Box)
+// 1. STYLES ONLY (Box is hidden by default)
+const scoreboardStyle = document.createElement('style');
+scoreboardStyle.textContent = `
+    #score-board {
+        display: none; position: fixed; top: 50%; left: 50%;
+        transform: translate(-50%, -50%); width: 90%; max-width: 450px;
+        background: #111; color: #fff; border: 3px solid gold;
+        padding: 20px; z-index: 10001; max-height: 80vh; overflow-y: auto;
+        box-shadow: 0 0 30px rgba(0,0,0,0.9); text-align: center;
+        font-family: sans-serif;
+    }
+    .score-row { border-bottom: 1px solid #333; padding: 8px 0; font-size: 14px; }
+    .score-close { margin-top: 20px; color: gold; cursor: pointer; font-weight: bold; text-decoration: underline; }
+    .team-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .team-table th { border-bottom: 2px solid gold; color: gold; padding: 10px; }
+    .team-table td { padding: 8px; border-bottom: 1px solid #333; }
+`;
+document.head.appendChild(scoreboardStyle);
+
+// Create the container but keep it hidden
+const boardContainer = document.createElement('div');
+boardContainer.id = 'score-board';
+document.body.appendChild(boardContainer);
+
+// 2. THE LOGIC
+async function showScoreBoard() {
+    const board = document.getElementById('score-board');
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv";
+    
+    const today = new Date();
+    const todayString = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+
+    board.innerHTML = '<h3 style="color:gold;">FETCHING LIVE SCORES...</h3>';
+    board.style.display = 'block';
+
+    try {
+        const response = await fetch(csvUrl + "&cachebust=" + Date.now());
+        const data = await response.text();
+        const rows = data.split(/\r?\n/).filter(r => r.trim() !== "").slice(1);
+        
+        let teamWins = {}; 
+        let uniqueMatches = new Map(); // Key: sorted player names, Value: row data
+        
+        Object.keys(scoresheetinfo).forEach(team => teamWins[team] = 0);
+
+        for (let i = 0; i < rows.length; i++) {
+            const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (cols[0] && cols[0].trim().startsWith(todayString)) {
+                
+                const pAName = cols[3]?.replace(/"/g, "").trim();
+                const pBName = cols[4]?.replace(/"/g, "").trim();
+                if (!pAName || !pBName) continue;
+
+                // Create a unique ID for the match (Sort names so A-vs-B is same as B-vs-A)
+                const matchID = [pAName, pBName].sort().join("|");
+
+                // Only store the match if we haven't seen it, or if this entry has a winner
+                // This handles the "one team submitted, one didn't" or "both submitted" logic
+                if (!uniqueMatches.has(matchID) || cols[18]) {
+                    uniqueMatches.set(matchID, cols);
+                }
+            }
+        }
+
+        let matchDetailsHTML = '<h4 style="color:gold; margin-top:20px;">INDIVIDUAL MATCHES</h4>';
+        
+        // Process the UNIQUE matches only
+        uniqueMatches.forEach((cols) => {
+            const pAName = cols[3]?.replace(/"/g, "").trim();
+            const pBName = cols[4]?.replace(/"/g, "").trim();
+            const pAScore = cols[7] || 0;
+            const pBScore = cols[13] || 0;
+            const winnerName = cols[18]?.replace(/"/g, "").trim();
+
+            // Tally Team Wins
+            if (winnerName) {
+                for (const [teamName, players] of Object.entries(scoresheetinfo)) {
+                    if (players.includes(winnerName)) {
+                        teamWins[teamName]++;
+                        break; 
+                    }
+                }
+            }
+            matchDetailsHTML += `<div class="score-row">${pAName} ${pAScore} - ${pBScore} ${pBName}</div>`;
+        });
+
+        // Build Table (Same as before)
+        let teamHTML = '<h3>TONIGHT\'S STANDINGS</h3><table class="team-table">';
+        teamHTML += '<tr><th style="text-align:left;">Team Name</th><th>Wins</th></tr>';
+        
+        Object.entries(teamWins)
+            .sort((a, b) => b[1] - a[1]) 
+            .forEach(([team, wins]) => {
+                if (wins > 0) {
+                    teamHTML += `<tr><td style="text-align:left;">${team}</td><td><strong>${wins}</strong></td></tr>`;
+                }
+            });
+        teamHTML += '</table>';
+
+        board.innerHTML = uniqueMatches.size === 0 
+            ? '<h3>No matches recorded today.</h3><div class="score-close" onclick="this.parentElement.style.display=\'none\'">[ CLOSE ]</div>'
+            : teamHTML + matchDetailsHTML + '<div class="score-close" onclick="this.parentElement.style.display=\'none\'">[ CLOSE ]</div>';
+
+    } catch (err) {
+        board.innerHTML = '<h3 style="color:red;">Error loading scores.</h3>';
+    }
 }
 </script>
 </div>
