@@ -526,6 +526,14 @@ function checkInitialSelection() {
 
     const teamEl = document.getElementById("team");
     if (teamEl && (teamEl.value === "Select Home Team" || teamEl.value === "")) {
+        
+        // --- NEW RESET LOGIC ---
+        // If we are at the "Select Team" stage, it's a new session.
+        // Clear the ticker flags so tonight's feats can be announced.
+        localStorage.removeItem("announcedFeats");
+        announcedFeats = []; 
+        // -----------------------
+
         const options = teamEl.options;
         let teamButtonsHtml = `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">`;
 
@@ -548,7 +556,6 @@ function checkInitialSelection() {
         );
     }
 }
-
 function confirmLag(isWinner) {
     if (!pendingPlayerData) return;
 
@@ -1082,7 +1089,7 @@ function updateTimerDisplay() {
             z-index: 200000; overflow: hidden; white-space: nowrap;
             border-bottom: 2px solid gold; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-        #ticker-text { display: inline-block; padding-left: 100%; animation: ticker-kb 20s linear infinite; }
+        #ticker-text { display: inline-block; padding-left: 100%; animation: ticker-kb 40s linear infinite; }
         @keyframes ticker-kb { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
     `;
     document.head.appendChild(style);
@@ -1101,11 +1108,12 @@ function showTicker(msg) {
         textEl.textContent = msg;
         container.style.display = 'block';
         // Auto-hide after 30 seconds to keep the screen clean
-        setTimeout(() => { container.style.display = 'none'; }, 30000);
+        setTimeout(() => { container.style.display = 'none'; }, 40000);
     }
 }
 
-let lastSeenFeats = [];
+// Load previously seen feats from this session so they don't repeat on refresh
+let announcedFeats = JSON.parse(localStorage.getItem("announcedFeats")) || [];
 
 async function checkForFeats() {
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv";
@@ -1115,51 +1123,57 @@ async function checkForFeats() {
         const data = await response.text();
         const rows = data.split("\n").slice(1); 
         
-        let currentFeats = [];
+        let newFeatsFound = [];
 
         for (let i = 0; i < rows.length; i++) {
             const cols = rows[i].split(",");
-            
-            // --- THE HARD STOP ---
-            // If the Player A Name cell (Col 4) is empty, stop the entire loop.
-            // This is the "End of Information" gate.
             const pAName = cols[4] ? cols[4].trim() : "";
-            if (!pAName) {
-                console.log("Empty row reached at index " + i + ". Stopping scan.");
-                break; 
-            }
+            
+            if (!pAName) break; // Hard Stop
 
-            // --- LAYER 1: Player A (Winner Side) ---
-            const pA8B = parseInt(cols[10]) || 0;
-            const pABR = parseInt(cols[11]) || 0;
+            // Helper to check and track
+            const checkFeat = (playerName, featType, val) => {
+                if (val > 0) {
+                    // Create a unique ID for this specific feat (e.g., "JohnDoe-8B")
+                    const featID = `${playerName}-${featType}`;
+                    
+                    if (!announcedFeats.includes(featID)) {
+                        newFeatsFound.push(`${playerName} (${featType}!)`);
+                        announcedFeats.push(featID);
+                    }
+                }
+            };
 
-            if (pA8B > 0) currentFeats.push(`${pAName} (8-on-Break!)`);
-            if (pABR > 0) currentFeats.push(`${pAName} (Break & Run!)`);
+            // Layer 1: Player A
+            checkFeat(pAName, "8-on-Break", parseInt(cols[10]));
+            checkFeat(pAName, "Break & Run", parseInt(cols[11]));
 
-            // --- LAYER 2: Player B (Loser Side) ---
+            // Layer 2: Player B
             if (cols.length >= 17) {
                 const pBName = cols[5] ? cols[5].trim() : "";
-                const pB8B = parseInt(cols[15]) || 0;
-                const pBBR = parseInt(cols[16]) || 0;
-
                 if (pBName) {
-                    if (pB8B > 0) currentFeats.push(`${pBName} (8-on-Break!)`);
-                    if (pBBR > 0) currentFeats.push(`${pBName} (Break & Run!)`);
+                    checkFeat(pBName, "8-on-Break", parseInt(cols[15]));
+                    checkFeat(pBName, "Break & Run", parseInt(cols[16]));
                 }
             }
         }
 
-        if (currentFeats.length > 0 && JSON.stringify(currentFeats) !== JSON.stringify(lastSeenFeats)) {
-            lastSeenFeats = currentFeats;
-            showTicker("*** RECENT FEATS: " + currentFeats.join(" | ") + " ***");
+        // Only show the ticker if there is actually something NEW
+        if (newFeatsFound.length > 0) {
+            showTicker("*** NEW FEATS: " + newFeatsFound.join(" | ") + " ***");
+            // Save the updated "Seen List" to memory
+            localStorage.setItem("announcedFeats", JSON.stringify(announcedFeats));
         }
+        
     } catch (err) {
         console.warn("Ticker update skipped:", err);
     }
 }
-
-setInterval(checkForFeats, 60000);
+    // 1. Kick off the first check 3 seconds after the page loads
 setTimeout(checkForFeats, 3000);
+
+// 2. Set it to run automatically every 60 seconds
+setInterval(checkForFeats, 60000);
 </script>
 </div>
 </div>
