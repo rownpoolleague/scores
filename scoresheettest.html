@@ -1148,7 +1148,7 @@ async function checkForFeats() {
                 
                 const featID = `${playerName}-${featType}`;
                 if (!announcedFeats.includes(featID)) {
-                    newFeatsFound.push(`${playerName} (${featType}!)`);
+                    newFeatsFound.push(`${playerName} ${featType}!`);
                     announcedFeats.push(featID);
                 }
             };
@@ -1160,14 +1160,14 @@ async function checkForFeats() {
             if (cols.length >= 16) {
                 const pBName = cols[4] ? cols[4].replace(/"/g, "").trim() : "";
                 if (pBName) {
-                    checkFeat(pBName, "8-on-Break", cols[14]);
-                    checkFeat(pBName, "Break & Run", cols[15]);
+                    checkFeat(pBName, "8-on-Break", cols[15]);
+                    checkFeat(pBName, "Break & Run", cols[16]);
                 }
             }
         }
 
         if (newFeatsFound.length > 0) {
-            showTicker("*** Just Now: " + newFeatsFound.join(" | ") + " ***");
+            showTicker("*** Congratulations " + newFeatsFound.join(" --- ") + " ***");
             localStorage.setItem("announcedFeats", JSON.stringify(announcedFeats));
         }
         
