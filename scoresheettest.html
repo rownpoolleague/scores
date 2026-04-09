@@ -1173,7 +1173,7 @@ async function checkForFeats() {
 
             // Rackless Player A (Only if Player B Score in Col I/Index 8 is 0)
             if (parseInt(cols[13]) === 0) {
-                checkFeat(pAName, "Rackless", 1);
+                checkFeat(pAName, "Rackless/Undefeated", 1);
             }
 
             // --- PLAYER B LOGIC ---
@@ -1187,6 +1187,10 @@ async function checkForFeats() {
                     if (parseInt(cols[15]) > 0 && parseInt(cols[16]) > 0) {
                         checkFeat(pBName, "Mini-Slam", 1);
                     }
+                    // Undefeated Player B 
+            if (parseInt(cols[7]) === 0) {
+                checkFeat(pBName, "Undefeated", 1);
+            }
                 }
             }
         }
