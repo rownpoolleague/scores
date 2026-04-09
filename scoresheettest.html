@@ -1130,7 +1130,7 @@ async function checkForFeats() {
             const cols = rows[i].split(",");
             
             // Lock in the Name from Column 4
-            const pAName = cols[4] ? cols[4].trim() : "";
+            const pAName = cols[3] ? cols[3].trim() : "";
             
             // Hard Stop: if there is no name, we've hit the end of the night's data
             if (!pAName || pAName === "") break; 
@@ -1152,15 +1152,15 @@ async function checkForFeats() {
             };
 
             // Player A (Winner Side)
-            checkFeat(pAName, "8-on-Break", cols[10]);
-            checkFeat(pAName, "Break & Run", cols[11]);
+            checkFeat(pAName, "8-on-Break", cols[9]);
+            checkFeat(pAName, "Break & Run", cols[10]);
 
             // Player B (Loser Side) - Only if the row is long enough
             if (cols.length >= 17) {
-                const pBName = cols[5] ? cols[5].trim() : "";
+                const pBName = cols[4] ? cols[4].trim() : "";
                 if (pBName && pBName !== "") {
-                    checkFeat(pBName, "8-on-Break", cols[16]);
-                    checkFeat(pBName, "Break & Run", cols[17]);
+                    checkFeat(pBName, "8-on-Break", cols[15]);
+                    checkFeat(pBName, "Break & Run", cols[16]);
                 }
             }
         }
