@@ -1198,6 +1198,119 @@ setTimeout(checkForFeats, 3000);
 
 // 2. Set it to run automatically every 60 seconds
 setInterval(checkForFeats, 60000);
+    // 1. INJECT STYLES AND HTML (Button and Box)
+(function injectScoreboardUI() {
+    const style = document.createElement('style');
+    style.textContent = `
+        #score-btn {
+            position: fixed; bottom: 20px; right: 20px;
+            background: #c00; color: gold; border: 2px solid gold;
+            padding: 10px 15px; font-weight: bold; cursor: pointer;
+            z-index: 10000; border-radius: 5px; font-family: sans-serif;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        #score-board {
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 90%; max-width: 450px;
+            background: #111; color: #fff; border: 3px solid gold;
+            padding: 20px; z-index: 10001; max-height: 80vh; overflow-y: auto;
+            box-shadow: 0 0 30px rgba(0,0,0,0.9); text-align: center;
+            font-family: sans-serif;
+        }
+        .score-row { border-bottom: 1px solid #333; padding: 8px 0; font-size: 14px; }
+        .score-close { margin-top: 20px; color: gold; cursor: pointer; font-weight: bold; text-decoration: underline; }
+        .team-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .team-table th { border-bottom: 2px solid gold; color: gold; padding: 10px; }
+        .team-table td { padding: 8px; border-bottom: 1px solid #333; }
+    `;
+    document.head.appendChild(style);
+
+    const btn = document.createElement('button');
+    btn.id = 'score-btn';
+    btn.textContent = 'TEAM STANDINGS';
+    btn.onclick = showScoreBoard;
+    document.body.appendChild(btn);
+
+    const board = document.createElement('div');
+    board.id = 'score-board';
+    document.body.appendChild(board);
+})();
+
+// 2. THE LOGIC (The Math)
+async function showScoreBoard() {
+    const board = document.getElementById('score-board');
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv";
+    
+    const today = new Date();
+    const todayString = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+
+    board.innerHTML = '<h3 style="color:gold;">FETCHING LIVE SCORES...</h3>';
+    board.style.display = 'block';
+
+    try {
+        const response = await fetch(csvUrl + "&cachebust=" + Date.now());
+        const data = await response.text();
+        const rows = data.split(/\r?\n/).filter(r => r.trim() !== "").slice(1);
+        
+        let matchDetailsHTML = '<h4 style="color:gold; margin-top:20px;">INDIVIDUAL MATCHES</h4>';
+        let teamWins = {}; 
+        let foundAny = false;
+
+        // Prep the win counter
+        Object.keys(scoresheetinfo).forEach(team => teamWins[team] = 0);
+
+        for (let i = 0; i < rows.length; i++) {
+            const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (cols[0] && cols[0].trim().startsWith(todayString)) {
+                
+                const pAName = cols[3]?.replace(/"/g, "").trim();
+                const pBName = cols[4]?.replace(/"/g, "").trim();
+                const winnerName = cols[18]?.replace(/"/g, "").trim(); // Column S
+                
+                if (!pAName) continue;
+
+                // Lookup winner in scoresheetinfo
+                if (winnerName) {
+                    for (const [teamName, players] of Object.entries(scoresheetinfo)) {
+                        if (players.includes(winnerName)) {
+                            teamWins[teamName]++;
+                            break; 
+                        }
+                    }
+                }
+
+                const pAScore = cols[7] || 0;
+                const pBScore = cols[8] || 0;
+                matchDetailsHTML += `<div class="score-row">${pAName} ${pAScore} - ${pBScore} ${pBName}</div>`;
+                foundAny = true;
+            }
+        }
+
+        // Build Team Standings Table
+        let teamHTML = '<h3>TONIGHT\'S STANDINGS</h3><table class="team-table">';
+        teamHTML += '<tr><th style="text-align:left;">Team Name</th><th>Wins</th></tr>';
+        
+        let hasWins = false;
+        Object.entries(teamWins)
+            .sort((a, b) => b[1] - a[1]) // Top score first
+            .forEach(([team, wins]) => {
+                if (wins > 0) {
+                    teamHTML += `<tr><td style="text-align:left;">${team}</td><td><strong>${wins}</strong></td></tr>`;
+                    hasWins = true;
+                }
+            });
+        teamHTML += '</table>';
+
+        if (!foundAny) {
+            board.innerHTML = '<h3>No matches recorded today.</h3><div class="score-close" onclick="this.parentElement.style.display=\'none\'">[ CLOSE ]</div>';
+        } else {
+            board.innerHTML = teamHTML + matchDetailsHTML + '<div class="score-close" onclick="this.parentElement.style.display=\'none\'">[ CLOSE ]</div>';
+        }
+
+    } catch (err) {
+        board.innerHTML = '<h3 style="color:red;">Error loading scores.</h3><div class="score-close" onclick="this.parentElement.style.display=\'none\'">[ CLOSE ]</div>';
+    }
+}
 </script>
 </div>
 </div>
