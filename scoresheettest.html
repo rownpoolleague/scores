@@ -1159,8 +1159,8 @@ async function checkForFeats() {
             if (cols.length >= 17) {
                 const pBName = cols[5] ? cols[5].trim() : "";
                 if (pBName && pBName !== "") {
-                    checkFeat(pBName, "8-on-Break", cols[15]);
-                    checkFeat(pBName, "Break & Run", cols[16]);
+                    checkFeat(pBName, "8-on-Break", cols[16]);
+                    checkFeat(pBName, "Break & Run", cols[17]);
                 }
             }
         }
