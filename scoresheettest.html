@@ -725,12 +725,11 @@ function showHistory() {
     }
     tableHtml += `</tbody></table>`;
 
-    // Pass the button as an object in the third argument (the buttons array)
     showMasterModal("Match History", tableHtml, [
         {
             text: "TEAM STANDINGS",
             color: "#c00",
-            onclick: () => showScoreBoard()
+            action: "closeMasterModal(); showScoreBoard();"
         }
     ]);
 }
