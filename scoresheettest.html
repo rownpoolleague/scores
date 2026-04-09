@@ -1089,7 +1089,7 @@ function updateTimerDisplay() {
             z-index: 200000; overflow: hidden; white-space: nowrap;
             border-bottom: 2px solid gold; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-        #ticker-text { display: inline-block; padding-left: 100%; animation: ticker-kb 40s linear infinite; }
+        #ticker-text { display: inline-block; padding-left: 100%; animation: ticker-kb 30s linear infinite; }
         @keyframes ticker-kb { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
     `;
     document.head.appendChild(style);
@@ -1108,7 +1108,7 @@ function showTicker(msg) {
         textEl.textContent = msg;
         container.style.display = 'block';
         // Auto-hide after 30 seconds to keep the screen clean
-        setTimeout(() => { container.style.display = 'none'; }, 40000);
+        setTimeout(() => { container.style.display = 'none'; }, 30000);
     }
 }
 
@@ -1154,20 +1154,37 @@ async function checkForFeats() {
             };
 
             // 3. CHECK FEATS (J=9, K=10, O=14, P=15)
+            // Player A Standard Feats
             checkFeat(pAName, "8-on-Break", cols[9]);
             checkFeat(pAName, "Break & Run", cols[10]);
 
+            // Player A Mini-Slam (Both 8B and BR in same row)
+            if (parseInt(cols[9]) > 0 && parseInt(cols[10]) > 0) {
+                checkFeat(pAName, "Mini-Slam", 1);
+            }
+
+            // Player A Rackless (If Player B Score in Col I/Index 8 is 0)
+            if (parseInt(cols[13]) === 0) {
+                checkFeat(pAName, "Rackless", 1);
+            }
+
+            // Player B Standard Feats
             if (cols.length >= 16) {
                 const pBName = cols[4] ? cols[4].replace(/"/g, "").trim() : "";
                 if (pBName) {
-                    checkFeat(pBName, "8-on-Break", cols[14]);
-                    checkFeat(pBName, "Break & Run", cols[15]);
+                    checkFeat(pBName, "8-on-Break", cols[15]);
+                    checkFeat(pBName, "Break & Run", cols[16]);
+
+                    // Player B Mini-Slam (Both 8B and BR in same row)
+                    if (parseInt(cols[15]) > 0 && parseInt(cols[16]) > 0) {
+                        checkFeat(pBName, "Mini-Slam", 1);
+                    }
                 }
             }
         }
 
         if (newFeatsFound.length > 0) {
-            showTicker("*** Just Now: " + newFeatsFound.join(" | ") + " ***");
+            showTicker("*** Congratulations: " + newFeatsFound.join(" - ") + " ***");
             localStorage.setItem("announcedFeats", JSON.stringify(announcedFeats));
         }
         
