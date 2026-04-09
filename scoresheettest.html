@@ -1118,32 +1118,34 @@ let announcedFeats = JSON.parse(localStorage.getItem("announcedFeats")) || [];
 async function checkForFeats() {
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv";
     
+    // Get today's date in M/D/YYYY format to match Google Sheets default
+    const today = new Date();
+    const todayString = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+
     try {
         const response = await fetch(csvUrl + "&cachebust=" + Date.now());
         const data = await response.text();
-        // Split rows and filter out any completely empty lines
         const rows = data.split(/\r?\n/).filter(r => r.trim() !== "").slice(1); 
         
         let newFeatsFound = [];
 
         for (let i = 0; i < rows.length; i++) {
-            const cols = rows[i].split(",");
+            const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             
-            // Lock in the Name from Column 4
-            const pAName = cols[3] ? cols[3].trim() : "";
-            
-            // Hard Stop: if there is no name, we've hit the end of the night's data
-            if (!pAName || pAName === "") break; 
+            // 1. CHECK THE DATE (Column A = Index 0)
+            const rowDate = cols[0] ? cols[0].trim() : "";
+            if (!rowDate.startsWith(todayString)) {
+                continue; // Skip this row if it's not from today
+            }
 
-            // Helper to validate the number and the name
+            // 2. GET NAMES (Column D = Index 3, Column E = Index 4)
+            const pAName = cols[3] ? cols[3].replace(/"/g, "").trim() : "";
+            if (!pAName) break; 
+
             const checkFeat = (playerName, featType, val) => {
                 const numericVal = parseInt(val);
-                // If it's not a number, or it's 0, skip it
                 if (isNaN(numericVal) || numericVal <= 0) return;
-
-                // Ensure the name isn't just a stray number (the "9" fix)
-                if (!isNaN(playerName) && playerName.length < 3) return;
-
+                
                 const featID = `${playerName}-${featType}`;
                 if (!announcedFeats.includes(featID)) {
                     newFeatsFound.push(`${playerName} (${featType}!)`);
@@ -1151,16 +1153,15 @@ async function checkForFeats() {
                 }
             };
 
-            // Player A (Winner Side)
+            // 3. CHECK FEATS (J=9, K=10, O=14, P=15)
             checkFeat(pAName, "8-on-Break", cols[9]);
             checkFeat(pAName, "Break & Run", cols[10]);
 
-            // Player B (Loser Side) - Only if the row is long enough
-            if (cols.length >= 17) {
-                const pBName = cols[4] ? cols[4].trim() : "";
-                if (pBName && pBName !== "") {
-                    checkFeat(pBName, "8-on-Break", cols[15]);
-                    checkFeat(pBName, "Break & Run", cols[16]);
+            if (cols.length >= 16) {
+                const pBName = cols[4] ? cols[4].replace(/"/g, "").trim() : "";
+                if (pBName) {
+                    checkFeat(pBName, "8-on-Break", cols[14]);
+                    checkFeat(pBName, "Break & Run", cols[15]);
                 }
             }
         }
