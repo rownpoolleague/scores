@@ -212,6 +212,21 @@ input[type="number"] {
 #modalFooter button:active {
     opacity: 0.7;
 }
+    .badge-8ob {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background-color: #000;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 5px;
+    border: 1px solid #555;
+    vertical-align: middle;
+}
 
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
@@ -1251,23 +1266,18 @@ async function showScoreBoard() {
         const rows = data.split(/\r?\n/).filter(r => r.trim() !== "").slice(1);
         
         let teamWins = {}; 
-        let uniqueMatches = new Map(); // Key: sorted player names, Value: row data
+        let uniqueMatches = new Map(); 
         
         Object.keys(scoresheetinfo).forEach(team => teamWins[team] = 0);
 
         for (let i = 0; i < rows.length; i++) {
             const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             if (cols[0] && cols[0].trim().startsWith(todayString)) {
-                
                 const pAName = cols[3]?.replace(/"/g, "").trim();
                 const pBName = cols[4]?.replace(/"/g, "").trim();
                 if (!pAName || !pBName) continue;
 
-                // Create a unique ID for the match (Sort names so A-vs-B is same as B-vs-A)
                 const matchID = [pAName, pBName].sort().join("|");
-
-                // Only store the match if we haven't seen it, or if this entry has a winner
-                // This handles the "one team submitted, one didn't" or "both submitted" logic
                 if (!uniqueMatches.has(matchID) || cols[18]) {
                     uniqueMatches.set(matchID, cols);
                 }
@@ -1276,7 +1286,6 @@ async function showScoreBoard() {
 
         let matchDetailsHTML = '<h4 style="color:gold; margin-top:20px;">INDIVIDUAL MATCHES</h4>';
         
-        // Process the UNIQUE matches only
         uniqueMatches.forEach((cols) => {
             const pAName = cols[3]?.replace(/"/g, "").trim();
             const pBName = cols[4]?.replace(/"/g, "").trim();
@@ -1284,7 +1293,15 @@ async function showScoreBoard() {
             const pBScore = cols[13] || 0;
             const winnerName = cols[18]?.replace(/"/g, "").trim();
 
-            // Tally Team Wins
+            // --- 8-BALL ICON LOGIC ---
+            // cols[10] is Player A 8-on-break, cols[16] is Player B 8-on-break
+            const pA8ob = parseInt(cols[10]) || 0;
+            const pB8ob = parseInt(cols[16]) || 0;
+            
+            const pABadge = pA8ob > 0 ? '<span class="badge-8ob">8</span>' : '';
+            const pBBadge = pB8ob > 0 ? '<span class="badge-8ob">8</span>' : '';
+            // -------------------------
+
             if (winnerName) {
                 for (const [teamName, players] of Object.entries(scoresheetinfo)) {
                     if (players.includes(winnerName)) {
@@ -1293,10 +1310,10 @@ async function showScoreBoard() {
                     }
                 }
             }
-            matchDetailsHTML += `<div class="score-row">${pAName} ${pAScore} - ${pBScore} ${pBName}</div>`;
+            // Add badges next to the names in the row
+            matchDetailsHTML += `<div class="score-row">${pAName}${pABadge} ${pAScore} - ${pBScore} ${pBBadge}${pBName}</div>`;
         });
 
-        // Build Table (Same as before)
         let teamHTML = '<h3>TONIGHT\'S STANDINGS</h3><table class="team-table">';
         teamHTML += '<tr><th style="text-align:left;">Team Name</th><th>Wins</th></tr>';
         
