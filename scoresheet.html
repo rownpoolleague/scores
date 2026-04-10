@@ -1096,7 +1096,7 @@ function updateTimerDisplay() {
             z-index: 200000; overflow: hidden; white-space: nowrap;
             border-bottom: 2px solid gold; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-        #ticker-text { display: inline-block; padding-left: 100%; animation: ticker-kb 40s linear infinite; }
+        #ticker-text { display: inline-block; padding-left: 100%; animation: ticker-kb 25s linear infinite; }
         @keyframes ticker-kb { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
     `;
     document.head.appendChild(style);
@@ -1115,7 +1115,7 @@ function showTicker(msg) {
         textEl.textContent = msg;
         container.style.display = 'block';
         // Auto-hide after 30 seconds to keep the screen clean
-        setTimeout(() => { container.style.display = 'none'; }, 40000);
+        setTimeout(() => { container.style.display = 'none'; }, 25000);
     }
 }
 
