@@ -231,7 +231,7 @@ input[type="number"] {
 </div>
 <div class="form-wrapper">
 <div id="matchHeader" style="text-align:center; margin-top:10px; margin-bottom:20px;">
-    <div onclick="secretHandshake()" style="display:flex; justify-content:center; gap:12px; font-size:22px; font-weight:bold; cursor: default; user-select: none;">
+    <div onclick="secretHandshake()" style="display:flex; justify-content:center; gap:12px; font-size:22px; font-weight:bold; cursor: pointer; user-select: none;">
         <div id="weekDisplay"></div>
         <div id="dateDisplay"></div>
     </div>
@@ -1316,38 +1316,82 @@ async function showScoreBoard() {
         board.innerHTML = '<h3 style="color:red;">Error loading scores.</h3>';
     }
 }
-    let adminClickCount = 0;
+    // --- ADMIN & PERSISTENCE LOGIC ---
+let adminClicks = 0;
 let adminTimer;
 
-// Hook this up to your main <h1> or <h3> title
 function secretHandshake() {
-    adminClickCount++;
-    
-    // Reset counter if they don't click fast enough
+    adminClicks++;
     clearTimeout(adminTimer);
-    adminTimer = setTimeout(() => { adminClickCount = 0; }, 2000);
+    adminTimer = setTimeout(() => { adminClicks = 0; }, 2000);
 
-    if (adminClickCount === 3) {
+    if (adminClicks === 3) {
         const panel = document.getElementById('admin-panel');
-        // Toggle the visibility
         panel.style.display = (panel.style.display === 'none') ? 'block' : 'none';
-        adminClickCount = 0; // Reset
-        
-        // Vibration feedback (only works on Android/mobile)
-        if (navigator.vibrate) navigator.vibrate(50);
+        adminClicks = 0;
+        if (navigator.vibrate) navigator.vibrate(40);
     }
 }
+
+function postAdminTicker() {
+    const input = document.getElementById('adminTickerInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    // 1. Show it immediately using your existing function
+    showTicker(`*** ANNOUNCEMENT: ${msg} ***`);
+
+    // 2. Save for refresh survival (Matches your 25s timeout)
+    localStorage.setItem('activeTickerMsg', `*** ANNOUNCEMENT: ${msg} ***`);
+    localStorage.setItem('activeTickerTime', Date.now());
+    
+    input.value = ""; // Clear input
+}
+
+function clearTicker() {
+    document.getElementById('ticker-container').style.display = 'none';
+    localStorage.removeItem('activeTickerMsg');
+    localStorage.removeItem('activeTickerTime');
+}
+
+// --- REFRESH CHECK (Run on Load) ---
+(function checkTickerOnLoad() {
+    const savedMsg = localStorage.getItem('activeTickerMsg');
+    const savedTime = localStorage.getItem('activeTickerTime');
+
+    if (savedMsg && savedTime) {
+        const elapsed = Date.now() - parseInt(savedTime);
+        const remaining = 25000 - elapsed; // Match your 25s duration
+
+        if (remaining > 0) {
+            const container = document.getElementById('ticker-container');
+            const textEl = document.getElementById('ticker-text');
+            if (container && textEl) {
+                textEl.textContent = savedMsg;
+                container.style.display = 'block';
+                setTimeout(() => { 
+                    container.style.display = 'none';
+                    localStorage.removeItem('activeTickerMsg');
+                    localStorage.removeItem('activeTickerTime');
+                }, remaining);
+            }
+        } else {
+            localStorage.removeItem('activeTickerMsg');
+            localStorage.removeItem('activeTickerTime');
+        }
+    }
+})();
 </script>
 </div>
 </div>
-    <div id="admin-panel" style="display: none; padding: 15px; background: #222; border: 2px solid gold; border-radius: 8px; margin-top: 10px;">
-    <h4 style="color: gold; margin-top: 0;">Admin Console</h4>
-    <input type="text" id="adminTickerMsg" placeholder="Announcement text..." style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 4px; border: none;">
+    <div id="masterModal" class="modal-overlay" style="display:none;"></div>
+    <div id="admin-panel" style="display: none; padding: 15px; background: #111; border: 1px solid #444; border-radius: 8px; margin: 20px 10px;">
+    <div style="color: gold; font-weight: bold; margin-bottom: 10px; font-size: 14px;">LEAGUE MANAGER CONSOLE</div>
+    <input type="text" id="adminTickerInput" placeholder="Enter announcement..." style="width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff; box-sizing: border-box;">
     <div style="display: flex; gap: 10px;">
-        <button onclick="postManualTicker()" style="flex: 1; padding: 10px; background: gold; color: #000; font-weight: bold; border: none; border-radius: 4px;">POST TO TICKER</button>
-        <button onclick="clearTicker()" style="flex: 1; padding: 10px; background: #444; color: #fff; border: none; border-radius: 4px;">CLEAR</button>
+        <button onclick="postAdminTicker()" style="flex: 1; padding: 12px; background: #c00; color: #fff; font-weight: bold; border: none; border-radius: 4px;">POST</button>
+        <button onclick="clearTicker()" style="flex: 1; padding: 12px; background: #444; color: #fff; border: none; border-radius: 4px;">CLEAR</button>
     </div>
 </div>
-    <div id="masterModal" class="modal-overlay" style="display:none;"></div>
 </body>
 </html>
