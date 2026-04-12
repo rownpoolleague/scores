@@ -309,7 +309,10 @@ input[type="number"] {
         <div class="stat-row"><label>8B</label><div class="innings-wrapper"><button onclick="changeStat('pB_b8',-1)">−</button><input id="pB_b8" type="number" value="0" readonly><button onclick="changeStat('pB_b8',1)">+</button></div></div>
         <div class="stat-row"><label>B+R</label><div class="innings-wrapper"><button onclick="changeStat('pB_br',-1)">−</button><input id="pB_br" type="number" value="0" readonly><button onclick="changeStat('pB_br',1)">+</button></div></div>
         <div class="stat-row"><label>E8</label><div class="innings-wrapper"><button onclick="changeStat('pB_e8',-1)">−</button><input id="pB_e8" type="number" value="0" readonly><button onclick="changeStat('pB_e8',1)">+</button></div></div>
-        <div class="stat-row"><label>Coach</label><input type="checkbox" id="pB_coach" onchange="saveNow()"></div>
+ <div class="stat-row" onclick="secretHandshake()" style="cursor: pointer; user-select: none;">
+    <label style="cursor: pointer;">Coach</label>
+    <input type="checkbox" id="pB_coach" onchange="saveNow()">
+</div>
     </div>
 </div>
     <div style="text-align:center;padding-top:20px;">
