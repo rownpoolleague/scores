@@ -1340,15 +1340,20 @@ function sendBroadcast() {
 
 // 2. THE LISTEN: All phones check A1 every 60 seconds
 function checkLeagueNews() {
-    fetch(SCRIPT_URL)
+    // URL must be in quotes, and no semicolon before the .then
+    fetch("https://script.google.com/macros/s/AKfycbyvZ2hHERurTFeYi_pBX7nHhchq75nwsokfR1Bn1QarT1ON-vDTXAY3GTXwmfyZWCHEXQ/exec")
     .then(response => response.text())
     .then(text => {
-        // Only trigger ticker if the message is NEW and NOT EMPTY
-        if (text && text !== lastSeenAnnouncement) {
-            showTicker(text); 
-            lastSeenAnnouncement = text; 
+        // Clean up the text (remove spaces)
+        const msg = text.trim();
+
+        // Only trigger if there's actual text, it's new, and isn't just a dash
+        if (msg && msg !== "" && msg !== lastSeenAnnouncement && msg !== "-") {
+            showTicker(msg); 
+            lastSeenAnnouncement = msg; 
         }
-    });
+    })
+    .catch(err => console.log("Ticker sync error:", err));
 }
 
 // 3. SECRET HANDSHAKE: Triple tap weekDisplay to show Admin
