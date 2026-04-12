@@ -372,7 +372,6 @@ let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
 let pendingPlayerData = null; 
-let featIsDisplaying = false;
 
 // 1. THE BRIDGE: Run this IMMEDIATELY before anything else
 (function() {
@@ -1113,30 +1112,14 @@ function updateTimerDisplay() {
     document.body.prepend(tickerWrap);
 })();
 
-function showTicker(msg, isFeat = false) {
+function showTicker(msg) {
     const container = document.getElementById('ticker-container');
     const textEl = document.getElementById('ticker-text');
-    
-    // If a feat is already showing, don't let a standard admin message overwrite it
-    if (featIsDisplaying && !isFeat) return;
-
     if (container && textEl) {
         textEl.textContent = msg;
         container.style.display = 'block';
-
-        // If this is a feat, lock the ticker
-        if (isFeat) {
-            featIsDisplaying = true;
-            container.style.background = "#d4af37"; // Optional: Change to Gold for feats
-        } else {
-            container.style.background = "#c00"; // Red for standard admin
-        }
-
-        // Auto-hide logic
-        setTimeout(() => { 
-            container.style.display = 'none'; 
-            if (isFeat) featIsDisplaying = false; // Unlock when finished
-        }, 25000);
+        // Auto-hide after 30 seconds to keep the screen clean
+        setTimeout(() => { container.style.display = 'none'; }, 25000);
     }
 }
 
@@ -1217,7 +1200,7 @@ async function checkForFeats() {
         }
 
         if (newFeatsFound.length > 0) {
-            showTicker("*** Congratulations " + newFeatsFound.join(" --- ") + " ***", true);
+            showTicker("*** Congratulations " + newFeatsFound.join(" --- ") + " ***");
             localStorage.setItem("announcedFeats", JSON.stringify(announcedFeats));
         }
         
@@ -1341,7 +1324,7 @@ async function showScoreBoard() {
     // --- ADMIN & PERSISTENCE LOGIC ---
 // --- LEAGUE-WIDE BROADCASTER LOGIC (Cell A1) ---
 const TICKER_SYNC_URL = "https://script.google.com/macros/s/AKfycbyvZ2hHERurTFeYi_pBX7nHhchq75nwsokfR1Bn1QarT1ON-vDTXAY3GTXwmfyZWCHEXQ/exec";
-
+let lastSeenBroadcast = "";
 let adminClicks = 0;
 let adminTimer;
 
@@ -1400,9 +1383,10 @@ async function syncLeagueBroadcast() {
         console.warn("Broadcast sync failed:", err);
     }
 }
+}
 
-// Initialize Ticker lastseen
-setInterval(lastseenLeagueBroadcast, 60000); // Check every minute
+// Initialize Ticker Sync
+setInterval(syncLeagueBroadcast, 60000); // Check every minute
 setTimeout(syncLeagueBroadcast, 2000);   // Check once shortly after load
 
 function clearTicker() {
