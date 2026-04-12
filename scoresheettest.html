@@ -72,8 +72,10 @@ input[type="number"] {
 }
 
 .innings-wrapper { display: flex; align-items: center; justify-content: center; gap: 5px; }
-.stat-row { display: flex; flex-direction: column; align-items: center; margin-bottom: 8px; }
-
+.stat-row { display: flex; flex-direction: column; align-items: center; margin-bottom: 8px;-webkit-tap-highlight-color: transparent; }
+.stat-row:active {
+    background-color: #000 !important;
+}
 .playerName { display: flex; justify-content: space-between; padding: 4px 0; cursor: pointer; }
 .playerName:hover { background-color: #333; }
 .playerName span.hc { color: #fff; font-weight: normal; }
@@ -309,8 +311,8 @@ input[type="number"] {
         <div class="stat-row"><label>8B</label><div class="innings-wrapper"><button onclick="changeStat('pB_b8',-1)">−</button><input id="pB_b8" type="number" value="0" readonly><button onclick="changeStat('pB_b8',1)">+</button></div></div>
         <div class="stat-row"><label>B+R</label><div class="innings-wrapper"><button onclick="changeStat('pB_br',-1)">−</button><input id="pB_br" type="number" value="0" readonly><button onclick="changeStat('pB_br',1)">+</button></div></div>
         <div class="stat-row"><label>E8</label><div class="innings-wrapper"><button onclick="changeStat('pB_e8',-1)">−</button><input id="pB_e8" type="number" value="0" readonly><button onclick="changeStat('pB_e8',1)">+</button></div></div>
- <div class="stat-row" onclick="secretHandshake()" style="cursor: pointer; user-select: none;">
-    <label style="cursor: pointer;">Coach</label>
+<div class="stat-row" onclick="secretHandshake()" style="user-select: none;">
+    <label>Coach</label>
     <input type="checkbox" id="pB_coach" onchange="saveNow()">
 </div>
     </div>
