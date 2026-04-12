@@ -1332,7 +1332,7 @@ let adminTimer;
 function secretHandshake() {
     adminClicks++;
     clearTimeout(adminTimer);
-    adminTimer = setTimeout(() => { adminClicks = 0; }, 2000);
+    adminTimer = setTimeout(() => { adminClicks = 0; }, 500);
 
     if (adminClicks === 3) {
         const panel = document.getElementById('admin-panel');
