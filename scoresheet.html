@@ -1324,7 +1324,6 @@ async function showScoreBoard() {
     // --- ADMIN & PERSISTENCE LOGIC ---
 // --- LEAGUE-WIDE BROADCASTER LOGIC (Cell A1) ---
 const TICKER_SYNC_URL = "https://script.google.com/macros/s/AKfycbyvZ2hHERurTFeYi_pBX7nHhchq75nwsokfR1Bn1QarT1ON-vDTXAY3GTXwmfyZWCHEXQ/exec";
-let lastSeenBroadcast = "";
 let adminClicks = 0;
 let adminTimer;
 
@@ -1368,16 +1367,21 @@ async function syncLeagueBroadcast() {
         const text = await response.text();
         const cleanMsg = text.trim();
 
-        // Trigger ticker only if text is new, not empty, and not a dash
-        if (cleanMsg && cleanMsg !== "" && cleanMsg !== lastSeenBroadcast && cleanMsg !== "-") {
+        // 1. Check the phone's memory
+        const lastSavedMsg = localStorage.getItem('lastSeenBroadcast');
+
+        // 2. Only trigger if message is new and doesn't match memory
+        if (cleanMsg && cleanMsg !== "" && cleanMsg !== "-" && cleanMsg !== lastSavedMsg) {
+            
             showTicker(cleanMsg); 
-            lastSeenBroadcast = cleanMsg; 
+
+            // 3. Save it to memory immediately
+            localStorage.setItem('lastSeenBroadcast', cleanMsg);
         }
     } catch (err) {
         console.warn("Broadcast sync failed:", err);
     }
 }
-
 // Initialize Ticker Sync
 setInterval(syncLeagueBroadcast, 60000); // Check every minute
 setTimeout(syncLeagueBroadcast, 2000);   // Check once shortly after load
@@ -1387,32 +1391,7 @@ function clearTicker() {
 }
 
 // --- REFRESH CHECK (Run on Load) ---
-(function checkTickerOnLoad() {
-    const savedMsg = localStorage.getItem('activeTickerMsg');
-    const savedTime = localStorage.getItem('activeTickerTime');
 
-    if (savedMsg && savedTime) {
-        const elapsed = Date.now() - parseInt(savedTime);
-        const remaining = 25000 - elapsed; // Match your 25s duration
-
-        if (remaining > 0) {
-            const container = document.getElementById('ticker-container');
-            const textEl = document.getElementById('ticker-text');
-            if (container && textEl) {
-                textEl.textContent = savedMsg;
-                container.style.display = 'block';
-                setTimeout(() => { 
-                    container.style.display = 'none';
-                    localStorage.removeItem('activeTickerMsg');
-                    localStorage.removeItem('activeTickerTime');
-                }, remaining);
-            }
-        } else {
-            localStorage.removeItem('activeTickerMsg');
-            localStorage.removeItem('activeTickerTime');
-        }
-    }
-})();
 </script>
 </div>
 </div>
