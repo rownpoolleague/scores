@@ -1,5 +1,4 @@
 const scoresheetrosters = {
-    "Alex Gomez":3,
     "Brett Boger":3,
     "Buster Fuller":3,
     "Chuck Feager":3,
@@ -21,7 +20,7 @@ const scoresheetrosters = {
     "Greg Wood":3,
     "Harnaik Lal":3,
     "Ignasio Gutierrez":2,
-    "Jariel Diaz":4,
+    "Jariel Diaz":3,
     "Javier Mauricio":3,
     "Jennifer Wagner":2,
     "Jeremie Ketner":4,
