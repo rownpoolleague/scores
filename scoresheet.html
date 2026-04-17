@@ -225,7 +225,6 @@ input[type="number"] {
 </style>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
     <script src="schedule.js"></script>
-    <script src="playerdata.js"></script>
 </head>
 <body>
     <div id="loadingOverlay">
@@ -1390,83 +1389,6 @@ setTimeout(syncLeagueBroadcast, 2000);   // Check once shortly after load
 function clearTicker() {
     document.getElementById('ticker-container').style.display = 'none';
 }
-    /**
- * DYNAMIC LEADER OVERTAKE LOGIC
- * Scans ALL categories in playerData and shouts out name changes.
- */
-// Keep track of which overtakes we've already announced this session
-let announcedOvertakes = JSON.parse(localStorage.getItem("announcedOvertakes")) || [];
-
-async function checkForOvertakes() {
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv";
-    const today = new Date();
-    const todayString = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
-
-    try {
-        const response = await fetch(csvUrl + "&cachebust=" + Date.now());
-        const csvText = await response.text();
-        const rows = csvText.split(/\r?\n/).filter(r => r.trim() !== "").slice(1);
-
-        // 1. Define what we are tracking (Add any categories you need here)
-        const categories = [
-            { label: "8 on Break", key: "8 on Break", colA: 9, colB: 15, type: "high" },
-            { label: "Break & Run", key: "Break and Run", colA: 10, colB: 16, type: "high" }
-        ];
-
-        categories.forEach(cat => {
-            // 2. Find the current LEADER and SCORE to beat from playerdata.js
-            const sortedBase = [...playerData].sort((a, b) => {
-                let vA = parseFloat(a[cat.key]) || 0;
-                let vB = parseFloat(b[cat.key]) || 0;
-                return cat.type === "low" ? vA - vB : vB - vA;
-            });
-
-            const currentLeader = sortedBase[0];
-            const scoreToBeat = parseFloat(currentLeader[cat.key]) || 0;
-
-            // 3. Create a map of everyone's "Live Progress" from the Sheet
-            let sheetTotals = {};
-
-            rows.forEach(row => {
-                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                if (cols[0] && cols[0].trim().startsWith(todayString)) {
-                    const pAName = cols[3]?.replace(/"/g, "").trim();
-                    const pBName = cols[4]?.replace(/"/g, "").trim();
-                    
-                    if (pAName) sheetTotals[pAName] = (sheetTotals[pAName] || 0) + (parseInt(cols[cat.colA]) || 0);
-                    if (pBName) sheetTotals[pBName] = (sheetTotals[pBName] || 0) + (parseInt(cols[cat.colB]) || 0);
-                }
-            });
-
-            // 4. Compare: (Player's Start + Sheet Total) vs (Score to Beat)
-            for (const [name, liveAdded] of Object.entries(sheetTotals)) {
-                const playerBase = playerData.find(p => p["Player Name"] === name);
-                if (!playerBase || name === currentLeader["Player Name"]) continue;
-
-                const playerStartScore = parseFloat(playerBase[cat.key]) || 0;
-                const grandTotal = playerStartScore + liveAdded;
-
-                // CHECK OVERTAKE
-                if (grandTotal > scoreToBeat) {
-                    const eventID = `${name}-${cat.key}-${grandTotal}`;
-                    if (!announcedOvertakes.includes(eventID)) {
-                        showTicker(`🔥 LIVE OVERTAKE: ${name} has taken the lead in ${cat.label} with ${grandTotal}! (Passing ${currentLeader["Player Name"]}'s ${scoreToBeat})`);
-                        announcedOvertakes.push(eventID);
-                    }
-                }
-            }
-        });
-
-        localStorage.setItem("announcedOvertakes", JSON.stringify(announcedOvertakes));
-
-    } catch (err) {
-        console.warn("Overtake check failed:", err);
-    }
-}
-
-// Check every 60 seconds
-setInterval(checkForOvertakes, 60000);
-setTimeout(checkForOvertakes, 4000);
 
 // --- REFRESH CHECK (Run on Load) ---
 
