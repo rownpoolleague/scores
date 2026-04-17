@@ -1394,59 +1394,79 @@ function clearTicker() {
  * DYNAMIC LEADER OVERTAKE LOGIC
  * Scans ALL categories in playerData and shouts out name changes.
  */
-function checkLeaderOvertakes() {
-    // 1. Define the specific "Low is Better" keys
-    const lowerIsBetter = ["Life Hash", "White Washed"];
-    const ignoreKeys = ["Player #", "Player Name", "Handicap", "HC"];
+// Keep track of which overtakes we've already announced this session
+let announcedOvertakes = JSON.parse(localStorage.getItem("announcedOvertakes")) || [];
 
-    // 2. Load the leaders from the PREVIOUS session
-    const savedLeaders = JSON.parse(localStorage.getItem('historicalLeaders')) || {};
-    const currentLeaders = {};
-    let overtakeMessages = [];
+async function checkForOvertakes() {
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_k0GqoHgGfyxHgIX-8tjbspkJ_ncZBSRCEdqf7lrfCYRFQVH3GUwxvqYGETT-ST0jswQ94V4DXsaH/pub?output=csv";
+    const today = new Date();
+    const todayString = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
 
-    // Get all category keys from the first player object
-    const allCategories = Object.keys(playerData[0]).filter(key => !ignoreKeys.includes(key));
+    try {
+        const response = await fetch(csvUrl + "&cachebust=" + Date.now());
+        const csvText = await response.text();
+        const rows = csvText.split(/\r?\n/).filter(r => r.trim() !== "").slice(1);
 
-    allCategories.forEach(catKey => {
-        // Sort to find the current #1
-        const sorted = [...playerData].sort((a, b) => {
-            let valA = parseFloat(String(a[catKey]).replace('%', '')) || 0;
-            let valB = parseFloat(String(b[catKey]).replace('%', ''));
-            
-            if (lowerIsBetter.includes(catKey)) {
-                // For "Low is Best", treat 0 as a non-score (999)
-                if (valA === 0) valA = 999;
-                if (valB === 0) valB = 999;
-                return valA - valB; 
+        // 1. Define what we are tracking (Add any categories you need here)
+        const categories = [
+            { label: "8 on Break", key: "8 on Break", colA: 9, colB: 15, type: "high" },
+            { label: "Break & Run", key: "Break and Run", colA: 10, colB: 16, type: "high" }
+        ];
+
+        categories.forEach(cat => {
+            // 2. Find the current LEADER and SCORE to beat from playerdata.js
+            const sortedBase = [...playerData].sort((a, b) => {
+                let vA = parseFloat(a[cat.key]) || 0;
+                let vB = parseFloat(b[cat.key]) || 0;
+                return cat.type === "low" ? vA - vB : vB - vA;
+            });
+
+            const currentLeader = sortedBase[0];
+            const scoreToBeat = parseFloat(currentLeader[cat.key]) || 0;
+
+            // 3. Create a map of everyone's "Live Progress" from the Sheet
+            let sheetTotals = {};
+
+            rows.forEach(row => {
+                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                if (cols[0] && cols[0].trim().startsWith(todayString)) {
+                    const pAName = cols[3]?.replace(/"/g, "").trim();
+                    const pBName = cols[4]?.replace(/"/g, "").trim();
+                    
+                    if (pAName) sheetTotals[pAName] = (sheetTotals[pAName] || 0) + (parseInt(cols[cat.colA]) || 0);
+                    if (pBName) sheetTotals[pBName] = (sheetTotals[pBName] || 0) + (parseInt(cols[cat.colB]) || 0);
+                }
+            });
+
+            // 4. Compare: (Player's Start + Sheet Total) vs (Score to Beat)
+            for (const [name, liveAdded] of Object.entries(sheetTotals)) {
+                const playerBase = playerData.find(p => p["Player Name"] === name);
+                if (!playerBase || name === currentLeader["Player Name"]) continue;
+
+                const playerStartScore = parseFloat(playerBase[cat.key]) || 0;
+                const grandTotal = playerStartScore + liveAdded;
+
+                // CHECK OVERTAKE
+                if (grandTotal > scoreToBeat) {
+                    const eventID = `${name}-${cat.key}-${grandTotal}`;
+                    if (!announcedOvertakes.includes(eventID)) {
+                        showTicker(`🔥 LIVE OVERTAKE: ${name} has taken the lead in ${cat.label} with ${grandTotal}! (Passing ${currentLeader["Player Name"]}'s ${scoreToBeat})`);
+                        announcedOvertakes.push(eventID);
+                    }
+                }
             }
-            return valB - valA; 
         });
 
-        const leader = sorted[0];
-        const leaderName = leader["Player Name"];
-        const leaderVal = leader[catKey];
-        
-        currentLeaders[catKey] = leaderName;
+        localStorage.setItem("announcedOvertakes", JSON.stringify(announcedOvertakes));
 
-        // 3. THE TRIGGER: If the NAME in memory is different than the current leader
-        if (savedLeaders[catKey] && savedLeaders[catKey] !== leaderName) {
-            overtakeMessages.push(`${leaderName} is the NEW LEADER in ${catKey} (${leaderVal})`);
-        }
-    });
-
-    // 4. Update memory for next refresh
-    localStorage.setItem('historicalLeaders', JSON.stringify(currentLeaders));
-
-    // 5. Blast it out using your showTicker
-    if (overtakeMessages.length > 0) {
-        setTimeout(() => {
-            showTicker("*** LEADERSHIP CHANGES: " + overtakeMessages.join(" --- ") + " ***");
-        }, 4500); 
+    } catch (err) {
+        console.warn("Overtake check failed:", err);
     }
 }
 
-// Run it
-checkLeaderOvertakes();
+// Check every 60 seconds
+setInterval(checkForOvertakes, 60000);
+setTimeout(checkForOvertakes, 4000);
 
 // --- REFRESH CHECK (Run on Load) ---
 
