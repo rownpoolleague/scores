@@ -225,6 +225,7 @@ input[type="number"] {
 </style>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
     <script src="schedule.js"></script>
+    <script src="playerdata.js"></script>
 </head>
 <body>
     <div id="loadingOverlay">
@@ -1389,6 +1390,63 @@ setTimeout(syncLeagueBroadcast, 2000);   // Check once shortly after load
 function clearTicker() {
     document.getElementById('ticker-container').style.display = 'none';
 }
+    /**
+ * DYNAMIC LEADER OVERTAKE LOGIC
+ * Scans ALL categories in playerData and shouts out name changes.
+ */
+function checkLeaderOvertakes() {
+    // 1. Define the specific "Low is Better" keys
+    const lowerIsBetter = ["Life Hash", "White Washed"];
+    const ignoreKeys = ["Player #", "Player Name", "Handicap", "HC"];
+
+    // 2. Load the leaders from the PREVIOUS session
+    const savedLeaders = JSON.parse(localStorage.getItem('historicalLeaders')) || {};
+    const currentLeaders = {};
+    let overtakeMessages = [];
+
+    // Get all category keys from the first player object
+    const allCategories = Object.keys(playerData[0]).filter(key => !ignoreKeys.includes(key));
+
+    allCategories.forEach(catKey => {
+        // Sort to find the current #1
+        const sorted = [...playerData].sort((a, b) => {
+            let valA = parseFloat(String(a[catKey]).replace('%', '')) || 0;
+            let valB = parseFloat(String(b[catKey]).replace('%', ''));
+            
+            if (lowerIsBetter.includes(catKey)) {
+                // For "Low is Best", treat 0 as a non-score (999)
+                if (valA === 0) valA = 999;
+                if (valB === 0) valB = 999;
+                return valA - valB; 
+            }
+            return valB - valA; 
+        });
+
+        const leader = sorted[0];
+        const leaderName = leader["Player Name"];
+        const leaderVal = leader[catKey];
+        
+        currentLeaders[catKey] = leaderName;
+
+        // 3. THE TRIGGER: If the NAME in memory is different than the current leader
+        if (savedLeaders[catKey] && savedLeaders[catKey] !== leaderName) {
+            overtakeMessages.push(`${leaderName} is the NEW LEADER in ${catKey} (${leaderVal})`);
+        }
+    });
+
+    // 4. Update memory for next refresh
+    localStorage.setItem('historicalLeaders', JSON.stringify(currentLeaders));
+
+    // 5. Blast it out using your showTicker
+    if (overtakeMessages.length > 0) {
+        setTimeout(() => {
+            showTicker("*** LEADERSHIP CHANGES: " + overtakeMessages.join(" --- ") + " ***");
+        }, 4500); 
+    }
+}
+
+// Run it
+checkLeaderOvertakes();
 
 // --- REFRESH CHECK (Run on Load) ---
 
