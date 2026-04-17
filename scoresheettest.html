@@ -3,113 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Current Category Leaders</title>
+    <title>League Leaders - Minimum 25 MP Check</title>
     <script src="playerdata.js"></script>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: #000;
             color: #fff;
             padding: 20px;
             text-align: center;
         }
-        h1 { color: #1e90ff; margin-bottom: 30px; border-bottom: 2px solid #1e90ff; display: inline-block; padding-bottom: 10px; }
+        h1 { 
+            color: #1e90ff; 
+            margin-bottom: 30px; 
+            border-bottom: 3px solid #1e90ff; 
+            display: inline-block; 
+            padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
         
         .leader-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .leader-card {
-            background: #1a1a1a;
+            background: #111;
             border: 2px solid gold;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.15);
+            transition: transform 0.2s;
+        }
+        
+        .leader-card:hover {
+            transform: scale(1.02);
+            background: #1a1a1a;
         }
 
         .category-name {
-            font-size: 1.2em;
+            font-size: 1.1em;
             color: gold;
+            font-weight: bold;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             border-bottom: 1px solid #333;
-            padding-bottom: 5px;
+            padding-bottom: 8px;
+        }
+
+        .min-tag {
+            display: block;
+            font-size: 0.7em;
+            color: #1e90ff;
+            margin-top: 4px;
         }
 
         .leader-name {
-            font-size: 1.5em;
+            font-size: 1.6em;
             font-weight: bold;
             color: #fff;
+            margin: 10px 0;
         }
 
         .score {
-            font-size: 1.8em;
+            font-size: 2em;
             color: #1e90ff;
-            margin-top: 5px;
+            font-family: 'Courier New', Courier, monospace;
         }
 
         .footer-note {
-            margin-top: 50px;
+            margin-top: 60px;
             font-size: 0.9em;
-            color: #666;
+            color: #555;
+            border-top: 1px solid #222;
+            padding-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <h1>Current League Leaders</h1>
+    <h1>Official League Leaders</h1>
+    
     <div id="leaderGrid" class="leader-grid">
         </div>
 
-    <p class="footer-note">Reading data from <strong>playerdata.js</strong></p>
+    <div class="footer-note">
+        Connected to: <strong>playerdata.js</strong><br>
+        <em>Note: Certain categories require a minimum of 25 Matches Played (MP) to be eligible for the lead.</em>
+    </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // Check if data loaded
             if (typeof playerData === 'undefined') {
-                document.getElementById('leaderGrid').innerHTML = "<h2 style='color:red;'>Error: playerdata.js not found or playerData array is missing!</h2>";
+                document.getElementById('leaderGrid').innerHTML = `
+                    <div style="grid-column: 1/-1; padding: 50px;">
+                        <h2 style="color:red;">CRITICAL ERROR: playerdata.js NOT FOUND</h2>
+                        <p>Ensure playerdata.js is in the same folder as this file.</p>
+                    </div>`;
                 return;
             }
 
-            // 1. Configuration
+            // 1. CONFIGURATION
             const lowIsBetter = ["Life Hash", "White Washed"];
+            
+            // Categories that REQUIRE 25+ matches to lead
+            const minMatchesRequired = [
+                "Match win %", 
+                "Game Win %", 
+                "Life Hash", 
+                "Undefeated", 
+                "% Weeks w/8OB, BR or Rackless"
+            ];
+
+            // Keys to skip (metadata)
             const ignoreKeys = ["Player #", "Player Name", "Handicap", "HC", "Matches Played"];
 
-            // 2. Get all valid categories from the first player record
+            // 2. GET ALL CATEGORIES
             const categories = Object.keys(playerData[0]).filter(key => !ignoreKeys.includes(key));
             const grid = document.getElementById('leaderGrid');
 
             categories.forEach(cat => {
-                // 3. Sort players to find the #1 for this specific category
-                const sorted = [...playerData].sort((a, b) => {
+                // 3. FILTER BY ELIGIBILITY & SORT
+                const eligiblePlayers = [...playerData].filter(p => {
+                    if (minMatchesRequired.includes(cat)) {
+                        const mp = parseInt(p["Matches Played"]) || 0;
+                        return mp >= 25;
+                    }
+                    return true;
+                });
+
+                // Sort to find #1
+                eligiblePlayers.sort((a, b) => {
                     let valA = parseFloat(String(a[cat]).replace('%', '')) || 0;
                     let valB = parseFloat(String(b[cat]).replace('%', '')) || 0;
 
                     if (lowIsBetter.includes(cat)) {
-                        // For 'low is best', ignore 0s as they haven't set a score yet
-                        if (valA === 0) valA = 999999;
-                        if (valB === 0) valB = 999999;
+                        // 0 is the best score for these categories
                         return valA - valB;
                     }
                     return valB - valA;
                 });
 
-                const leader = sorted[0];
-                const leaderName = leader["Player Name"];
-                const leaderVal = leader[cat];
-
-                // 4. Create the UI Card
-                const card = document.createElement('div');
-                card.className = 'leader-card';
-                card.innerHTML = `
-                    <div class="category-name">${cat}</div>
-                    <div class="leader-name">${leaderName}</div>
-                    <div class="score">${leaderVal}</div>
-                `;
-                grid.appendChild(card);
+                // 4. BUILD THE CARD
+                if (eligiblePlayers.length > 0) {
+                    const leader = eligiblePlayers[0];
+                    const isRestricted = minMatchesRequired.includes(cat);
+                    
+                    const card = document.createElement('div');
+                    card.className = 'leader-card';
+                    card.innerHTML = `
+                        <div class="category-name">
+                            ${cat}
+                            ${isRestricted ? '<span class="min-tag">ELIGIBILITY: 25+ MP</span>' : ''}
+                        </div>
+                        <div class="leader-name">${leader["Player Name"]}</div>
+                        <div class="score">${leader[cat]}</div>
+                    `;
+                    grid.appendChild(card);
+                }
             });
         });
     </script>
