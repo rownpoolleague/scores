@@ -225,6 +225,7 @@ input[type="number"] {
 </style>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
     <script src="schedule.js"></script>
+     <script src="playerdata.js"></script>
 </head>
 <body>
     <div id="loadingOverlay">
@@ -1112,14 +1113,49 @@ function updateTimerDisplay() {
     document.body.prepend(tickerWrap);
 })();
 
+let tickerQueue = [];
+let isTickerRunning = false;
+
 function showTicker(msg) {
+    // 1. Add the incoming message to our list
+    tickerQueue.push(msg);
+    
+    // 2. If nothing is currently playing, start the cycle
+    if (!isTickerRunning) {
+        processNextMessage();
+    }
+}
+
+function processNextMessage() {
     const container = document.getElementById('ticker-container');
     const textEl = document.getElementById('ticker-text');
+
+    // If we've run out of messages, stop and hide the container
+    if (tickerQueue.length === 0) {
+        isTickerRunning = false;
+        if (container) container.style.display = 'none';
+        return;
+    }
+
+    // Lock the ticker so other calls don't interrupt
+    isTickerRunning = true;
+
+    // Get the first message in the queue
+    const currentMsg = tickerQueue.shift();
+
     if (container && textEl) {
-        textEl.textContent = msg;
+        textEl.textContent = currentMsg;
         container.style.display = 'block';
-        // Auto-hide after 30 seconds to keep the screen clean
-        setTimeout(() => { container.style.display = 'none'; }, 25000);
+
+        // Wait 25 seconds for the message to scroll
+        setTimeout(() => {
+            // Momentarily hide to provide a "reset" visual between messages
+            container.style.display = 'none';
+
+            // Wait 1 second of "darkness" before starting the next message
+            setTimeout(processNextMessage, 1000);
+            
+        }, 25000); 
     }
 }
 
@@ -1389,6 +1425,75 @@ setTimeout(syncLeagueBroadcast, 2000);   // Check once shortly after load
 function clearTicker() {
     document.getElementById('ticker-container').style.display = 'none';
 }
+    // Keep track of leaders in memory so we only announce when the NAME actually changes
+let lastAnnouncedLeaders = JSON.parse(localStorage.getItem("tickerLeaders")) || {};
+
+function checkLeaderOvertakes() {
+    // 1. Exact same configuration as your working standalone file
+    const lowIsBetter = ["Life Hash", "White Washed"];
+    const minMatchesRequired = [
+        "Match Win %", 
+        "Game Win %", 
+        "Life Hash", 
+        "Undefeated", 
+        "White Washed",
+        "% Weeks w/8OB, BR or Rackless"
+    ];
+    const ignoreKeys = ["Player #", "Player Name", "Handicap", "HC", "Matches Played"];
+
+    const categories = Object.keys(playerData[0]).filter(key => !ignoreKeys.includes(key));
+    let currentLeaders = {};
+    let overtakeMessages = [];
+
+    categories.forEach(cat => {
+        // 2. Filter by Eligibility (25+ MP)
+        const eligible = [...playerData].filter(p => {
+            if (minMatchesRequired.includes(cat)) {
+                return (parseInt(p["Matches Played"]) || 0) >= 25;
+            }
+            return true;
+        });
+
+        // 3. Sort to find #1
+        eligible.sort((a, b) => {
+            let valA = parseFloat(String(a[cat]).replace('%', '')) || 0;
+            let valB = parseFloat(String(b[cat]).replace('%', '')) || 0;
+            if (lowIsBetter.includes(cat)) return valA - valB;
+            return valB - valA;
+        });
+
+        if (eligible.length > 0) {
+            const topPlayer = eligible[0];
+            const leaderName = topPlayer["Player Name"];
+            const leaderVal = topPlayer[cat];
+            
+            currentLeaders[cat] = leaderName;
+
+            // 4. Comparison Logic: Did the leader change since the last check?
+            // We check if we have a record of a previous leader and if that name is different
+            if (lastAnnouncedLeaders[cat] && lastAnnouncedLeaders[cat] !== leaderName) {
+                overtakeMessages.push(`${leaderName} has taken the lead in ${cat} (${leaderVal})`);
+            }
+        }
+    });
+
+    // Update localStorage so we don't spam the same overtake on every refresh
+    localStorage.setItem("tickerLeaders", JSON.stringify(currentLeaders));
+    lastAnnouncedLeaders = currentLeaders;
+
+    // 5. If there are new leaders, send them to YOUR showTicker function
+    if (overtakeMessages.length > 0) {
+        const blast = "*** NEW CATEGORY LEADERS: " + overtakeMessages.join(" --- ") + " ***";
+        
+        // Short delay to ensure page is fully settled
+        setTimeout(() => {
+            showTicker(blast);
+        }, 5000);
+    }
+}
+
+// Run the check on load
+checkLeaderOvertakes();
 
 // --- REFRESH CHECK (Run on Load) ---
 
