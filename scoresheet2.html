@@ -373,22 +373,7 @@ let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
 let pendingPlayerData = null; 
-let targetScores = {}; 
 
-function establishSeasonBaseline() {
-    if (typeof playerData === 'undefined' || !playerData.length) return;
-    
-    const lowIsBetter = ["Life Hash", "White Washed"];
-    const ignoreKeys = ["Player #", "Player Name", "Handicap", "HC", "Matches Played"];
-    const categories = Object.keys(playerData[0]).filter(key => !ignoreKeys.includes(key));
-
-    categories.forEach(cat => {
-        const scores = playerData.map(p => parseFloat(String(p[cat]).replace('%', '')) || 0);
-        // Store the single highest (or lowest) number as the bar to beat
-        targetScores[cat] = lowIsBetter.includes(cat) ? Math.min(...scores) : Math.max(...scores);
-    });
-}
-window.addEventListener('DOMContentLoaded', establishSeasonBaseline);
 // 1. THE BRIDGE: Run this IMMEDIATELY before anything else
 (function() {
     const params = new URLSearchParams(window.location.search);
@@ -778,15 +763,6 @@ function saveNow() {
 
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
-    function sendTrophyToGoogle(message) {
-    fetch(scriptURL, {
-        method: "POST",
-        mode: "no-cors",
-        cache: "no-cache",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ announcement: message })
-    });
-}
 
 function loadScoresheet() {
     const raw = localStorage.getItem(FORM_KEY);
@@ -848,6 +824,8 @@ document.getElementById("submitMatch").onclick = function() {
     loader.style.display = "flex";
 
     const scoringTeamStored = localStorage.getItem("scoringTeamName") || "Unknown";
+    
+    // Base data object
     const data = {
         scoringTeam: scoringTeamStored, 
         team: document.getElementById("team").value,
@@ -874,70 +852,28 @@ document.getElementById("submitMatch").onclick = function() {
         matchWinner: document.getElementById("matchWinner").value,
         matchNotes: document.getElementById("matchNotes").value
     };
-// --- TICKER OVERTAKE CHECK ---
-// --- MULTI-LEAD TICKER CHECK ---
-// --- FULLY AUTOMATED FEAT & LEADER CHECK ---
-    const statMap = [
-        { idKey: "b8", fileKey: "8 on Break" },
-        { idKey: "br", fileKey: "Break and Run" },
-        { idKey: "mini", fileKey: "Mini-Slam" },
-        { idKey: "rack", fileKey: "Rackless" },
-        { idKey: "und", fileKey: "Undefeated" }
-    ];
 
-    let newLeadsFound = [];
+    // --- NEW LOGIC: CALCULATE SEASON TOTALS FOR GOOGLE COMPARISON ---
+    const recordA = playerData.find(p => p["Player Name"] === data.lagWinner);
+    const recordB = playerData.find(p => p["Player Name"] === data.lagLoser);
 
-    const playersToCheck = [
-        { name: data.lagWinner, stats: data.pA, opponentWins: data.pB.wins },
-        { name: data.lagLoser, stats: data.pB, opponentWins: data.pA.wins }
-    ];
-
-    playersToCheck.forEach(player => {
-        const record = playerData.find(p => p["Player Name"] === player.name);
-        if (!record) return;
-
-        statMap.forEach(stat => {
-            let addedValue = 0;
-
-            // 1. DIRECT STATS (From your inputs)
-            if (stat.idKey === "b8" || stat.idKey === "br") {
-                addedValue = parseInt(player.stats[stat.idKey]) || 0;
-            }
-
-            // 2. AUTO-CALCULATED MINI-SLAM
-            // Logic: If they have at least one 8OB AND at least one BR in this match
-            if (stat.idKey === "mini") {
-                const has8OB = (parseInt(player.stats.b8) || 0) > 0;
-                const hasBR = (parseInt(player.stats.br) || 0) > 0;
-                if (has8OB && hasBR) addedValue = 1;
-            }
-
-            // 3. AUTO-CALCULATED RACKLESS & UNDEFEATED
-            // Logic: Winner with 0 losses
-            if ((stat.idKey === "rack" || stat.idKey === "und")) {
-                const playerWins = parseInt(player.stats.wins) || 0;
-                const oppWins = parseInt(player.opponentWins) || 0;
-                if (playerWins > 0 && oppWins === 0) addedValue = 1;
-            }
-
-            if (addedValue <= 0) return;
-
-            // 4. COMPARE & BLAST
-            const currentStatInFile = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
-            const newTotal = currentStatInFile + addedValue;
-            const barToBeat = targetScores[stat.fileKey] || 0;
-
-          if (newLeadsFound.length > 0) {
-    let msg = "*** 🏆 NEW LIFETIME LEAGUE LEADER: " + newLeadsFound.join(" | ") + " ***";
-    sendTrophyToGoogle(msg); 
-}
-        });
-    });
-
-    if (newLeadsFound.length > 0) {
-        showTicker("*** 🏆 NEW LIFETIME LEAGUE LEADER: " + newLeadsFound.join(" | ") + " ***");
+    if (recordA) {
+        data.pA.t_b8 = (parseInt(recordA["8 on Break"]) || 0) + (parseInt(data.pA.b8) || 0);
+        data.pA.t_br = (parseInt(recordA["Break and Run"]) || 0) + (parseInt(data.pA.br) || 0);
+        data.pA.t_mini = (parseInt(recordA["Mini-Slam"]) || 0) + ((parseInt(data.pA.b8) > 0 && parseInt(data.pA.br) > 0) ? 1 : 0);
+        data.pA.t_rack = (parseInt(recordA["Rackless"]) || 0) + ((parseInt(data.pA.wins) > 0 && parseInt(data.pB.wins) == 0) ? 1 : 0);
+        data.pA.t_und = (parseInt(recordA["Undefeated"]) || 0) + ((parseInt(data.pA.wins) > 0 && parseInt(data.pB.wins) == 0) ? 1 : 0);
     }
-    // --- END CHECK ---
+
+    if (recordB) {
+        data.pB.t_b8 = (parseInt(recordB["8 on Break"]) || 0) + (parseInt(data.pB.b8) || 0);
+        data.pB.t_br = (parseInt(recordB["Break and Run"]) || 0) + (parseInt(data.pB.br) || 0);
+        data.pB.t_mini = (parseInt(recordB["Mini-Slam"]) || 0) + ((parseInt(data.pB.b8) > 0 && parseInt(data.pB.br) > 0) ? 1 : 0);
+        data.pB.t_rack = (parseInt(recordB["Rackless"]) || 0) + ((parseInt(data.pB.wins) > 0 && parseInt(data.pA.wins) == 0) ? 1 : 0);
+        data.pB.t_und = (parseInt(recordB["Undefeated"]) || 0) + ((parseInt(data.pB.wins) > 0 && parseInt(data.pA.wins) == 0) ? 1 : 0);
+    }
+console.log("Check totals:", data.pA.t_b8, data.pB.t_b8);
+    console.log("SENDING DATA:", data);
     fetch("https://script.google.com/macros/s/AKfycbwfW8db6j3ZxRNHmsLKFxDSlHpeA8Sl7MzfDvYFwFYAZhIXVZzj3EU1ynZ88J86Qgjm/exec", {
         method: "POST",
         mode: "no-cors", 
@@ -952,14 +888,13 @@ document.getElementById("submitMatch").onclick = function() {
         const winnerName = document.getElementById("matchWinner").value;
         const homeTeamName = document.getElementById("team").value;
         
-       if (winnerName && homeTeamName) {
-    const homeRoster = scoresheetinfo[homeTeamName] || [];
-    // Correct check for simple string arrays:
-    const isHomeWinner = homeRoster.includes(winnerName); 
-    
-    if (isHomeWinner) scores.home++;
-    else scores.away++;
-}
+        if (winnerName && homeTeamName) {
+            const homeRoster = scoresheetinfo[homeTeamName] || [];
+            const isHomeWinner = homeRoster.includes(winnerName); 
+            
+            if (isHomeWinner) scores.home++;
+            else scores.away++;
+        }
 
         localStorage.setItem("teamMatchScores", JSON.stringify(scores));
         updateScoreUI();
@@ -982,39 +917,31 @@ document.getElementById("submitMatch").onclick = function() {
         llH.textContent = "Lag Loser";
         lwH.classList.remove("active");
         llH.classList.remove("active");
-lwH.style.visibility = "hidden";
-llH.style.visibility = "hidden";
+        lwH.style.visibility = "hidden";
+        llH.style.visibility = "hidden";
         btn.textContent = "Submit Match";
         document.getElementById("matchNotes").value = "-";
         document.getElementById('pA_coach').checked = false;
         document.getElementById('pB_coach').checked = false;
 
         if ((scores.home + scores.away) >= 5) {
-    const homeTeamName = document.getElementById("team").value;
-    const awayTeamName = document.getElementById("opponent").value;
-    
-    // Determine the winning team name based on the scores
-    let winnerTeamText = "";
-    if (scores.home > scores.away) {
-        winnerTeamText = `${homeTeamName} Wins ${scores.home}-${scores.away}`;
-    } else {
-        winnerTeamText = `${awayTeamName} Wins ${scores.away}-${scores.home}`;
-    }
+            const awayTeamName = document.getElementById("opponent").value;
+            let winnerTeamText = (scores.home > scores.away) 
+                ? `${homeTeamName} Wins ${scores.home}-${scores.away}` 
+                : `${awayTeamName} Wins ${scores.away}-${scores.home}`;
 
-    // Use your Master Modal instead of an alert
-    showMasterModal(
-        "Match Night Complete", 
-        `<div style="text-align:center; font-size:22px; padding:20px;">
-            <span style="color:gold; font-weight:bold;">${winnerTeamText}</span>
-         </div>`, 
-        []
-    );
+            showMasterModal(
+                "Match Night Complete", 
+                `<div style="text-align:center; font-size:22px; padding:20px;">
+                    <span style="color:gold; font-weight:bold;">${winnerTeamText}</span>
+                 </div>`, 
+                []
+            );
 
-    // Reset session scores for next week
-    scores = { home: 0, away: 0 };
-    localStorage.setItem("teamMatchScores", JSON.stringify(scores));
-    updateScoreUI();
-}
+            scores = { home: 0, away: 0 };
+            localStorage.setItem("teamMatchScores", JSON.stringify(scores));
+            updateScoreUI();
+        }
 
         btn.style.display = "none";
         btn.disabled = false;
@@ -1446,7 +1373,7 @@ async function showScoreBoard() {
 }
     // --- ADMIN & PERSISTENCE LOGIC ---
 // --- LEAGUE-WIDE BROADCASTER LOGIC (Cell A1) ---
-const TICKER_SYNC_URL = "https://script.google.com/macros/s/AKfycbyvZ2hHERurTFeYi_pBX7nHhchq75nwsokfR1Bn1QarT1ON-vDTXAY3GTXwmfyZWCHEXQ/exec";
+const TICKER_SYNC_URL = "https://script.google.com/macros/s/AKfycbxKQ0gnvwW_b5-wrCRDE5HuV5fc6HRpeUNgF5mRk-TgSe_Jlj2I0KaBZ5msQ19Gc7_LRA/exec";
 let adminClicks = 0;
 let adminTimer;
 
@@ -1473,7 +1400,7 @@ function postAdminTicker() {
     // This adds your prefix to the message before sending it to Google
     const formattedMsg = `*** League Announcement *** ${msg} .`;
 
-    fetch("https://script.google.com/macros/s/AKfycbyvZ2hHERurTFeYi_pBX7nHhchq75nwsokfR1Bn1QarT1ON-vDTXAY3GTXwmfyZWCHEXQ/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbwcqPmsjqvJ3dNi0j7pDtJjW9mvGNlcBLGWrZPrphJLtPlSGrE1aJBS7WyJGsYyPfieuA/exec", {
         method: "POST",
         mode: "no-cors", 
         body: JSON.stringify({ action: "setAnnouncement", message: formattedMsg })
@@ -1486,7 +1413,7 @@ function postAdminTicker() {
 // 3. The "LISTEN": All phones check A1 every 60 seconds
 async function syncLeagueBroadcast() {
     try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbyvZ2hHERurTFeYi_pBX7nHhchq75nwsokfR1Bn1QarT1ON-vDTXAY3GTXwmfyZWCHEXQ/exec");
+        const response = await fetch("https://script.google.com/macros/s/AKfycbwcqPmsjqvJ3dNi0j7pDtJjW9mvGNlcBLGWrZPrphJLtPlSGrE1aJBS7WyJGsYyPfieuA/exec");
         const text = await response.text();
         const cleanMsg = text.trim();
 
@@ -1512,71 +1439,22 @@ setTimeout(syncLeagueBroadcast, 2000);   // Check once shortly after load
 function clearTicker() {
     document.getElementById('ticker-container').style.display = 'none';
 }
-    // Keep track of leaders in memory so we only announce when the NAME actually changes
-let lastAnnouncedLeaders = JSON.parse(localStorage.getItem("tickerLeaders")) || {};
+    let lastLeaderMessage = "";
 
-function checkLeaderOvertakes() {
-    // 1. Exact same configuration as your working standalone file
-    const lowIsBetter = ["Life Hash", "White Washed"];
-    const minMatchesRequired = [    
-        "Undefeated", 
-        "White Washed"
-    ];
-    const ignoreKeys = ["Player #", "Player Name","Matches Played","Matches Won","Match Win %","Games Played","Games Won","Game Win %","Life Hash","Longest Win Streak","% Weeks w/8OB, BR or Rackless","Handicap", "HC"];
-
-    const categories = Object.keys(playerData[0]).filter(key => !ignoreKeys.includes(key));
-    let currentLeaders = {};
-    let overtakeMessages = [];
-
-    categories.forEach(cat => {
-        // 2. Filter by Eligibility (25+ MP)
-        const eligible = [...playerData].filter(p => {
-            if (minMatchesRequired.includes(cat)) {
-                return (parseInt(p["Matches Played"]) || 0) >= 25;
+function checkLeaderBlast() {
+    // We add ?type=leaders to target G1 specifically
+    fetch("https://script.google.com/macros/s/AKfycbwcqPmsjqvJ3dNi0j7pDtJjW9mvGNlcBLGWrZPrphJLtPlSGrE1aJBS7WyJGsYyPfieuA/exec?type=leaders")
+        .then(res => res.text())
+        .then(msg => {
+            if (msg && msg !== lastLeaderMessage) {
+                showTicker(msg);
+                lastLeaderMessage = msg;
             }
-            return true;
         });
-
-        // 3. Sort to find #1
-        eligible.sort((a, b) => {
-            let valA = parseFloat(String(a[cat]).replace('%', '')) || 0;
-            let valB = parseFloat(String(b[cat]).replace('%', '')) || 0;
-            if (lowIsBetter.includes(cat)) return valA - valB;
-            return valB - valA;
-        });
-
-        if (eligible.length > 0) {
-            const topPlayer = eligible[0];
-            const leaderName = topPlayer["Player Name"];
-            const leaderVal = topPlayer[cat];
-            
-            currentLeaders[cat] = leaderName;
-
-            // 4. Comparison Logic: Did the leader change since the last check?
-            // We check if we have a record of a previous leader and if that name is different
-            if (lastAnnouncedLeaders[cat] && lastAnnouncedLeaders[cat] !== leaderName) {
-                overtakeMessages.push(`${leaderName} has taken the lead in ${cat} (${leaderVal})`);
-            }
-        }
-    });
-
-    // Update localStorage so we don't spam the same overtake on every refresh
-    localStorage.setItem("tickerLeaders", JSON.stringify(currentLeaders));
-    lastAnnouncedLeaders = currentLeaders;
-
-    // 5. If there are new leaders, send them to YOUR showTicker function
-    if (overtakeMessages.length > 0) {
-        const blast = "*** NEW CATEGORY LEADERS: " + overtakeMessages.join(" --- ") + " ***";
-        
-        // Short delay to ensure page is fully settled
-        setTimeout(() => {
-            showTicker(blast);
-        }, 5000);
-    }
 }
 
-// Run the check on load
-checkLeaderOvertakes();
+// Check every 30 seconds
+setInterval(checkLeaderBlast, 30000);
 
 // --- REFRESH CHECK (Run on Load) ---
 
