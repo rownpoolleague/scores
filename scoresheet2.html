@@ -872,7 +872,7 @@ document.getElementById("submitMatch").onclick = function() {
         data.pB.t_rack = (parseInt(recordB["Rackless"]) || 0) + ((parseInt(data.pB.wins) > 0 && parseInt(data.pA.wins) == 0) ? 1 : 0);
         data.pB.t_und = (parseInt(recordB["Undefeated"]) || 0) + ((parseInt(data.pB.wins) > 0 && parseInt(data.pA.wins) == 0) ? 1 : 0);
     }
-
+console.log("Check totals:", data.pA.t_b8, data.pB.t_b8);
     fetch("https://script.google.com/macros/s/AKfycbwfW8db6j3ZxRNHmsLKFxDSlHpeA8Sl7MzfDvYFwFYAZhIXVZzj3EU1ynZ88J86Qgjm/exec", {
         method: "POST",
         mode: "no-cors", 
