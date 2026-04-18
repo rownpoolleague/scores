@@ -373,7 +373,45 @@ let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
 let pendingPlayerData = null; 
+// Global Memory (Not tied to HTML elements, so saveNow() won't touch these)
+let seasonLeaders = {}; 
 
+function establishSeasonBaseline() {
+    if (typeof playerData === 'undefined' || !playerData.length) return;
+
+    // Categories that require a minimum of 25 matches to be "Leader Eligible"
+    const min25Required = ["Match Win %", "Game Win %", "Life Hash", "Undefeated", "White Washed", "% Weeks w/8OB, BR or Rackless"];
+    const lowIsBetter = ["Life Hash", "White Washed"];
+    const ignore = ["Player #", "Player Name", "Handicap", "HC", "Matches Played"];
+
+    const categories = Object.keys(playerData[0]).filter(key => !ignore.includes(key));
+
+    categories.forEach(cat => {
+        const eligible = [...playerData].filter(p => {
+            if (min25Required.includes(cat)) {
+                return (parseInt(p["Matches Played"]) || 0) >= 25;
+            }
+            return true;
+        });
+
+        eligible.sort((a, b) => {
+            let valA = parseFloat(String(a[cat]).replace('%', '')) || 0;
+            let valB = parseFloat(String(b[cat]).replace('%', '')) || 0;
+            return lowIsBetter.includes(cat) ? valA - valB : valB - valA;
+        });
+
+        if (eligible.length > 0) {
+            seasonLeaders[cat] = {
+                name: eligible[0]["Player Name"],
+                score: parseFloat(String(eligible[0][cat]).replace('%', '')) || 0
+            };
+        }
+    });
+    console.log("Baseline established. Leaders to beat:", seasonLeaders);
+}
+
+// Run this on page load
+window.addEventListener('DOMContentLoaded', establishSeasonBaseline);
 // 1. THE BRIDGE: Run this IMMEDIATELY before anything else
 (function() {
     const params = new URLSearchParams(window.location.search);
@@ -850,7 +888,42 @@ document.getElementById("submitMatch").onclick = function() {
         matchWinner: document.getElementById("matchWinner").value,
         matchNotes: document.getElementById("matchNotes").value
     };
+// --- LIVE OVERTAKE CHECK ---
+    // Mapping your input IDs (pA_b8, etc) to the File Keys ("8 on Break")
+    const statMap = [
+        { idKey: "b8", fileKey: "8 on Break" },
+        { idKey: "br", fileKey: "Break and Run" },
+        { idKey: "e8", fileKey: "8-Ball ERO" } // Ensure this fileKey matches your .js exactly
+    ];
 
+    [ {name: pA_Name, stats: data.pA}, {name: pB_Name, stats: data.pB} ].forEach(player => {
+        if (!player.name) return;
+        
+        // Find this player's starting stats from the static file
+        const record = playerData.find(p => p["Player Name"] === player.name);
+        if (!record) return;
+
+        statMap.forEach(stat => {
+            const addedValue = parseInt(player.stats[stat.idKey]) || 0;
+            if (addedValue <= 0) return;
+
+            const currentStat = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
+            const newTotal = currentStat + addedValue;
+            const leader = seasonLeaders[stat.fileKey];
+
+            // If they aren't the leader, but their NEW total beats the leader
+            if (leader && player.name !== leader.name && newTotal > leader.score) {
+                const msg = `🔥 OVERTAKE: ${player.name} has passed ${leader.name} for the #1 spot in ${stat.fileKey} with a new total of ${newTotal}!`;
+                
+                // Blast the Ticker
+                showTicker(msg);
+                
+                // Update memory so we don't double-blast if they gain more in the same session
+                seasonLeaders[stat.fileKey] = { name: player.name, score: newTotal };
+            }
+        });
+    });
+    // --- END OVERTAKE CHECK ---
     fetch("https://script.google.com/macros/s/AKfycbwfW8db6j3ZxRNHmsLKFxDSlHpeA8Sl7MzfDvYFwFYAZhIXVZzj3EU1ynZ88J86Qgjm/exec", {
         method: "POST",
         mode: "no-cors", 
