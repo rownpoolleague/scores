@@ -379,7 +379,9 @@ let seasonLeaders = {};
 function establishSeasonBaseline() {
     if (typeof playerData === 'undefined' || !playerData.length) return;
 
-    // Categories that require a minimum of 25 matches to be "Leader Eligible"
+    // Ensure our memory object is initialized
+    seasonLeaders = {}; 
+
     const min25Required = ["Match Win %", "Game Win %", "Life Hash", "Undefeated", "White Washed", "% Weeks w/8OB, BR or Rackless"];
     const lowIsBetter = ["Life Hash", "White Washed"];
     const ignore = ["Player #", "Player Name", "Handicap", "HC", "Matches Played"];
@@ -407,11 +409,29 @@ function establishSeasonBaseline() {
             };
         }
     });
+
+    // --- DEBUG SUMMARY ---
+    // This creates a popup so you can verify the values without the console
+    let debugMsg = "LEADERS LOADED:\n";
+    const trackStats = ["8 on Break", "Break and Run", "8-Ball ERO"];
+    
+    trackStats.forEach(s => {
+        if (seasonLeaders[s]) {
+            debugMsg += `- ${s}: ${seasonLeaders[s].name} (${seasonLeaders[s].score})\n`;
+        }
+    });
+    
+    alert(debugMsg); 
+    // ---------------------
+
     console.log("Baseline established. Leaders to beat:", seasonLeaders);
 }
 
 // Run this on page load
 window.addEventListener('DOMContentLoaded', establishSeasonBaseline);
+    // Inside establishSeasonBaseline, at the very bottom:
+console.log("Baseline established.");
+// inspectLeaders(); // Uncomment this line to see the values every time you refresh
 // 1. THE BRIDGE: Run this IMMEDIATELY before anything else
 (function() {
     const params = new URLSearchParams(window.location.search);
@@ -1561,6 +1581,20 @@ function checkLeaderOvertakes() {
 
 // Run the check on load
 checkLeaderOvertakes();
+    // Add this to your script so you can check the values anytime
+function inspectLeaders() {
+    let report = "CURRENT LEADERS IN MEMORY:\n\n";
+    
+    for (let category in seasonLeaders) {
+        report += `${category}: ${seasonLeaders[category].name} (${seasonLeaders[category].score})\n`;
+    }
+    
+    if (Object.keys(seasonLeaders).length === 0) {
+        alert("Memory is EMPTY. Baseline was never established.");
+    } else {
+        alert(report);
+    }
+}
 
 // --- REFRESH CHECK (Run on Load) ---
 
