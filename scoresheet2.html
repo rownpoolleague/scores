@@ -379,7 +379,6 @@ let seasonLeaders = {};
 function establishSeasonBaseline() {
     if (typeof playerData === 'undefined' || !playerData.length) return;
 
-    // Ensure our memory object is initialized
     seasonLeaders = {}; 
 
     const min25Required = ["Match Win %", "Game Win %", "Life Hash", "Undefeated", "White Washed", "% Weeks w/8OB, BR or Rackless"];
@@ -409,6 +408,18 @@ function establishSeasonBaseline() {
             };
         }
     });
+
+    // --- SHOW ALL LEADERS ALERT ---
+    let debugMsg = "ALL SEASON LEADERS LOADED:\n\n";
+    
+    // This loops through every category we just found
+    Object.keys(seasonLeaders).forEach(cat => {
+        debugMsg += `${cat}: ${seasonLeaders[cat].name} (${seasonLeaders[cat].score})\n`;
+    });
+    
+    alert(debugMsg); 
+    // ------------------------------
+}
 
     // --- DEBUG SUMMARY ---
     // This creates a popup so you can verify the values without the console
