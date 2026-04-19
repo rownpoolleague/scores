@@ -825,7 +825,7 @@ document.getElementById("submitMatch").onclick = async function() {
 
     const scoringTeamStored = localStorage.getItem("scoringTeamName") || "Unknown";
     
-    // 1. Initialize data object
+    // Create the data object with both standard keys AND "t_" keys for the Script to read
     const data = {
         scoringTeam: scoringTeamStored, 
         team: document.getElementById("team").value,
@@ -839,7 +839,9 @@ document.getElementById("submitMatch").onclick = async function() {
             safeties: document.getElementById("pA_safeties").value,
             b8: document.getElementById("pA_b8").value,
             br: document.getElementById("pA_br").value,
-            e8: document.getElementById("pA_e8").value
+            e8: document.getElementById("pA_e8").value,
+            t_b8: document.getElementById("pA_b8").value,
+            t_br: document.getElementById("pA_br").value
         },
         pB: {
             handicap: document.getElementById("pB_hc").value,
@@ -847,14 +849,29 @@ document.getElementById("submitMatch").onclick = async function() {
             safeties: document.getElementById("pB_safeties").value,
             b8: document.getElementById("pB_b8").value,
             br: document.getElementById("pB_br").value,
-            e8: document.getElementById("pB_e8").value
+            e8: document.getElementById("pB_e8").value,
+            t_b8: document.getElementById("pB_b8").value,
+            t_br: document.getElementById("pB_br").value
         },
         matchWinner: document.getElementById("matchWinner").value,
         matchNotes: document.getElementById("matchNotes").value,
         announcement: "" 
     };
 
-    // --- FULLY AUTOMATED FEAT & LEADER CHECK ---
+    // Calculate the automated totals for the Script to check
+    const has8OB_A = (parseInt(data.pA.b8) || 0) > 0;
+    const hasBR_A = (parseInt(data.pA.br) || 0) > 0;
+    data.pA.t_mini = (has8OB_A && hasBR_A) ? 1 : 0;
+    data.pA.t_rack = (parseInt(data.pA.wins) > 0 && parseInt(data.pB.wins) === 0) ? 1 : 0;
+    data.pA.t_und = data.pA.t_rack;
+
+    const has8OB_B = (parseInt(data.pB.b8) || 0) > 0;
+    const hasBR_B = (parseInt(data.pB.br) || 0) > 0;
+    data.pB.t_mini = (has8OB_B && hasBR_B) ? 1 : 0;
+    data.pB.t_rack = (parseInt(data.pB.wins) > 0 && parseInt(data.pA.wins) === 0) ? 1 : 0;
+    data.pB.t_und = data.pB.t_rack;
+
+    // --- LIFETIME LEADER CHECK ---
     const statMap = [
         { idKey: "b8", fileKey: "8 on Break" },
         { idKey: "br", fileKey: "Break and Run" },
@@ -864,7 +881,6 @@ document.getElementById("submitMatch").onclick = async function() {
     ];
 
     let newLeadsFound = [];
-
     const playersToCheck = [
         { name: data.lagWinner, stats: data.pA, opponentWins: data.pB.wins },
         { name: data.lagLoser, stats: data.pB, opponentWins: data.pA.wins }
@@ -875,51 +891,35 @@ document.getElementById("submitMatch").onclick = async function() {
         if (!record) return;
 
         statMap.forEach(stat => {
-            let addedValue = 0;
+            let val = 0;
+            if (stat.idKey === "b8" || stat.idKey === "br") val = parseInt(player.stats[stat.idKey]) || 0;
+            else if (stat.idKey === "mini") val = player.stats.t_mini;
+            else val = player.stats.t_rack;
 
-            if (stat.idKey === "b8" || stat.idKey === "br") {
-                addedValue = parseInt(player.stats[stat.idKey]) || 0;
-            }
+            if (val <= 0) return;
 
-            if (stat.idKey === "mini") {
-                const has8OB = (parseInt(player.stats.b8) || 0) > 0;
-                const hasBR = (parseInt(player.stats.br) || 0) > 0;
-                if (has8OB && hasBR) addedValue = 1;
-            }
-
-            if ((stat.idKey === "rack" || stat.idKey === "und")) {
-                const playerWins = parseInt(player.stats.wins) || 0;
-                const oppWins = parseInt(player.opponentWins) || 0;
-                if (playerWins > 0 && oppWins === 0) addedValue = 1;
-            }
-
-            if (addedValue <= 0) return;
-
-            const currentStatInFile = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
-            const newTotal = currentStatInFile + addedValue;
+            const currentFileVal = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
+            const newTotal = currentFileVal + val;
             const barToBeat = targetScores[stat.fileKey] || 0;
 
             if (newTotal > barToBeat) {
-                newLeadsFound.push(`${player.name} in ${stat.fileKey} (${newTotal})`);
+                newLeadsFound.push(`${player.name} (${newTotal} in ${stat.fileKey})`);
                 targetScores[stat.fileKey] = newTotal;
             }
         });
     });
 
-    // 2. FIRST FETCH: TROPHY BLAST (URL #1) - MUST WAIT FOR THIS
+    // 2. FETCH #1: TROPHY BLAST (URL 1)
     if (newLeadsFound.length > 0) {
-        let msg = "*** 🏆 NEW LIFETIME LEAGUE LEADER: " + newLeadsFound.join(" | ") + " ***";
-        // We 'await' here so this request finishes before the next one starts
+        let msg = "*** 🏆 NEW LIFETIME LEADER: " + newLeadsFound.join(" | ") + " ***";
         await fetch("https://script.google.com/macros/s/AKfycbwcqPmsjqvJ3dNi0j7pDtJjW9mvGNlcBLGWrZPrphJLtPlSGrE1aJBS7WyJGsYyPfieuA/exec", {
             method: "POST",
             mode: "no-cors",
-            cache: "no-cache",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ announcement: msg })
         });
     }
 
-    // 3. SECOND FETCH: MATCH LOGGING (URL #2)
+    // 3. FETCH #2: MATCH LOGGING (URL 2)
     fetch("https://script.google.com/macros/s/AKfycbwfW8db6j3ZxRNHmsLKFxDSlHpeA8Sl7MzfDvYFwFYAZhIXVZzj3EU1ynZ88J86Qgjm/exec", {
         method: "POST",
         mode: "no-cors", 
@@ -936,9 +936,7 @@ document.getElementById("submitMatch").onclick = async function() {
         
         if (winnerName && homeTeamName) {
             const homeRoster = scoresheetinfo[homeTeamName] || [];
-            const isHomeWinner = homeRoster.includes(winnerName); 
-            
-            if (isHomeWinner) scores.home++;
+            if (homeRoster.includes(winnerName)) scores.home++;
             else scores.away++;
         }
 
@@ -959,34 +957,17 @@ document.getElementById("submitMatch").onclick = async function() {
 
         const lwH = document.getElementById("lagWinnerHeader");
         const llH = document.getElementById("lagLoserHeader");
-        lwH.textContent = "Lag Winner";
-        llH.textContent = "Lag Loser";
-        lwH.classList.remove("active");
-        llH.classList.remove("active");
-        lwH.style.visibility = "hidden";
-        llH.style.visibility = "hidden";
+        lwH.textContent = "Lag Winner"; llH.textContent = "Lag Loser";
+        lwH.style.visibility = "hidden"; llH.style.visibility = "hidden";
         
         btn.textContent = "Submit Match";
         document.getElementById("matchNotes").value = "-";
-        document.getElementById('pA_coach').checked = false;
-        document.getElementById('pB_coach').checked = false;
-
+        
         if ((scores.home + scores.away) >= 5) {
             const hName = document.getElementById("team").value;
             const aName = document.getElementById("opponent").value;
-            
-            let winnerTeamText = (scores.home > scores.away) 
-                ? `${hName} Wins ${scores.home}-${scores.away}` 
-                : `${aName} Wins ${scores.away}-${scores.home}`;
-
-            showMasterModal(
-                "Match Night Complete", 
-                `<div style="text-align:center; font-size:22px; padding:20px;">
-                    <span style="color:gold; font-weight:bold;">${winnerTeamText}</span>
-                 </div>`, 
-                []
-            );
-
+            let winText = (scores.home > scores.away) ? `${hName} Wins ${scores.home}-${scores.away}` : `${aName} Wins ${scores.away}-${scores.home}`;
+            showMasterModal("Match Night Complete", `<div style="text-align:center; font-size:22px; padding:20px;"><span style="color:gold; font-weight:bold;">${winText}</span></div>`, []);
             scores = { home: 0, away: 0 };
             localStorage.setItem("teamMatchScores", JSON.stringify(scores));
             updateScoreUI();
