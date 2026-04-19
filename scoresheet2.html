@@ -913,7 +913,16 @@ document.getElementById("submitMatch").onclick = async function() {
             const currentStatInFile = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
             const newTotal = currentStatInFile + addedValue;
             const barToBeat = targetScores[stat.fileKey] || 0;
+const blastKey = `sent_${player.name}_${stat.idKey}_${newTotal}`;
 
+            if (newTotal > barToBeat && !localStorage.getItem(blastKey)) {
+                newLeadsFound.push(`${player.name} in ${stat.fileKey} - ${newTotal}`);
+                
+                // Mark this specific record as "sent" so it won't trigger again on refresh
+                localStorage.setItem(blastKey, "true");
+                
+                targetScores[stat.fileKey] = newTotal;
+            }
             if (newTotal > barToBeat) {
                 newLeadsFound.push(`${player.name} in ${stat.fileKey} - ${newTotal}`);
                 targetScores[stat.fileKey] = newTotal;
