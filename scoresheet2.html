@@ -840,7 +840,7 @@ document.getElementById("submitMatch").onclick = async function() {
 
     const scoringTeamStored = localStorage.getItem("scoringTeamName") || "Unknown";
     
-    // 1. Initialize data object (Added announcement field)
+    // 1. Initialize data object
     const data = {
         scoringTeam: scoringTeamStored, 
         team: document.getElementById("team").value,
@@ -866,7 +866,7 @@ document.getElementById("submitMatch").onclick = async function() {
         },
         matchWinner: document.getElementById("matchWinner").value,
         matchNotes: document.getElementById("matchNotes").value,
-        announcement: "" // Placeholder for leader text
+        announcement: "" 
     };
 
     // --- FULLY AUTOMATED FEAT & LEADER CHECK ---
@@ -913,36 +913,34 @@ document.getElementById("submitMatch").onclick = async function() {
             const currentStatInFile = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
             const newTotal = currentStatInFile + addedValue;
             const barToBeat = targetScores[stat.fileKey] || 0;
-const blastKey = `sent_${player.name}_${stat.idKey}_${newTotal}`;
 
+            // --- REFRESH PROTECTION LOGIC ---
+            const blastKey = `sent_${player.name}_${stat.idKey}_${newTotal}`;
+
+            // Check if it beats the record AND hasn't been blasted already
             if (newTotal > barToBeat && !localStorage.getItem(blastKey)) {
                 newLeadsFound.push(`${player.name} in ${stat.fileKey} - ${newTotal}`);
                 
-                // Mark this specific record as "sent" so it won't trigger again on refresh
+                // Set the lock so a refresh won't send this again
                 localStorage.setItem(blastKey, "true");
                 
-                targetScores[stat.fileKey] = newTotal;
-            }
-            if (newTotal > barToBeat) {
-                newLeadsFound.push(`${player.name} in ${stat.fileKey} - ${newTotal}`);
+                // Update the bar for this session
                 targetScores[stat.fileKey] = newTotal;
             }
         });
     });
 
     // 2. TRIGGER THE TROPHY BLAST (Writes to G1)
-   // Replace your existing Lifetime Leader Ticker check with this:
-if (newLeadsFound.length > 0) {
-    let msg = "*** 🏆 NEW LIFETIME LEAGUE LEADER: " + newLeadsFound.join(" | ") + " ***";
-    
-    // This sends the text directly to cell G1 in your sheet
-    await fetch("https://script.google.com/macros/s/AKfycbw-_XzGIquLxtryGY0CML2ouOZHkdr2N4ZWKqoIusUX7B4wkvCz76UAnnPjk6w5zUOdEQ/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ announcement: msg })
-    });
-}
+    if (newLeadsFound.length > 0) {
+        let msg = "*** 🏆 NEW LIFETIME LEAGUE LEADER: " + newLeadsFound.join(" | ") + " ***";
+        
+        await fetch("https://script.google.com/macros/s/AKfycbw-_XzGIquLxtryGY0CML2ouOZHkdr2N4ZWKqoIusUX7B4wkvCz76UAnnPjk6w5zUOdEQ/exec", {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ announcement: msg })
+        });
+    }
 
     // 3. REGULAR MATCH DATA LOGGING
     fetch("https://script.google.com/macros/s/AKfycbwfW8db6j3ZxRNHmsLKFxDSlHpeA8Sl7MzfDvYFwFYAZhIXVZzj3EU1ynZ88J86Qgjm/exec", {
