@@ -910,7 +910,15 @@ document.getElementById("submitMatch").onclick = async function() {
     if (newLeadsFound.length > 0) {
         let msg = "*** 🏆 NEW LIFETIME LEAGUE LEADER: " + newLeadsFound.join(" | ") + " ***";
         // We 'await' here so this request finishes before the next one starts
-        await fetch("https://script.google.com/macros/s/AKfycbwcqPmsjqvJ3dNi0j7pDtJjW9mvGNlcBLGWrZPrphJLtPlSGrE1aJBS7WyJGsYyPfieuA/exec", {
+        await fetch("function sendTrophyToGoogle(message) {
+    fetch("https://script.google.com/macros/s/AKfycbwcqPmsjqvJ3dNi0j7pDtJjW9mvGNlcBLGWrZPrphJLtPlSGrE1aJBS7WyJGsYyPfieuA/exec", {
+        method: "POST",
+        mode: "no-cors",
+        cache: "no-cache",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ announcement: message })
+    });
+}", {
             method: "POST",
             mode: "no-cors",
             cache: "no-cache",
@@ -1488,7 +1496,15 @@ function clearTicker() {
     document.getElementById('ticker-container').style.display = 'none';
 }
     let lastLeaderMessage = "";
-
+function sendTrophyToGoogle(message) {
+    fetch("https://script.google.com/macros/s/AKfycbwcqPmsjqvJ3dNi0j7pDtJjW9mvGNlcBLGWrZPrphJLtPlSGrE1aJBS7WyJGsYyPfieuA/exec", {
+        method: "POST",
+        mode: "no-cors",
+        cache: "no-cache",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ announcement: message })
+    });
+}
 function checkLeaderBlast() {
     // We add ?type=leaders to target G1 specifically
     fetch("https://script.google.com/macros/s/AKfycbwcqPmsjqvJ3dNi0j7pDtJjW9mvGNlcBLGWrZPrphJLtPlSGrE1aJBS7WyJGsYyPfieuA/exec?type=leaders")
@@ -1503,15 +1519,7 @@ function checkLeaderBlast() {
 
 // Check every 30 seconds
 setInterval(checkLeaderBlast, 30000);
-function sendTrophyToGoogle(message) {
-    fetch("https://script.google.com/macros/s/AKfycbwcqPmsjqvJ3dNi0j7pDtJjW9mvGNlcBLGWrZPrphJLtPlSGrE1aJBS7WyJGsYyPfieuA/exec", {
-        method: "POST",
-        mode: "no-cors",
-        cache: "no-cache",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ announcement: message })
-    });
-}
+
 // --- REFRESH CHECK (Run on Load) ---
 
 </script>
