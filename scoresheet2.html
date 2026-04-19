@@ -896,21 +896,27 @@ document.getElementById("submitMatch").onclick = async function() {
 
             if (addedValue <= 0) return;
 
-            const currentStatInFile = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
-            const newTotal = currentStatInFile + addedValue;
+            // 1. Get the League Record (The Bar)
             const barToBeat = targetScores[stat.fileKey] || 0;
+            // 2. Get Player's existing score from the CSV file
+            const playerOldScore = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
+            const newTotal = playerOldScore + addedValue;
 
-            // --- REFRESH SHIELD ---
+            // 3. REFRESH SHIELD + OVERTAKE FILTER
             const blastKey = `blast_${player.name}_${stat.idKey}_${newTotal}`;
 
-            if (newTotal > barToBeat && !localStorage.getItem(blastKey)) {
-                newLeadsFound.push(`${player.name} in ${stat.fileKey} - ${newTotal}`);
+            // LOGIC: New score must beat the record AND player must NOT have been the record-holder/co-holder already.
+            if (newTotal > barToBeat && playerOldScore < barToBeat && !localStorage.getItem(blastKey)) {
+                newLeadsFound.push(`${player.name} takes the lead in ${stat.fileKey} with ${newTotal}`);
                 localStorage.setItem(blastKey, "true");
+                
+                // Update the bar for this session so the next player must beat THIS new score
+                targetScores[stat.fileKey] = newTotal;
             }
         });
     });
 
-    // 1. Send Trophy Announcement if new leaders found
+    // Send Trophy Blast
     if (newLeadsFound.length > 0) {
         let msg = "*** 🏆 NEW LIFETIME LEAGUE LEADER: " + newLeadsFound.join(" | ") + " ***";
         await fetch("https://script.google.com/macros/s/AKfycbw-_XzGIquLxtryGY0CML2ouOZHkdr2N4ZWKqoIusUX7B4wkvCz76UAnnPjk6w5zUOdEQ/exec", {
@@ -920,7 +926,7 @@ document.getElementById("submitMatch").onclick = async function() {
         });
     }
 
-    // 2. Log regular match data
+    // Submit Match Data
     fetch("https://script.google.com/macros/s/AKfycbwfW8db6j3ZxRNHmsLKFxDSlHpeA8Sl7MzfDvYFwFYAZhIXVZzj3EU1ynZ88J86Qgjm/exec", {
         method: "POST",
         mode: "no-cors", 
@@ -975,9 +981,7 @@ document.getElementById("submitMatch").onclick = async function() {
             const hName = document.getElementById("team").value;
             const aName = document.getElementById("opponent").value;
             let winnerTeamText = (scores.home > scores.away) ? `${hName} Wins ${scores.home}-${scores.away}` : `${aName} Wins ${scores.away}-${scores.home}`;
-
             showMasterModal("Match Night Complete", `<div style="text-align:center; font-size:22px; padding:20px;"><span style="color:gold; font-weight:bold;">${winnerTeamText}</span></div>`, []);
-
             scores = { home: 0, away: 0 };
             localStorage.setItem("teamMatchScores", JSON.stringify(scores));
             updateScoreUI();
