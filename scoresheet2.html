@@ -380,22 +380,31 @@ function establishSeasonBaseline() {
     
     const lowIsBetter = ["Life Hash", "White Washed"];
     const ignoreKeys = ["Player #", "Player Name", "Handicap", "HC", "Matches Played"];
+    
+    // We only want to loop through actual stats like "8 on Break"
     const categories = Object.keys(playerData[0]).filter(key => !ignoreKeys.includes(key));
 
     categories.forEach(cat => {
-        // Sort the players for this category to find the #1 spot
+        // 1. Create a copy and sort it based on the current category
         const sorted = [...playerData].sort((a, b) => {
             let valA = parseFloat(String(a[cat]).replace('%', '')) || 0;
             let valB = parseFloat(String(b[cat]).replace('%', '')) || 0;
             return lowIsBetter.includes(cat) ? valA - valB : valB - valA;
         });
 
-        // Store BOTH the value and the name of the current leader
-        targetScores[cat] = {
-            value: parseFloat(String(sorted[0][cat]).replace('%', '')) || 0,
-            name: sorted[0]["Player Name"]
-        };
+        // 2. Check if we actually have a valid top player
+        if (sorted.length > 0) {
+            const topPlayer = sorted[0];
+            
+            // 3. Store the stats. We use topPlayer["Player Name"] directly.
+            // Even though "Player Name" is in ignoreKeys, it STILL EXISTS in the topPlayer object.
+            targetScores[cat] = {
+                value: parseFloat(String(topPlayer[cat]).replace('%', '')) || 0,
+                name: topPlayer["Player Name"] || "Unknown" 
+            };
+        }
     });
+    console.log("Baseline established:", targetScores);
 }
 window.addEventListener('DOMContentLoaded', establishSeasonBaseline);
 // 1. THE BRIDGE: Run this IMMEDIATELY before anything else
