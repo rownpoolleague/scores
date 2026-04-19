@@ -383,9 +383,18 @@ function establishSeasonBaseline() {
     const categories = Object.keys(playerData[0]).filter(key => !ignoreKeys.includes(key));
 
     categories.forEach(cat => {
-        const scores = playerData.map(p => parseFloat(String(p[cat]).replace('%', '')) || 0);
-        // Store the single highest (or lowest) number as the bar to beat
-        targetScores[cat] = lowIsBetter.includes(cat) ? Math.min(...scores) : Math.max(...scores);
+        // Sort the players for this category to find the #1 spot
+        const sorted = [...playerData].sort((a, b) => {
+            let valA = parseFloat(String(a[cat]).replace('%', '')) || 0;
+            let valB = parseFloat(String(b[cat]).replace('%', '')) || 0;
+            return lowIsBetter.includes(cat) ? valA - valB : valB - valA;
+        });
+
+        // Store BOTH the value and the name of the current leader
+        targetScores[cat] = {
+            value: parseFloat(String(sorted[0][cat]).replace('%', '')) || 0,
+            name: sorted[0]["Player Name"]
+        };
     });
 }
 window.addEventListener('DOMContentLoaded', establishSeasonBaseline);
@@ -880,46 +889,53 @@ document.getElementById("submitMatch").onclick = async function() {
 
     let newLeadsFound = [];
 
-    const playersToCheck = [
-        { name: data.lagWinner, stats: data.pA, opponentWins: data.pB.wins },
-        { name: data.lagLoser, stats: data.pB, opponentWins: data.pA.wins }
-    ];
+   // --- FULLY AUTOMATED FEAT & LEADER CHECK (Anti-Spam Version) ---
+playersToCheck.forEach(player => {
+    const record = playerData.find(p => p["Player Name"] === player.name);
+    if (!record) return;
 
-    playersToCheck.forEach(player => {
-        const record = playerData.find(p => p["Player Name"] === player.name);
-        if (!record) return;
+    statMap.forEach(stat => {
+        let addedValue = 0;
 
-        statMap.forEach(stat => {
-            let addedValue = 0;
+        // 1. Calculate values for the current match
+        if (stat.idKey === "b8" || stat.idKey === "br") {
+            addedValue = parseInt(player.stats[stat.idKey]) || 0;
+        }
+        if (stat.idKey === "mini") {
+            const has8OB = (parseInt(player.stats.b8) || 0) > 0;
+            const hasBR = (parseInt(player.stats.br) || 0) > 0;
+            if (has8OB && hasBR) addedValue = 1;
+        }
+        if (stat.idKey === "rack" || stat.idKey === "und") {
+            const playerWins = parseInt(player.stats.wins) || 0;
+            const oppWins = parseInt(player.opponentWins) || 0;
+            if (playerWins > 0 && oppWins === 0) addedValue = 1;
+        }
 
-            if (stat.idKey === "b8" || stat.idKey === "br") {
-                addedValue = parseInt(player.stats[stat.idKey]) || 0;
-            }
+        if (addedValue <= 0) return;
 
-            if (stat.idKey === "mini") {
-                const has8OB = (parseInt(player.stats.b8) || 0) > 0;
-                const hasBR = (parseInt(player.stats.br) || 0) > 0;
-                if (has8OB && hasBR) addedValue = 1;
-            }
+        // 2. Math for the new total
+        const currentStatInFile = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
+        const newTotal = currentStatInFile + addedValue;
+        
+        // 3. Get current record holder (defaults to empty if missing)
+        const currentRecord = targetScores[stat.fileKey] || { value: 0, name: "" };
 
-            if ((stat.idKey === "rack" || stat.idKey === "und")) {
-                const playerWins = parseInt(player.stats.wins) || 0;
-                const oppWins = parseInt(player.opponentWins) || 0;
-                if (playerWins > 0 && oppWins === 0) addedValue = 1;
-            }
-
-            if (addedValue <= 0) return;
-
-            const currentStatInFile = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
-            const newTotal = currentStatInFile + addedValue;
-            const barToBeat = targetScores[stat.fileKey] || 0;
-
-            if (newTotal > barToBeat) {
-                newLeadsFound.push(`${player.name} in ${stat.fileKey} (${newTotal})`);
-                targetScores[stat.fileKey] = newTotal;
-            }
-        });
+        // 4. THE LOGIC GATE
+        // If someone NEW takes the lead -> BLAST IT
+        if (newTotal > currentRecord.value && player.name !== currentRecord.name) {
+            newLeadsFound.push(`${player.name} in ${stat.fileKey} (${newTotal})`);
+            
+            // Update the bar and the name for the next person to beat
+            targetScores[stat.fileKey] = { value: newTotal, name: player.name };
+        } 
+        // If the SAME leader just increases their lead -> UPDATE number but DON'T blast
+        else if (newTotal > currentRecord.value && player.name === currentRecord.name) {
+            targetScores[stat.fileKey].value = newTotal;
+            console.log(`${player.name} padded their lead. No blast sent.`);
+        }
     });
+});
 
     // 2. TRIGGER THE TROPHY BLAST (Writes to G1)
    // Replace your existing Lifetime Leader Ticker check with this:
