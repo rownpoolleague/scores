@@ -915,7 +915,7 @@ document.getElementById("submitMatch").onclick = async function() {
             const barToBeat = targetScores[stat.fileKey] || 0;
 
             if (newTotal > barToBeat) {
-                newLeadsFound.push(`${player.name} in ${stat.fileKey} (${newTotal})`);
+                newLeadsFound.push(`${player.name} in ${stat.fileKey} - ${newTotal}`);
                 targetScores[stat.fileKey] = newTotal;
             }
         });
@@ -1314,7 +1314,7 @@ async function checkForFeats() {
         }
 
         if (newFeatsFound.length > 0) {
-            showTicker("*** Congratulations " + newFeatsFound.join(" --- ") + " ***");
+            showTicker("*** Congratulations " + newFeatsFound.join(" - ") + " ***");
             localStorage.setItem("announcedFeats", JSON.stringify(announcedFeats));
         }
         
