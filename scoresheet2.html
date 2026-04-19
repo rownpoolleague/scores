@@ -917,27 +917,22 @@ document.getElementById("submitMatch").onclick = async function() {
             // --- REFRESH PROTECTION LOGIC ---
             const blastKey = `sent_${player.name}_${stat.idKey}_${newTotal}`;
 
-            // Check if it beats the record AND hasn't been blasted already
             if (newTotal > barToBeat && !localStorage.getItem(blastKey)) {
                 newLeadsFound.push(`${player.name} in ${stat.fileKey} - ${newTotal}`);
-                
-                // Set the lock so a refresh won't send this again
                 localStorage.setItem(blastKey, "true");
-                
-                // Update the bar for this session
                 targetScores[stat.fileKey] = newTotal;
             }
         });
     });
 
-    // 2. TRIGGER THE TROPHY BLAST (Writes to G1)
+    // 2. TRIGGER THE TROPHY BLAST (Simplified Fetch to match Match Data logic)
     if (newLeadsFound.length > 0) {
         let msg = "*** 🏆 NEW LIFETIME LEAGUE LEADER: " + newLeadsFound.join(" | ") + " ***";
         
+        // Removed headers and JSON wrap to ensure it reaches G1 without CORS issues
         await fetch("https://script.google.com/macros/s/AKfycbw-_XzGIquLxtryGY0CML2ouOZHkdr2N4ZWKqoIusUX7B4wkvCz76UAnnPjk6w5zUOdEQ/exec", {
             method: "POST",
             mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ announcement: msg })
         });
     }
