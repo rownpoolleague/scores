@@ -380,31 +380,13 @@ function establishSeasonBaseline() {
     
     const lowIsBetter = ["Life Hash", "White Washed"];
     const ignoreKeys = ["Player #", "Player Name", "Handicap", "HC", "Matches Played"];
-    
-    // We only want to loop through actual stats like "8 on Break"
     const categories = Object.keys(playerData[0]).filter(key => !ignoreKeys.includes(key));
 
     categories.forEach(cat => {
-        // 1. Create a copy and sort it based on the current category
-        const sorted = [...playerData].sort((a, b) => {
-            let valA = parseFloat(String(a[cat]).replace('%', '')) || 0;
-            let valB = parseFloat(String(b[cat]).replace('%', '')) || 0;
-            return lowIsBetter.includes(cat) ? valA - valB : valB - valA;
-        });
-
-        // 2. Check if we actually have a valid top player
-        if (sorted.length > 0) {
-            const topPlayer = sorted[0];
-            
-            // 3. Store the stats. We use topPlayer["Player Name"] directly.
-            // Even though "Player Name" is in ignoreKeys, it STILL EXISTS in the topPlayer object.
-            targetScores[cat] = {
-                value: parseFloat(String(topPlayer[cat]).replace('%', '')) || 0,
-                name: topPlayer["Player Name"] || "Unknown" 
-            };
-        }
+        const scores = playerData.map(p => parseFloat(String(p[cat]).replace('%', '')) || 0);
+        // Store the single highest (or lowest) number as the bar to beat
+        targetScores[cat] = lowIsBetter.includes(cat) ? Math.min(...scores) : Math.max(...scores);
     });
-    console.log("Baseline established:", targetScores);
 }
 window.addEventListener('DOMContentLoaded', establishSeasonBaseline);
 // 1. THE BRIDGE: Run this IMMEDIATELY before anything else
@@ -898,53 +880,46 @@ document.getElementById("submitMatch").onclick = async function() {
 
     let newLeadsFound = [];
 
-   // --- FULLY AUTOMATED FEAT & LEADER CHECK (Anti-Spam Version) ---
-playersToCheck.forEach(player => {
-    const record = playerData.find(p => p["Player Name"] === player.name);
-    if (!record) return;
+    const playersToCheck = [
+        { name: data.lagWinner, stats: data.pA, opponentWins: data.pB.wins },
+        { name: data.lagLoser, stats: data.pB, opponentWins: data.pA.wins }
+    ];
 
-    statMap.forEach(stat => {
-        let addedValue = 0;
+    playersToCheck.forEach(player => {
+        const record = playerData.find(p => p["Player Name"] === player.name);
+        if (!record) return;
 
-        // 1. Calculate values for the current match
-        if (stat.idKey === "b8" || stat.idKey === "br") {
-            addedValue = parseInt(player.stats[stat.idKey]) || 0;
-        }
-        if (stat.idKey === "mini") {
-            const has8OB = (parseInt(player.stats.b8) || 0) > 0;
-            const hasBR = (parseInt(player.stats.br) || 0) > 0;
-            if (has8OB && hasBR) addedValue = 1;
-        }
-        if (stat.idKey === "rack" || stat.idKey === "und") {
-            const playerWins = parseInt(player.stats.wins) || 0;
-            const oppWins = parseInt(player.opponentWins) || 0;
-            if (playerWins > 0 && oppWins === 0) addedValue = 1;
-        }
+        statMap.forEach(stat => {
+            let addedValue = 0;
 
-        if (addedValue <= 0) return;
+            if (stat.idKey === "b8" || stat.idKey === "br") {
+                addedValue = parseInt(player.stats[stat.idKey]) || 0;
+            }
 
-        // 2. Math for the new total
-        const currentStatInFile = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
-        const newTotal = currentStatInFile + addedValue;
-        
-        // 3. Get current record holder (defaults to empty if missing)
-        const currentRecord = targetScores[stat.fileKey] || { value: 0, name: "" };
+            if (stat.idKey === "mini") {
+                const has8OB = (parseInt(player.stats.b8) || 0) > 0;
+                const hasBR = (parseInt(player.stats.br) || 0) > 0;
+                if (has8OB && hasBR) addedValue = 1;
+            }
 
-        // 4. THE LOGIC GATE
-        // If someone NEW takes the lead -> BLAST IT
-        if (newTotal > currentRecord.value && player.name !== currentRecord.name) {
-            newLeadsFound.push(`${player.name} in ${stat.fileKey} (${newTotal})`);
-            
-            // Update the bar and the name for the next person to beat
-            targetScores[stat.fileKey] = { value: newTotal, name: player.name };
-        } 
-        // If the SAME leader just increases their lead -> UPDATE number but DON'T blast
-        else if (newTotal > currentRecord.value && player.name === currentRecord.name) {
-            targetScores[stat.fileKey].value = newTotal;
-            console.log(`${player.name} padded their lead. No blast sent.`);
-        }
+            if ((stat.idKey === "rack" || stat.idKey === "und")) {
+                const playerWins = parseInt(player.stats.wins) || 0;
+                const oppWins = parseInt(player.opponentWins) || 0;
+                if (playerWins > 0 && oppWins === 0) addedValue = 1;
+            }
+
+            if (addedValue <= 0) return;
+
+            const currentStatInFile = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
+            const newTotal = currentStatInFile + addedValue;
+            const barToBeat = targetScores[stat.fileKey] || 0;
+
+            if (newTotal > barToBeat) {
+                newLeadsFound.push(`${player.name} in ${stat.fileKey} (${newTotal})`);
+                targetScores[stat.fileKey] = newTotal;
+            }
+        });
     });
-});
 
     // 2. TRIGGER THE TROPHY BLAST (Writes to G1)
    // Replace your existing Lifetime Leader Ticker check with this:
