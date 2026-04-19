@@ -817,7 +817,7 @@ function loadScoresheet() {
     }
 }
 
-document.getElementById("submitMatch").onclick = async function() {
+document.getElementById("submitMatch").onclick = function() {
     const btn = this;
     const loader = document.getElementById("loadingOverlay");
     btn.disabled = true;
@@ -825,7 +825,7 @@ document.getElementById("submitMatch").onclick = async function() {
 
     const scoringTeamStored = localStorage.getItem("scoringTeamName") || "Unknown";
     
-    // Create the data object with both standard keys AND "t_" keys for the Script to read
+    // Base data object
     const data = {
         scoringTeam: scoringTeamStored, 
         team: document.getElementById("team").value,
@@ -839,9 +839,7 @@ document.getElementById("submitMatch").onclick = async function() {
             safeties: document.getElementById("pA_safeties").value,
             b8: document.getElementById("pA_b8").value,
             br: document.getElementById("pA_br").value,
-            e8: document.getElementById("pA_e8").value,
-            t_b8: document.getElementById("pA_b8").value,
-            t_br: document.getElementById("pA_br").value
+            e8: document.getElementById("pA_e8").value
         },
         pB: {
             handicap: document.getElementById("pB_hc").value,
@@ -849,77 +847,32 @@ document.getElementById("submitMatch").onclick = async function() {
             safeties: document.getElementById("pB_safeties").value,
             b8: document.getElementById("pB_b8").value,
             br: document.getElementById("pB_br").value,
-            e8: document.getElementById("pB_e8").value,
-            t_b8: document.getElementById("pB_b8").value,
-            t_br: document.getElementById("pB_br").value
+            e8: document.getElementById("pB_e8").value
         },
         matchWinner: document.getElementById("matchWinner").value,
-        matchNotes: document.getElementById("matchNotes").value,
-        announcement: "" 
+        matchNotes: document.getElementById("matchNotes").value
     };
 
-    // Calculate the automated totals for the Script to check
-    const has8OB_A = (parseInt(data.pA.b8) || 0) > 0;
-    const hasBR_A = (parseInt(data.pA.br) || 0) > 0;
-    data.pA.t_mini = (has8OB_A && hasBR_A) ? 1 : 0;
-    data.pA.t_rack = (parseInt(data.pA.wins) > 0 && parseInt(data.pB.wins) === 0) ? 1 : 0;
-    data.pA.t_und = data.pA.t_rack;
+    // --- NEW LOGIC: CALCULATE SEASON TOTALS FOR GOOGLE COMPARISON ---
+    const recordA = playerData.find(p => p["Player Name"] === data.lagWinner);
+    const recordB = playerData.find(p => p["Player Name"] === data.lagLoser);
 
-    const has8OB_B = (parseInt(data.pB.b8) || 0) > 0;
-    const hasBR_B = (parseInt(data.pB.br) || 0) > 0;
-    data.pB.t_mini = (has8OB_B && hasBR_B) ? 1 : 0;
-    data.pB.t_rack = (parseInt(data.pB.wins) > 0 && parseInt(data.pA.wins) === 0) ? 1 : 0;
-    data.pB.t_und = data.pB.t_rack;
-
-    // --- LIFETIME LEADER CHECK ---
-    const statMap = [
-        { idKey: "b8", fileKey: "8 on Break" },
-        { idKey: "br", fileKey: "Break and Run" },
-        { idKey: "mini", fileKey: "Mini-Slam" },
-        { idKey: "rack", fileKey: "Rackless" },
-        { idKey: "und", fileKey: "Undefeated" }
-    ];
-
-    let newLeadsFound = [];
-    const playersToCheck = [
-        { name: data.lagWinner, stats: data.pA, opponentWins: data.pB.wins },
-        { name: data.lagLoser, stats: data.pB, opponentWins: data.pA.wins }
-    ];
-
-    playersToCheck.forEach(player => {
-        const record = playerData.find(p => p["Player Name"] === player.name);
-        if (!record) return;
-
-        statMap.forEach(stat => {
-            let val = 0;
-            if (stat.idKey === "b8" || stat.idKey === "br") val = parseInt(player.stats[stat.idKey]) || 0;
-            else if (stat.idKey === "mini") val = player.stats.t_mini;
-            else val = player.stats.t_rack;
-
-            if (val <= 0) return;
-
-            const currentFileVal = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
-            const newTotal = currentFileVal + val;
-            const barToBeat = targetScores[stat.fileKey] || 0;
-
-            if (newTotal > barToBeat) {
-                newLeadsFound.push(`${player.name} (${newTotal} in ${stat.fileKey})`);
-                targetScores[stat.fileKey] = newTotal;
-            }
-        });
-    });
-
-    // 2. FETCH #1: TROPHY BLAST (URL 1)
-    if (newLeadsFound.length > 0) {
-        let msg = "*** 🏆 NEW LIFETIME LEADER: " + newLeadsFound.join(" | ") + " ***";
-        await fetch("https://script.google.com/macros/s/AKfycbwcqPmsjqvJ3dNi0j7pDtJjW9mvGNlcBLGWrZPrphJLtPlSGrE1aJBS7WyJGsYyPfieuA/exec", {
-            method: "POST",
-            mode: "no-cors",
-            body: JSON.stringify({ announcement: msg })
-        });
+    if (recordA) {
+        data.pA.t_b8 = (parseInt(recordA["8 on Break"]) || 0) + (parseInt(data.pA.b8) || 0);
+        data.pA.t_br = (parseInt(recordA["Break and Run"]) || 0) + (parseInt(data.pA.br) || 0);
+        data.pA.t_mini = (parseInt(recordA["Mini-Slam"]) || 0) + ((parseInt(data.pA.b8) > 0 && parseInt(data.pA.br) > 0) ? 1 : 0);
+        data.pA.t_rack = (parseInt(recordA["Rackless"]) || 0) + ((parseInt(data.pA.wins) > 0 && parseInt(data.pB.wins) == 0) ? 1 : 0);
+        data.pA.t_und = (parseInt(recordA["Undefeated"]) || 0) + ((parseInt(data.pA.wins) > 0 && parseInt(data.pB.wins) == 0) ? 1 : 0);
     }
 
-    // 3. FETCH #2: MATCH LOGGING (URL 2)
+    if (recordB) {
+        data.pB.t_b8 = (parseInt(recordB["8 on Break"]) || 0) + (parseInt(data.pB.b8) || 0);
+        data.pB.t_br = (parseInt(recordB["Break and Run"]) || 0) + (parseInt(data.pB.br) || 0);
+        data.pB.t_mini = (parseInt(recordB["Mini-Slam"]) || 0) + ((parseInt(data.pB.b8) > 0 && parseInt(data.pB.br) > 0) ? 1 : 0);
+        data.pB.t_rack = (parseInt(recordB["Rackless"]) || 0) + ((parseInt(data.pB.wins) > 0 && parseInt(data.pA.wins) == 0) ? 1 : 0);
+        data.pB.t_und = (parseInt(recordB["Undefeated"]) || 0) + ((parseInt(data.pB.wins) > 0 && parseInt(data.pA.wins) == 0) ? 1 : 0);
+    }
+
     fetch("https://script.google.com/macros/s/AKfycbwfW8db6j3ZxRNHmsLKFxDSlHpeA8Sl7MzfDvYFwFYAZhIXVZzj3EU1ynZ88J86Qgjm/exec", {
         method: "POST",
         mode: "no-cors", 
@@ -936,7 +889,9 @@ document.getElementById("submitMatch").onclick = async function() {
         
         if (winnerName && homeTeamName) {
             const homeRoster = scoresheetinfo[homeTeamName] || [];
-            if (homeRoster.includes(winnerName)) scores.home++;
+            const isHomeWinner = homeRoster.includes(winnerName); 
+            
+            if (isHomeWinner) scores.home++;
             else scores.away++;
         }
 
@@ -957,17 +912,31 @@ document.getElementById("submitMatch").onclick = async function() {
 
         const lwH = document.getElementById("lagWinnerHeader");
         const llH = document.getElementById("lagLoserHeader");
-        lwH.textContent = "Lag Winner"; llH.textContent = "Lag Loser";
-        lwH.style.visibility = "hidden"; llH.style.visibility = "hidden";
-        
+        lwH.textContent = "Lag Winner";
+        llH.textContent = "Lag Loser";
+        lwH.classList.remove("active");
+        llH.classList.remove("active");
+        lwH.style.visibility = "hidden";
+        llH.style.visibility = "hidden";
         btn.textContent = "Submit Match";
         document.getElementById("matchNotes").value = "-";
-        
+        document.getElementById('pA_coach').checked = false;
+        document.getElementById('pB_coach').checked = false;
+
         if ((scores.home + scores.away) >= 5) {
-            const hName = document.getElementById("team").value;
-            const aName = document.getElementById("opponent").value;
-            let winText = (scores.home > scores.away) ? `${hName} Wins ${scores.home}-${scores.away}` : `${aName} Wins ${scores.away}-${scores.home}`;
-            showMasterModal("Match Night Complete", `<div style="text-align:center; font-size:22px; padding:20px;"><span style="color:gold; font-weight:bold;">${winText}</span></div>`, []);
+            const awayTeamName = document.getElementById("opponent").value;
+            let winnerTeamText = (scores.home > scores.away) 
+                ? `${homeTeamName} Wins ${scores.home}-${scores.away}` 
+                : `${awayTeamName} Wins ${scores.away}-${scores.home}`;
+
+            showMasterModal(
+                "Match Night Complete", 
+                `<div style="text-align:center; font-size:22px; padding:20px;">
+                    <span style="color:gold; font-weight:bold;">${winnerTeamText}</span>
+                 </div>`, 
+                []
+            );
+
             scores = { home: 0, away: 0 };
             localStorage.setItem("teamMatchScores", JSON.stringify(scores));
             updateScoreUI();
@@ -978,6 +947,7 @@ document.getElementById("submitMatch").onclick = async function() {
         saveNow();
     });
 };
+
 function findMatchup(teamNumber) {
     if (typeof scheduleData === 'undefined') return null;
     const today = new Date();
@@ -1484,15 +1454,7 @@ function checkLeaderBlast() {
 
 // Check every 30 seconds
 setInterval(checkLeaderBlast, 30000);
-function sendTrophyToGoogle(message) {
-    fetch("https://script.google.com/macros/s/AKfycbwcqPmsjqvJ3dNi0j7pDtJjW9mvGNlcBLGWrZPrphJLtPlSGrE1aJBS7WyJGsYyPfieuA/exec", {
-        method: "POST",
-        mode: "no-cors",
-        cache: "no-cache",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ announcement: message })
-    });
-}
+
 // --- REFRESH CHECK (Run on Load) ---
 
 </script>
