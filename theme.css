@@ -7,21 +7,27 @@
 button, 
 .menu-button, 
 a.back-button,
-.submit-btn, 
-a.menu-button {
+.back-button,
+.submit-btn,
+.uiButton,
+a.menu-button,
+ .floating-buttons{
     background-color: var(--brand-color) !important;
     line-height: 28px; /* Matches your fixed height to keep text centered */
     display: block !important; /* Keeps your margin: auto working */
 }
-
+.spinner{background-color: var(--brand-color); border-color: var(--brand-color);
 /* Border color only */
-.form-wrapper, #gamePlayArea, .score-container {
+.form-wrapper, #gamePlayArea, .score-container, .modal-container, {
     border: 4px solid var(--brand-color) !important;
 }
-
+#modalContent,{ scrollbar-color:var(--brand-color) #111;}
 .active-header {
     color: var(--brand-color);
 }
-h1, h2, .team, .p-name {
-    color: var(--brand-color);
-}
+         #modalImg{border: 3px solid var(--brand-color);}
+         
+h1, .team, .team h2, .p-name, #timerBox, .face, th{
+    color: var(--brand-color);}
+
+ .block-title{color: var(--brand-color);  border-bottom: 2px solid var(--brand-color);}
