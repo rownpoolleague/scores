@@ -11,6 +11,7 @@ a.back-button,
 .submit-btn,
 .uiButton,
 a.menu-button,
+back-button,
  .floating-buttons{
     background-color: var(--brand-color) !important;
     line-height: 28px; /* Matches your fixed height to keep text centered */
