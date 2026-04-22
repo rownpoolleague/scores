@@ -6,6 +6,7 @@
 /* Background color only - no layout changes */
 button, 
 .menu-button, 
+.back-button,
 .submit-btn, 
 a.menu-button {
     background-color: var(--brand-color) !important;
