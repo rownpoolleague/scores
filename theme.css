@@ -13,7 +13,7 @@ button, .submit-btn, .action-btn {
 
 /* Your Form/Wrapper Borders */
 .form-wrapper, #gamePlayArea, .score-container {
-    border: 2px solid var(--brand-color) !important;
+    border: 4px solid var(--brand-color) !important;
 }
 
 /* Optional: If you want the ticker or other accents to match */
