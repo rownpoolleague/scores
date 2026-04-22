@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+    <link rel="stylesheet" href="theme.css">
 <title>Scoresheet</title>
     <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,7 +26,6 @@ body {
     max-width: 550px; 
     margin: 0 auto;
     padding: 10px;
-    border: 4px solid #1e90ff; /* This is your blue frame */
     box-sizing: border-box;
     min-height: 650px; 
     display: flex;
@@ -80,12 +80,11 @@ input[type="number"] {
 .playerName:hover { background-color: #333; }
 .playerName span.hc { color: #fff; font-weight: normal; }
 
-.uiButton { padding: 10px 20px; font-size: 20px; cursor: pointer; border-radius: 6px; border: none; background-color: #1e90ff; color: white; display: block; margin: 20px auto; }
+.uiButton { padding: 10px 20px; font-size: 20px; cursor: pointer; border-radius: 6px; border: none; color: white; display: block; margin: 20px auto; }
 
 /* Back Button - Width fixed to match form */
 .back-button { 
     display: block;
-    background-color: #1e90ff; 
     color: #fff; 
     text-decoration: none; 
     font-size: 24px; 
@@ -127,7 +126,6 @@ input[type="number"] {
     color: #fff;
     padding: 15px;
     border-radius: 8px;
-    border: 2px solid #1e90ff;
     box-shadow: 0 4px 20px rgba(0,0,0,0.8);
     z-index: 10000;
     text-align: center;
@@ -155,7 +153,6 @@ input[type="number"] {
 .spinner {
     width: 50px; height: 50px;
     border: 5px solid #333;
-    border-top: 5px solid #1e90ff;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 15px;
@@ -174,7 +171,6 @@ input[type="number"] {
 .modal-container {
     background: #111; 
     padding: 20px; 
-    border: 2px solid #1e90ff; 
     border-radius: 12px; 
     width: 100%; 
     max-width: 450px; 
@@ -190,8 +186,7 @@ input[type="number"] {
     margin-bottom: 20px;
     color: #fff;
     scrollbar-width: thin; /* Clean scrollbars for Firefox */
-    scrollbar-color: #1e90ff #111;
-}
+   }
 
 #modalFooter {
     display: flex; 
@@ -334,7 +329,7 @@ input[type="number"] {
 </div>
 <div style="margin-top:20px;border-radius:8px;">
 
-    <div id="teamScoreDisplay" style="text-align:center; font-size:28px; font-weight:bold; margin-bottom:10px; color:#1e90ff;">Match Score: <span id="homeScore">0</span> - <span id="awayScore">0</span>
+    <div id="teamScoreDisplay" style="text-align:center; font-size:28px; font-weight:bold; margin-bottom:10px;">Match Score: <span id="homeScore">0</span> - <span id="awayScore">0</span>
 </div>
 
   <div class="button-row">
