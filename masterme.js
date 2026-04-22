@@ -61,7 +61,7 @@ const masterme = [
 {"Player #":"1103","Player Name":"Gutierrez, Ignasio","HC":2},
 {"Player #":"1082","Player Name":"Sedivy, Jack","HC":2},
 {"Player #":"1052","Player Name":"Raffordy, Jameson","HC":2},
-{"Player #":"1097","Player Name":"Diaz, Jariel","HC":4},
+{"Player #":"1097","Player Name":"Diaz, Jariel","HC":3},
 {"Player #":"1050","Player Name":"Fedro, Jason","HC":2},
 {"Player #":"338","Player Name":"Mauricio, Javier","HC":3},
 {"Player #":"38","Player Name":"Notestein, Jeff","HC":4},
