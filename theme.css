@@ -22,6 +22,6 @@ a.menu-button {
 .active-header {
     color: var(--brand-color);
 }
-h1, h2, .p-name {
+h1, h2, .team, .p-name {
     color: var(--brand-color);
 }
