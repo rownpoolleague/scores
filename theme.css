@@ -1,0 +1,22 @@
+/* theme.css */
+:root {
+    /* To change the color of the whole app, just edit this one hex code below */
+    --brand-color: #006400; 
+}
+
+/* All buttons with the primary class or standard button tags */
+button, .submit-btn, .action-btn {
+    background-color: var(--brand-color) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* Your Form/Wrapper Borders */
+.form-wrapper, #gamePlayArea, .score-container {
+    border: 2px solid var(--brand-color) !important;
+}
+
+/* Optional: If you want the ticker or other accents to match */
+.active-header {
+    color: var(--brand-color);
+}
