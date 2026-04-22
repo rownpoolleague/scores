@@ -135,11 +135,12 @@ th {
 .col-right {
   text-align: right;
 }
-  .form-wrapper {
-    width: 100%; /* Spans full width */
+ .form-wrapper {
+    width: 100%;
+    min-height: 100vh;   /* Always at least full phone height */
     padding: 2px;
-    border-radius: 0; /* Optional: remove radius for true edge-to-edge look */
-    box-sizing: border-box; /* Crucial: includes padding/border in 100% width */
+    border-radius: 0;
+    box-sizing: border-box;
 }
 </style>
 </head>
