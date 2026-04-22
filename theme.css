@@ -20,3 +20,21 @@ button, .submit-btn, .action-btn {
 .active-header {
     color: var(--brand-color);
 }
+/* theme.css */
+:root {
+    --brand-color: #1e90ff; 
+}
+
+/* This targets your Menu Buttons and any standard buttons */
+button, .menu-button, .submit-btn {
+    background-color: var(--brand-color) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none; /* Keeps the links from being underlined */
+    display: inline-block; /* Helps with spacing on <a> tags */
+}
+
+/* This targets the border of your menu container or form wrappers */
+.menu-container, .form-wrapper, #gamePlayArea {
+    border: 2px solid var(--brand-color) !important;
+}
