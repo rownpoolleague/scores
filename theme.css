@@ -35,6 +35,6 @@ button, .menu-button, .submit-btn {
 }
 
 /* This targets the border of your menu container or form wrappers */
-.menu-container, .form-wrapper, #gamePlayArea {
+.form-wrapper, #gamePlayArea {
     border: 2px solid var(--brand-color) !important;
 }
