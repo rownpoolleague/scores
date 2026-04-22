@@ -11,13 +11,7 @@ button,
 .submit-btn, 
 a.menu-button {
     background-color: var(--brand-color) !important;
-    color: #ffffff !important;
-    display: inline-block !important;
-    padding: 12px 24px !important;
-    text-decoration: none !important;
-    border: 1px solid rgba(255,255,255,0.3) !important;
-    margin: 5px !important;
-}
+    }
 /* Your Form/Wrapper Borders */
 .form-wrapper, #gamePlayArea, .score-container {
     border: 4px solid var(--brand-color) !important;
