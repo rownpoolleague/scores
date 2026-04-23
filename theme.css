@@ -19,7 +19,7 @@ back-button,
 }
 .spinner{background-color: var(--brand-color); border-color: var(--brand-color);
 /* Border color only */
-.form-wrapper, #gamePlayArea, .score-container, .modal-container, {
+.form-wrapper, .score-container, .modal-container, {
     border: 4px solid var(--brand-color) !important;
 }
 #modalContent,{ scrollbar-color:var(--brand-color) #111;}
@@ -28,7 +28,7 @@ back-button,
 }
          #modalImg{border: 3px solid var(--brand-color);}
          
-h1, .team, .team h2, .p-name, #timerBox, .face, th{
+h1, .team, .team h2, .p-name, #timerBox, .face, th,teamScoreDisplay{
     color: var(--brand-color);}
 
  .block-title{color: var(--brand-color);  border-bottom: 2px solid var(--brand-color);}
