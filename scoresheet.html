@@ -23,7 +23,7 @@ body {
 .form-wrapper {
     width: 100%;
     max-width: 550px; 
-   
+    margin: 0 auto;
     padding: 10px;
     border: 4px solid #1e90ff; /* This is your blue frame */
     box-sizing: border-box;
@@ -93,7 +93,7 @@ input[type="number"] {
     padding: 10px 0;
     width: 100%;
     max-width: 550px;
-    margin-top: 150px; 
+    margin: 10px auto; 
 }
 
 .uiText { font-size: 22px; text-align: center; margin: 10px auto; display: block; color: gold; }
@@ -359,12 +359,15 @@ input[type="number"] {
         oninput="saveNow()">-</textarea>
 </div>
     <button id="addPlayerBtn" class="uiButton" type="button" onclick="addNewPlayerManual()">Add a Player to Either Roster</button>
-    <a href="index.html" style="text-decoration: none; display: block;">
+</div>
+
+<a href="index.html" style="text-decoration: none; display: block;">
   <div class="back-button" style="height:30px;">
     Main Menu
   </div>
 </a>
-</div>
+
+
 <script>
 let isLoading = false;
 const FORM_KEY = "scoresheetData";
