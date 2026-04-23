@@ -890,7 +890,7 @@ playersToCheck.forEach(player => {
             record["Current Win Streak"] = (parseInt(record["Current Win Streak"]) || 0) + 1;
             
             if (record["Current Win Streak"] >= 5) {
-                newLeadsFound.push(`🔥 ${player.name.toUpperCase()} IS ON A ${record["Current Win Streak"]} Match WIN STREAK! 🔥`);
+                newLeadsFound.push(`🔥 ${player.name.toUpperCase()} Win Streak Increaes to ${record["Current Win Streak"]}🔥`);
             }
             
             if (record["Current Win Streak"] > (parseInt(record["Longest Win Streak"]) || 0)) {
