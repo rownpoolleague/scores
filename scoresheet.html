@@ -880,9 +880,29 @@ document.getElementById("submitMatch").onclick = async function() {
         { name: data.lagLoser, stats: data.pB, opponentWins: data.pA.wins }
     ];
 
-    playersToCheck.forEach(player => {
+playersToCheck.forEach(player => {
         const record = playerData.find(p => p["Player Name"] === player.name);
         if (!record) return;
+
+        // --- WIN STREAK LOGIC ---
+        const isWinner = (data.matchWinner === player.name);
+        if (isWinner) {
+            // Read from playerdata.js and add 1
+            record["Current Win Streak"] = (parseInt(record["Current Win Streak"]) || 0) + 1;
+            
+            // Blast if streak hits 5 or more
+            if (record["Current Win Streak"] >= 5) {
+                newLeadsFound.push(`🔥 ${player.name.toUpperCase()} IS ON A ${record["Current Win Streak"]} GAME WIN STREAK! 🔥`);
+            }
+            
+            // Update Longest Win Streak if current beats it
+            if (record["Current Win Streak"] > (parseInt(record["Longest Win Streak"]) || 0)) {
+                record["Longest Win Streak"] = record["Current Win Streak"];
+            }
+        } else {
+            // Reset to 0 on loss
+            record["Current Win Streak"] = 0;
+        }
 
         statMap.forEach(stat => {
             let addedValue = 0;
