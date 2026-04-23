@@ -19,7 +19,7 @@ back-button,
 }
 .spinner{background-color: var(--brand-color); border-color: var(--brand-color);
 /* Border color only */
-.form-wrapper, .score-container, .modal-container, {
+.form-wrapper, .modal-container, {
     border: 4px solid var(--brand-color) !important;
 }
 #modalContent,{ scrollbar-color:var(--brand-color) #111;}
