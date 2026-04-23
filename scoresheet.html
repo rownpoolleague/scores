@@ -887,20 +887,16 @@ playersToCheck.forEach(player => {
         // --- WIN STREAK LOGIC ---
         const isWinner = (data.matchWinner === player.name);
         if (isWinner) {
-            // Read from playerdata.js and add 1
             record["Current Win Streak"] = (parseInt(record["Current Win Streak"]) || 0) + 1;
             
-            // Blast if streak hits 5 or more
             if (record["Current Win Streak"] >= 5) {
-                newLeadsFound.push(`🔥 ${player.name.toUpperCase()} IS ON A ${record["Current Win Streak"]} GAME WIN STREAK! 🔥`);
+                newLeadsFound.push(`🔥 ${player.name.toUpperCase()} IS ON A ${record["Current Win Streak"]} Match WIN STREAK! 🔥`);
             }
             
-            // Update Longest Win Streak if current beats it
             if (record["Current Win Streak"] > (parseInt(record["Longest Win Streak"]) || 0)) {
                 record["Longest Win Streak"] = record["Current Win Streak"];
             }
         } else {
-            // Reset to 0 on loss
             record["Current Win Streak"] = 0;
         }
 
@@ -916,29 +912,32 @@ playersToCheck.forEach(player => {
 
             if (addedValue <= 0) return;
 
-            // 1. Get the League Record (The Bar)
             const barToBeat = targetScores[stat.fileKey] || 0;
-            // 2. Get Player's existing score from the CSV file
             const playerOldScore = parseFloat(String(record[stat.fileKey]).replace('%', '')) || 0;
             const newTotal = playerOldScore + addedValue;
-
-            // 3. REFRESH SHIELD + OVERTAKE FILTER
             const blastKey = `blast_${player.name}_${stat.idKey}_${newTotal}`;
 
-            // LOGIC: New score must beat the record AND player must NOT have been the record-holder/co-holder already.
             if (newTotal > barToBeat && playerOldScore < barToBeat && !localStorage.getItem(blastKey)) {
                 newLeadsFound.push(`${player.name} takes the lead in ${stat.fileKey} with ${newTotal}`);
                 localStorage.setItem(blastKey, "true");
-                
-                // Update the bar for this session so the next player must beat THIS new score
                 targetScores[stat.fileKey] = newTotal;
             }
         });
     });
 
-    // Send Trophy Blast
+    // Send Ticker Blast
     if (newLeadsFound.length > 0) {
-        let msg = "*** 🏆 NEW LIFETIME LEAGUE LEADER: " + newLeadsFound.join(" | ") + " ***";
+        // Checks if only a streak blast exists to remove the "Leader" prefix
+        let containsStreak = newLeadsFound.some(msg => msg.includes("WIN STREAK!"));
+        let containsLeader = newLeadsFound.some(msg => msg.includes("takes the lead"));
+
+        let msg = "";
+        if (containsLeader) {
+            msg = "*** 🏆 NEW LIFETIME LEAGUE LEADER: " + newLeadsFound.join(" | ") + " ***";
+        } else {
+            msg = newLeadsFound.join(" | ");
+        }
+
         await fetch("https://script.google.com/macros/s/AKfycbw-_XzGIquLxtryGY0CML2ouOZHkdr2N4ZWKqoIusUX7B4wkvCz76UAnnPjk6w5zUOdEQ/exec", {
             method: "POST",
             mode: "no-cors",
