@@ -45,7 +45,7 @@
         th:nth-child(3), td:nth-child(3) { width: 15%; text-align: center; } /* Points */
          .form-wrapper {
     width: 100%; 
-    min-height: 94dvh;
+    min-height: 92dvh;
     padding: 2px 2px env(safe-area-inset-bottom) 2px;
     border: 4px solid #1e90ff;
     border-radius: 0; 
@@ -81,11 +81,12 @@
             </thead>
             <tbody></tbody>
         </table>
+        <a class="back-button" style="margin-top:50px;" href="allstatssplash.html">Back</a>
     </div>
 
     <script src="mimplist.js"></script>
 
-<a class="back-button" style="margin-top:50px;" href="allstatssplash.html">Back</a>
+
         <script>
         function populateTable(tableId, data) {
             const tbody = document.querySelector(`#${tableId} tbody`);
