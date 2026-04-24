@@ -45,7 +45,7 @@
         th:nth-child(3), td:nth-child(3) { width: 15%; text-align: center; } /* Points */
          .form-wrapper {
     width: 100%; 
-    min-height: 90dvh;
+    min-height: 94dvh;
     padding: 2px 2px env(safe-area-inset-bottom) 2px;
     border: 4px solid #1e90ff;
     border-radius: 0; 
@@ -53,22 +53,16 @@
     display: flex;
     flex-direction: column;
 }
-        .floating-buttons {
-    position: fixed;
-    bottom: 15px;
-    left: 50%;                 /* move the left edge to the center */
-    transform: translateX(-50%); /* pull it back by half its width */
-    text-decoration: none;
-    display: flex;
-    justify-content: center;
-
-    width: 40%;
-    height: 30px;
-    background-color: #1e90ff;
-    color: #fff;
-    font-size: 22px;
-    border-radius: 6px;
-    text-align: center;
+   .back-button {
+  display: block;
+  padding: 8px 16px;
+  background-color: #1e90ff;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 22px;
+  text-align: center;
+  height: 30px;
 }
     </style>
 </head>
@@ -90,7 +84,9 @@
     </div>
 
     <script src="mimplist.js"></script>
-    <script>
+
+<a class="back-button" style="margin-top:50px;" href="allstatssplash.html">Back</a>
+        <script>
         function populateTable(tableId, data) {
             const tbody = document.querySelector(`#${tableId} tbody`);
             tbody.innerHTML = ""; 
@@ -111,7 +107,6 @@
             }
         };
     </script>
-<a class="floating-buttons" style="margin-top:50px;" href="allstatssplash.html">Back</a>
 </body>
      </div>
 </html>
