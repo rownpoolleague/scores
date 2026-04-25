@@ -8,7 +8,7 @@
         body { 
             background-color: #000; 
             color: #fff; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: sans-serif; 
             margin: 0; 
             padding: 20px; 
             display: flex; 
@@ -16,7 +16,7 @@
             align-items: center;
         }
         h1 { color: #1e90ff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
-        .leader-table { width: 100%; max-width: 600px; border-collapse: collapse; }
+        .leader-table { width: 100%; max-width: 800px; border-collapse: collapse; margin-bottom: 50px; }
         .leader-table th { 
             text-align: left; 
             color: #888; 
@@ -25,67 +25,113 @@
             padding: 10px; 
             border-bottom: 1px solid #333;
         }
-        .leader-table td { padding: 15px 10px; border-bottom: 1px solid #222; }
-        .category { font-weight: bold; color: #fff; }
-        .player-name { color: #1e90ff; font-weight: bold; }
-        .score { text-align: right; color: #ff4500; font-family: monospace; font-size: 1.2rem; }
-        .trophy { margin-right: 10px; }
+        .leader-table td { padding: 12px 10px; border-bottom: 1px solid #222; }
+        .category-header { 
+            background-color: #111; 
+            color: #1e90ff; 
+            font-weight: bold; 
+            text-align: center !important;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+        .rank-col { width: 50px; color: #666; font-family: monospace; }
+        .player-col { font-weight: bold; }
+        .score-col { text-align: right; color: #ff4500; font-family: monospace; font-size: 1.1rem; width: 100px; }
+        .mp-note { font-size: 0.7rem; color: #ff4500; font-weight: normal; vertical-align: middle; margin-left: 5px; }
     </style>
 </head>
 <body>
 
     <h1>🏆 League Leaders</h1>
 
-    <table class="leader-table">
-        <thead>
-            <tr>
-                <th>Category</th>
-                <th>Leader</th>
-                <th style="text-align: right;">Record</th>
-            </tr>
-        </thead>
-        <tbody id="leader-body">
-            </tbody>
-    </table>
+    <div id="leaderboard-container" style="width: 100%; max-width: 800px;">
+        </div>
 
     <script src="playerdata.js"></script>
     <script>
-        // Assuming targetScores and playerData are available from playerdata.js
-        const categories = [
-            { key: "8 on Break", label: "8 on Break" },
-            { key: "Break and Run", label: "Break & Run" },
-            { key: "Mini-Slam", label: "Mini-Slam" },
-            { key: "Rackless", label: "Rackless Matches" },
-            { key: "Undefeated", label: "Undefeated" },
-            { key: "Longest Win Streak", label: "Longest Win Streak" }
+        const statsToDisplay = [
+            "8 on Break",
+            "Break and Run",
+            "Mini-Slam",
+            "Rackless",
+            "Undefeated",
+            "Longest Win Streak",
+            "Life Hash",
+            "Match Win %",
+            "Game Win %"
         ];
 
-        function loadLeaders() {
-            const tbody = document.getElementById('leader-body');
-            tbody.innerHTML = '';
+        const lowerIsBetter = ["Life Hash", "White Washed"];
+        const minMPRequiredStats = ["Match Win %", "Game Win %", "Life Hash", "% Weeks w/8OB, BR or Rackless", "White Washed"];
 
-            categories.forEach(cat => {
-                // Find the player(s) with the highest score in this category
-                const topScore = targetScores[cat.key] || 0;
+        function getRankedData(statKey) {
+            return playerData
+                .filter(p => {
+                    if (minMPRequiredStats.includes(statKey)) {
+                        return p["Matches Played"] >= 25;
+                    }
+                    return true;
+                })
+                .map(p => {
+                    let raw = p[statKey];
+                    let value = parseFloat(typeof raw === "string" ? raw.replace('%', '') : raw);
+                    return { name: p["Player Name"], value: value };
+                })
+                .filter(p => Number.isFinite(p.value))
+                .sort((a, b) => {
+                    return lowerIsBetter.includes(statKey) ? a.value - b.value : b.value - a.value;
+                })
+                .slice(0, 10);
+        }
+
+        function renderLeaderboard() {
+            const container = document.getElementById('leaderboard-container');
+            if (typeof playerData === 'undefined') return;
+
+            container.innerHTML = '';
+
+            statsToDisplay.forEach(statKey => {
+                const ranked = getRankedData(statKey);
+                if (ranked.length === 0) return;
+
+                const isMinMP = minMPRequiredStats.includes(statKey);
                 
-                // Find name associated with top score
-                const leaders = playerData
-                    .filter(p => (parseFloat(String(p[cat.key]).replace('%', '')) || 0) === topScore && topScore > 0)
-                    .map(p => p["Player Name"])
-                    .join(", ");
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="category">${cat.label}</td>
-                    <td class="player-name">${leaders || "No Record"}</td>
-                    <td class="score">${topScore}</td>
+                const table = document.createElement('table');
+                table.className = 'leader-table';
+                
+                let tableHTML = `
+                    <thead>
+                        <tr>
+                            <th colspan="3" class="category-header">
+                                ${statKey.toUpperCase()} ${isMinMP ? '<span class="mp-note">(MIN 25 MP)</span>' : ''}
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th style="text-align: right;">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                 `;
-                tbody.appendChild(row);
+
+                ranked.forEach((p, i) => {
+                    tableHTML += `
+                        <tr>
+                            <td class="rank-col">${i + 1}</td>
+                            <td class="player-col">${p.name}</td>
+                            <td class="score-col">${p.value}${statKey.includes('%') ? '%' : ''}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `</tbody>`;
+                table.innerHTML = tableHTML;
+                container.appendChild(table);
             });
         }
 
-        // Initialize
-        window.onload = loadLeaders;
+        window.onload = renderLeaderboard;
     </script>
 </body>
 </html>
