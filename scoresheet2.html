@@ -15,36 +15,88 @@
             flex-direction: column; 
             align-items: center;
         }
-        h1 { color: #1e90ff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
-        .leader-table { width: 100%; max-width: 800px; border-collapse: collapse; margin-bottom: 50px; }
-        .leader-table th { 
-            text-align: left; 
-            color: #888; 
-            font-size: 0.8rem; 
-            text-transform: uppercase; 
-            padding: 10px; 
-            border-bottom: 1px solid #333;
+        h1 { color: #1e90ff; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 40px; border-bottom: 2px solid #1e90ff; padding-bottom: 10px; }
+        
+        .leader-card { 
+            width: 100%; 
+            max-width: 500px; 
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-        .leader-table td { padding: 12px 10px; border-bottom: 1px solid #222; }
-        .category-header { 
-            background-color: #111; 
-            color: #1e90ff; 
-            font-weight: bold; 
-            text-align: center !important;
-            font-size: 1.1rem;
+
+        .card-header {
+            background: #222;
+            padding: 10px 15px;
+            border-bottom: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-name {
+            color: #1e90ff;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .rank-col { width: 50px; color: #fff;font-family: monospace; font-size: 1.1rem;}
-        .player-col { font-family: monospace; font-size: 1.1rem; }
-        .score-col { text-align: center; color: #fff; font-family: monospace; font-size: 1.1rem; width: 100px; }
-        .mp-note { font-size: 0.7rem; color: #fff; font-weight: normal; vertical-align: middle; margin-left: 5px; }
+
+        .mp-tag {
+            font-size: 0.6rem;
+            background: #ff4500;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        /* Top Spot Styling */
+        .top-spot {
+            padding: 20px 15px;
+            background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-name {
+            font-family: monospace;
+            font-size: 1.5rem;
+            color: #ffd700; /* Gold */
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .top-score {
+            font-family: monospace;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* Runners Up Styling */
+        .runner-up {
+            padding: 8px 15px;
+            border-top: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #aaa;
+            font-family: monospace;
+        }
+
+        .runner-name { color: #ddd; }
+        .runner-score { color: #fff; }
+        .rank { color: #555; margin-right: 10px; }
     </style>
 </head>
 <body>
 
-    <h1>🏆 League Leaders</h1>
+    <h1>🏆 LEADERS</h1>
 
-    <div id="leaderboard-container" style="width: 100%; max-width: 800px;">
+    <div id="leaderboard-container" style="width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center;">
         </div>
 
     <script src="playerdata.js"></script>
@@ -81,7 +133,7 @@
                 .sort((a, b) => {
                     return lowerIsBetter.includes(statKey) ? a.value - b.value : b.value - a.value;
                 })
-                .slice(0, 10);
+                .slice(0, 3); // ONLY TOP 3
         }
 
         function renderLeaderboard() {
@@ -95,39 +147,42 @@
                 if (ranked.length === 0) return;
 
                 const isMinMP = minMPRequiredStats.includes(statKey);
+                const suffix = statKey.includes('%') ? '%' : '';
                 
-                const table = document.createElement('table');
-                table.className = 'leader-table';
+                const card = document.createElement('div');
+                card.className = 'leader-card';
                 
-                let tableHTML = `
-                    <thead>
-                        <tr>
-                            <th colspan="3" class="category-header">
-                                ${statKey.toUpperCase()} ${isMinMP ? '<span class="mp-note">(MIN 25 MP)</span>' : ''}
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Player</th>
-                            <th style="text-align: right;">Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                // Header
+                let cardHTML = `
+                    <div class="card-header">
+                        <span class="category-name">${statKey}</span>
+                        ${isMinMP ? '<span class="mp-tag">MIN 25 MP</span>' : ''}
+                    </div>
                 `;
 
-                ranked.forEach((p, i) => {
-                    tableHTML += `
-                        <tr>
-                            <td class="rank-col">${i + 1}</td>
-                            <td class="player-col">${p.name}</td>
-                            <td class="score-col">${p.value}${statKey.includes('%') ? '%' : ''}</td>
-                        </tr>
-                    `;
-                });
+                // #1 Spot
+                const top = ranked[0];
+                cardHTML += `
+                    <div class="top-spot">
+                        <div class="top-name">${top.name.toUpperCase()}</div>
+                        <div class="top-score">${top.value}${suffix}</div>
+                    </div>
+                `;
 
-                tableHTML += `</tbody>`;
-                table.innerHTML = tableHTML;
-                container.appendChild(table);
+                // #2 and #3 Spots
+                if (ranked.length > 1) {
+                    for (let i = 1; i < ranked.length; i++) {
+                        cardHTML += `
+                            <div class="runner-up">
+                                <span><span class="rank">#${i + 1}</span><span class="runner-name">${ranked[i].name}</span></span>
+                                <span class="runner-score">${ranked[i].value}${suffix}</span>
+                            </div>
+                        `;
+                    }
+                }
+
+                card.innerHTML = cardHTML;
+                container.appendChild(card);
             });
         }
 
