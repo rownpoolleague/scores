@@ -46,6 +46,26 @@
              animation: maskReveal 0.8s ease-out forwards;
              z-index: 5;
         }
+        .instructions {
+    background: #111;
+    border-bottom: 2px solid #1e90ff; /* Matches your league blue */
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: left;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #ccc;
+}
+.instructions b {
+    color: #1e90ff;
+    text-transform: uppercase;
+}
+.rules-list {
+    margin: 8px 0 0 0;
+    padding-left: 18px;
+    font-size: 0.85rem;
+    color: #888;
+}
         .menu-button {
     display: block;
     margin-left: auto;
@@ -112,6 +132,17 @@
     <div id="loading">LOADING ROSTERS...</div>
 
     <div id="setup" class="setup-box" style="display:none;">
+        <div class="instructions">
+    <b>How it works:</b><br>
+    After your match is over, you may scratch your card at any time. 
+    Reveal <b>3 of 4</b> Eight Balls to win!
+    
+    <ul class="rules-list">
+        <li><b>5 Scratches</b> for shooting your match.</li>
+        <li><b>+1 Scratch</b> for winning at least 1 game.</li>
+        <li><b>+1 Scratch</b> for winning your match.</li>
+    </ul>
+</div>
         <h3>SELECT YOUR NAME</h3>
         <select id="player-select"></select>
         <button onclick="startGame()">START GAME</button>
