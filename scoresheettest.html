@@ -65,7 +65,7 @@
 
     <script>
         // Use your deployment URL here
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzpfkSjhijRm6Alpb4JTdPg90YLnvDKs2Pi0Pz8OgElRzraruyY2i0eVopKdPYxGwUl/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYYgTqy7K2vVlA9yW-AtTn1Io0W8mV2-tLDVZMJZ-OMN-uzrAD5q78GEZv7nVO3peC/exec";
 
         let gridData = [], revealed = Array(16).fill(false), remaining = 0, ballsFound = 0, active = true;
         let selectedPlayer = "";
@@ -130,24 +130,45 @@
             });
         }
 
-        function handleTap(idx) {
-            if (!active || revealed[idx] || remaining <= 0) return;
+       async function handleTap(idx) {
+    if (!active || revealed[idx] || remaining <= 0) return;
 
-            revealed[idx] = true;
-            remaining--;
-            document.getElementById('scratches').innerText = remaining;
+    // 1. Immediately disable clicking to prevent "double-tap" spam
+    active = false; 
 
-            const cell = document.getElementById(`cell-${idx}`);
-            cell.classList.remove('hidden');
-            cell.classList.add('revealed');
-            
-            // Show result
-            cell.innerHTML = gridData[idx] === 1 ? '🎱' : '❌';
+    try {
+        // 2. Tell Google to remove 1 scratch from this player
+        const response = await fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            body: JSON.stringify({ 
+                type: "DECREMENT_SCRATCH", 
+                playerName: selectedPlayer 
+            })
+        });
 
-            if (gridData[idx] === 1) ballsFound++;
+        // 3. Update local state
+        revealed[idx] = true;
+        remaining--;
+        document.getElementById('scratches').innerText = remaining;
 
-            checkState();
-        }
+        // 4. Reveal the cell
+        const cell = document.getElementById(`cell-${idx}`);
+        cell.classList.remove('hidden');
+        cell.classList.add('revealed');
+        cell.innerHTML = gridData[idx] === 1 ? '🎱' : '❌';
+
+        if (gridData[idx] === 1) ballsFound++;
+
+        // 5. Re-enable game unless it's over
+        checkState(); 
+        if (remaining > 0 && ballsFound < 3) active = true;
+
+    } catch (e) {
+        alert("Connection Error. Tap not registered.");
+        active = true;
+    }
+}
 
         function checkState() {
             // WIN: Found 3 of 4
