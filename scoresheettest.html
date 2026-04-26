@@ -7,37 +7,14 @@
     <style>
         body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 10px; user-select: none; }
         h1 { color: #1e90ff; text-transform: uppercase; letter-spacing: 2px; margin: 10px 0; }
-        
         .setup-box { background: #111; border: 1px solid #333; padding: 20px; border-radius: 8px; max-width: 350px; margin: 20px auto; }
         select { width: 100%; padding: 12px; background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; font-size: 1rem; margin-bottom: 15px; }
         button { width: 100%; padding: 12px; background: #1e90ff; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
-
         .stats { background: #111; border: 1px solid #333; padding: 15px; margin: 10px auto; max-width: 350px; border-radius: 8px; font-family: monospace; font-size: 1.2rem; }
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 350px; margin: 0 auto; }
-        
-        /* The Cell Styling */
-        .cell { 
-            position: relative; 
-            aspect-ratio: 1/1; 
-            background: #444; 
-            border: 1px solid #222; 
-            border-radius: 8px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 2rem; 
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+        .cell { position: relative; aspect-ratio: 1/1; background: #444; border: 1px solid #222; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; }
         .cell.revealed { background: #111; cursor: default; }
-        .cell.hidden::after {
-            content: 'ROPL';
-            position: absolute;
-            font-size: 0.7rem;
-            color: #222;
-            font-weight: bold;
-        }
-
+        .cell.hidden::after { content: 'ROPL'; position: absolute; font-size: 0.7rem; color: #222; font-weight: bold; }
         .win { color: #ffd700; display: none; text-shadow: 0 0 10px gold; margin-top: 20px; font-weight: bold; font-size: 1.5rem; }
         .fail { color: #ff4500; display: none; margin-top: 20px; font-weight: bold; font-size: 1.5rem; }
         #loading { margin-top: 50px; color: #1e90ff; font-family: monospace; }
@@ -59,18 +36,17 @@
         <div class="grid" id="grid"></div>
         <div id="win-msg" class="win">🏆 WINNER LOGGED!<br>FOUND 3 BALLS</div>
         <div id="fail-msg" class="fail">GAME OVER</div>
+        <button id="reset-session" style="margin-top:20px; background:#333; width:auto; padding:10px;" onclick="clearSession()">FORFEIT / NEW GAME</button>
     </div>
 
     <script src="scoresheetrosters.js"></script>
 
     <script>
-        // Use your deployment URL here
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXZVkiE8IyzvZTW2yoaSQL846PxJ2Nuynq6G99TgTO9USZiHxYzWuOqKe18HYzE2Lm/exec";
 
         let gridData = [], revealed = Array(16).fill(false), remaining = 0, ballsFound = 0, active = true;
         let selectedPlayer = "";
 
-        // Populate Player Dropdown
         window.onload = () => {
             const select = document.getElementById('player-select');
             try {
@@ -81,46 +57,77 @@
                     opt.textContent = name;
                     select.appendChild(opt);
                 });
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('setup').style.display = 'block';
+
+                // --- PERSISTENCE CHECK ---
+                const savedPlayer = localStorage.getItem("ropl_active_player");
+                const savedGrid = localStorage.getItem("ropl_active_grid");
+
+                if (savedPlayer && savedGrid) {
+                    resumeGame(savedPlayer, JSON.parse(savedGrid));
+                } else {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('setup').style.display = 'block';
+                }
             } catch (e) {
-                document.getElementById('loading').innerText = "ERROR: scoresheetrosters.js not found.";
+                document.getElementById('loading').innerText = "ERROR: Rosters not found.";
             }
         };
 
-        // Fetch board and player-specific tap allowance
-        async function startGame() {
-    selectedPlayer = document.getElementById('player-select').value;
-    document.getElementById('setup').style.display = 'none';
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('loading').innerText = "VERIFYING ELIGIBILITY...";
-
-    try {
-        const r = await fetch(`${SCRIPT_URL}?name=${encodeURIComponent(selectedPlayer)}`);
-        const d = await r.json();
-        
-        if (d.allowance <= 0) {
-            document.getElementById('loading').innerHTML = 
-                `<span style="color:#ff4500;">NO SCRATCHES AVAILABLE.</span><br><br>` +
-                `<small>Play a match to earn scratches!</small><br><br>` +
-                `<button onclick="location.reload()" style="width:auto; padding:10px 20px;">BACK</button>`;
-            return;
+        async function resumeGame(name, grid) {
+            selectedPlayer = name;
+            gridData = grid;
+            document.getElementById('loading').innerText = "RESUMING GAME...";
+            
+            // Still fetch remaining count from Google to prevent local tampering
+            await updateLocalAllowance(); 
+            
+            buildGrid();
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('game-ui').style.display = 'block';
         }
 
-        gridData = d.grid;
-        remaining = d.allowance;
-        document.getElementById('scratches').innerText = remaining;
-        buildGrid();
-        
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('game-ui').style.display = 'block';
-    } catch (e) {
-        document.getElementById('loading').innerText = "SERVER ERROR.";
-    }
-}
+        async function startGame() {
+            selectedPlayer = document.getElementById('player-select').value;
+            document.getElementById('setup').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').innerText = "VERIFYING ELIGIBILITY...";
+
+            try {
+                const r = await fetch(`${SCRIPT_URL}?name=${encodeURIComponent(selectedPlayer)}`);
+                const d = await r.json();
+                
+                if (d.allowance <= 0) {
+                    showError("NO SCRATCHES AVAILABLE.");
+                    return;
+                }
+
+                gridData = d.grid;
+                remaining = d.allowance;
+
+                // --- SAVE SESSION ---
+                localStorage.setItem("ropl_active_player", selectedPlayer);
+                localStorage.setItem("ropl_active_grid", JSON.stringify(gridData));
+
+                document.getElementById('scratches').innerText = remaining;
+                buildGrid();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('game-ui').style.display = 'block';
+            } catch (e) {
+                document.getElementById('loading').innerText = "SERVER ERROR.";
+            }
+        }
+
+        async function updateLocalAllowance() {
+            const r = await fetch(`${SCRIPT_URL}?name=${encodeURIComponent(selectedPlayer)}`);
+            const d = await r.json();
+            remaining = d.allowance;
+            document.getElementById('scratches').innerText = remaining;
+            if (remaining <= 0) checkState();
+        }
+
         function buildGrid() {
             const container = document.getElementById('grid');
-            container.innerHTML = ""; // Clear existing grid
+            container.innerHTML = ""; 
             gridData.forEach((val, i) => {
                 const cell = document.createElement('div');
                 cell.className = 'cell hidden';
@@ -130,70 +137,71 @@
             });
         }
 
-       async function handleTap(idx) {
-    if (!active || revealed[idx] || remaining <= 0) return;
+        async function handleTap(idx) {
+            if (!active || revealed[idx] || remaining <= 0) return;
+            active = false; 
 
-    // 1. Immediately disable clicking to prevent "double-tap" spam
-    active = false; 
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    body: JSON.stringify({ type: "DECREMENT_SCRATCH", playerName: selectedPlayer })
+                });
 
-    try {
-        // 2. Tell Google to remove 1 scratch from this player
-        const response = await fetch(SCRIPT_URL, {
-            method: "POST",
-            mode: "no-cors",
-            body: JSON.stringify({ 
-                type: "DECREMENT_SCRATCH", 
-                playerName: selectedPlayer 
-            })
-        });
+                revealed[idx] = true;
+                remaining--;
+                document.getElementById('scratches').innerText = remaining;
 
-        // 3. Update local state
-        revealed[idx] = true;
-        remaining--;
-        document.getElementById('scratches').innerText = remaining;
+                const cell = document.getElementById(`cell-${idx}`);
+                cell.classList.remove('hidden');
+                cell.classList.add('revealed');
+                cell.innerHTML = gridData[idx] === 1 ? '🎱' : '❌';
 
-        // 4. Reveal the cell
-        const cell = document.getElementById(`cell-${idx}`);
-        cell.classList.remove('hidden');
-        cell.classList.add('revealed');
-        cell.innerHTML = gridData[idx] === 1 ? '🎱' : '❌';
+                if (gridData[idx] === 1) ballsFound++;
 
-        if (gridData[idx] === 1) ballsFound++;
-
-        // 5. Re-enable game unless it's over
-        checkState(); 
-        if (remaining > 0 && ballsFound < 3) active = true;
-
-    } catch (e) {
-        alert("Connection Error. Tap not registered.");
-        active = true;
-    }
-}
+                checkState(); 
+                if (remaining > 0 && ballsFound < 3) active = true;
+            } catch (e) {
+                alert("Connection lost. Try again.");
+                active = true;
+            }
+        }
 
         function checkState() {
-            // WIN: Found 3 of 4
-            if (ballsFound === 3) {
+            if (ballsFound >= 3) {
                 active = false;
                 document.getElementById('win-msg').style.display = 'block';
                 logWin();
-                revealAll(); // Show where the 4th ball was
-            } 
-            // LOSS: Out of taps
-            else if (remaining <= 0) {
+                revealAll();
+                clearSessionData(); // Wipe session on win
+            } else if (remaining <= 0) {
                 active = false;
                 document.getElementById('fail-msg').innerHTML = `GAME OVER<br>FOUND ${ballsFound} OF 3`;
                 document.getElementById('fail-msg').style.display = 'block';
                 revealAll();
+                clearSessionData(); // Wipe session on loss
+            }
+        }
+
+        function clearSessionData() {
+            localStorage.removeItem("ropl_active_player");
+            localStorage.removeItem("ropl_active_grid");
+        }
+
+        function clearSession() {
+            if(confirm("This will forfeit your current progress. Continue?")) {
+                clearSessionData();
+                location.reload();
             }
         }
 
         function revealAll() {
             gridData.forEach((val, i) => {
                 const cell = document.getElementById(`cell-${i}`);
-                if (!revealed[i]) {
+                if (cell && !cell.classList.contains('revealed')) {
                     cell.classList.remove('hidden');
                     cell.classList.add('revealed');
-                    cell.style.opacity = "0.4"; // Dims unselected cells
+                    cell.style.opacity = "0.4";
                     cell.innerHTML = val === 1 ? '🎱' : '❌';
                 }
             });
@@ -203,12 +211,14 @@
             await fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors", 
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    playerName: selectedPlayer, 
-                    result: "WINNER - FOUND 3" 
-                })
+                body: JSON.stringify({ playerName: selectedPlayer, result: "WINNER - FOUND 3" })
             });
+        }
+
+        function showError(msg) {
+            document.getElementById('loading').innerHTML = 
+                `<span style="color:#ff4500;">${msg}</span><br><br>` +
+                `<button onclick="location.reload()" style="width:auto; padding:10px 20px;">BACK</button>`;
         }
     </script>
 </body>
