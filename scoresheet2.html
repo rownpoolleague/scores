@@ -53,7 +53,6 @@
             font-weight: bold;
         }
 
-        /* Top Spot Styling */
         .top-spot {
             padding: 20px 15px;
             background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
@@ -65,7 +64,7 @@
         .top-name {
             font-family: monospace;
             font-size: 1.5rem;
-            color: #ffd700; /* Gold */
+            color: #ffd700;
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
         }
 
@@ -76,7 +75,6 @@
             color: #fff;
         }
 
-        /* Runners Up Styling */
         .runner-up {
             padding: 8px 15px;
             border-top: 1px solid #222;
@@ -94,27 +92,15 @@
 </head>
 <body>
 
-    <h1>🏆 LEADERS</h1>
+    <h1>🏆 ALL LEADERS</h1>
 
-    <div id="leaderboard-container" style="width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center;">
-        </div>
+    <div id="leaderboard-container" style="width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center;"></div>
 
     <script src="playerdata.js"></script>
     <script>
-        const statsToDisplay = [
-            "8 on Break",
-            "Break and Run",
-            "Mini-Slam",
-            "Rackless",
-            "Undefeated",
-            "Longest Win Streak",
-            "Life Hash",
-            "Match Win %",
-            "Game Win %"
-        ];
-
         const lowerIsBetter = ["Life Hash", "White Washed"];
         const minMPRequiredStats = ["Match Win %", "Game Win %", "Life Hash", "% Weeks w/8OB, BR or Rackless", "White Washed"];
+        const excludeStats = ["Player #", "Player Name", "HC", "Handicap", "Life Hash %", "Current Win Streak"];
 
         function getRankedData(statKey) {
             return playerData
@@ -133,26 +119,30 @@
                 .sort((a, b) => {
                     return lowerIsBetter.includes(statKey) ? a.value - b.value : b.value - a.value;
                 })
-                .slice(0, 3); // ONLY TOP 3
+                .slice(0, 3);
         }
 
         function renderLeaderboard() {
             const container = document.getElementById('leaderboard-container');
-            if (typeof playerData === 'undefined') return;
+            if (typeof playerData === 'undefined' || playerData.length === 0) return;
 
             container.innerHTML = '';
 
-            statsToDisplay.forEach(statKey => {
+            // Get all unique keys from the first player object to use as categories
+            const allKeys = Object.keys(playerData[0]).filter(key => !excludeStats.includes(key));
+
+            allKeys.forEach(statKey => {
                 const ranked = getRankedData(statKey);
                 if (ranked.length === 0) return;
 
                 const isMinMP = minMPRequiredStats.includes(statKey);
-                const suffix = statKey.includes('%') ? '%' : '';
+                // Check original data to see if it was a percentage string
+                const firstRaw = playerData[0][statKey];
+                const suffix = (typeof firstRaw === 'string' && firstRaw.includes('%')) ? '%' : '';
                 
                 const card = document.createElement('div');
                 card.className = 'leader-card';
                 
-                // Header
                 let cardHTML = `
                     <div class="card-header">
                         <span class="category-name">${statKey}</span>
@@ -160,7 +150,6 @@
                     </div>
                 `;
 
-                // #1 Spot
                 const top = ranked[0];
                 cardHTML += `
                     <div class="top-spot">
@@ -169,7 +158,6 @@
                     </div>
                 `;
 
-                // #2 and #3 Spots
                 if (ranked.length > 1) {
                     for (let i = 1; i < ranked.length; i++) {
                         cardHTML += `
