@@ -65,7 +65,7 @@
 
     <script>
         // Use your deployment URL here
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_qVVvwCxArj8PSLBoCU6jtrQtoh6B9B4Z_OK0BzsuEvGAsJP-B4u_XcMqA6IpwRh0/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzpfkSjhijRm6Alpb4JTdPg90YLnvDKs2Pi0Pz8OgElRzraruyY2i0eVopKdPYxGwUl/exec";
 
         let gridData = [], revealed = Array(16).fill(false), remaining = 0, ballsFound = 0, active = true;
         let selectedPlayer = "";
@@ -90,29 +90,34 @@
 
         // Fetch board and player-specific tap allowance
         async function startGame() {
-            selectedPlayer = document.getElementById('player-select').value;
-            document.getElementById('setup').style.display = 'none';
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('loading').innerText = "CALCULATING ALLOWANCE...";
+    selectedPlayer = document.getElementById('player-select').value;
+    document.getElementById('setup').style.display = 'none';
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('loading').innerText = "VERIFYING ELIGIBILITY...";
 
-            try {
-                // Pass the player name so Google looks up their 5-7 scratch count
-                const r = await fetch(`${SCRIPT_URL}?name=${encodeURIComponent(selectedPlayer)}`);
-                const d = await r.json();
-                
-                gridData = d.grid;
-                remaining = d.allowance; // Dynamic total from your Allowance sheet
-                
-                document.getElementById('scratches').innerText = remaining;
-                buildGrid();
-                
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('game-ui').style.display = 'block';
-            } catch (e) {
-                document.getElementById('loading').innerText = "SERVER ERROR. CHECK URL.";
-            }
+    try {
+        const r = await fetch(`${SCRIPT_URL}?name=${encodeURIComponent(selectedPlayer)}`);
+        const d = await r.json();
+        
+        if (d.allowance <= 0) {
+            document.getElementById('loading').innerHTML = 
+                `<span style="color:#ff4500;">NO SCRATCHES AVAILABLE.</span><br><br>` +
+                `<small>Play a match to earn scratches!</small><br><br>` +
+                `<button onclick="location.reload()" style="width:auto; padding:10px 20px;">BACK</button>`;
+            return;
         }
 
+        gridData = d.grid;
+        remaining = d.allowance;
+        document.getElementById('scratches').innerText = remaining;
+        buildGrid();
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('game-ui').style.display = 'block';
+    } catch (e) {
+        document.getElementById('loading').innerText = "SERVER ERROR.";
+    }
+}
         function buildGrid() {
             const container = document.getElementById('grid');
             container.innerHTML = ""; // Clear existing grid
