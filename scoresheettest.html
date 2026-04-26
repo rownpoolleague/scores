@@ -3,108 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ROPL Scratch-Off</title>
+    <title>ROPL 8-Ball Hunt</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; overflow: hidden; }
+        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 10px; user-select: none; }
         h1 { color: #1e90ff; text-transform: uppercase; letter-spacing: 2px; }
-        #scratch-container { position: relative; width: 320px; height: 160px; margin: 40px auto; visibility: hidden; }
-        .prize-area { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #111; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 12px; border: 2px solid #333; z-index: 1; }
-        .prize-text { font-size: 1.8rem; font-weight: bold; color: #ffd700; font-family: monospace; }
-        #scratch-canvas { position: absolute; top: 0; left: 0; z-index: 2; touch-action: none; border-radius: 12px; cursor: crosshair; }
-        .status { margin-top: 20px; color: #666; font-size: 0.9rem; }
-        .loading { margin-top: 100px; font-family: monospace; color: #1e90ff; }
+        .stats { background: #111; border: 1px solid #333; padding: 15px; margin: 10px auto; max-width: 350px; border-radius: 8px; font-family: monospace; font-size: 1.2rem; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 350px; margin: 0 auto; }
+        .cell { position: relative; aspect-ratio: 1/1; background: #111; border: 1px solid #222; border-radius: 8px; }
+        .content { position: absolute; top:0; left:0; width:100%; height:100%; display: flex; align-items: center; justify-content: center; font-size: 2rem; z-index: 1; }
+        canvas { position: absolute; top:0; left:0; width:100%; height:100%; z-index: 2; touch-action: none; }
+        .win { color: #ffd700; display: none; text-shadow: 0 0 10px gold; margin-top: 20px; }
+        .fail { color: #666; display: none; margin-top: 20px; }
+        #loading { margin-top: 100px; color: #1e90ff; font-family: monospace; }
     </style>
 </head>
 <body>
 
-    <div id="loading-screen" class="loading">COMMUNICATING WITH SERVER...</div>
+    <div id="loading">CONNECTING TO ROPL SERVER...</div>
 
-    <div id="main-content" style="display:none;">
-        <h1>🎰 ROPL SCRATCHER</h1>
-        <div id="scratch-container">
-            <div class="prize-area">
-                <div id="prize-name" class="prize-text">LOADING...</div>
-            </div>
-            <canvas id="scratch-canvas" width="320" height="160"></canvas>
-        </div>
-        <p id="instruction" class="status">Scratch to reveal your daily result</p>
+    <div id="game" style="display:none;">
+        <h1>🎱 8-BALL HUNT</h1>
+        <div class="stats">SCRATCHES LEFT: <span id="scratches" style="color:#ff4500;">7</span></div>
+        <div class="grid" id="grid"></div>
+        <div id="win-msg" class="win">🏆 WINNER LOGGED!<br>SHOW BARTENDER</div>
+        <div id="fail-msg" class="fail">OUT OF SCRATCHES.<br>TRY TOMORROW.</div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_ID/exec";
-        const canvas = document.getElementById('scratch-canvas');
-        const ctx = canvas.getContext('2d');
-        let isDrawing = false;
-        let isRevealed = false;
+        const SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+        let gridData = [], revealed = Array(16).fill(false), remaining = 7, active = true;
 
-        async function initScratcher() {
+        async function start() {
             try {
-                // 1. Fetch the result from Google first
-                const response = await fetch(SCRIPT_URL);
-                const data = await response.json();
-                document.getElementById('prize-name').innerText = data.prize;
+                const r = await fetch(SCRIPT_URL);
+                const d = await r.json();
+                gridData = d.grid;
+                buildGrid();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('game').style.display = 'block';
+            } catch (e) { document.getElementById('loading').innerText = "SERVER ERROR."; }
+        }
 
-                // 2. Setup Canvas
-                ctx.fillStyle = '#777';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                // Add texture
-                ctx.fillStyle = '#444';
-                for(let i=0; i<100; i++) {
-                    ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 2, 2);
-                }
-                
-                ctx.fillStyle = '#eee';
-                ctx.font = 'bold 20px monospace';
-                ctx.textAlign = 'center';
-                ctx.fillText('SCRATCH HERE', canvas.width/2, canvas.height/2 + 7);
+        function buildGrid() {
+            const container = document.getElementById('grid');
+            gridData.forEach((val, i) => {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.innerHTML = `<div class="content">${val ? '🎱' : '❌'}</div>`;
+                const canv = document.createElement('canvas');
+                cell.appendChild(canv);
+                initCanvas(canv, i);
+                container.appendChild(cell);
+            });
+        }
 
-                // 3. Reveal UI
-                document.getElementById('loading-screen').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-                document.getElementById('scratch-container').style.visibility = 'visible';
+        function initCanvas(canv, idx) {
+            const ctx = canv.getContext('2d');
+            canv.width = 100; canv.height = 100;
+            ctx.fillStyle = '#444'; ctx.fillRect(0,0,100,100);
+            ctx.fillStyle = '#222'; ctx.font = 'bold 12px Arial'; ctx.textAlign = 'center'; ctx.fillText('ROPL', 50, 55);
 
-            } catch (err) {
-                document.getElementById('loading-screen').innerText = "CONNECTION ERROR. TRY AGAIN.";
+            const scratch = (e) => {
+                if (!active || revealed[idx]) return;
+                const rect = canv.getBoundingClientRect();
+                const t = e.touches ? e.touches[0] : e;
+                const x = ((t.pageX - rect.left) / rect.width) * 100;
+                const y = ((t.pageY - rect.top) / rect.height) * 100;
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath(); ctx.arc(x, y, 18, 0, Math.PI*2); ctx.fill();
+
+                const pix = ctx.getImageData(0,0,100,100).data;
+                let hits = 0;
+                for(let i=3; i<pix.length; i+=4) if(pix[i] === 0) hits++;
+                if (hits > 4500) { canv.style.display = 'none'; processSelection(idx); }
+            };
+
+            canv.addEventListener('mousedown', () => canv.isDown = true);
+            canv.addEventListener('touchstart', () => canv.isDown = true);
+            window.addEventListener('mouseup', () => canv.isDown = false);
+            window.addEventListener('touchend', () => canv.isDown = false);
+            canv.addEventListener('mousemove', (e) => canv.isDown && scratch(e));
+            canv.addEventListener('touchmove', (e) => { e.preventDefault(); scratch(e); });
+        }
+
+        async function logWin() {
+            // This triggers the doPost in your Google Script
+            await fetch("https://script.google.com/macros/s/AKfycbxyHNNExdgiOn5aUkBG4tDEi4NZBCv22iU872sfiCkrPUstzbiuPZkIz86vzrpJ27Er/exec", {
+                method: "POST",
+                mode: "no-cors", 
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ playerName: "App User", result: "WINNER" })
+            });
+        }
+
+        function processSelection(i) {
+            if (revealed[i] || !active) return;
+            revealed[i] = true;
+            remaining--;
+            document.getElementById('scratches').innerText = remaining;
+
+            const lines = [
+                [0,1,2,3], [4,5,6,7], [8,9,10,11], [12,13,14,15],
+                [0,4,8,12], [1,5,9,13], [2,6,10,14], [3,7,11,15],
+                [0,5,10,15], [3,6,9,12]
+            ];
+
+            const win = lines.some(l => l.every(idx => revealed[idx] && gridData[idx] === 1));
+
+            if (win) {
+                active = false;
+                document.getElementById('win-msg').style.display = 'block';
+                logWin();
+            } else if (remaining <= 0) {
+                active = false;
+                document.getElementById('fail-msg').style.display = 'block';
             }
         }
 
-        function scratch(e) {
-            if (!isDrawing || isRevealed) return;
-
-            const rect = canvas.getBoundingClientRect();
-            const x = (e.pageX || e.touches[0].pageX) - rect.left;
-            const y = (e.pageY || e.touches[0].pageY) - rect.top;
-
-            ctx.globalCompositeOperation = 'destination-out';
-            ctx.beginPath();
-            ctx.arc(x, y, 25, 0, Math.PI * 2);
-            ctx.fill();
-
-            handlePercentage();
-        }
-
-        function handlePercentage() {
-            const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-            let count = 0;
-            for (let i = 3; i < pixels.length; i += 4) { if (pixels[i] === 0) count++; }
-            
-            if ((count / (pixels.length / 4)) > 0.6) {
-                isRevealed = true;
-                canvas.style.transition = 'opacity 0.6s';
-                canvas.style.opacity = '0';
-                document.getElementById('instruction').innerText = "SHOW THIS TO THE BARTENDER";
-            }
-        }
-
-        canvas.addEventListener('mousedown', () => isDrawing = true);
-        canvas.addEventListener('touchstart', () => isDrawing = true);
-        window.addEventListener('mouseup', () => isDrawing = false);
-        window.addEventListener('touchend', () => isDrawing = false);
-        canvas.addEventListener('mousemove', scratch);
-        canvas.addEventListener('touchmove', e => { e.preventDefault(); scratch(e); });
-
-        initScratcher();
+        start();
     </script>
 </body>
 </html>
