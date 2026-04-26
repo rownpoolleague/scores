@@ -937,7 +937,27 @@ playersToCheck.forEach(player => {
         } else {
             msg = newLeadsFound.join(" | ");
         }
+// --- CALCULATE SCRATCH ALLOWANCES ---
+const scratchData = [
+    { name: data.lagWinner, wins: parseInt(data.pA.wins), isWinner: (data.matchWinner === data.lagWinner) },
+    { name: data.lagLoser, wins: parseInt(data.pB.wins), isWinner: (data.matchWinner === data.lagLoser) }
+].map(p => {
+    let scratches = 5; // Baseline
+    if (p.wins > 0) scratches += 1; // At least 1 game won
+    if (p.isWinner) scratches += 1; // Match won
+    return { name: p.name, count: scratches };
+});
 
+// Send Scratch Allowance to your Scratch-Off App Script
+// NOTE: Use your Scratch-Off SCRIPT_URL here
+fetch("https://script.google.com/macros/s/AKfycbx_qVVvwCxArj8PSLBoCU6jtrQtoh6B9B4Z_OK0BzsuEvGAsJP-B4u_XcMqA6IpwRh0/exec", {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify({ 
+        type: "ALLOWANCE_UPDATE", 
+        players: scratchData 
+    })
+});
         await fetch("https://script.google.com/macros/s/AKfycbw-_XzGIquLxtryGY0CML2ouOZHkdr2N4ZWKqoIusUX7B4wkvCz76UAnnPjk6w5zUOdEQ/exec", {
             method: "POST",
             mode: "no-cors",
