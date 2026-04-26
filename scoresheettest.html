@@ -2,173 +2,109 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>League Leaders - Minimum 25 MP Check</title>
-    <script src="playerdata.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ROPL Scratch-Off</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #000;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-        }
-        h1 { 
-            color: #1e90ff; 
-            margin-bottom: 30px; 
-            border-bottom: 3px solid #1e90ff; 
-            display: inline-block; 
-            padding-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        .leader-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .leader-card {
-            background: #111;
-            border: 2px solid gold;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.15);
-            transition: transform 0.2s;
-        }
-        
-        .leader-card:hover {
-            transform: scale(1.02);
-            background: #1a1a1a;
-        }
-
-        .category-name {
-            font-size: 1.1em;
-            color: gold;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 8px;
-        }
-
-        .min-tag {
-            display: block;
-            font-size: 0.7em;
-            color: #1e90ff;
-            margin-top: 4px;
-        }
-
-        .leader-name {
-            font-size: 1.6em;
-            font-weight: bold;
-            color: #fff;
-            margin: 10px 0;
-        }
-
-        .score {
-            font-size: 2em;
-            color: #1e90ff;
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-        .footer-note {
-            margin-top: 60px;
-            font-size: 0.9em;
-            color: #555;
-            border-top: 1px solid #222;
-            padding-top: 20px;
-        }
+        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; overflow: hidden; }
+        h1 { color: #1e90ff; text-transform: uppercase; letter-spacing: 2px; }
+        #scratch-container { position: relative; width: 320px; height: 160px; margin: 40px auto; visibility: hidden; }
+        .prize-area { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #111; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 12px; border: 2px solid #333; z-index: 1; }
+        .prize-text { font-size: 1.8rem; font-weight: bold; color: #ffd700; font-family: monospace; }
+        #scratch-canvas { position: absolute; top: 0; left: 0; z-index: 2; touch-action: none; border-radius: 12px; cursor: crosshair; }
+        .status { margin-top: 20px; color: #666; font-size: 0.9rem; }
+        .loading { margin-top: 100px; font-family: monospace; color: #1e90ff; }
     </style>
 </head>
 <body>
 
-    <h1>Official League Leaders</h1>
-    
-    <div id="leaderGrid" class="leader-grid">
-        </div>
+    <div id="loading-screen" class="loading">COMMUNICATING WITH SERVER...</div>
 
-    <div class="footer-note">
-        Connected to: <strong>playerdata.js</strong><br>
-        <em>Note: Certain categories require a minimum of 25 Matches Played (MP) to be eligible for the lead.</em>
+    <div id="main-content" style="display:none;">
+        <h1>🎰 ROPL SCRATCHER</h1>
+        <div id="scratch-container">
+            <div class="prize-area">
+                <div id="prize-name" class="prize-text">LOADING...</div>
+            </div>
+            <canvas id="scratch-canvas" width="320" height="160"></canvas>
+        </div>
+        <p id="instruction" class="status">Scratch to reveal your daily result</p>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // Check if data loaded
-            if (typeof playerData === 'undefined') {
-                document.getElementById('leaderGrid').innerHTML = `
-                    <div style="grid-column: 1/-1; padding: 50px;">
-                        <h2 style="color:red;">CRITICAL ERROR: playerdata.js NOT FOUND</h2>
-                        <p>Ensure playerdata.js is in the same folder as this file.</p>
-                    </div>`;
-                return;
-            }
+        const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_ID/exec";
+        const canvas = document.getElementById('scratch-canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let isRevealed = false;
 
-            // 1. CONFIGURATION
-            const lowIsBetter = ["Life Hash", "White Washed"];
-            
-            // Categories that REQUIRE 25+ matches to lead
-            const minMatchesRequired = [
-                "Match Win %", 
-                "Game Win %", 
-                "Life Hash", 
-                "Undefeated", 
-                "White Washed",
-                "% Weeks w/8OB, BR or Rackless"
-            ];
+        async function initScratcher() {
+            try {
+                // 1. Fetch the result from Google first
+                const response = await fetch(SCRIPT_URL);
+                const data = await response.json();
+                document.getElementById('prize-name').innerText = data.prize;
 
-            // Keys to skip (metadata)
-            const ignoreKeys = ["Player #", "Player Name", "Handicap", "HC", "Matches Played"];
-
-            // 2. GET ALL CATEGORIES
-            const categories = Object.keys(playerData[0]).filter(key => !ignoreKeys.includes(key));
-            const grid = document.getElementById('leaderGrid');
-
-            categories.forEach(cat => {
-                // 3. FILTER BY ELIGIBILITY & SORT
-                const eligiblePlayers = [...playerData].filter(p => {
-                    if (minMatchesRequired.includes(cat)) {
-                        const mp = parseInt(p["Matches Played"]) || 0;
-                        return mp >= 25;
-                    }
-                    return true;
-                });
-
-                // Sort to find #1
-                eligiblePlayers.sort((a, b) => {
-                    let valA = parseFloat(String(a[cat]).replace('%', '')) || 0;
-                    let valB = parseFloat(String(b[cat]).replace('%', '')) || 0;
-
-                    if (lowIsBetter.includes(cat)) {
-                        // 0 is the best score for these categories
-                        return valA - valB;
-                    }
-                    return valB - valA;
-                });
-
-                // 4. BUILD THE CARD
-                if (eligiblePlayers.length > 0) {
-                    const leader = eligiblePlayers[0];
-                    const isRestricted = minMatchesRequired.includes(cat);
-                    
-                    const card = document.createElement('div');
-                    card.className = 'leader-card';
-                    card.innerHTML = `
-                        <div class="category-name">
-                            ${cat}
-                            ${isRestricted ? '<span class="min-tag">ELIGIBILITY: 25+ MP</span>' : ''}
-                        </div>
-                        <div class="leader-name">${leader["Player Name"]}</div>
-                        <div class="score">${leader[cat]}</div>
-                    `;
-                    grid.appendChild(card);
+                // 2. Setup Canvas
+                ctx.fillStyle = '#777';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Add texture
+                ctx.fillStyle = '#444';
+                for(let i=0; i<100; i++) {
+                    ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 2, 2);
                 }
-            });
-        });
+                
+                ctx.fillStyle = '#eee';
+                ctx.font = 'bold 20px monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText('SCRATCH HERE', canvas.width/2, canvas.height/2 + 7);
+
+                // 3. Reveal UI
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                document.getElementById('scratch-container').style.visibility = 'visible';
+
+            } catch (err) {
+                document.getElementById('loading-screen').innerText = "CONNECTION ERROR. TRY AGAIN.";
+            }
+        }
+
+        function scratch(e) {
+            if (!isDrawing || isRevealed) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.pageX || e.touches[0].pageX) - rect.left;
+            const y = (e.pageY || e.touches[0].pageY) - rect.top;
+
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, 25, 0, Math.PI * 2);
+            ctx.fill();
+
+            handlePercentage();
+        }
+
+        function handlePercentage() {
+            const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            let count = 0;
+            for (let i = 3; i < pixels.length; i += 4) { if (pixels[i] === 0) count++; }
+            
+            if ((count / (pixels.length / 4)) > 0.6) {
+                isRevealed = true;
+                canvas.style.transition = 'opacity 0.6s';
+                canvas.style.opacity = '0';
+                document.getElementById('instruction').innerText = "SHOW THIS TO THE BARTENDER";
+            }
+        }
+
+        canvas.addEventListener('mousedown', () => isDrawing = true);
+        canvas.addEventListener('touchstart', () => isDrawing = true);
+        window.addEventListener('mouseup', () => isDrawing = false);
+        window.addEventListener('touchend', () => isDrawing = false);
+        canvas.addEventListener('mousemove', scratch);
+        canvas.addEventListener('touchmove', e => { e.preventDefault(); scratch(e); });
+
+        initScratcher();
     </script>
 </body>
 </html>
