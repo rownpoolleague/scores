@@ -12,9 +12,55 @@
         button { width: 100%; padding: 12px; background: #1e90ff; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .stats { background: #111; border: 1px solid #333; padding: 15px; margin: 10px auto; max-width: 350px; border-radius: 8px; font-family: monospace; font-size: 1.2rem; }
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 350px; margin: 0 auto; }
-        .cell { position: relative; aspect-ratio: 1/1; background: #444; border: 1px solid #222; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; }
+        .cell { position: relative; aspect-ratio: 1/1; background: #444; border: 1px solid #222; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; overflow: hidden; transition: background 0.3s; }
         .cell.revealed { background: #111; cursor: default; }
         .cell.hidden::after { content: 'ROPL'; position: absolute; font-size: 0.7rem; color: #222; font-weight: bold; }
+
+        /* --- NEW ANIMATION CLASSES --- */
+        
+        /* 1. The Scratching Animation Container */
+        .scratching-mask {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: #444; /* Match cell background */
+            z-index: 5;
+            transition: opacity 0.5s ease-out; /* The slow reveal at the very end */
+        }
+
+        /* 2. The dynamic scratch graphic (radial gradient) */
+        .scratch-point {
+            position: absolute;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%);
+            mix-blend-mode: destination-out; /* Standard CSS blending for masking */
+            transform: translate(-50%, -50%); /* Center on the tap */
+            animation: scratchGrow 0.4s ease-out forwards; /* Rapid initial pop */
+        }
+
+        /* 3. Helper for standard composite support */
+        .standard-scratch {
+             position: absolute; top:0; left:0; width:100%; height:100%;
+             background: #444;
+             mask-image: radial-gradient(circle at center, transparent 0%, black 100%);
+             -webkit-mask-image: radial-gradient(circle at center, transparent 0%, black 100%);
+             animation: maskReveal 0.8s ease-out forwards;
+             z-index: 5;
+        }
+
+        /* Standard Keyframes for a smooth reveal */
+        @keyframes maskReveal {
+            0% { -webkit-mask-size: 0% 0%; mask-size: 0% 0%; opacity: 1; }
+            80% { -webkit-mask-size: 250% 250%; mask-size: 250% 250%; opacity: 1; }
+            100% { -webkit-mask-size: 300% 300%; mask-size: 300% 300%; opacity: 0; visibility: hidden; }
+        }
+
+        /* Blending-mode specific animation (less reliable on older mobile) */
+        @keyframes scratchGrow {
+            0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+        }
+
         .win { color: #ffd700; display: none; text-shadow: 0 0 10px gold; margin-top: 20px; font-weight: bold; font-size: 1.5rem; }
         .fail { color: #ff4500; display: none; margin-top: 20px; font-weight: bold; font-size: 1.5rem; }
         #loading { margin-top: 50px; color: #1e90ff; font-family: monospace; }
@@ -45,209 +91,225 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXZVkiE8IyzvZTW2yoaSQL846PxJ2Nuynq6G99TgTO9USZiHxYzWuOqKe18HYzE2Lm/exec";
 
         let gridData = [], revealed = Array(16).fill(false), remaining = 0, ballsFound = 0, active = true;
-let selectedPlayer = "";
+        let selectedPlayer = "";
 
-window.onload = () => {
-    const select = document.getElementById('player-select');
-    try {
-        const names = Object.keys(scoresheetrosters).sort();
-        names.forEach(name => {
-            let opt = document.createElement('option');
-            opt.value = name;
-            opt.textContent = name;
-            select.appendChild(opt);
-        });
+        window.onload = () => {
+            const select = document.getElementById('player-select');
+            try {
+                const names = Object.keys(scoresheetrosters).sort();
+                names.forEach(name => {
+                    let opt = document.createElement('option');
+                    opt.value = name;
+                    opt.textContent = name;
+                    select.appendChild(opt);
+                });
 
-        // --- PERSISTENCE CHECK ---
-        const savedPlayer = localStorage.getItem("ropl_active_player");
-        const savedGrid = localStorage.getItem("ropl_active_grid");
-        const savedRevealed = localStorage.getItem("ropl_active_revealed");
-        const savedBalls = localStorage.getItem("ropl_active_balls");
+                const savedPlayer = localStorage.getItem("ropl_active_player");
+                const savedGrid = localStorage.getItem("ropl_active_grid");
+                const savedRevealed = localStorage.getItem("ropl_active_revealed");
+                const savedBalls = localStorage.getItem("ropl_active_balls");
 
-        if (savedPlayer && savedGrid && savedRevealed) {
-            selectedPlayer = savedPlayer;
-            gridData = JSON.parse(savedGrid);
-            revealed = JSON.parse(savedRevealed);
-            ballsFound = parseInt(savedBalls) || 0;
-            resumeGame();
-        } else {
+                if (savedPlayer && savedGrid && savedRevealed) {
+                    selectedPlayer = savedPlayer;
+                    gridData = JSON.parse(savedGrid);
+                    revealed = JSON.parse(savedRevealed);
+                    ballsFound = parseInt(savedBalls) || 0;
+                    resumeGame();
+                } else {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('setup').style.display = 'block';
+                }
+            } catch (e) {
+                document.getElementById('loading').innerText = "ERROR: Rosters not found.";
+            }
+        };
+
+        async function resumeGame() {
+            document.getElementById('loading').innerText = "RESUMING SESSION...";
+            await updateLocalAllowance(); 
+            buildGrid();
+            
+            revealed.forEach((isRevealed, i) => {
+                if (isRevealed) {
+                    const cell = document.getElementById(`cell-${i}`);
+                    cell.classList.remove('hidden');
+                    cell.classList.add('revealed');
+                    cell.innerHTML = gridData[i] === 1 ? '🎱' : '❌';
+                }
+            });
+
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('setup').style.display = 'block';
+            document.getElementById('game-ui').style.display = 'block';
         }
-    } catch (e) {
-        document.getElementById('loading').innerText = "ERROR: Rosters not found.";
-    }
-};
 
-async function resumeGame() {
-    document.getElementById('loading').innerText = "RESUMING SESSION...";
-    await updateLocalAllowance(); 
-    buildGrid();
-    
-    // Re-apply the visual "flipped" state to cells
-    revealed.forEach((isRevealed, i) => {
-        if (isRevealed) {
-            const cell = document.getElementById(`cell-${i}`);
+        async function startGame() {
+            selectedPlayer = document.getElementById('player-select').value;
+            document.getElementById('setup').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').innerText = "VERIFYING ELIGIBILITY...";
+
+            try {
+                const r = await fetch(`${SCRIPT_URL}?name=${encodeURIComponent(selectedPlayer)}`);
+                const d = await r.json();
+                
+                if (d.allowance <= 0) {
+                    showError("NO SCRATCHES AVAILABLE.");
+                    return;
+                }
+
+                gridData = d.grid;
+                remaining = d.allowance;
+                revealed = Array(16).fill(false);
+                ballsFound = 0;
+                saveState();
+
+                document.getElementById('scratches').innerText = remaining;
+                buildGrid();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('game-ui').style.display = 'block';
+            } catch (e) {
+                document.getElementById('loading').innerText = "SERVER ERROR.";
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem("ropl_active_player", selectedPlayer);
+            localStorage.setItem("ropl_active_grid", JSON.stringify(gridData));
+            localStorage.setItem("ropl_active_revealed", JSON.stringify(revealed));
+            localStorage.setItem("ropl_active_balls", ballsFound);
+        }
+
+        async function updateLocalAllowance() {
+            try {
+                const r = await fetch(`${SCRIPT_URL}?name=${encodeURIComponent(selectedPlayer)}`);
+                const d = await r.json();
+                remaining = d.allowance;
+                document.getElementById('scratches').innerText = remaining;
+                checkState();
+            } catch(e) {
+                console.log("Offline mode or error fetching allowance.");
+            }
+        }
+
+        function buildGrid() {
+            const container = document.getElementById('grid');
+            container.innerHTML = ""; 
+            gridData.forEach((val, i) => {
+                const cell = document.createElement('div');
+                cell.className = 'cell hidden';
+                cell.id = `cell-${i}`;
+                cell.onclick = (e) => handleTap(i, e); // Pass the event for tap coordinates
+                container.appendChild(cell);
+            });
+        }
+
+        async function handleTap(idx, event) {
+            if (!active || revealed[idx] || remaining <= 0) return;
+            
+            // 1. Instant UI Feedback (Optimistic)
+            active = false; // Block further clicks immediately
+            
+            const cell = document.getElementById(`cell-${idx}`);
+            cell.onclick = null; // Unbind click so they can't spam the same cell
+
+            // Apply standard mask reveal animation (Reliable on mobile)
+            const mask = document.createElement('div');
+            mask.className = 'standard-scratch';
+            cell.appendChild(mask);
+            
+            // Apply standard "Revealed" UI looks instantly
+            revealed[idx] = true;
             cell.classList.remove('hidden');
             cell.classList.add('revealed');
-            cell.innerHTML = gridData[i] === 1 ? '🎱' : '❌';
+            cell.innerHTML = gridData[idx] === 1 ? '🎱' : '❌'; // Ball is visible, but under the mask
+            cell.appendChild(mask); // Add mask back over the ball
+            
+            // 2. Perform background network sync
+            try {
+                // We do not 'await' this fetch. We want it to run in the background.
+                // The Optimistic UI handles the result locally.
+                fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    body: JSON.stringify({ type: "DECREMENT_SCRATCH", playerName: selectedPlayer })
+                });
+
+                // 3. Complete the logical reveal (locally)
+                remaining--;
+                if (gridData[idx] === 1) ballsFound++;
+
+                saveState();
+
+                // 4. Finalize the visual reveal after the animation completes (~800ms)
+                document.getElementById('scratches').innerText = remaining;
+                
+                setTimeout(() => {
+                    checkState(); 
+                    if (remaining > 0 && ballsFound < 3) active = true;
+                }, 850); // Match animation duration + buffer
+
+            } catch (e) {
+                // In case of instant fetch error (rare)
+                alert("Connection failed. Refresh required.");
+                active = true;
+            }
         }
-    });
 
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('game-ui').style.display = 'block';
-}
-
-async function startGame() {
-    selectedPlayer = document.getElementById('player-select').value;
-    document.getElementById('setup').style.display = 'none';
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('loading').innerText = "VERIFYING ELIGIBILITY...";
-
-    try {
-        const r = await fetch(`${SCRIPT_URL}?name=${encodeURIComponent(selectedPlayer)}`);
-        const d = await r.json();
-        
-        if (d.allowance <= 0) {
-            showError("NO SCRATCHES AVAILABLE.");
-            return;
+        function checkState() {
+            if (ballsFound >= 3) {
+                active = false;
+                document.getElementById('win-msg').style.display = 'block';
+                logWin();
+                revealAll();
+                clearSessionData();
+            } else if (remaining <= 0) {
+                active = false;
+                document.getElementById('fail-msg').innerHTML = `GAME OVER<br>FOUND ${ballsFound} OF 3`;
+                document.getElementById('fail-msg').style.display = 'block';
+                revealAll();
+                clearSessionData();
+            }
         }
 
-        gridData = d.grid;
-        remaining = d.allowance;
-        revealed = Array(16).fill(false);
-        ballsFound = 0;
-
-        // Initial Save
-        saveState();
-
-        document.getElementById('scratches').innerText = remaining;
-        buildGrid();
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('game-ui').style.display = 'block';
-    } catch (e) {
-        document.getElementById('loading').innerText = "SERVER ERROR.";
-    }
-}
-
-function saveState() {
-    localStorage.setItem("ropl_active_player", selectedPlayer);
-    localStorage.setItem("ropl_active_grid", JSON.stringify(gridData));
-    localStorage.setItem("ropl_active_revealed", JSON.stringify(revealed));
-    localStorage.setItem("ropl_active_balls", ballsFound);
-}
-
-async function updateLocalAllowance() {
-    try {
-        const r = await fetch(`${SCRIPT_URL}?name=${encodeURIComponent(selectedPlayer)}`);
-        const d = await r.json();
-        remaining = d.allowance;
-        document.getElementById('scratches').innerText = remaining;
-        checkState();
-    } catch(e) {
-        console.log("Offline mode or error fetching allowance.");
-    }
-}
-
-function buildGrid() {
-    const container = document.getElementById('grid');
-    container.innerHTML = ""; 
-    gridData.forEach((val, i) => {
-        const cell = document.createElement('div');
-        cell.className = 'cell hidden';
-        cell.id = `cell-${i}`;
-        cell.onclick = () => handleTap(i);
-        container.appendChild(cell);
-    });
-}
-
-async function handleTap(idx) {
-    if (!active || revealed[idx] || remaining <= 0) return;
-    active = false; 
-
-    try {
-        await fetch(SCRIPT_URL, {
-            method: "POST",
-            mode: "no-cors",
-            body: JSON.stringify({ type: "DECREMENT_SCRATCH", playerName: selectedPlayer })
-        });
-
-        revealed[idx] = true;
-        remaining--;
-        if (gridData[idx] === 1) ballsFound++;
-
-        // Save progress after every tap
-        saveState();
-
-        document.getElementById('scratches').innerText = remaining;
-        const cell = document.getElementById(`cell-${idx}`);
-        cell.classList.remove('hidden');
-        cell.classList.add('revealed');
-        cell.innerHTML = gridData[idx] === 1 ? '🎱' : '❌';
-
-        checkState(); 
-        if (remaining > 0 && ballsFound < 3) active = true;
-    } catch (e) {
-        alert("Connection lost. Try again.");
-        active = true;
-    }
-}
-
-function checkState() {
-    if (ballsFound >= 3) {
-        active = false;
-        document.getElementById('win-msg').style.display = 'block';
-        logWin();
-        revealAll();
-        clearSessionData();
-    } else if (remaining <= 0) {
-        active = false;
-        document.getElementById('fail-msg').innerHTML = `GAME OVER<br>FOUND ${ballsFound} OF 3`;
-        document.getElementById('fail-msg').style.display = 'block';
-        revealAll();
-        clearSessionData();
-    }
-}
-
-function clearSessionData() {
-    localStorage.removeItem("ropl_active_player");
-    localStorage.removeItem("ropl_active_grid");
-    localStorage.removeItem("ropl_active_revealed");
-    localStorage.removeItem("ropl_active_balls");
-}
-
-function clearSession() {
-    if(confirm("This will forfeit progress. Continue?")) {
-        clearSessionData();
-        location.reload();
-    }
-}
-
-function revealAll() {
-    gridData.forEach((val, i) => {
-        const cell = document.getElementById(`cell-${i}`);
-        if (cell && !cell.classList.contains('revealed')) {
-            cell.classList.remove('hidden');
-            cell.classList.add('revealed');
-            cell.style.opacity = "0.4";
-            cell.innerHTML = val === 1 ? '🎱' : '❌';
+        function clearSessionData() {
+            localStorage.removeItem("ropl_active_player");
+            localStorage.removeItem("ropl_active_grid");
+            localStorage.removeItem("ropl_active_revealed");
+            localStorage.removeItem("ropl_active_balls");
         }
-    });
-}
 
-async function logWin() {
-    await fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors", 
-        body: JSON.stringify({ playerName: selectedPlayer, result: "WINNER - FOUND 3" })
-    });
-}
+        function clearSession() {
+            if(confirm("This will forfeit progress. Continue?")) {
+                clearSessionData();
+                location.reload();
+            }
+        }
 
-function showError(msg) {
-    document.getElementById('loading').innerHTML = 
-        `<span style="color:#ff4500;">${msg}</span><br><br>` +
-        `<button onclick="location.reload()" style="width:auto; padding:10px 20px;">BACK</button>`;
-}
+        function revealAll() {
+            gridData.forEach((val, i) => {
+                const cell = document.getElementById(`cell-${i}`);
+                if (cell && !cell.classList.contains('revealed')) {
+                    cell.classList.remove('hidden');
+                    cell.classList.add('revealed');
+                    cell.style.opacity = "0.4";
+                    cell.innerHTML = val === 1 ? '🎱' : '❌';
+                }
+            });
+        }
+
+        async function logWin() {
+            await fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors", 
+                body: JSON.stringify({ playerName: selectedPlayer, result: "WINNER - FOUND 3" })
+            });
+        }
+
+        function showError(msg) {
+            document.getElementById('loading').innerHTML = 
+                `<span style="color:#ff4500;">${msg}</span><br><br>` +
+                `<button onclick="location.reload()" style="width:auto; padding:10px 20px;">BACK</button>`;
+        }
     </script>
 </body>
 </html>
