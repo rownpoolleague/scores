@@ -55,20 +55,22 @@
 
     <div id="game-ui" style="display:none;">
         <h1>🎱 8-BALL HUNT</h1>
-        <div class="stats">TAPS LEFT: <span id="scratches" style="color:#ff4500;">7</span></div>
+        <div class="stats">TAPS LEFT: <span id="scratches" style="color:#ff4500;">-</span></div>
         <div class="grid" id="grid"></div>
-        <div id="win-msg" class="win">🏆 WINNER LOGGED!<br>FOUND ALL 4 BALLS</div>
+        <div id="win-msg" class="win">🏆 WINNER LOGGED!<br>FOUND 3 BALLS</div>
         <div id="fail-msg" class="fail">GAME OVER</div>
     </div>
 
     <script src="scoresheetrosters.js"></script>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzpxMSe7EIUS4K5iz9PMswcswNO8uH_WajjA3WhAR2x74ZVO0D7rKbFUEyRInlRHHfC/exec";
+        // Use your deployment URL here
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_qVVvwCxArj8PSLBoCU6jtrQtoh6B9B4Z_OK0BzsuEvGAsJP-B4u_XcMqA6IpwRh0/exec";
 
-        let gridData = [], revealed = Array(16).fill(false), remaining = 7, ballsFound = 0, active = true;
+        let gridData = [], revealed = Array(16).fill(false), remaining = 0, ballsFound = 0, active = true;
         let selectedPlayer = "";
 
+        // Populate Player Dropdown
         window.onload = () => {
             const select = document.getElementById('player-select');
             try {
@@ -86,26 +88,34 @@
             }
         };
 
+        // Fetch board and player-specific tap allowance
         async function startGame() {
             selectedPlayer = document.getElementById('player-select').value;
             document.getElementById('setup').style.display = 'none';
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('loading').innerText = "GENERATING BOARD...";
+            document.getElementById('loading').innerText = "CALCULATING ALLOWANCE...";
 
             try {
-                const r = await fetch(SCRIPT_URL);
+                // Pass the player name so Google looks up their 5-7 scratch count
+                const r = await fetch(`${SCRIPT_URL}?name=${encodeURIComponent(selectedPlayer)}`);
                 const d = await r.json();
+                
                 gridData = d.grid;
+                remaining = d.allowance; // Dynamic total from your Allowance sheet
+                
+                document.getElementById('scratches').innerText = remaining;
                 buildGrid();
+                
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('game-ui').style.display = 'block';
             } catch (e) {
-                document.getElementById('loading').innerText = "SERVER ERROR.";
+                document.getElementById('loading').innerText = "SERVER ERROR. CHECK URL.";
             }
         }
 
         function buildGrid() {
             const container = document.getElementById('grid');
+            container.innerHTML = ""; // Clear existing grid
             gridData.forEach((val, i) => {
                 const cell = document.createElement('div');
                 cell.className = 'cell hidden';
@@ -126,7 +136,7 @@
             cell.classList.remove('hidden');
             cell.classList.add('revealed');
             
-            // Show the 8-ball or the X
+            // Show result
             cell.innerHTML = gridData[idx] === 1 ? '🎱' : '❌';
 
             if (gridData[idx] === 1) ballsFound++;
@@ -135,13 +145,17 @@
         }
 
         function checkState() {
-            if (ballsFound === 4) {
+            // WIN: Found 3 of 4
+            if (ballsFound === 3) {
                 active = false;
                 document.getElementById('win-msg').style.display = 'block';
                 logWin();
-            } else if (remaining <= 0) {
+                revealAll(); // Show where the 4th ball was
+            } 
+            // LOSS: Out of taps
+            else if (remaining <= 0) {
                 active = false;
-                document.getElementById('fail-msg').innerHTML = `GAME OVER<br>FOUND ${ballsFound} OF 4`;
+                document.getElementById('fail-msg').innerHTML = `GAME OVER<br>FOUND ${ballsFound} OF 3`;
                 document.getElementById('fail-msg').style.display = 'block';
                 revealAll();
             }
@@ -153,7 +167,7 @@
                 if (!revealed[i]) {
                     cell.classList.remove('hidden');
                     cell.classList.add('revealed');
-                    cell.style.opacity = "0.4"; // Dim unselected cells
+                    cell.style.opacity = "0.4"; // Dims unselected cells
                     cell.innerHTML = val === 1 ? '🎱' : '❌';
                 }
             });
@@ -164,7 +178,10 @@
                 method: "POST",
                 mode: "no-cors", 
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ playerName: selectedPlayer, result: "WINNER" })
+                body: JSON.stringify({ 
+                    playerName: selectedPlayer, 
+                    result: "WINNER - FOUND 3" 
+                })
             });
         }
     </script>
