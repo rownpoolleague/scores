@@ -121,6 +121,29 @@
     <span class="badge-name">Contributor</span>
     <div class="badge-desc">5+ Matches Won</div>
 </div>
+        <div id="badge-won-10" class="badge">
+    <div class="badge-icon">🥉</div>
+    <span class="badge-name">Consistent</span>
+    <div class="badge-desc">10+ Matches Won</div>
+</div>
+
+<div id="badge-won-20" class="badge">
+    <div class="badge-icon">🥈</div>
+    <span class="badge-name">Competitor</span>
+    <div class="badge-desc">20+ Matches Won</div>
+</div>
+
+<div id="badge-won-50" class="badge">
+    <div class="badge-icon">🥇</div>
+    <span class="badge-name">Winner</span>
+    <div class="badge-desc">50+ Matches Won</div>
+</div>
+
+<div id="badge-won-100" class="badge">
+    <div class="badge-icon">🏆</div>
+    <span class="badge-name">Champion</span>
+    <div class="badge-desc">100+ Matches Won</div>
+</div>
         <div id="badge-streak-5" class="badge">
             <div class="badge-icon">✨</div>
             <span class="badge-name">Spark</span>
@@ -165,38 +188,43 @@
         }
     };
 
-    function loadBadges() {
-        const selectedName = document.getElementById('player-select').value;
-        const player = playerData.find(p => p["Player Name"] === selectedName);
-        
-        document.querySelectorAll('.badge').forEach(b => b.classList.remove('unlocked'));
+function loadBadges() {
+    const selectedName = document.getElementById('player-select').value;
+    const player = playerData.find(p => p["Player Name"] === selectedName);
+    
+    document.querySelectorAll('.badge').forEach(b => b.classList.remove('unlocked'));
 
-        if (!player) return;
+    if (!player) return;
 
-        const games = parseInt(player["Games Played"]) || 0;
-        const streak = parseInt(player["Longest Win Streak"]) || 0;
+    // Define all constants at the top for clean logic
+    const totalGames = parseInt(player["Games Played"]) || 0;
+    const matchesWon = parseInt(player["Matches Won"]) || 0;
+    const streak = parseInt(player["Longest Win Streak"]) || 0;
 
-        // Game Milestone Logic
-        if (games >= 1) document.getElementById('badge-1-game').classList.add('unlocked');
-        if (games >= 50) document.getElementById('badge-50-games').classList.add('unlocked');
-        if (games >= 100) document.getElementById('badge-100-games').classList.add('unlocked');
-        if (games >= 200) document.getElementById('badge-200-games').classList.add('unlocked');
-        if (games >= 300) document.getElementById('badge-300-games').classList.add('unlocked');
-        if (games >= 400) document.getElementById('badge-400-games').classList.add('unlocked');
-        if (games >= 500) document.getElementById('badge-500-games').classList.add('unlocked');
-        if (games >= 1000) document.getElementById('badge-1000-games').classList.add('unlocked');
+    // Game Milestone Logic (Based on Total Games Played)
+    if (totalGames >= 1)    document.getElementById('badge-1-game').classList.add('unlocked');
+    if (totalGames >= 50)   document.getElementById('badge-50-games').classList.add('unlocked');
+    if (totalGames >= 100)  document.getElementById('badge-100-games').classList.add('unlocked');
+    if (totalGames >= 200)  document.getElementById('badge-200-games').classList.add('unlocked');
+    if (totalGames >= 300)  document.getElementById('badge-300-games').classList.add('unlocked');
+    if (totalGames >= 400)  document.getElementById('badge-400-games').classList.add('unlocked');
+    if (totalGames >= 500)  document.getElementById('badge-500-games').classList.add('unlocked');
+    if (totalGames >= 1000) document.getElementById('badge-1000-games').classList.add('unlocked');
 
-        // Streak Logic
-        if (streak >= 5) document.getElementById('badge-streak-5').classList.add('unlocked');
-        if (streak >= 10) document.getElementById('badge-streak-10').classList.add('unlocked');
-        if (streak >= 15) document.getElementById('badge-streak-15').classList.add('unlocked');
-        if (streak >= 20) document.getElementById('badge-streak-20').classList.add('unlocked');
+    // Win Streak Logic
+    if (streak >= 5)  document.getElementById('badge-streak-5').classList.add('unlocked');
+    if (streak >= 10) document.getElementById('badge-streak-10').classList.add('unlocked');
+    if (streak >= 15) document.getElementById('badge-streak-15').classList.add('unlocked');
+    if (streak >= 20) document.getElementById('badge-streak-20').classList.add('unlocked');
 
-        // Matches Won Logic (Key must match your JSON)
-if (parseInt(player["Matches Won"]) >= 5) {
-    document.getElementById('badge-won-5').classList.add('unlocked');
-}
+    // Matches Won Logic
+    if (matchesWon >= 5) {document.getElementById('badge-won-5').classList.add('unlocked');
+    if (matchesWon >= 10)  document.getElementById('badge-won-10').classList.add('unlocked');
+    if (matchesWon >= 20)  document.getElementById('badge-won-20').classList.add('unlocked');
+    if (matchesWon >= 50)  document.getElementById('badge-won-50').classList.add('unlocked');
+    if (matchesWon >= 100) document.getElementById('badge-won-100').classList.add('unlocked');
     }
+}
 </script>
 
 </body>
