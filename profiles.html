@@ -136,10 +136,16 @@
             border-radius: 8px;
         }
 
-        .badge-mini {
-            font-size: 1.8rem;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
-        }
+      /* Add this to your <style> */
+.badge-mini {
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: transform 0.1s;
+    user-select: none;
+}
+.badge-mini:active {
+    transform: scale(1.2);
+}
 
         /* Stat Cards */
         .stat-grid {
@@ -311,35 +317,75 @@
         window.scrollTo(0, 0);
     }
 
-    function renderBadges(player) {
-        const shelf = document.getElementById('badgeShelf');
-        shelf.innerHTML = '';
-        const badges = [];
-        
-        const g = parseInt(player["Games Played"]) || 0;
-        const w = parseInt(player["Matches Won"]) || 0;
-        const s = parseInt(player["Longest Win Streak"]) || 0;
-        const b = parseInt(player["Break and Run"]) || 0;
-        const o = parseInt(player["8 on Break"]) || 0;
-        const m = parseInt(player["Mini-Slam"]) || 0;
+   function renderBadges(player) {
+    const shelf = document.getElementById('badgeShelf');
+    shelf.innerHTML = '';
+    
+    // Mapping icons to descriptions
+    const badgeInfo = {
+        "🐐": "G.O.A.T. (1000+ Games)",
+        "👑": "Legend (500+ Games)",
+        "💯": "Centurion (100+ Games)",
+        "📖": "Learner (50+ Games)",
+        "🐣": "Beginner (1+ Games)",
+        "🏆": "Champion (100+ Matches Won)",
+        "🥇": "Winner (50+ Matches Won)",
+        "🥈": "Competitor (20+ Matches Won)",
+        "🥉": "Consistent (10+ Matches Won)",
+        "🤝": "Contributor (5+ Matches Won)",
+        "🚫": "Unstoppable (20+ Streak)",
+        "☄️": "Burning Up (15+ Streak)",
+        "🔥": "On Fire (10+ Streak)",
+        "✨": "Spark (5+ Streak)",
+        "👹": "Monster (20+ Break & Run)",
+        "📸": "Flashy (1+ Break & Run)",
+        "🧙‍♂️": "Master (20+ 8 on Break)",
+        "🧲": "Horseshoe (1+ 8 on Break)",
+        "⭐": "Stellar (1+ Mini-Slam)"
+    };
 
-        // Highest achievement logic
-        if (g >= 1000) badges.push("🐐"); else if (g >= 500) badges.push("👑"); else if (g >= 100) badges.push("💯");
-        if (w >= 100) badges.push("🏆"); else if (w >= 50) badges.push("🥇"); else if (w >= 5) badges.push("🤝");
-        if (s >= 20) badges.push("🚫"); else if (s >= 10) badges.push("🔥"); else if (s >= 5) badges.push("✨");
-        if (b >= 20) badges.push("👹"); else if (b >= 1) badges.push("📸");
-        if (o >= 20) badges.push("🧙‍♂️"); else if (o >= 1) badges.push("🧲");
-        if (m >= 1) badges.push("⭐");
+    const g = parseInt(player["Games Played"]) || 0;
+    const w = parseInt(player["Matches Won"]) || 0;
+    const s = parseInt(player["Longest Win Streak"]) || 0;
+    const b = parseInt(player["Break and Run"]) || 0;
+    const o = parseInt(player["8 on Break"]) || 0;
+    const m = parseInt(player["Mini-Slam"]) || 0;
 
-        if (badges.length === 0) shelf.innerHTML = '<span style="color:#444; font-size:0.8rem;">No Badges Earned Yet</span>';
-        
-        badges.forEach(icon => {
-            const span = document.createElement('span');
-            span.className = 'badge-mini';
-            span.textContent = icon;
-            shelf.appendChild(span);
-        });
+    let earned = [];
+    if (g >= 1000) earned.push("🐐"); else if (g >= 500) earned.push("👑"); else if (g >= 100) earned.push("💯");
+    if (w >= 100) earned.push("🏆"); else if (w >= 50) earned.push("🥇"); else if (w >= 5) earned.push("🤝");
+    if (s >= 20) earned.push("🚫"); else if (s >= 10) earned.push("🔥"); else if (s >= 5) earned.push("✨");
+    if (b >= 20) earned.push("👹"); else if (b >= 1) earned.push("📸");
+    if (o >= 20) earned.push("🧙‍♂️"); else if (o >= 1) earned.push("🧲");
+    if (m >= 1) earned.push("⭐");
+
+    if (earned.length === 0) {
+        shelf.innerHTML = '<span style="color:#444; font-size:0.8rem;">No Badges Earned Yet</span>';
+        return;
     }
+
+    earned.forEach(icon => {
+        const span = document.createElement('span');
+        span.className = 'badge-mini';
+        span.textContent = icon;
+        span.title = badgeInfo[icon] || ""; // Tooltip for desktop
+        
+        // Mobile tap logic
+        span.onclick = (e) => {
+            const toast = document.getElementById('badgeToast');
+            toast.textContent = badgeInfo[icon];
+            toast.style.display = 'block';
+            
+            // Auto-hide after 2 seconds
+            clearTimeout(window.badgeTimeout);
+            window.badgeTimeout = setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2000);
+        };
+
+        shelf.appendChild(span);
+    });
+}
 
     function renderStatCards(player) {
         const container = document.getElementById('statCards');
@@ -390,6 +436,6 @@
         document.getElementById('statModal').style.display = 'none';
     }
 </script>
-
+<div id="badgeToast" style="display:none; position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:rgba(30,144,255,0.9); color:#000; padding:10px 20px; border-radius:20px; font-weight:bold; z-index:2000; white-space:nowrap; pointer-events:none; box-shadow:0 4px 15px rgba(0,0,0,0.5);"></div>
 </body>
 </html>
