@@ -96,7 +96,6 @@
             margin-bottom: 15px;
         }
 
-        /* Container for photo + rank overlay */
         .photo-container {
             position: relative;
             width: 120px;
@@ -163,7 +162,6 @@
             transform: scale(1.2);
         }
 
-        /* Stat Grid updated to 3 columns */
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -431,8 +429,8 @@
         container.innerHTML = '';
 
         for (const key in player) {
-            // Skips non-stat display items
-            if (["Player Name", "Handicap", "Player Number"].includes(key)) continue;
+            // Skips non-stat display items, specifically Player # and Handicap
+            if (["Player Name", "Handicap", "Player #"].includes(key)) continue;
 
             const card = document.createElement('div');
             card.className = 'stat-card';
