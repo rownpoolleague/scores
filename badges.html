@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ROPL Badge Cabinet</title>
+    <style>
+        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
+        .cabinet-wrapper { max-width: 400px; margin: 0 auto; border: 4px solid #1e90ff; border-radius: 12px; padding: 20px; min-height: 80vh; }
+        
+        h1 { color: #1e90ff; text-transform: uppercase; letter-spacing: 2px; }
+        select { width: 100%; padding: 12px; background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; font-size: 1.1rem; margin-bottom: 20px; }
+        
+        .badge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        
+        /* Badge Styling */
+        .badge { 
+            background: #111; border: 2px solid #333; border-radius: 10px; padding: 15px; 
+            opacity: 0.2; filter: grayscale(1); transition: all 0.5s ease;
+        }
+        .badge.unlocked { opacity: 1; filter: grayscale(0); border-color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+        
+        .badge-icon { font-size: 3rem; margin-bottom: 5px; }
+        .badge-name { font-weight: bold; color: #eee; font-size: 0.9rem; text-transform: uppercase; }
+        .badge-desc { font-size: 0.7rem; color: #888; margin-top: 5px; }
+
+        .back-btn { display: inline-block; margin-top: 30px; color: #1e90ff; text-decoration: none; font-weight: bold; border: 1px solid #1e90ff; padding: 10px 20px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="cabinet-wrapper">
+    <h1>🏆 BADGE CABINET</h1>
+    
+    <select id="player-select" onchange="loadBadges()">
+        <option value="">-- SELECT PLAYER --</option>
+    </select>
+
+    <div id="badge-container" class="badge-grid">
+        <div id="badge-100-games" class="badge">
+            <div class="badge-icon">💯</div>
+            <div class="badge-name">Centurion</div>
+            <div class="badge-desc">Played 100+ Games</div>
+        </div>
+
+        <div id="badge-streak" class="badge">
+            <div class="badge-icon">🔥</div>
+            <div class="badge-name">On Fire</div>
+            <div class="badge-desc">5+ Win Streak</div>
+        </div>
+    </div>
+
+    <a href="index.html" class="back-btn">RETURN TO MENU</a>
+</div>
+
+<script src="playerData.js"></script>
+
+<script>
+    window.onload = () => {
+        const select = document.getElementById('player-select');
+        // Sort and populate dropdown
+        playerData.sort((a, b) => a["Player Name"].localeCompare(b["Player Name"]));
+        playerData.forEach(p => {
+            let opt = document.createElement('option');
+            opt.value = p["Player Name"];
+            opt.textContent = p["Player Name"];
+            select.appendChild(opt);
+        });
+    };
+
+    function loadBadges() {
+        const selectedName = document.getElementById('player-select').value;
+        const player = playerData.find(p => p["Player Name"] === selectedName);
+        
+        // Reset all badges to locked state first
+        document.querySelectorAll('.badge').forEach(b => b.classList.remove('unlocked'));
+
+        if (!player) return;
+
+        // --- BADGE LOGIC: 100 GAMES ---
+        if (parseInt(player["Games Played"]) >= 100) {
+            document.getElementById('badge-100-games').classList.add('unlocked');
+        }
+
+        // --- BADGE LOGIC: WIN STREAK (Example) ---
+        if (parseInt(player["Longest Win Streak"]) >= 5) {
+            document.getElementById('badge-streak').classList.add('unlocked');
+        }
+    }
+</script>
+
+</body>
+</html>
