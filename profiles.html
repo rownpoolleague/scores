@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ROPL Player Dashboard</title>
+    <script src="playerdata.js"></script>
+    <style>
+        :root {
+            --brand-blue: #1e90ff;
+            --dark-bg: #000000;
+            --card-bg: #111111;
+            --text-main: #ffffff;
+            --text-dim: #aaaaaa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Full Width Wrapper */
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border: 2px solid var(--brand-blue);
+            min-height: 100vh;
+            box-sizing: border-box;
+            padding-bottom: 50px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        h1 {
+            color: var(--brand-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        /* Search Section */
+        .search-container {
+            padding: 20px;
+            position: relative;
+        }
+
+        #playerInput {
+            width: 100%;
+            padding: 15px;
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            z-index: 99;
+            top: 75px;
+            left: 20px;
+            right: 20px;
+            background: #fff;
+            color: #000;
+            border-radius: 0 0 8px 8px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .autocomplete-items div {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        /* Profile Dashboard */
+        #statsBox {
+            padding: 10px;
+            display: none;
+        }
+
+        .profile-header {
+            background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #333;
+            margin-bottom: 15px;
+        }
+
+        #playerPhoto {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--brand-blue);
+            object-fit: cover;
+            margin-bottom: 10px;
+            box-shadow: 0 0 20px rgba(30, 144, 255, 0.4);
+        }
+
+        #playerName {
+            font-size: 1.6rem;
+            margin: 5px 0;
+            text-transform: uppercase;
+        }
+
+        .handicap-tag {
+            background: var(--brand-blue);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        /* Badge Shelf */
+        .badge-shelf {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+        }
+
+        .badge-mini {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
+        }
+
+        /* Stat Cards */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid #222;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:active {
+            transform: scale(0.95);
+            background: #1a1a1a;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--brand-blue);
+        }
+
+        /* Modal Styles */
+        #statModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            max-width: 400px;
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th { text-align: left; color: var(--text-dim); padding: 10px; border-bottom: 1px solid #333; font-size: 0.8rem; }
+        td { padding: 12px 10px; border-bottom: 1px solid #222; font-size: 1.1rem; }
+        .rank-col { color: var(--brand-blue); font-weight: bold; width: 40px; }
+
+        .close-btn {
+            background: var(--brand-blue);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-top: 30px;
+            text-transform: uppercase;
+        }
+
+        footer { text-align: center; margin-top: 40px; }
+        .footer-logo { max-width: 150px; opacity: 0.7; }
+        .nav-btn {
+            display: block;
+            margin: 20px;
+            padding: 15px;
+            border: 1px solid var(--brand-blue);
+            color: var(--brand-blue);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1>Player Central</h1>
+    </header>
+
+    <div class="search-container">
+        <input id="playerInput" type="text" placeholder="Search League Player..." autocomplete="off">
+        <div id="autocomplete-list" class="autocomplete-items"></div>
+    </div>
+
+    <div id="statsBox">
+        <div class="profile-header">
+            <img id="playerPhoto" src="" alt="">
+            <h2 id="playerName"></h2>
+            <div id="handicapTag" class="handicap-tag"></div>
+            
+            <div id="badgeShelf" class="badge-shelf"></div>
+        </div>
+
+        <div id="statCards" class="stat-grid"></div>
+        
+        <a class="nav-btn" href="allstatssplash.html">Back to Stats</a>
+    </div>
+
+    <footer>
+        <img src="white transparent.png" alt="ROPL" class="footer-logo">
+    </footer>
+</div>
+
+<div id="statModal">
+    <div class="modal-content">
+        <h2 id="modalTitle" style="color: var(--brand-blue);"></h2>
+        <div id="modalBody"></div>
+        <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('playerInput');
+    const list = document.getElementById('autocomplete-list');
+
+    input.addEventListener('input', function() {
+        const val = this.value.toLowerCase();
+        list.innerHTML = '';
+        if (!val) return;
+
+        const matches = playerData
+            .filter(p => p["Player Name"].toLowerCase().startsWith(val))
+            .sort((a, b) => a["Player Name"].localeCompare(b["Player Name"]));
+
+        matches.forEach(player => {
+            const item = document.createElement('div');
+            item.textContent = player["Player Name"];
+            item.onclick = () => selectPlayer(player);
+            list.appendChild(item);
+        });
+    });
+
+    function selectPlayer(player) {
+        const name = player["Player Name"];
+        document.getElementById('playerName').textContent = name;
+        document.getElementById('handicapTag').textContent = `Handicap ${player["Handicap"]}`;
+        
+        const photo = document.getElementById('playerPhoto');
+        photo.src = `photos/${encodeURIComponent(name)}.jpg`;
+        photo.onerror = () => photo.src = 'photos/default.jpg';
+        
+        // Show Badges
+        renderBadges(player);
+
+        // Show Stat Cards
+        renderStatCards(player);
+
+        document.getElementById('statsBox').style.display = 'block';
+        list.innerHTML = '';
+        input.value = '';
+        window.scrollTo(0, 0);
+    }
+
+    function renderBadges(player) {
+        const shelf = document.getElementById('badgeShelf');
+        shelf.innerHTML = '';
+        const badges = [];
+        
+        const g = parseInt(player["Games Played"]) || 0;
+        const w = parseInt(player["Matches Won"]) || 0;
+        const s = parseInt(player["Longest Win Streak"]) || 0;
+        const b = parseInt(player["Break and Run"]) || 0;
+        const o = parseInt(player["8 on Break"]) || 0;
+        const m = parseInt(player["Mini-Slam"]) || 0;
+
+        // Highest achievement logic
+        if (g >= 1000) badges.push("🐐"); else if (g >= 500) badges.push("👑"); else if (g >= 100) badges.push("💯");
+        if (w >= 100) badges.push("🏆"); else if (w >= 50) badges.push("🥇"); else if (w >= 5) badges.push("🤝");
+        if (s >= 20) badges.push("🚫"); else if (s >= 10) badges.push("🔥"); else if (s >= 5) badges.push("✨");
+        if (b >= 20) badges.push("👹"); else if (b >= 1) badges.push("📸");
+        if (o >= 20) badges.push("🧙‍♂️"); else if (o >= 1) badges.push("🧲");
+        if (m >= 1) badges.push("⭐");
+
+        if (badges.length === 0) shelf.innerHTML = '<span style="color:#444; font-size:0.8rem;">No Badges Earned Yet</span>';
+        
+        badges.forEach(icon => {
+            const span = document.createElement('span');
+            span.className = 'badge-mini';
+            span.textContent = icon;
+            shelf.appendChild(span);
+        });
+    }
+
+    function renderStatCards(player) {
+        const container = document.getElementById('statCards');
+        container.innerHTML = '';
+
+        for (const key in player) {
+            if (["Player Name", "Handicap"].includes(key)) continue;
+
+            const card = document.createElement('div');
+            card.className = 'stat-card';
+            card.onclick = () => showTop10(key);
+            card.innerHTML = `
+                <span class="stat-label">${key}</span>
+                <span class="stat-value">${player[key]}</span>
+            `;
+            container.appendChild(card);
+        }
+    }
+
+    function showTop10(statKey) {
+        const lowerIsBetter = ["Life Hash", "White Washed"];
+        const minMPStats = ["Match Win %", "Game Win %", "Life Hash", "% Weeks w/8OB, BR or Rackless", "White Washed"];
+
+        const ranked = playerData
+            .filter(p => minMPStats.includes(statKey) ? p["Matches Played"] >= 25 : true)
+            .map(p => ({
+                name: p["Player Name"],
+                value: parseFloat(typeof p[statKey] === "string" ? p[statKey].replace('%', '') : p[statKey])
+            }))
+            .filter(p => !isNaN(p.value))
+            .sort((a, b) => lowerIsBetter.includes(statKey) ? a.value - b.value : b.value - a.value)
+            .slice(0, 10);
+
+        const modalBody = document.getElementById('modalBody');
+        document.getElementById('modalTitle').textContent = statKey;
+
+        let tableHtml = `<table><tr><th>#</th><th>Player</th><th>Value</th></tr>`;
+        ranked.forEach((p, i) => {
+            tableHtml += `<tr><td class="rank-col">${i+1}</td><td>${p.name}</td><td>${p.value}</td></tr>`;
+        });
+        tableHtml += `</table>`;
+        
+        modalBody.innerHTML = tableHtml;
+        document.getElementById('statModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('statModal').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
