@@ -22,7 +22,6 @@
             padding: 0;
         }
 
-        /* Full Width Wrapper */
         .app-container {
             width: 100%;
             max-width: 500px;
@@ -46,7 +45,6 @@
             font-size: 1.8rem;
         }
 
-        /* Search Section */
         .search-container {
             padding: 20px;
             position: relative;
@@ -84,7 +82,6 @@
             font-weight: bold;
         }
 
-        /* Profile Dashboard */
         #statsBox {
             padding: 10px;
             display: none;
@@ -115,6 +112,7 @@
             text-transform: uppercase;
         }
 
+        /* Restored Handicap Tag Style */
         .handicap-tag {
             background: var(--brand-blue);
             color: #000;
@@ -125,7 +123,6 @@
             margin-bottom: 15px;
         }
 
-        /* Badge Shelf */
         .badge-shelf {
             display: flex;
             flex-wrap: wrap;
@@ -136,219 +133,32 @@
             border-radius: 8px;
         }
 
-      /* Add this to your <style> */
-.badge-mini {
-    font-size: 1.8rem;
-    cursor: pointer;
-    transition: transform 0.1s;
-    user-select: none;
-}
-.badge-mini:active {
-    transform: scale(1.2);
-}
+        .badge-mini {
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: transform 0.1s;
+            user-select: none;
+        }
+        .badge-mini:active { transform: scale(1.2); }
 
-        /* Stat Cards */
         .stat-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
             margin-top: 20px;
         }
 
         .stat-card {
             background: var(--card-bg);
             border: 1px solid #222;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: left;
+            padding: 10px 5px;
+            border-radius: 8px;
+            text-align: center;
             cursor: pointer;
             transition: transform 0.2s;
-        }
-
-        .stat-card:active {
-            transform: scale(0.95);
-            background: #1a1a1a;
-        }
-
-        .stat-label {
-            color: var(--text-dim);
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--brand-blue);
-        }
-
-        /* Modal Styles */
-        #statModal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal-content {
-            max-width: 400px;
-            margin: 40px auto;
-            text-align: center;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th { text-align: left; color: var(--text-dim); padding: 10px; border-bottom: 1px solid #333; font-size: 0.8rem; }
-        td { padding: 12px 10px; border-bottom: 1px solid #222; font-size: 1.1rem; }
-        .rank-col { color: var(--brand-blue); font-weight: bold; width: 40px; }
-
-        .close-btn {
-            background: var(--brand-blue);
-            color: #000;
-            border: none;
-            padding: 12px 30px;
-            font-weight: bold;
-            border-radius: 5px;
-            margin-top: 30px;
-            text-transform: uppercase;
-        }
-
-        footer { text-align: center; margin-top: 40px; }
-        .footer-logo { max-width: 150px; opacity: 0.7; }
-        .nav-btn {
-            display: block;
-            margin: 20px;
-            padding: 15px;
-            border: 1px solid var(--brand-blue);
-            color: var(--brand-blue);
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-    </style>
-</head>
-<body>
-
-<div class="app-container">
-    <header>
-        <h1>Player Central</h1>
-    </header>
-
-    <div class="search-container">
-        <input id="playerInput" type="text" placeholder="Search League Player..." autocomplete="off">
-        <div id="autocomplete-list" class="autocomplete-items"></div>
-    </div>
-
-    <div id="statsBox">
-        <div class="profile-header">
-            <img id="playerPhoto" src="" alt="">
-            <h2 id="playerName"></h2>
-            <div id="handicapTag" class="handicap-tag"></div>
-            
-            <div id="badgeShelf" class="badge-shelf"></div>
-        </div>
-
-        <div id="statCards" class="stat-grid"></div>
-        
-        <a class="nav-btn" href="allstatssplash.html">Back to Stats</a>
-    </div>
-
-    <footer>
-        <img src="white transparent.png" alt="ROPL" class="footer-logo">
-    </footer>
-</div>
-
-<div id="statModal">
-    <div class="modal-content">
-        <h2 id="modalTitle" style="color: var(--brand-blue);"></h2>
-        <div id="modalBody"></div>
-        <button class="close-btn" onclick="closeModal()">Close</button>
-    </div>
-</div>
-
-<script>
-    const input = document.getElementById('playerInput');
-    const list = document.getElementById('autocomplete-list');
-
-    input.addEventListener('input', function() {
-        const val = this.value.toLowerCase();
-        list.innerHTML = '';
-        if (!val) return;
-
-        const matches = playerData
-            .filter(p => p["Player Name"].toLowerCase().startsWith(val))
-            .sort((a, b) => a["Player Name"].localeCompare(b["Player Name"]));
-
-        matches.forEach(player => {
-            const item = document.createElement('div');
-            item.textContent = player["Player Name"];
-            item.onclick = () => selectPlayer(player);
-            list.appendChild(item);
-        });
-    });
-
-    function selectPlayer(player) {
-        const name = player["Player Name"];
-        document.getElementById('playerName').textContent = name;
-        document.getElementById('handicapTag').textContent = `Handicap ${player["Handicap"]}`;
-        
-        const photo = document.getElementById('playerPhoto');
-        photo.src = `photos/${encodeURIComponent(name)}.jpg`;
-        photo.onerror = () => photo.src = 'photos/default.jpg';
-        
-        // Show Badges
-        renderBadges(player);
-
-        // Show Stat Cards
-        renderStatCards(player);
-
-        document.getElementById('statsBox').style.display = 'block';
-        list.innerHTML = '';
-        input.value = '';
-        window.scrollTo(0, 0);
-    }
-
-   function renderBadges(player) {
-    const shelf = document.getElementById('badgeShelf');
-    shelf.innerHTML = '';
-    
-    // Mapping icons to descriptions
-    const badgeInfo = {
-        "🐐": "G.O.A.T. (1000+ Games)",
-        "👑": "Legend (500+ Games)",
-        "💯": "Centurion (100+ Games)",
-        "📖": "Learner (50+ Games)",
-        "🐣": "Beginner (1+ Games)",
-        "🏆": "Champion (100+ Matches Won)",
-        "🥇": "Winner (50+ Matches Won)",
-        "🥈": "Competitor (20+ Matches Won)",
-        "🥉": "Consistent (10+ Matches Won)",
-        "🤝": "Contributor (5+ Matches Won)",
-        "🚫": "Unstoppable (20+ Streak)",
-        "☄️": "Burning Up (15+ Streak)",
-        "🔥": "On Fire (10+ Streak)",
-        "✨": "Spark (5+ Streak)",
-        "👹": "Monster (20+ Break & Run)",
-        "📸": "Flashy (1+ Break & Run)",
-        "🧙‍♂️": "Master (20+ 8 on Break)",
-        "🧲": "Horseshoe (1+ 8 on Break)",
-        "⭐": "Stellar (1+ Mini-Slam)"
-    };
-
-    const g = parseInt(player["Games Played"]) || 0;
-    const w = parseInt(player["Matches Won"]) || 0;
-    const s = parseInt(player["Longest Win Streak"]) || 0;
-    const b = parseInt(player["Break and Run"]) || 0;
-    const o = parseInt(player["8 on Break"]) || 0;
+            min-height: 65px;
+            display:
+ 0;
     const m = parseInt(player["Mini-Slam"]) || 0;
 
     let earned = [];
