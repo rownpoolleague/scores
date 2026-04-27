@@ -25,7 +25,7 @@
             border: 1px solid #222; 
             border-radius: 8px; 
             padding: 10px 2px; 
-            opacity: 0.45; /* Improved visibility for locked badges */
+            opacity: 0.45; 
             filter: grayscale(1); 
             transition: all 0.4s ease;
         }
@@ -68,6 +68,18 @@
     </select>
 
     <div id="badge-container" class="badge-grid">
+        <div id="badge-1-game" class="badge">
+            <div class="badge-icon">🐣</div>
+            <span class="badge-name">Beginner</span>
+            <div class="badge-desc">1+ Games</div>
+        </div>
+
+        <div id="badge-50-games" class="badge">
+            <div class="badge-icon">📖</div>
+            <span class="badge-name">Learner</span>
+            <div class="badge-desc">50+ Games Played</div>
+        </div>
+
         <div id="badge-100-games" class="badge">
             <div class="badge-icon">💯</div>
             <span class="badge-name">Centurion</span>
@@ -104,10 +116,28 @@
             <div class="badge-desc">1000+ Games</div>
         </div>
 
-        <div id="badge-streak" class="badge">
+        <div id="badge-streak-5" class="badge">
+            <div class="badge-icon">✨</div>
+            <span class="badge-name">Spark</span>
+            <div class="badge-desc">5+ Win Streak</div>
+        </div>
+
+        <div id="badge-streak-10" class="badge">
             <div class="badge-icon">🔥</div>
             <span class="badge-name">On Fire</span>
-            <div class="badge-desc">5+ Win Streak</div>
+            <div class="badge-desc">10+ Win Streak</div>
+        </div>
+
+        <div id="badge-streak-15" class="badge">
+            <div class="badge-icon">☄️</div>
+            <span class="badge-name">Burning Up</span>
+            <div class="badge-desc">15+ Win Streak</div>
+        </div>
+
+        <div id="badge-streak-20" class="badge">
+            <div class="badge-icon">🚫</div>
+            <span class="badge-name">Unstoppable</span>
+            <div class="badge-desc">20+ Win Streak</div>
         </div>
     </div>
 
@@ -120,7 +150,6 @@
     window.onload = () => {
         const select = document.getElementById('player-select');
         if (typeof playerData !== 'undefined') {
-            // Casing matches the variable inside your playerdata.js
             const sorted = [...playerData].sort((a, b) => a["Player Name"].localeCompare(b["Player Name"]));
             sorted.forEach(p => {
                 let opt = document.createElement('option');
@@ -135,16 +164,16 @@
         const selectedName = document.getElementById('player-select').value;
         const player = playerData.find(p => p["Player Name"] === selectedName);
         
-        // Reset all badges to locked state
         document.querySelectorAll('.badge').forEach(b => b.classList.remove('unlocked'));
 
         if (!player) return;
 
-        // Keys must exactly match your JSON structure
         const games = parseInt(player["Games Played"]) || 0;
         const streak = parseInt(player["Longest Win Streak"]) || 0;
 
-        // Unlock logic for Game Milestones
+        // Game Milestone Logic
+        if (games >= 1) document.getElementById('badge-1-game').classList.add('unlocked');
+        if (games >= 50) document.getElementById('badge-50-games').classList.add('unlocked');
         if (games >= 100) document.getElementById('badge-100-games').classList.add('unlocked');
         if (games >= 200) document.getElementById('badge-200-games').classList.add('unlocked');
         if (games >= 300) document.getElementById('badge-300-games').classList.add('unlocked');
@@ -152,10 +181,11 @@
         if (games >= 500) document.getElementById('badge-500-games').classList.add('unlocked');
         if (games >= 1000) document.getElementById('badge-1000-games').classList.add('unlocked');
 
-        // Unlock logic for Win Streak
-        if (streak >= 5) {
-            document.getElementById('badge-streak').classList.add('unlocked');
-        }
+        // Streak Logic
+        if (streak >= 5) document.getElementById('badge-streak-5').classList.add('unlocked');
+        if (streak >= 10) document.getElementById('badge-streak-10').classList.add('unlocked');
+        if (streak >= 15) document.getElementById('badge-streak-15').classList.add('unlocked');
+        if (streak >= 20) document.getElementById('badge-streak-20').classList.add('unlocked');
     }
 </script>
 
