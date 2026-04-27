@@ -167,6 +167,68 @@
             <span class="badge-name">Unstoppable</span>
             <div class="badge-desc">20+ Win Streak</div>
         </div>
+        <div id="badge-8ob-1" class="badge">
+    <div class="badge-icon">🧲</div>
+    <span class="badge-name">Horseshoe</span>
+    <div class="badge-desc">1+ 8 on Break</div>
+</div>
+<div id="badge-8ob-5" class="badge">
+    <div class="badge-icon">🎓</div>
+    <span class="badge-name">Educated</span>
+    <div class="badge-desc">5+ 8 on Break</div>
+</div>
+<div id="badge-8ob-10" class="badge">
+    <div class="badge-icon">🎯</div>
+    <span class="badge-name">Skilled</span>
+    <div class="badge-desc">10+ 8 on Break</div>
+</div>
+<div id="badge-8ob-20" class="badge">
+    <div class="badge-icon">🧙‍♂️</div>
+    <span class="badge-name">Master</span>
+    <div class="badge-desc">20+ 8 on Break</div>
+</div>
+
+<div id="badge-br-1" class="badge">
+    <div class="badge-icon">📸</div>
+    <span class="badge-name">Flashy</span>
+    <div class="badge-desc">1+ Break & Run</div>
+</div>
+<div id="badge-br-5" class="badge">
+    <div class="badge-icon">🧱</div>
+    <span class="badge-name">Solid</span>
+    <div class="badge-desc">5+ Break & Run</div>
+</div>
+<div id="badge-br-10" class="badge">
+    <div class="badge-icon">😨</div>
+    <span class="badge-name">Scary</span>
+    <div class="badge-desc">10+ Break & Run</div>
+</div>
+<div id="badge-br-20" class="badge">
+    <div class="badge-icon">👹</div>
+    <span class="badge-name">Monster</span>
+    <div class="badge-desc">20+ Break & Run</div>
+</div>
+<div id="badge-br-50" class="badge">
+    <div class="badge-icon">💀</div>
+    <span class="badge-name">Demon</span>
+    <div class="badge-desc">50+ Break & Run</div>
+</div>
+
+<div id="badge-ms-1" class="badge">
+    <div class="badge-icon">⭐</div>
+    <span class="badge-name">Stellar</span>
+    <div class="badge-desc">1+ Mini-Slam</div>
+</div>
+<div id="badge-ms-3" class="badge">
+    <div class="badge-icon">👽</div>
+    <span class="badge-name">Otherworldly</span>
+    <div class="badge-desc">3+ Mini-Slams</div>
+</div>
+<div id="badge-ms-5" class="badge">
+    <div class="badge-icon">🌌</div>
+    <span class="badge-name">Galactic</span>
+    <div class="badge-desc">5+ Mini-Slams</div>
+</div>
     </div>
 
     <a href="index.html" class="back-btn">Return to Menu</a>
@@ -200,6 +262,9 @@ function loadBadges() {
     const totalGames = parseInt(player["Games Played"]) || 0;
     const matchesWon = parseInt(player["Matches Won"]) || 0;
     const streak = parseInt(player["Longest Win Streak"]) || 0;
+    const eightOB = parseInt(player["8 on Break"]) || 0;
+    const breakRun = parseInt(player["Break and Run"]) || 0;
+    const miniSlam = parseInt(player["Mini-Slam"]) || 0;
 
     // Game Milestone Logic (Based on Total Games Played)
     if (totalGames >= 1)    document.getElementById('badge-1-game').classList.add('unlocked');
@@ -210,6 +275,23 @@ function loadBadges() {
     if (totalGames >= 400)  document.getElementById('badge-400-games').classList.add('unlocked');
     if (totalGames >= 500)  document.getElementById('badge-500-games').classList.add('unlocked');
     if (totalGames >= 1000) document.getElementById('badge-1000-games').classList.add('unlocked');
+    // 8 on Break Logic
+    if (eightOB >= 1)  document.getElementById('badge-8ob-1').classList.add('unlocked');
+    if (eightOB >= 5)  document.getElementById('badge-8ob-5').classList.add('unlocked');
+    if (eightOB >= 10) document.getElementById('badge-8ob-10').classList.add('unlocked');
+    if (eightOB >= 20) document.getElementById('badge-8ob-20').classList.add('unlocked');
+
+    // Break and Run Logic
+    if (breakRun >= 1)  document.getElementById('badge-br-1').classList.add('unlocked');
+    if (breakRun >= 5)  document.getElementById('badge-br-5').classList.add('unlocked');
+    if (breakRun >= 10) document.getElementById('badge-br-10').classList.add('unlocked');
+    if (breakRun >= 20) document.getElementById('badge-br-20').classList.add('unlocked');
+    if (breakRun >= 50) document.getElementById('badge-br-50').classList.add('unlocked');
+
+    // Mini-Slam Logic
+    if (miniSlam >= 1) document.getElementById('badge-ms-1').classList.add('unlocked');
+    if (miniSlam >= 3) document.getElementById('badge-ms-3').classList.add('unlocked');
+    if (miniSlam >= 5) document.getElementById('badge-ms-5').classList.add('unlocked');
 
     // Win Streak Logic
     if (streak >= 5)  document.getElementById('badge-streak-5').classList.add('unlocked');
