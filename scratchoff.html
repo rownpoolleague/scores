@@ -162,7 +162,7 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyRjXuYcYphBNsoYk5rD1h8PP1Ae4uph5Z-FsR5XQzLvhNXXtsu-HMOnSUCcltgnB8q/exec";
-
+const WIN_SOUND = new Audio('sounds/win.mp3');
         let gridData = [], revealed = Array(16).fill(false), remaining = 0, ballsFound = 0, active = true;
         let selectedPlayer = "";
 
@@ -328,12 +328,16 @@
             }
         }
 
-       function checkState() {
+function checkState() {
     if (ballsFound >= 3) {
         active = false;
         document.getElementById('win-msg').style.display = 'block';
         
-        // --- ADD THE CONFETTI BURST HERE ---
+        // --- PLAY THE SOUND ---
+        // We play it immediately so it syncs with the 3rd ball reveal
+        WIN_SOUND.play().catch(e => console.log("Audio blocked or not found"));
+
+        // --- THE CONFETTI BURST ---
         confetti({
             particleCount: 150,
             spread: 70,
@@ -344,8 +348,11 @@
         logWin();
         revealAll();
         clearSessionData();
-    } else if (remaining <= 0) {
-        // ... existing fail logic ...
+    } else if (remaining <= 0 && active) {
+        // Optional: you could add a fail sound here later
+        document.getElementById('fail-msg').style.display = 'block';
+        revealAll();
+        clearSessionData();
     }
 }
 
