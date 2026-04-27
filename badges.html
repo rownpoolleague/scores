@@ -9,9 +9,9 @@
         .cabinet-wrapper { max-width: 420px; margin: 0 auto; border: 3px solid #1e90ff; border-radius: 12px; padding: 15px; min-height: 90vh; background: #050505; }
         
         h1 { color: #1e90ff; text-transform: uppercase; letter-spacing: 1px; font-size: 1.5rem; margin: 10px 0; }
-        select { width: 100%; padding: 10px; background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; font-size: 1rem; margin-bottom: 15px; }
+        select { width: 100%; padding: 10px; background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; font-size: 1rem; margin-bottom: 15px; outline: none; }
         
-        /* 3-Column Grid for high volume */
+        /* 3-Column Grid */
         .badge-grid { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
@@ -20,13 +20,12 @@
         }
         
         /* Compact Badge Styling */
-      .badge { 
+        .badge { 
             background: #111; 
             border: 1px solid #222; 
             border-radius: 8px; 
-            padding: 10px 5px; 
-            /* Changed from 0.15 to 0.45 for better visibility */
-            opacity: 0.45; 
+            padding: 10px 2px; 
+            opacity: 0.45; /* Improved visibility for locked badges */
             filter: grayscale(1); 
             transition: all 0.4s ease;
         }
@@ -39,24 +38,24 @@
             background: #151515;
         }
         
-      .badge-icon { font-size: 1.8rem; margin-bottom: 4px; }
+        .badge-icon { font-size: 1.8rem; margin-bottom: 4px; }
         .badge-name { 
             font-weight: bold; 
             color: #fff; 
-            font-size: 0.65rem; 
+            font-size: 0.6rem; 
             text-transform: uppercase; 
             display: block; 
-            height: 18px; 
+            height: 14px; 
             overflow: hidden; 
         }
         .badge-desc { 
-            font-size: 0.55rem; 
-            color: #888; 
+            font-size: 0.5rem; 
+            color: #aaa; 
             margin-top: 2px; 
             line-height: 1.1; 
         }
 
-        .back-btn { display: inline-block; margin-top: 25px; color: #1e90ff; text-decoration: none; font-weight: bold; font-size: 0.8rem; border: 1px solid #1e90ff; padding: 8px 16px; border-radius: 4px; }
+        .back-btn { display: inline-block; margin-top: 25px; color: #1e90ff; text-decoration: none; font-weight: bold; font-size: 0.8rem; border: 1px solid #1e90ff; padding: 8px 16px; border-radius: 4px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -75,15 +74,44 @@
             <div class="badge-desc">100+ Games</div>
         </div>
 
+        <div id="badge-200-games" class="badge">
+            <div class="badge-icon">🥈</div>
+            <span class="badge-name">Veteran</span>
+            <div class="badge-desc">200+ Games</div>
+        </div>
+
+        <div id="badge-300-games" class="badge">
+            <div class="badge-icon">🥇</div>
+            <span class="badge-name">Elite</span>
+            <div class="badge-desc">300+ Games</div>
+        </div>
+
+        <div id="badge-400-games" class="badge">
+            <div class="badge-icon">💎</div>
+            <span class="badge-name">Master</span>
+            <div class="badge-desc">400+ Games</div>
+        </div>
+
+        <div id="badge-500-games" class="badge">
+            <div class="badge-icon">👑</div>
+            <span class="badge-name">Legend</span>
+            <div class="badge-desc">500+ Games</div>
+        </div>
+
+        <div id="badge-1000-games" class="badge">
+            <div class="badge-icon">🐐</div>
+            <span class="badge-name">G.O.A.T.</span>
+            <div class="badge-desc">1000+ Games</div>
+        </div>
+
         <div id="badge-streak" class="badge">
             <div class="badge-icon">🔥</div>
             <span class="badge-name">On Fire</span>
             <div class="badge-desc">5+ Win Streak</div>
         </div>
-        
-        </div>
+    </div>
 
-    <a href="index.html" class="back-btn">RETURN TO MENU</a>
+    <a href="index.html" class="back-btn">Return to Menu</a>
 </div>
 
 <script src="playerdata.js"></script>
@@ -92,6 +120,7 @@
     window.onload = () => {
         const select = document.getElementById('player-select');
         if (typeof playerData !== 'undefined') {
+            // Casing matches the variable inside your playerdata.js
             const sorted = [...playerData].sort((a, b) => a["Player Name"].localeCompare(b["Player Name"]));
             sorted.forEach(p => {
                 let opt = document.createElement('option');
@@ -106,17 +135,25 @@
         const selectedName = document.getElementById('player-select').value;
         const player = playerData.find(p => p["Player Name"] === selectedName);
         
+        // Reset all badges to locked state
         document.querySelectorAll('.badge').forEach(b => b.classList.remove('unlocked'));
 
         if (!player) return;
 
-        // Centurion Logic
-        if (parseInt(player["Games Played"]) >= 100) {
-            document.getElementById('badge-100-games').classList.add('unlocked');
-        }
+        // Keys must exactly match your JSON structure
+        const games = parseInt(player["Games Played"]) || 0;
+        const streak = parseInt(player["Longest Win Streak"]) || 0;
 
-        // Win Streak Logic
-        if (parseInt(player["Longest Win Streak"]) >= 5) {
+        // Unlock logic for Game Milestones
+        if (games >= 100) document.getElementById('badge-100-games').classList.add('unlocked');
+        if (games >= 200) document.getElementById('badge-200-games').classList.add('unlocked');
+        if (games >= 300) document.getElementById('badge-300-games').classList.add('unlocked');
+        if (games >= 400) document.getElementById('badge-400-games').classList.add('unlocked');
+        if (games >= 500) document.getElementById('badge-500-games').classList.add('unlocked');
+        if (games >= 1000) document.getElementById('badge-1000-games').classList.add('unlocked');
+
+        // Unlock logic for Win Streak
+        if (streak >= 5) {
             document.getElementById('badge-streak').classList.add('unlocked');
         }
     }
