@@ -215,120 +215,52 @@ input.addEventListener('input', function () {
   });
 });
 
-// HELPER: Returns a string of icons based on achievements
-function getBadgeIcons(player) {
-    let icons = [];
-    const games = parseInt(player["Games Played"]) || 0;
-    const mWon = parseInt(player["Matches Won"]) || 0;
-    const streak = parseInt(player["Longest Win Streak"]) || 0;
-    const eightOB = parseInt(player["8 on Break"]) || 0;
-    const br = parseInt(player["Break and Run"]) || 0;
-    const ms = parseInt(player["Mini-Slam"]) || 0;
-
-    // Games Played (Highest Only)
-    if (games >= 1000) icons.push("🐐");
-    else if (games >= 500) icons.push("👑");
-    else if (games >= 400) icons.push("💎");
-    else if (games >= 300) icons.push("🥇");
-    else if (games >= 200) icons.push("🥈");
-    else if (games >= 100) icons.push("💯");
-    else if (games >= 50) icons.push("📖");
-    else if (games >= 1) icons.push("🐣");
-
-    // Matches Won (Highest Only)
-    if (mWon >= 100) icons.push("🏆");
-    else if (mWon >= 50) icons.push("🥇");
-    else if (mWon >= 20) icons.push("🥈");
-    else if (mWon >= 10) icons.push("🥉");
-    else if (mWon >= 5) icons.push("🤝");
-
-    // Streak (Highest Only)
-    if (streak >= 20) icons.push("🚫");
-    else if (streak >= 15) icons.push("☄️");
-    else if (streak >= 10) icons.push("🔥");
-    else if (streak >= 5) icons.push("✨");
-
-    // Skill Shots (Individual Icons)
-    if (eightOB >= 20) icons.push("🧙‍♂️");
-    else if (eightOB >= 10) icons.push("🎯");
-    else if (eightOB >= 5) icons.push("🎓");
-    else if (eightOB >= 1) icons.push("🧲");
-
-    if (br >= 50) icons.push("💀");
-    else if (br >= 20) icons.push("👹");
-    else if (br >= 10) icons.push("😨");
-    else if (br >= 5) icons.push("🧱");
-    else if (br >= 1) icons.push("📸");
-
-    if (ms >= 5) icons.push("🌌");
-    else if (ms >= 3) icons.push("👽");
-    else if (ms >= 1) icons.push("⭐");
-
-    return icons.join(" ");
-}
-
 function selectPlayer(player) {
-    const name = player["Player Name"];
-    const photo = document.getElementById('playerPhoto');
-    const photoUrl = `photos/${encodeURIComponent(name)}.jpg`;
+  const name = player["Player Name"];
+  const photo = document.getElementById('playerPhoto');
+  const photoUrl = `photos/${encodeURIComponent(name)}.jpg`;
 
-    photo.src = photoUrl;
-    photo.style.display = 'block';
+  photo.src = photoUrl;
+  photo.style.display = 'block';
 
-    photo.onclick = function() {
-        const modalTitle = document.getElementById('modalTitle');
-        const modalTable = document.getElementById('modalTable');
-        modalTitle.textContent = name;
-        modalTable.innerHTML = `<div style="text-align:center;"><img src="${photoUrl}" style="max-width:100%; max-height:70vh; border-radius:8px;"></div>`;
-        document.getElementById('statModal').style.display = 'block';
-    };
-
-    photo.onerror = function() { this.style.display = 'none'; };
-
-    // Update Header with Name, HC, and All Achieved Badges
-    const badgeString = getBadgeIcons(player);
-    document.getElementById('playerName').innerHTML = `
-        <div style="color:#000; font-size: 24px; font-weight:bold;">${name}</div>
-        <div style="color:#444; font-size: 18px;">HC ${player["Handicap"]}</div>
-        <div style="font-size: 22px; margin-top: 5px;">${badgeString}</div>
-    `;
-
-    const table = document.getElementById('statsTable');
-    table.innerHTML = '';
+  // Logic to expand the photo into the existing statModal
+  photo.onclick = function() {
+    const modalTitle = document.getElementById('modalTitle');
+    const modalTable = document.getElementById('modalTable');
     
-    for (const key in player) {
-        if (key === "Player Name" || key === "Handicap") continue;
-        
-        const row = document.createElement('tr');
-        row.style.cursor = 'pointer';
-        row.addEventListener('click', () => showTop10(key));
+    modalTitle.textContent = name;
+    // Clears any previous Top 10 table and inserts the image
+    modalTable.innerHTML = `<div style="text-align:center;"><img src="${photoUrl}" style="max-width:100%; max-height:70vh; border-radius:8px;"></div>`;
+    
+    document.getElementById('statModal').style.display = 'block';
+  };
 
-        const cellKey = document.createElement('th');
-        cellKey.textContent = key;
+  photo.onerror = function() {
+    this.style.display = 'none';
+  };
 
-        const cellVal = document.createElement('td');
-        cellVal.style.fontWeight = "bold";
-        
-        // Logic to show specific badge next to the individual stat row
-        let rowBadge = "";
-        if (key === "Games Played") {
-            if (player[key] >= 1000) rowBadge = " 🐐";
-            else if (player[key] >= 500) rowBadge = " 👑";
-            else if (player[key] >= 100) rowBadge = " 💯";
-        }
-        if (key === "Longest Win Streak" && player[key] >= 10) rowBadge = " 🔥";
-        if (key === "Matches Won" && player[key] >= 100) rowBadge = " 🏆";
+  // The rest of your existing table-building code remains the same...
+  document.getElementById('playerName').textContent = `${name} - HC ${player["Handicap"]}`;
+  const table = document.getElementById('statsTable');
+  table.innerHTML = '';
+  
+  for (const key in player) {
+    if (key === "Player Name" || key === "Handicap") continue;
+    const row = document.createElement('tr');
+    row.style.cursor = 'pointer';
+    row.addEventListener('click', () => showTop10(key));
+    const cellKey = document.createElement('th');
+    cellKey.textContent = key;
+    const cellVal = document.createElement('td');
+    cellVal.textContent = player[key];
+    row.appendChild(cellKey);
+    row.appendChild(cellVal);
+    table.appendChild(row);
+  }
 
-        cellVal.textContent = player[key] + rowBadge;
-
-        row.appendChild(cellKey);
-        row.appendChild(cellVal);
-        table.appendChild(row);
-    }
-
-    document.getElementById('statsBox').style.display = 'block';
-    list.innerHTML = '';
-    input.value = '';
+  document.getElementById('statsBox').style.display = 'block';
+  list.innerHTML = '';
+  input.value = '';
 }
 function showTop10(statKey) {
 
