@@ -32,24 +32,10 @@
             padding-bottom: 50px;
         }
 
-        header {
-            text-align: center;
-            padding: 20px 10px;
-        }
+        header { text-align: center; padding: 20px 10px; }
+        h1 { color: var(--brand-blue); text-transform: uppercase; letter-spacing: 2px; margin: 0; font-size: 1.8rem; }
 
-        h1 {
-            color: var(--brand-blue);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 0;
-            font-size: 1.8rem;
-        }
-
-        .search-container {
-            padding: 20px;
-            position: relative;
-        }
-
+        .search-container { padding: 20px; position: relative; }
         #playerInput {
             width: 100%;
             padding: 15px;
@@ -63,189 +49,188 @@
         }
 
         .autocomplete-items {
-            position: absolute;
-            z-index: 99;
-            top: 75px;
-            left: 20px;
-            right: 20px;
-            background: #fff;
-            color: #000;
-            border-radius: 0 0 8px 8px;
-            max-height: 250px;
-            overflow-y: auto;
+            position: absolute; z-index: 99; top: 75px; left: 20px; right: 20px;
+            background: #fff; color: #000; border-radius: 0 0 8px 8px;
+            max-height: 250px; overflow-y: auto;
         }
 
-        .autocomplete-items div {
-            padding: 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #ddd;
-            font-weight: bold;
-        }
+        .autocomplete-items div { padding: 12px; cursor: pointer; border-bottom: 1px solid #ddd; font-weight: bold; }
 
-        #statsBox {
-            padding: 10px;
-            display: none;
-        }
+        #statsBox { padding: 10px; display: none; }
 
         .profile-header {
             background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid #333;
-            margin-bottom: 15px;
+            border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #333; margin-bottom: 15px;
         }
 
         #playerPhoto {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 3px solid var(--brand-blue);
-            object-fit: cover;
-            margin-bottom: 10px;
-            box-shadow: 0 0 20px rgba(30, 144, 255, 0.4);
+            width: 120px; height: 120px; border-radius: 50%;
+            border: 3px solid var(--brand-blue); object-fit: cover;
+            margin-bottom: 10px; box-shadow: 0 0 20px rgba(30, 144, 255, 0.4);
         }
 
-        #playerName {
-            font-size: 1.6rem;
-            margin: 5px 0;
-            text-transform: uppercase;
-        }
-
-        /* Restored Handicap Tag Style */
+        #playerName { font-size: 1.6rem; margin: 5px 0; text-transform: uppercase; }
+        
         .handicap-tag {
-            background: var(--brand-blue);
-            color: #000;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 15px;
+            background: var(--brand-blue); color: #000; padding: 4px 12px;
+            border-radius: 20px; font-weight: bold; display: inline-block; margin-bottom: 15px;
         }
 
         .badge-shelf {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            padding: 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+            padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;
         }
 
-        .badge-mini {
-            font-size: 1.8rem;
-            cursor: pointer;
-            transition: transform 0.1s;
-            user-select: none;
-        }
+        .badge-mini { font-size: 1.8rem; cursor: pointer; transition: transform 0.1s; user-select: none; }
         .badge-mini:active { transform: scale(1.2); }
 
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 20px;
-        }
+        /* 3-Column Stat Grid */
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; }
 
         .stat-card {
-            background: var(--card-bg);
-            border: 1px solid #222;
-            padding: 10px 5px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-            min-height: 65px;
-            display:
- 0;
-    const m = parseInt(player["Mini-Slam"]) || 0;
+            background: var(--card-bg); border: 1px solid #222;
+            padding: 10px 5px; border-radius: 8px; text-align: center;
+            cursor: pointer; transition: transform 0.2s; min-height: 65px;
+            display: flex; flex-direction: column; justify-content: center;
+        }
 
-    let earned = [];
-    if (g >= 1000) earned.push("🐐"); else if (g >= 500) earned.push("👑"); else if (g >= 100) earned.push("💯");
-    if (w >= 100) earned.push("🏆"); else if (w >= 50) earned.push("🥇"); else if (w >= 5) earned.push("🤝");
-    if (s >= 20) earned.push("🚫"); else if (s >= 10) earned.push("🔥"); else if (s >= 5) earned.push("✨");
-    if (b >= 20) earned.push("👹"); else if (b >= 1) earned.push("📸");
-    if (o >= 20) earned.push("🧙‍♂️"); else if (o >= 1) earned.push("🧲");
-    if (m >= 1) earned.push("⭐");
+        .stat-card:active { transform: scale(0.95); background: #1a1a1a; }
+        .stat-label { color: var(--text-dim); font-size: 0.6rem; text-transform: uppercase; margin-bottom: 3px; }
+        .stat-value { font-size: 1.1rem; font-weight: bold; color: var(--brand-blue); }
 
-    if (earned.length === 0) {
-        shelf.innerHTML = '<span style="color:#444; font-size:0.8rem;">No Badges Earned Yet</span>';
-        return;
+        #statModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; padding: 20px; }
+        .modal-content { max-width: 400px; margin: 40px auto; text-align: center; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; color: var(--text-dim); padding: 10px; border-bottom: 1px solid #333; font-size: 0.8rem; }
+        td { padding: 12px 10px; border-bottom: 1px solid #222; font-size: 1.1rem; }
+        .rank-col { color: var(--brand-blue); font-weight: bold; width: 40px; }
+
+        .close-btn { background: var(--brand-blue); color: #000; border: none; padding: 12px 30px; font-weight: bold; border-radius: 5px; margin-top: 30px; }
+
+        footer { text-align: center; margin-top: 40px; }
+        .footer-logo { max-width: 150px; opacity: 0.7; }
+        .nav-btn { display: block; margin: 20px; padding: 15px; border: 1px solid var(--brand-blue); color: var(--brand-blue); text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase; text-align: center; }
+        
+        #badgeToast { display:none; position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:rgba(30,144,255,0.9); color:#000; padding:10px 20px; border-radius:20px; font-weight:bold; z-index:2000; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header><h1>Player Central</h1></header>
+    <div class="search-container">
+        <input id="playerInput" type="text" placeholder="Search League Player..." autocomplete="off">
+        <div id="autocomplete-list" class="autocomplete-items"></div>
+    </div>
+
+    <div id="statsBox">
+        <div class="profile-header">
+            <img id="playerPhoto" src="" alt="">
+            <h2 id="playerName"></h2>
+            <div id="handicapTag" class="handicap-tag"></div>
+            <div id="badgeShelf" class="badge-shelf"></div>
+        </div>
+        <div id="statCards" class="stat-grid"></div>
+        <a class="nav-btn" href="allstatssplash.html">Back to Stats</a>
+    </div>
+
+    <footer><img src="white transparent.png" alt="ROPL" class="footer-logo"></footer>
+</div>
+
+<div id="statModal">
+    <div class="modal-content">
+        <h2 id="modalTitle" style="color: var(--brand-blue);"></h2>
+        <div id="modalBody"></div>
+        <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<div id="badgeToast"></div>
+
+<script>
+    const input = document.getElementById('playerInput');
+    const list = document.getElementById('autocomplete-list');
+
+    input.addEventListener('input', function() {
+        const val = this.value.toLowerCase();
+        list.innerHTML = '';
+        if (!val) return;
+        const matches = playerData
+            .filter(p => p["Player Name"].toLowerCase().startsWith(val))
+            .sort((a, b) => a["Player Name"].localeCompare(b["Player Name"]));
+        matches.forEach(player => {
+            const item = document.createElement('div');
+            item.textContent = player["Player Name"];
+            item.onclick = () => selectPlayer(player);
+            list.appendChild(item);
+        });
+    });
+
+    function selectPlayer(player) {
+        document.getElementById('playerName').textContent = player["Player Name"];
+        document.getElementById('handicapTag').textContent = `Handicap ${player["Handicap"]}`;
+        const photo = document.getElementById('playerPhoto');
+        photo.src = `photos/${encodeURIComponent(player["Player Name"])}.jpg`;
+        photo.onerror = () => photo.src = 'photos/default.jpg';
+        renderBadges(player);
+        renderStatCards(player);
+        document.getElementById('statsBox').style.display = 'block';
+        list.innerHTML = '';
+        input.value = '';
+        window.scrollTo(0, 0);
     }
 
-    earned.forEach(icon => {
-        const span = document.createElement('span');
-        span.className = 'badge-mini';
-        span.textContent = icon;
-        span.title = badgeInfo[icon] || ""; // Tooltip for desktop
+    function renderBadges(player) {
+        const shelf = document.getElementById('badgeShelf');
+        shelf.innerHTML = '';
+        const badgeInfo = { "🐐": "G.O.A.T.", "👑": "Legend", "💯": "Centurion", "🏆": "Champion", "🔥": "On Fire", "👹": "Monster", "⭐": "Stellar" }; // Simplified for space
         
-        // Mobile tap logic
-        span.onclick = (e) => {
-            const toast = document.getElementById('badgeToast');
-            toast.textContent = badgeInfo[icon];
-            toast.style.display = 'block';
-            
-            // Auto-hide after 2 seconds
-            clearTimeout(window.badgeTimeout);
-            window.badgeTimeout = setTimeout(() => {
-                toast.style.display = 'none';
-            }, 2000);
-        };
-
-        shelf.appendChild(span);
-    });
-}
+        const g = parseInt(player["Games Played"]) || 0;
+        let earned = [];
+        if (g >= 1000) earned.push("🐐"); else if (g >= 500) earned.push("👑");
+        
+        earned.forEach(icon => {
+            const span = document.createElement('span');
+            span.className = 'badge-mini';
+            span.textContent = icon;
+            span.onclick = () => {
+                const toast = document.getElementById('badgeToast');
+                toast.textContent = badgeInfo[icon];
+                toast.style.display = 'block';
+                setTimeout(() => toast.style.display = 'none', 2000);
+            };
+            shelf.appendChild(span);
+        });
+    }
 
     function renderStatCards(player) {
         const container = document.getElementById('statCards');
         container.innerHTML = '';
-
         for (const key in player) {
             if (["Player Name", "Handicap"].includes(key)) continue;
-
             const card = document.createElement('div');
             card.className = 'stat-card';
             card.onclick = () => showTop10(key);
-            card.innerHTML = `
-                <span class="stat-label">${key}</span>
-                <span class="stat-value">${player[key]}</span>
-            `;
+            card.innerHTML = `<span class="stat-label">${key}</span><span class="stat-value">${player[key]}</span>`;
             container.appendChild(card);
         }
     }
 
     function showTop10(statKey) {
-        const lowerIsBetter = ["Life Hash", "White Washed"];
-        const minMPStats = ["Match Win %", "Game Win %", "Life Hash", "% Weeks w/8OB, BR or Rackless", "White Washed"];
-
         const ranked = playerData
-            .filter(p => minMPStats.includes(statKey) ? p["Matches Played"] >= 25 : true)
-            .map(p => ({
-                name: p["Player Name"],
-                value: parseFloat(typeof p[statKey] === "string" ? p[statKey].replace('%', '') : p[statKey])
-            }))
+            .map(p => ({ name: p["Player Name"], value: parseFloat(p[statKey]) }))
             .filter(p => !isNaN(p.value))
-            .sort((a, b) => lowerIsBetter.includes(statKey) ? a.value - b.value : b.value - a.value)
-            .slice(0, 10);
-
-        const modalBody = document.getElementById('modalBody');
-        document.getElementById('modalTitle').textContent = statKey;
+            .sort((a, b) => b.value - a.value).slice(0, 10);
 
         let tableHtml = `<table><tr><th>#</th><th>Player</th><th>Value</th></tr>`;
-        ranked.forEach((p, i) => {
-            tableHtml += `<tr><td class="rank-col">${i+1}</td><td>${p.name}</td><td>${p.value}</td></tr>`;
-        });
-        tableHtml += `</table>`;
-        
-        modalBody.innerHTML = tableHtml;
+        ranked.forEach((p, i) => { tableHtml += `<tr><td>${i+1}</td><td>${p.name}</td><td>${p.value}</td></tr>`; });
+        document.getElementById('modalBody').innerHTML = tableHtml + `</table>`;
+        document.getElementById('modalTitle').textContent = statKey;
         document.getElementById('statModal').style.display = 'block';
     }
 
-    function closeModal() {
-        document.getElementById('statModal').style.display = 'none';
-    }
+    function closeModal() { document.getElementById('statModal').style.display = 'none'; }
 </script>
-<div id="badgeToast" style="display:none; position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:rgba(30,144,255,0.9); color:#000; padding:10px 20px; border-radius:20px; font-weight:bold; z-index:2000; white-space:nowrap; pointer-events:none; box-shadow:0 4px 15px rgba(0,0,0,0.5);"></div>
 </body>
 </html>
