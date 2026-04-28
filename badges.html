@@ -9,51 +9,24 @@
         .cabinet-wrapper { max-width: 420px; margin: 0 auto; border: 3px solid #1e90ff; border-radius: 12px; padding: 15px; min-height: 90vh; background: #050505; }
         
         h1 { color: #1e90ff; text-transform: uppercase; letter-spacing: 1px; font-size: 1.5rem; margin: 10px 0; }
-        select { width: 100%; padding: 10px; background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; font-size: 1rem; margin-bottom: 15px; outline: none; }
         
+        /* Search Input Styling */
+        .search-container { position: relative; margin-bottom: 15px; }
+        #player-search { width: 100%; padding: 12px; background: #222; color: #fff; border: 1px solid #444; border-radius: 8px; box-sizing: border-box; font-size: 1rem; outline: none; }
+        #autocomplete-list { position: absolute; z-index: 100; top: 100%; left: 0; right: 0; background: #fff; color: #000; border-radius: 0 0 8px 8px; max-height: 200px; overflow-y: auto; text-align: left; }
+        .autocomplete-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; font-weight: bold; }
+        .autocomplete-item:hover { background: #f0f0f0; }
+
         /* 3-Column Grid */
-        .badge-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 8px; 
-            margin-top: 10px; 
-        }
+        .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
         
         /* Compact Badge Styling */
-        .badge { 
-            background: #111; 
-            border: 1px solid #222; 
-            border-radius: 8px; 
-            padding: 10px 2px; 
-            opacity: 0.45; 
-            filter: grayscale(1); 
-            transition: all 0.4s ease;
-        }
-        
-        .badge.unlocked { 
-            opacity: 1; 
-            filter: grayscale(0); 
-            border-color: #ffd700; 
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); 
-            background: #151515;
-        }
+        .badge { background: #111; border: 1px solid #222; border-radius: 8px; padding: 10px 2px; opacity: 0.9; filter: grayscale(1); transition: all 0.4s ease; }
+        .badge.unlocked { opacity: 1; filter: grayscale(0); border-color: #ffd700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); background: #151515; }
         
         .badge-icon { font-size: 1.8rem; margin-bottom: 4px; }
-        .badge-name { 
-            font-weight: bold; 
-            color: #fff; 
-            font-size: 0.6rem; 
-            text-transform: uppercase; 
-            display: block; 
-            height: 14px; 
-            overflow: hidden; 
-        }
-        .badge-desc { 
-            font-size: 0.5rem; 
-            color: #aaa; 
-            margin-top: 2px; 
-            line-height: 1.1; 
-        }
+        .badge-name { font-weight: bold; color: #fff; font-size: 0.6rem; text-transform: uppercase; display: block; height: 14px; overflow: hidden; }
+        .badge-desc { font-size: 0.5rem; color: #aaa; margin-top: 2px; line-height: 1.1; }
 
         .back-btn { display: inline-block; margin-top: 25px; color: #1e90ff; text-decoration: none; font-weight: bold; font-size: 0.8rem; border: 1px solid #1e90ff; padding: 8px 16px; border-radius: 4px; text-transform: uppercase; }
     </style>
@@ -63,177 +36,47 @@
 <div class="cabinet-wrapper">
     <h1>🏆 BADGES</h1>
     
-    <select id="player-select" onchange="loadBadges()">
-        <option value="">-- SELECT PLAYER --</option>
-    </select>
+    <div class="search-container">
+        <input type="text" id="player-search" placeholder="Type Player Name..." autocomplete="off">
+        <div id="autocomplete-list"></div>
+    </div>
 
     <div id="badge-container" class="badge-grid">
-        <div id="badge-1-game" class="badge">
-            <div class="badge-icon">🐣</div>
-            <span class="badge-name">Novice</span>
-            <div class="badge-desc">1+ Games</div>
-        </div>
-
-        <div id="badge-25-games" class="badge">
-            <div class="badge-icon">📖</div>
-            <span class="badge-name">Student</span>
-            <div class="badge-desc">25+ Games Played</div>
-        </div>
-
-        <div id="badge-100-games" class="badge">
-            <div class="badge-icon">🎓</div>
-            <span class="badge-name">Graduate</span>
-            <div class="badge-desc">100+ Games</div>
-        </div>
-
-        <div id="badge-200-games" class="badge">
-            <div class="badge-icon">🥈</div>
-            <span class="badge-name">Professional</span>
-            <div class="badge-desc">200+ Games</div>
-        </div>
-
-        <div id="badge-300-games" class="badge">
-            <div class="badge-icon">🥇</div>
-            <span class="badge-name">Veteran</span>
-            <div class="badge-desc">300+ Games</div>
-        </div>
-
-        <div id="badge-400-games" class="badge">
-            <div class="badge-icon">💎</div>
-            <span class="badge-name">Master</span>
-            <div class="badge-desc">400+ Games</div>
-        </div>
-
-        <div id="badge-500-games" class="badge">
-            <div class="badge-icon">👑</div>
-            <span class="badge-name">Legend</span>
-            <div class="badge-desc">500+ Games</div>
-        </div>
-
-        <div id="badge-1000-games" class="badge">
-            <div class="badge-icon">🐐</div>
-            <span class="badge-name">G.O.A.T.</span>
-            <div class="badge-desc">1000+ Games</div>
-        </div>
+        <div id="badge-1-game" class="badge"><div class="badge-icon">🐣</div><span class="badge-name">Novice</span><div class="badge-desc">1+ Games</div></div>
+        <div id="badge-25-games" class="badge"><div class="badge-icon">📖</div><span class="badge-name">Student</span><div class="badge-desc">25+ Games</div></div>
+        <div id="badge-100-games" class="badge"><div class="badge-icon">🎓</div><span class="badge-name">Graduate</span><div class="badge-desc">100+ Games</div></div>
+        <div id="badge-200-games" class="badge"><div class="badge-icon">🥈</div><span class="badge-name">Professional</span><div class="badge-desc">200+ Games</div></div>
+        <div id="badge-300-games" class="badge"><div class="badge-icon">🥇</div><span class="badge-name">Veteran</span><div class="badge-desc">300+ Games</div></div>
+        <div id="badge-400-games" class="badge"><div class="badge-icon">💎</div><span class="badge-name">Master</span><div class="badge-desc">400+ Games</div></div>
+        <div id="badge-500-games" class="badge"><div class="badge-icon">👑</div><span class="badge-name">Legend</span><div class="badge-desc">500+ Games</div></div>
+        <div id="badge-1000-games" class="badge"><div class="badge-icon">🐐</div><span class="badge-name">G.O.A.T.</span><div class="badge-desc">1000+ Games</div></div>
         
-<div id="badge-won-1" class="badge">
-    <div class="badge-icon">🤝</div>
-    <span class="badge-name">Contributor</span>
-    <div class="badge-desc">1+ Matches Won</div>
-</div>
-        <div id="badge-won-10" class="badge">
-    <div class="badge-icon">🥉</div>
-    <span class="badge-name">Competitor</span>
-    <div class="badge-desc">10+ Matches Won</div>
-</div>
+        <div id="badge-won-1" class="badge"><div class="badge-icon">🤝</div><span class="badge-name">Contributor</span><div class="badge-desc">1+ Match Won</div></div>
+        <div id="badge-won-10" class="badge"><div class="badge-icon">🥉</div><span class="badge-name">Competitor</span><div class="badge-desc">10+ Wins</div></div>
+        <div id="badge-won-20" class="badge"><div class="badge-icon">🎗️</div><span class="badge-name">Valued</span><div class="badge-desc">20+ Wins</div></div>
+        <div id="badge-won-50" class="badge"><div class="badge-icon">⚓</div><span class="badge-name">Anchor</span><div class="badge-desc">50+ Wins</div></div>
+        <div id="badge-won-100" class="badge"><div class="badge-icon">🧩</div><span class="badge-name">Irreplaceable</span><div class="badge-desc">100+ Wins</div></div>
 
-<div id="badge-won-20" class="badge">
-    <div class="badge-icon">🎗️</div>
-    <span class="badge-name">Valued</span>
-    <div class="badge-desc">20+ Matches Won</div>
-</div>
+        <div id="badge-streak-5" class="badge"><div class="badge-icon">🌡️</div><span class="badge-name">Heating Up</span><div class="badge-desc">5+ Streak</div></div>
+        <div id="badge-streak-10" class="badge"><div class="badge-icon">🔥</div><span class="badge-name">On Fire</span><div class="badge-desc">10+ Streak</div></div>
+        <div id="badge-streak-15" class="badge"><div class="badge-icon">☄️</div><span class="badge-name">Burning Up</span><div class="badge-desc">15+ Streak</div></div>
+        <div id="badge-streak-20" class="badge"><div class="badge-icon">🚫</div><span class="badge-name">Unstoppable</span><div class="badge-desc">20+ Streak</div></div>
+        <div id="badge-streak-32" class="badge"><div class="badge-icon">💥</div><span class="badge-name">Super Nova</span><div class="badge-desc">32+ Streak</div></div>
 
-<div id="badge-won-50" class="badge">
-    <div class="badge-icon">⚓</div>
-    <span class="badge-name">Anchor</span>
-    <div class="badge-desc">50+ Matches Won</div>
-</div>
+        <div id="badge-8ob-1" class="badge"><div class="badge-icon">🧲</div><span class="badge-name">Lucky</span><div class="badge-desc">1+ 8OB</div></div>
+        <div id="badge-8ob-5" class="badge"><div class="badge-icon">🎓</div><span class="badge-name">Educated</span><div class="badge-desc">5+ 8OB</div></div>
+        <div id="badge-8ob-10" class="badge"><div class="badge-icon">🎯</div><span class="badge-name">Skilled</span><div class="badge-desc">10+ 8OB</div></div>
+        <div id="badge-8ob-20" class="badge"><div class="badge-icon">🧙‍♂️</div><span class="badge-name">Master</span><div class="badge-desc">20+ 8OB</div></div>
 
-<div id="badge-won-100" class="badge">
-    <div class="badge-icon">🧩</div>
-    <span class="badge-name">Irreplaceable</span>
-    <div class="badge-desc">100+ Matches Won</div>
-</div>
-        <div id="badge-streak-5" class="badge">
-            <div class="badge-icon">🌡️</div>
-            <span class="badge-name">Heating Up</span>
-            <div class="badge-desc">5+ Win Streak</div>
-        </div>
+        <div id="badge-br-1" class="badge"><div class="badge-icon">📸</div><span class="badge-name">Flashy</span><div class="badge-desc">1+ B&R</div></div>
+        <div id="badge-br-5" class="badge"><div class="badge-icon">🧱</div><span class="badge-name">Solid</span><div class="badge-desc">5+ B&R</div></div>
+        <div id="badge-br-10" class="badge"><div class="badge-icon">😨</div><span class="badge-name">Scary</span><div class="badge-desc">10+ B&R</div></div>
+        <div id="badge-br-20" class="badge"><div class="badge-icon">👹</div><span class="badge-name">Monster</span><div class="badge-desc">20+ B&R</div></div>
+        <div id="badge-br-50" class="badge"><div class="badge-icon">💀</div><span class="badge-name">Demon</span><div class="badge-desc">50+ B&R</div></div>
 
-        <div id="badge-streak-10" class="badge">
-            <div class="badge-icon">🔥</div>
-            <span class="badge-name">On Fire</span>
-            <div class="badge-desc">10+ Win Streak</div>
-        </div>
-
-        <div id="badge-streak-15" class="badge">
-            <div class="badge-icon">☄️</div>
-            <span class="badge-name">Burning Up</span>
-            <div class="badge-desc">15+ Win Streak</div>
-        </div>
-
-        <div id="badge-streak-20" class="badge">
-            <div class="badge-icon">🚫</div>
-            <span class="badge-name">Unstoppable</span>
-            <div class="badge-desc">20+ Win Streak</div>
-        </div>
-         <div id="badge-streak-32" class="badge">
-            <div class="badge-icon">💥</div>
-            <span class="badge-name">Super Nova</span>
-            <div class="badge-desc">32+ Win Streak</div>
-        </div>
-        <div id="badge-8ob-1" class="badge">
-    <div class="badge-icon">🧲</div>
-    <span class="badge-name">Lucky</span>
-    <div class="badge-desc">1+ 8 on Break</div>
-</div>
-<div id="badge-8ob-5" class="badge">
-    <div class="badge-icon">🎓</div>
-    <span class="badge-name">Educated</span>
-    <div class="badge-desc">5+ 8 on Break</div>
-</div>
-<div id="badge-8ob-10" class="badge">
-    <div class="badge-icon">🎯</div>
-    <span class="badge-name">Skilled</span>
-    <div class="badge-desc">10+ 8 on Break</div>
-</div>
-<div id="badge-8ob-20" class="badge">
-    <div class="badge-icon">🧙‍♂️</div>
-    <span class="badge-name">Master</span>
-    <div class="badge-desc">20+ 8 on Break</div>
-</div>
-
-<div id="badge-br-1" class="badge">
-    <div class="badge-icon">📸</div>
-    <span class="badge-name">Flashy</span>
-    <div class="badge-desc">1+ Break & Run</div>
-</div>
-<div id="badge-br-5" class="badge">
-    <div class="badge-icon">🧱</div>
-    <span class="badge-name">Solid</span>
-    <div class="badge-desc">5+ Break & Run</div>
-</div>
-<div id="badge-br-10" class="badge">
-    <div class="badge-icon">😨</div>
-    <span class="badge-name">Scary</span>
-    <div class="badge-desc">10+ Break & Run</div>
-</div>
-<div id="badge-br-20" class="badge">
-    <div class="badge-icon">👹</div>
-    <span class="badge-name">Monster</span>
-    <div class="badge-desc">20+ Break & Run</div>
-</div>
-<div id="badge-br-50" class="badge">
-    <div class="badge-icon">💀</div>
-    <span class="badge-name">Demon</span>
-    <div class="badge-desc">50+ Break & Run</div>
-</div>
-
-<div id="badge-ms-1" class="badge">
-    <div class="badge-icon">⭐</div>
-    <span class="badge-name">Stellar</span>
-    <div class="badge-desc">1+ Mini-Slam</div>
-</div>
-<div id="badge-ms-3" class="badge">
-    <div class="badge-icon">👽</div>
-    <span class="badge-name">Otherworldly</span>
-    <div class="badge-desc">3+ Mini-Slams</div>
-</div>
-<div id="badge-ms-5" class="badge">
-    <div class="badge-icon">🌌</div>
-    <span class="badge-name">Galactic</span>
-    <div class="badge-desc">5+ Mini-Slams</div>
-</div>
+        <div id="badge-ms-1" class="badge"><div class="badge-icon">⭐</div><span class="badge-name">Stellar</span><div class="badge-desc">1+ Slam</div></div>
+        <div id="badge-ms-3" class="badge"><div class="badge-icon">👽</div><span class="badge-name">Otherworldly</span><div class="badge-desc">3+ Slams</div></div>
+        <div id="badge-ms-5" class="badge"><div class="badge-icon">🌌</div><span class="badge-name">Galactic</span><div class="badge-desc">5+ Slams</div></div>
     </div>
 
     <a href="index.html" class="back-btn">Return to Menu</a>
@@ -243,76 +86,92 @@
 
 <script>
     window.onload = () => {
-        const select = document.getElementById('player-select');
-        if (typeof playerData !== 'undefined') {
-            const sorted = [...playerData].sort((a, b) => a["Player Name"].localeCompare(b["Player Name"]));
-            sorted.forEach(p => {
-                let opt = document.createElement('option');
-                opt.value = p["Player Name"];
-                opt.textContent = p["Player Name"];
-                select.appendChild(opt);
+        const input = document.getElementById('player-search');
+        const list = document.getElementById('autocomplete-list');
+
+        input.addEventListener('input', function() {
+            const val = this.value.toLowerCase();
+            list.innerHTML = '';
+            if (!val) return;
+
+            const matches = playerData
+                .filter(p => p["Player Name"].toLowerCase().includes(val))
+                .sort((a, b) => a["Player Name"].localeCompare(b["Player Name"]));
+
+            matches.forEach(player => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                item.textContent = player["Player Name"];
+                item.onclick = () => {
+                    input.value = player["Player Name"];
+                    list.innerHTML = '';
+                    loadBadges(player["Player Name"]);
+                };
+                list.appendChild(item);
             });
-        }
+        });
+
+        // Hide list when clicking outside
+        document.addEventListener('click', (e) => {
+            if (e.target !== input) list.innerHTML = '';
+        });
     };
 
-function loadBadges() {
-    const selectedName = document.getElementById('player-select').value;
-    const player = playerData.find(p => p["Player Name"] === selectedName);
-    
-    document.querySelectorAll('.badge').forEach(b => b.classList.remove('unlocked'));
+    function loadBadges(selectedName) {
+        const player = playerData.find(p => p["Player Name"] === selectedName);
+        document.querySelectorAll('.badge').forEach(b => b.classList.remove('unlocked'));
 
-    if (!player) return;
+        if (!player) return;
 
-    // Define all constants at the top for clean logic
-    const totalGames = parseInt(player["Games Played"]) || 0;
-    const matchesWon = parseInt(player["Matches Won"]) || 0;
-    const streak = parseInt(player["Longest Win Streak"]) || 0;
-    const eightOB = parseInt(player["8 on Break"]) || 0;
-    const breakRun = parseInt(player["Break and Run"]) || 0;
-    const miniSlam = parseInt(player["Mini-Slam"]) || 0;
+        const g = parseInt(player["Games Played"]) || 0;
+        const w = parseInt(player["Matches Won"]) || 0;
+        const s = parseInt(player["Longest Win Streak"]) || 0;
+        const o = parseInt(player["8 on Break"]) || 0;
+        const b = parseInt(player["Break and Run"]) || 0;
+        const m = parseInt(player["Mini-Slam"]) || 0;
 
-    // Game Milestone Logic (Based on Total Games Played)
-    if (totalGames >= 1)    document.getElementById('badge-1-game').classList.add('unlocked');
-    if (totalGames >= 25)   document.getElementById('badge-25-games').classList.add('unlocked');
-    if (totalGames >= 100)  document.getElementById('badge-100-games').classList.add('unlocked');
-    if (totalGames >= 200)  document.getElementById('badge-200-games').classList.add('unlocked');
-    if (totalGames >= 300)  document.getElementById('badge-300-games').classList.add('unlocked');
-    if (totalGames >= 400)  document.getElementById('badge-400-games').classList.add('unlocked');
-    if (totalGames >= 500)  document.getElementById('badge-500-games').classList.add('unlocked');
-    if (totalGames >= 1000) document.getElementById('badge-1000-games').classList.add('unlocked');
-    // 8 on Break Logic
-    if (eightOB >= 1)  document.getElementById('badge-8ob-1').classList.add('unlocked');
-    if (eightOB >= 5)  document.getElementById('badge-8ob-5').classList.add('unlocked');
-    if (eightOB >= 10) document.getElementById('badge-8ob-10').classList.add('unlocked');
-    if (eightOB >= 20) document.getElementById('badge-8ob-20').classList.add('unlocked');
+        // Games Logic
+        if (g >= 1)    document.getElementById('badge-1-game').classList.add('unlocked');
+        if (g >= 25)   document.getElementById('badge-25-games').classList.add('unlocked');
+        if (g >= 100)  document.getElementById('badge-100-games').classList.add('unlocked');
+        if (g >= 200)  document.getElementById('badge-200-games').classList.add('unlocked');
+        if (g >= 300)  document.getElementById('badge-300-games').classList.add('unlocked');
+        if (g >= 400)  document.getElementById('badge-400-games').classList.add('unlocked');
+        if (g >= 500)  document.getElementById('badge-500-games').classList.add('unlocked');
+        if (g >= 1000) document.getElementById('badge-1000-games').classList.add('unlocked');
 
-    // Break and Run Logic
-    if (breakRun >= 1)  document.getElementById('badge-br-1').classList.add('unlocked');
-    if (breakRun >= 5)  document.getElementById('badge-br-5').classList.add('unlocked');
-    if (breakRun >= 10) document.getElementById('badge-br-10').classList.add('unlocked');
-    if (breakRun >= 20) document.getElementById('badge-br-20').classList.add('unlocked');
-    if (breakRun >= 50) document.getElementById('badge-br-50').classList.add('unlocked');
+        // Wins Logic
+        if (w >= 1)   document.getElementById('badge-won-1').classList.add('unlocked');
+        if (w >= 10)  document.getElementById('badge-won-10').classList.add('unlocked');
+        if (w >= 20)  document.getElementById('badge-won-20').classList.add('unlocked');
+        if (w >= 50)  document.getElementById('badge-won-50').classList.add('unlocked');
+        if (w >= 100) document.getElementById('badge-won-100').classList.add('unlocked');
 
-    // Mini-Slam Logic
-    if (miniSlam >= 1) document.getElementById('badge-ms-1').classList.add('unlocked');
-    if (miniSlam >= 3) document.getElementById('badge-ms-3').classList.add('unlocked');
-    if (miniSlam >= 5) document.getElementById('badge-ms-5').classList.add('unlocked');
+        // Streak Logic
+        if (s >= 5)   document.getElementById('badge-streak-5').classList.add('unlocked');
+        if (s >= 10)  document.getElementById('badge-streak-10').classList.add('unlocked');
+        if (s >= 15)  document.getElementById('badge-streak-15').classList.add('unlocked');
+        if (s >= 20)  document.getElementById('badge-streak-20').classList.add('unlocked');
+        if (s >= 32)  document.getElementById('badge-streak-32').classList.add('unlocked');
 
-    // Win Streak Logic
-    if (streak >= 5)  document.getElementById('badge-streak-5').classList.add('unlocked');
-    if (streak >= 10) document.getElementById('badge-streak-10').classList.add('unlocked');
-    if (streak >= 15) document.getElementById('badge-streak-15').classList.add('unlocked');
-    if (streak >= 20) document.getElementById('badge-streak-20').classList.add('unlocked');
-     if (streak >= 50) document.getElementById('badge-streak-50').classList.add('unlocked');
+        // 8OB Logic
+        if (o >= 1)   document.getElementById('badge-8ob-1').classList.add('unlocked');
+        if (o >= 5)   document.getElementById('badge-8ob-5').classList.add('unlocked');
+        if (o >= 10)  document.getElementById('badge-8ob-10').classList.add('unlocked');
+        if (o >= 20)  document.getElementById('badge-8ob-20').classList.add('unlocked');
 
-    // Matches Won Logic
-    if (matchesWon >= 1) {document.getElementById('badge-won-1').classList.add('unlocked');
-    if (matchesWon >= 10)  document.getElementById('badge-won-10').classList.add('unlocked');
-    if (matchesWon >= 20)  document.getElementById('badge-won-20').classList.add('unlocked');
-    if (matchesWon >= 50)  document.getElementById('badge-won-50').classList.add('unlocked');
-    if (matchesWon >= 100) document.getElementById('badge-won-100').classList.add('unlocked');
+        // B&R Logic
+        if (b >= 1)   document.getElementById('badge-br-1').classList.add('unlocked');
+        if (b >= 5)   document.getElementById('badge-br-5').classList.add('unlocked');
+        if (b >= 10)  document.getElementById('badge-br-10').classList.add('unlocked');
+        if (b >= 20)  document.getElementById('badge-br-20').classList.add('unlocked');
+        if (b >= 50)  document.getElementById('badge-br-50').classList.add('unlocked');
+
+        // Mini-Slam Logic
+        if (m >= 1)   document.getElementById('badge-ms-1').classList.add('unlocked');
+        if (m >= 3)   document.getElementById('badge-ms-3').classList.add('unlocked');
+        if (m >= 5)   document.getElementById('badge-ms-5').classList.add('unlocked');
     }
-}
 </script>
 
 </body>
