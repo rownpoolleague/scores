@@ -482,7 +482,7 @@
 
         for (const key in player) {
             // Skips non-stat display items, specifically Player # and Handicap
-            if (["Player Name", "Handicap", "Player #"].includes(key)) continue;
+            if (["Player Name", "HC", "Player #"].includes(key)) continue;
 
             const card = document.createElement('div');
             card.className = 'stat-card';
