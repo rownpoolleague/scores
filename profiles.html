@@ -362,26 +362,43 @@
         const shelf = document.getElementById('badgeShelf');
         shelf.innerHTML = '';
         
-        const badgeInfo = {
-            "🐐": "G.O.A.T. (1000+ Games)",
-            "👑": "Legend (500+ Games)",
-            "💯": "Centurion (100+ Games)",
-            "📖": "Learner (50+ Games)",
-            "🐣": "Beginner (1+ Games)",
-            "🏆": "Champion (100+ Matches Won)",
-            "🥇": "Winner (50+ Matches Won)",
-            "🥈": "Competitor (20+ Matches Won)",
-            "🥉": "Consistent (10+ Matches Won)",
-            "🤝": "Contributor (5+ Matches Won)",
+        const badgeInfo = {            
+         //game logic
+             "🐣": "Beginner (1+ Games)",
+            "📖": "Learner (25+ Games)",
+             "💯": "Centurion (100+ Games)",
+               "🥈": "Veteran (200+ Games)",
+               "🥇": "Elite (300+ Games)",
+               "💎": "Master (400+ Games)",
+           "👑": "Legend (500+ Games)",
+            "🐐": "G.O.A.T. (1000+ Games)",            
+//Match Logic        
+             "🤝": "Contributor (1+ Matches Won)",
+                  "🥉": "Competitor (10+ Matches Won)",
+            "🎗️": "Valued (20+ Matches Won)",
+                  "🧩": "Irreplaceable (50+ Matches Won)",
+             "⚓": "Anchor (100+ Matches Won)",
+           //streak logic           
+            "🌡️": "Heating Up (5+ Streak)",
+             "🔥": "On Fire (10+ Streak)",
+               "☄️": "Burning Up (15+ Streak)",
             "🚫": "Unstoppable (20+ Streak)",
-            "☄️": "Burning Up (15+ Streak)",
-            "🔥": "On Fire (10+ Streak)",
-            "✨": "Spark (5+ Streak)",
+            "💥": "Super Nova (32+ Streak)"
+           //8OB Logic
+              "🧲": "Lucky (1+ 8 on Break)",
+            "🎓": "Educated (5+ 8 on Break)",
+            "🎯": "Skilled (10+ 8 on Break)",
+                      "🧙‍♂️": "Master (20+ 8 on Break)",
+            //B+R logic
+             "📸": "Flashy (1+ Break & Run)",
+                "🧱": "Solid (5+ Break & Run)",
+              "😨": "Scary (10+ Break & Run)",
             "👹": "Monster (20+ Break & Run)",
-            "📸": "Flashy (1+ Break & Run)",
-            "🧙‍♂️": "Master (20+ 8 on Break)",
-            "🧲": "Horseshoe (1+ 8 on Break)",
-            "⭐": "Stellar (1+ Mini-Slam)"
+            "💀": "Demon (50+ Break & Run)",
+  //mini-slam logic
+             "⭐": "Stellar (1+ Mini-Slam)",
+            "👽": "Otherwordly (3+ Mini-Slam)",
+             "🌌": "Galactic (5+ Mini-Slam)"          
         };
 
         const g = parseInt(player["Games Played"]) || 0;
