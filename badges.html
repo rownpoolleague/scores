@@ -74,10 +74,10 @@
             <div class="badge-desc">1+ Games</div>
         </div>
 
-        <div id="badge-50-games" class="badge">
+        <div id="badge-25-games" class="badge">
             <div class="badge-icon">📖</div>
             <span class="badge-name">Learner</span>
-            <div class="badge-desc">50+ Games Played</div>
+            <div class="badge-desc">25+ Games Played</div>
         </div>
 
         <div id="badge-100-games" class="badge">
@@ -116,37 +116,37 @@
             <div class="badge-desc">1000+ Games</div>
         </div>
         
-<div id="badge-won-5" class="badge">
+<div id="badge-won-1" class="badge">
     <div class="badge-icon">🤝</div>
     <span class="badge-name">Contributor</span>
-    <div class="badge-desc">5+ Matches Won</div>
+    <div class="badge-desc">1+ Matches Won</div>
 </div>
         <div id="badge-won-10" class="badge">
     <div class="badge-icon">🥉</div>
-    <span class="badge-name">Consistent</span>
+    <span class="badge-name">Competitor</span>
     <div class="badge-desc">10+ Matches Won</div>
 </div>
 
 <div id="badge-won-20" class="badge">
-    <div class="badge-icon">🥈</div>
-    <span class="badge-name">Competitor</span>
+    <div class="badge-icon">🎗️</div>
+    <span class="badge-name">Valued</span>
     <div class="badge-desc">20+ Matches Won</div>
 </div>
 
 <div id="badge-won-50" class="badge">
-    <div class="badge-icon">🥇</div>
-    <span class="badge-name">Winner</span>
+    <div class="badge-icon">🧩</div>
+    <span class="badge-name">Irreplaceable</span>
     <div class="badge-desc">50+ Matches Won</div>
 </div>
 
 <div id="badge-won-100" class="badge">
-    <div class="badge-icon">🏆</div>
-    <span class="badge-name">Champion</span>
+    <div class="badge-icon">⚓</div>
+    <span class="badge-name">Anchor</span>
     <div class="badge-desc">100+ Matches Won</div>
 </div>
         <div id="badge-streak-5" class="badge">
-            <div class="badge-icon">✨</div>
-            <span class="badge-name">Spark</span>
+            <div class="badge-icon">🌡️</div>
+            <span class="badge-name">Heating Up</span>
             <div class="badge-desc">5+ Win Streak</div>
         </div>
 
@@ -167,9 +167,14 @@
             <span class="badge-name">Unstoppable</span>
             <div class="badge-desc">20+ Win Streak</div>
         </div>
+         <div id="badge-streak-32" class="badge">
+            <div class="badge-icon">💥</div>
+            <span class="badge-name">Super Nova</span>
+            <div class="badge-desc">32+ Win Streak</div>
+        </div>
         <div id="badge-8ob-1" class="badge">
     <div class="badge-icon">🧲</div>
-    <span class="badge-name">Horseshoe</span>
+    <span class="badge-name">Lucky</span>
     <div class="badge-desc">1+ 8 on Break</div>
 </div>
 <div id="badge-8ob-5" class="badge">
@@ -268,7 +273,7 @@ function loadBadges() {
 
     // Game Milestone Logic (Based on Total Games Played)
     if (totalGames >= 1)    document.getElementById('badge-1-game').classList.add('unlocked');
-    if (totalGames >= 50)   document.getElementById('badge-50-games').classList.add('unlocked');
+    if (totalGames >= 25)   document.getElementById('badge-25-games').classList.add('unlocked');
     if (totalGames >= 100)  document.getElementById('badge-100-games').classList.add('unlocked');
     if (totalGames >= 200)  document.getElementById('badge-200-games').classList.add('unlocked');
     if (totalGames >= 300)  document.getElementById('badge-300-games').classList.add('unlocked');
@@ -298,9 +303,10 @@ function loadBadges() {
     if (streak >= 10) document.getElementById('badge-streak-10').classList.add('unlocked');
     if (streak >= 15) document.getElementById('badge-streak-15').classList.add('unlocked');
     if (streak >= 20) document.getElementById('badge-streak-20').classList.add('unlocked');
+     if (streak >= 50) document.getElementById('badge-streak-50').classList.add('unlocked');
 
     // Matches Won Logic
-    if (matchesWon >= 5) {document.getElementById('badge-won-5').classList.add('unlocked');
+    if (matchesWon >= 1) {document.getElementById('badge-won-1').classList.add('unlocked');
     if (matchesWon >= 10)  document.getElementById('badge-won-10').classList.add('unlocked');
     if (matchesWon >= 20)  document.getElementById('badge-won-20').classList.add('unlocked');
     if (matchesWon >= 50)  document.getElementById('badge-won-50').classList.add('unlocked');
