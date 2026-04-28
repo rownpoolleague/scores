@@ -364,11 +364,11 @@
         
         const badgeInfo = {            
             // game logic
-            "🐣": "Beginner (1+ Games)",
-            "📖": "Learner (25+ Games)",
-            "💯": "Centurion (100+ Games)",
-            "🥈": "Veteran (200+ Games)",
-            "🥇": "Elite (300+ Games)",
+            "🐣": "Novice (1+ Games)",
+            "📖": "Student (25+ Games)",
+            "🎓": "Graduate (100+ Games)",
+            "🥈": "Professional (200+ Games)",
+            "🥇": "Veteran (300+ Games)",
             "💎": "Master (400+ Games)",
             "👑": "Legend (500+ Games)",
             "🐐": "G.O.A.T. (1000+ Games)",            
@@ -376,8 +376,8 @@
             "🤝": "Contributor (1+ Matches Won)",
             "🥉": "Competitor (10+ Matches Won)",
             "🎗️": "Valued (20+ Matches Won)",
-            "🧩": "Irreplaceable (50+ Matches Won)",
-            "⚓": "Anchor (100+ Matches Won)",
+            "🧩": "Irreplaceable (100+ Matches Won)",
+            "⚓": "Anchor (50+ Matches Won)",
             // streak logic           
             "🌡️": "Heating Up (5+ Streak)",
             "🔥": "On Fire (10+ Streak)",
@@ -421,8 +421,8 @@
         else if (g >= 1) earned.push("🐣");
 
         // Match Win Logic
-        if (w >= 100) earned.push("⚓");
-        else if (w >= 50) earned.push("🧩");
+        if (w >= 50) earned.push("⚓");
+        else if (w >= 100) earned.push("🧩");
         else if (w >= 20) earned.push("🎗️");
         else if (w >= 10) earned.push("🥉");
         else if (w >= 1) earned.push("🤝");
