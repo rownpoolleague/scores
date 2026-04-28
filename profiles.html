@@ -145,14 +145,34 @@
             margin-bottom: 15px;
         }
 
-        .badge-shelf {
+       .badge-shelf {
+            display: flex;
+            flex-direction: column; /* Stack icons above the text */
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* Container for icons to keep them side-by-side */
+        .badge-icons {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 10px;
-            padding: 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
+        }
+
+        .badge-count-text {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--brand-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-top: 1px solid #333;
+            padding-top: 8px;
+            width: 80%;
         }
 
         .badge-mini {
@@ -366,40 +386,25 @@
         window.scrollTo(0, 0);
     }
 
-    function renderBadges(player) {
+   function renderBadges(player) {
         const shelf = document.getElementById('badgeShelf');
         shelf.innerHTML = '';
         
+        // Create a wrapper for just the icons
+        const iconWrapper = document.createElement('div');
+        iconWrapper.className = 'badge-icons';
+        
         const badgeInfo = {            
-            "🐣": "Novice (1+ Games)",
-            "📖": "Student (25+ Games)",
-            "🎓": "Graduate (100+ Games)",
-            "🥈": "Professional (200+ Games)",
-            "🥇": "Veteran (300+ Games)",
-            "💎": "Master (400+ Games)",
-            "👑": "Legend (500+ Games)",
-            "🐐": "G.O.A.T. (1000+ Games)",            
-            "🤝": "Contributor (1+ Matches Won)",
-            "🥉": "Competitor (10+ Matches Won)",
-            "🎗️": "Valued (20+ Matches Won)",
-            "🧩": "Irreplaceable (100+ Matches Won)",
-            "⚓": "Anchor (50+ Matches Won)",
-            "🌡️": "Heating Up (5+ Streak)",
-            "🔥": "On Fire (10+ Streak)",
-            "☄️": "Burning Up (15+ Streak)",
-            "🚫": "Unstoppable (20+ Streak)",
-            "💥": "Super Nova (32+ Streak)",
-            "🧲": "Lucky (1+ 8 on Break)",
-            "🎯": "Skilled (10+ 8 on Break)",
-            "🧙‍♂️": "Master (20+ 8 on Break)",
-            "📸": "Flashy (1+ Break & Run)",
-            "🧱": "Solid (5+ Break & Run)",
-            "😨": "Scary (10+ Break & Run)",
-            "👹": "Monster (20+ Break & Run)",
-            "💀": "Demon (50+ Break & Run)",
-            "⭐": "Stellar (1+ Mini-Slam)",
-            "👽": "Otherwordly (3+ Mini-Slam)",
-            "🌌": "Galactic (5+ Mini-Slam)"          
+            "🐣": "Novice (1+ Games)", "📖": "Student (25+ Games)", "🎓": "Graduate (100+ Games)",
+            "🥈": "Professional (200+ Games)", "🥇": "Veteran (300+ Games)", "💎": "Master (400+ Games)",
+            "👑": "Legend (500+ Games)", "🐐": "G.O.A.T. (1000+ Games)", "🤝": "Contributor (1+ Matches Won)",
+            "🥉": "Competitor (10+ Matches Won)", "🎗️": "Valued (20+ Matches Won)", "🧩": "Irreplaceable (100+ Matches Won)",
+            "⚓": "Anchor (50+ Matches Won)", "🌡️": "Heating Up (5+ Streak)", "🔥": "On Fire (10+ Streak)",
+            "☄️": "Burning Up (15+ Streak)", "🚫": "Unstoppable (20+ Streak)", "💥": "Super Nova (32+ Streak)",
+            "🧲": "Lucky (1+ 8 on Break)", "🎯": "Skilled (10+ 8 on Break)", "🧙‍♂️": "Master (20+ 8 on Break)",
+            "📸": "Flashy (1+ Break & Run)", "🧱": "Solid (5+ Break & Run)", "😨": "Scary (10+ Break & Run)",
+            "👹": "Monster (20+ Break & Run)", "💀": "Demon (50+ Break & Run)", "⭐": "Stellar (1+ Mini-Slam)",
+            "👽": "Otherwordly (3+ Mini-Slam)", "🌌": "Galactic (5+ Mini-Slam)"          
         };
 
         const g = parseInt(player["Games Played"]) || 0;
@@ -452,26 +457,30 @@
             return;
         }
 
+        // Add icons to the icon wrapper
         earned.forEach(icon => {
             const span = document.createElement('span');
             span.className = 'badge-mini';
             span.textContent = icon;
-            span.title = badgeInfo[icon] || ""; 
-            
-            span.onclick = (e) => {
+            span.onclick = () => {
                 const toast = document.getElementById('badgeToast');
                 toast.textContent = badgeInfo[icon];
                 toast.style.display = 'block';
                 clearTimeout(window.badgeTimeout);
-                window.badgeTimeout = setTimeout(() => {
-                    toast.style.display = 'none';
-                }, 2000);
+                window.badgeTimeout = setTimeout(() => { toast.style.display = 'none'; }, 2000);
             };
-
-            shelf.appendChild(span);
+            iconWrapper.appendChild(span);
         });
-    }
 
+        // Add the icon wrapper to the shelf
+        shelf.appendChild(iconWrapper);
+
+        // Add the Badge Count text to the shelf
+        const countDisplay = document.createElement('div');
+        countDisplay.className = 'badge-count-text';
+        countDisplay.textContent = `Badge Count: ${earned.length}`;
+        shelf.appendChild(countDisplay);
+    }
     function renderStatCards(player) {
         const container = document.getElementById('statCards');
         container.innerHTML = '';
