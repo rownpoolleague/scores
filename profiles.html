@@ -20,16 +20,19 @@
             color: var(--text-main);
             margin: 0;
             padding: 0;
+            overflow-x: hidden; /* Prevents side-scrolling */
         }
 
         .app-container {
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
-            border: 2px solid var(--brand-blue);
+            border-left: 2px solid var(--brand-blue);
+            border-right: 2px solid var(--brand-blue);
             min-height: 100vh;
             box-sizing: border-box;
             padding-bottom: 50px;
+            background: var(--dark-bg);
         }
 
         header {
@@ -85,6 +88,7 @@
         #statsBox {
             padding: 10px;
             display: none;
+            box-sizing: border-box;
         }
 
         .profile-header {
@@ -167,12 +171,14 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
             margin-top: 20px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .stat-card {
             background: var(--card-bg);
             border: 1px solid #222;
-            padding: 5px 5px;
+            padding: 10px 5px;
             border-radius: 8px;
             text-align: center;
             cursor: pointer;
@@ -180,7 +186,9 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-height: 50px;
+            min-height: 60px;
+            box-sizing: border-box;
+            overflow: hidden; /* Ensures text stays inside */
         }
 
         .stat-card:active {
@@ -190,7 +198,7 @@
 
         .stat-label {
             color: var(--text-dim);
-            font-size: 0.6rem;
+            font-size: 0.55rem; /* Shrunk slightly for better fit */
             text-transform: uppercase;
             display: block;
             margin-bottom: 5px;
@@ -241,11 +249,11 @@
             text-transform: uppercase;
         }
 
-        footer { text-align: center; margin-top: 40px; }
+        footer { text-align: center; margin-top: 40px; padding-bottom: 20px; }
         .footer-logo { max-width: 150px; opacity: 0.7; }
         .nav-btn {
             display: block;
-            margin: 20px;
+            margin: 20px 0;
             padding: 15px;
             border: 1px solid var(--brand-blue);
             color: var(--brand-blue);
@@ -358,12 +366,11 @@
         window.scrollTo(0, 0);
     }
 
-   function renderBadges(player) {
+    function renderBadges(player) {
         const shelf = document.getElementById('badgeShelf');
         shelf.innerHTML = '';
         
         const badgeInfo = {            
-            // game logic
             "🐣": "Novice (1+ Games)",
             "📖": "Student (25+ Games)",
             "🎓": "Graduate (100+ Games)",
@@ -372,30 +379,24 @@
             "💎": "Master (400+ Games)",
             "👑": "Legend (500+ Games)",
             "🐐": "G.O.A.T. (1000+ Games)",            
-            // Match Logic        
             "🤝": "Contributor (1+ Matches Won)",
             "🥉": "Competitor (10+ Matches Won)",
             "🎗️": "Valued (20+ Matches Won)",
             "🧩": "Irreplaceable (100+ Matches Won)",
             "⚓": "Anchor (50+ Matches Won)",
-            // streak logic           
             "🌡️": "Heating Up (5+ Streak)",
             "🔥": "On Fire (10+ Streak)",
             "☄️": "Burning Up (15+ Streak)",
             "🚫": "Unstoppable (20+ Streak)",
             "💥": "Super Nova (32+ Streak)",
-            // 8OB Logic
             "🧲": "Lucky (1+ 8 on Break)",
-            "🎓": "Educated (5+ 8 on Break)",
             "🎯": "Skilled (10+ 8 on Break)",
             "🧙‍♂️": "Master (20+ 8 on Break)",
-            // B+R logic
             "📸": "Flashy (1+ Break & Run)",
             "🧱": "Solid (5+ Break & Run)",
             "😨": "Scary (10+ Break & Run)",
             "👹": "Monster (20+ Break & Run)",
             "💀": "Demon (50+ Break & Run)",
-            // mini-slam logic
             "⭐": "Stellar (1+ Mini-Slam)",
             "👽": "Otherwordly (3+ Mini-Slam)",
             "🌌": "Galactic (5+ Mini-Slam)"          
@@ -410,7 +411,6 @@
 
         let earned = [];
 
-        // Game Tier Logic
         if (g >= 1000) earned.push("🐐");
         else if (g >= 500) earned.push("👑");
         else if (g >= 400) earned.push("💎");
@@ -420,34 +420,29 @@
         else if (g >= 25) earned.push("📖");
         else if (g >= 1) earned.push("🐣");
 
-        // Match Win Logic
         if (w >= 100) earned.push("🧩");
         else if (w >= 50) earned.push("⚓");
         else if (w >= 20) earned.push("🎗️");
         else if (w >= 10) earned.push("🥉");
         else if (w >= 1) earned.push("🤝");
 
-        // Streak Logic
         if (s >= 32) earned.push("💥");
         else if (s >= 20) earned.push("🚫");
         else if (s >= 15) earned.push("☄️");
         else if (s >= 10) earned.push("🔥");
         else if (s >= 5) earned.push("🌡️");
 
-        // 8 On Break Logic
         if (o >= 20) earned.push("🧙‍♂️");
         else if (o >= 10) earned.push("🎯");
         else if (o >= 5) earned.push("🎓");
         else if (o >= 1) earned.push("🧲");
 
-        // Break and Run Logic
         if (b >= 50) earned.push("💀");
         else if (b >= 20) earned.push("👹");
         else if (b >= 10) earned.push("😨");
         else if (b >= 5) earned.push("🧱");
         else if (b >= 1) earned.push("📸");
 
-        // Mini-Slam Logic
         if (m >= 5) earned.push("🌌");
         else if (m >= 3) earned.push("👽");
         else if (m >= 1) earned.push("⭐");
@@ -476,13 +471,13 @@
             shelf.appendChild(span);
         });
     }
+
     function renderStatCards(player) {
         const container = document.getElementById('statCards');
         container.innerHTML = '';
 
         for (const key in player) {
-            // Skips non-stat display items, specifically Player # and Handicap
-            if (["Player Name", "HC", "Player #"].includes(key)) continue;
+            if (["Player Name", "HC", "Handicap", "Player #"].includes(key)) continue;
 
             const card = document.createElement('div');
             card.className = 'stat-card';
