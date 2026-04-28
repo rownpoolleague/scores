@@ -95,7 +95,7 @@
             if (!val) return;
 
             const matches = playerData
-                .filter(p => p["Player Name"].toLowerCase().includes(val))
+                .filter(p => p["Player Name"].toLowerCase().startsWith(val))
                 .sort((a, b) => a["Player Name"].localeCompare(b["Player Name"]));
 
             matches.forEach(player => {
