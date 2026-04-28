@@ -386,11 +386,10 @@
         window.scrollTo(0, 0);
     }
 
-   function renderBadges(player) {
+  function renderBadges(player) {
         const shelf = document.getElementById('badgeShelf');
         shelf.innerHTML = '';
         
-        // Create a wrapper for just the icons
         const iconWrapper = document.createElement('div');
         iconWrapper.className = 'badge-icons';
         
@@ -398,8 +397,8 @@
             "🐣": "Novice (1+ Games)", "📖": "Student (25+ Games)", "🎓": "Graduate (100+ Games)",
             "🥈": "Professional (200+ Games)", "🥇": "Veteran (300+ Games)", "💎": "Master (400+ Games)",
             "👑": "Legend (500+ Games)", "🐐": "G.O.A.T. (1000+ Games)", "🤝": "Contributor (1+ Matches Won)",
-            "🥉": "Competitor (10+ Matches Won)", "🎗️": "Valued (20+ Matches Won)", "🧩": "Irreplaceable (100+ Matches Won)",
-            "⚓": "Anchor (50+ Matches Won)", "🌡️": "Heating Up (5+ Streak)", "🔥": "On Fire (10+ Streak)",
+            "🥉": "Competitor (10+ Matches Won)", "🎗️": "Valued (20+ Matches Won)", "⚓": "Anchor (50+ Matches Won)",
+            "🧩": "Irreplaceable (100+ Matches Won)", "🌡️": "Heating Up (5+ Streak)", "🔥": "On Fire (10+ Streak)",
             "☄️": "Burning Up (15+ Streak)", "🚫": "Unstoppable (20+ Streak)", "💥": "Super Nova (32+ Streak)",
             "🧲": "Lucky (1+ 8 on Break)", "🎯": "Skilled (10+ 8 on Break)", "🧙‍♂️": "Master (20+ 8 on Break)",
             "📸": "Flashy (1+ Break & Run)", "🧱": "Solid (5+ Break & Run)", "😨": "Scary (10+ Break & Run)",
@@ -414,51 +413,75 @@
         const o = parseInt(player["8 on Break"]) || 0;
         const m = parseInt(player["Mini-Slam"]) || 0;
 
-        let earned = [];
+        let totalCount = 0;
+        let displayIcons = [];
 
-        if (g >= 1000) earned.push("🐐");
-        else if (g >= 500) earned.push("👑");
-        else if (g >= 400) earned.push("💎");
-        else if (g >= 300) earned.push("🥇");
-        else if (g >= 200) earned.push("🥈");
-        else if (g >= 100) earned.push("🎓");
-        else if (g >= 25) earned.push("📖");
-        else if (g >= 1) earned.push("🐣");
+        // --- 1. GAMES PLAYED ---
+        let gamesBadges = [];
+        if (g >= 1) gamesBadges.push("🐣");
+        if (g >= 25) gamesBadges.push("📖");
+        if (g >= 100) gamesBadges.push("🎓");
+        if (g >= 200) gamesBadges.push("🥈");
+        if (g >= 300) gamesBadges.push("🥇");
+        if (g >= 400) gamesBadges.push("💎");
+        if (g >= 500) gamesBadges.push("👑");
+        if (g >= 1000) gamesBadges.push("🐐");
+        totalCount += gamesBadges.length;
+        if (gamesBadges.length > 0) displayIcons.push(gamesBadges.pop());
 
-        if (w >= 100) earned.push("🧩");
-        else if (w >= 50) earned.push("⚓");
-        else if (w >= 20) earned.push("🎗️");
-        else if (w >= 10) earned.push("🥉");
-        else if (w >= 1) earned.push("🤝");
+        // --- 2. WINS ---
+        let winsBadges = [];
+        if (w >= 1) winsBadges.push("🤝");
+        if (w >= 10) winsBadges.push("🥉");
+        if (w >= 20) winsBadges.push("🎗️");
+        if (w >= 50) winsBadges.push("⚓");
+        if (w >= 100) winsBadges.push("🧩");
+        totalCount += winsBadges.length;
+        if (winsBadges.length > 0) displayIcons.push(winsBadges.pop());
 
-        if (s >= 32) earned.push("💥");
-        else if (s >= 20) earned.push("🚫");
-        else if (s >= 15) earned.push("☄️");
-        else if (s >= 10) earned.push("🔥");
-        else if (s >= 5) earned.push("🌡️");
+        // --- 3. STREAKS ---
+        let streakBadges = [];
+        if (s >= 5) streakBadges.push("🌡️");
+        if (s >= 10) streakBadges.push("🔥");
+        if (s >= 15) streakBadges.push("☄️");
+        if (s >= 20) streakBadges.push("🚫");
+        if (s >= 32) streakBadges.push("💥");
+        totalCount += streakBadges.length;
+        if (streakBadges.length > 0) displayIcons.push(streakBadges.pop());
 
-        if (o >= 20) earned.push("🧙‍♂️");
-        else if (o >= 10) earned.push("🎯");
-        else if (o >= 5) earned.push("🎓");
-        else if (o >= 1) earned.push("🧲");
+        // --- 4. 8 ON BREAK ---
+        let oBadges = [];
+        if (o >= 1) oBadges.push("🧲");
+        if (o >= 10) oBadges.push("🎯");
+        if (o >= 20) oBadges.push("🧙‍♂️");
+        totalCount += oBadges.length;
+        if (oBadges.length > 0) displayIcons.push(oBadges.pop());
 
-        if (b >= 50) earned.push("💀");
-        else if (b >= 20) earned.push("👹");
-        else if (b >= 10) earned.push("😨");
-        else if (b >= 5) earned.push("🧱");
-        else if (b >= 1) earned.push("📸");
+        // --- 5. BREAK & RUN ---
+        let bBadges = [];
+        if (b >= 1) bBadges.push("📸");
+        if (b >= 5) bBadges.push("🧱");
+        if (b >= 10) bBadges.push("😨");
+        if (b >= 20) bBadges.push("👹");
+        if (b >= 50) bBadges.push("💀");
+        totalCount += bBadges.length;
+        if (bBadges.length > 0) displayIcons.push(bBadges.pop());
 
-        if (m >= 5) earned.push("🌌");
-        else if (m >= 3) earned.push("👽");
-        else if (m >= 1) earned.push("⭐");
+        // --- 6. MINI-SLAMS ---
+        let mBadges = [];
+        if (m >= 1) mBadges.push("⭐");
+        if (m >= 3) mBadges.push("👽");
+        if (m >= 5) mBadges.push("🌌");
+        totalCount += mBadges.length;
+        if (mBadges.length > 0) displayIcons.push(mBadges.pop());
 
-        if (earned.length === 0) {
+        if (totalCount === 0) {
             shelf.innerHTML = '<span style="color:#444; font-size:0.8rem;">No Badges Earned Yet</span>';
             return;
         }
 
-        // Add icons to the icon wrapper
-        earned.forEach(icon => {
+        // Render only the TOP icons
+        displayIcons.forEach(icon => {
             const span = document.createElement('span');
             span.className = 'badge-mini';
             span.textContent = icon;
@@ -472,13 +495,12 @@
             iconWrapper.appendChild(span);
         });
 
-        // Add the icon wrapper to the shelf
         shelf.appendChild(iconWrapper);
 
-        // Add the Badge Count text to the shelf
+        // Display the total cumulative count
         const countDisplay = document.createElement('div');
         countDisplay.className = 'badge-count-text';
-        countDisplay.textContent = `Badge Count: ${earned.length}`;
+        countDisplay.textContent = `Badge Count: ${totalCount}`;
         shelf.appendChild(countDisplay);
     }
     function renderStatCards(player) {
