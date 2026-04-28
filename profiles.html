@@ -400,7 +400,7 @@
             "🥉": "Competitor (10+ Matches Won)", "🎗️": "Valued (20+ Matches Won)", "⚓": "Anchor (50+ Matches Won)",
             "🧩": "Irreplaceable (100+ Matches Won)", "🌡️": "Heating Up (5+ Streak)", "🔥": "On Fire (10+ Streak)",
             "☄️": "Burning Up (15+ Streak)", "🚫": "Unstoppable (20+ Streak)", "💥": "Super Nova (32+ Streak)",
-            "🧲": "Lucky (1+ 8 on Break)", "🎯": "Skilled (10+ 8 on Break)", "🧙‍♂️": "Master (20+ 8 on Break)",
+            "🧲": "Lucky (1+ 8 on Break)", "✒️": "Educated (10+ 8 on Break)","🎯": "Skilled (10+ 8 on Break)", "🧙‍♂️": "Master (20+ 8 on Break)",
             "📸": "Flashy (1+ Break & Run)", "🧱": "Solid (5+ Break & Run)", "😨": "Scary (10+ Break & Run)",
             "👹": "Monster (20+ Break & Run)", "💀": "Demon (50+ Break & Run)", "⭐": "Stellar (1+ Mini-Slam)",
             "👽": "Otherwordly (3+ Mini-Slam)", "🌌": "Galactic (5+ Mini-Slam)"          
@@ -452,6 +452,7 @@
         // --- 4. 8 ON BREAK ---
         let oBadges = [];
         if (o >= 1) oBadges.push("🧲");
+      if (o >= 5) oBadges.push("✒️");
         if (o >= 10) oBadges.push("🎯");
         if (o >= 20) oBadges.push("🧙‍♂️");
         totalCount += oBadges.length;
