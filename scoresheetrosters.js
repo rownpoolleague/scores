@@ -7,7 +7,7 @@ const scoresheetrosters = {
     "Dan Schroeder":5,
     "Danny Plowman":5,
     "Doc Halek":5,
-    "Don Murphy":3,
+    "Don Murphy":4,
     "Don Rak":6,
     "Don Young":2,
     "Doug Andrus":4,
@@ -39,7 +39,7 @@ const scoresheetrosters = {
     "Jose Silva":3,
     "Juergen Jackert":3,
     "Julie Ringbauer":2,
-    "Kenny Esposito":4,
+    "Kenny Esposito":3,
     "Kevin Joyner":6,
     "Kevin Pattenaude":4,
     "Kevin Ward":2,
@@ -70,6 +70,6 @@ const scoresheetrosters = {
     "Tomas Ramirez":2,
     "Tony Guthrie":7,
     "Tony Perelli":5,
-    "Tony Perez":4,
+    "Tony Perez":3,
     "Yani Marinopoulos":4
 };
