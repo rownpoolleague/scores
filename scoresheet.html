@@ -1063,24 +1063,38 @@ function updateCurrentWeekAndDate() {
 
 function setScoringTeam(myNum) {
     const matchup = findMatchup(myNum); 
-    if (!matchup) return;
-    const userTeamName = getTeamNameByNumber(myNum);
-    const homeName = getTeamNameByNumber(matchup.home);
-    const awayName = getTeamNameByNumber(matchup.away);
+    
+    if (!matchup) {
+        console.error("Matchup not found for team number:", myNum);
+        return;
+    }
+
+    // Convert strings from schedule to Numbers for your lookup function
+    const userTeamName = getTeamNameByNumber(Number(myNum));
+    const homeName = getTeamNameByNumber(Number(matchup.home));
+    const awayName = getTeamNameByNumber(Number(matchup.away));
+
     const homeSelect = document.getElementById("team");
     const awaySelect = document.getElementById("opponent");
+
+    // This log will tell you exactly why the next 'if' passes or fails
+    console.log(`Setting Matchup: Home(${homeName}) Away(${awayName})`);
 
     if (homeName && awayName) {
         homeSelect.value = homeName;
         awaySelect.value = awayName;
+        
         localStorage.setItem("scoringTeamName", userTeamName); 
+        
         homeSelect.dispatchEvent(new Event('change'));
         awaySelect.dispatchEvent(new Event('change'));
+        
         closeMasterModal();
         saveNow(); 
+    } else {
+        console.error("Lookup failed. Check if team numbers match your Master List.");
     }
 }
-
 function addNewPlayerManual() {
     const homeName = document.getElementById("team").value || "Home Team";
     const awayName = document.getElementById("opponent").value || "Away Team";
