@@ -3,94 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tournament Pro - Single Elim</title>
+    <title>Tournament Pro - Absolute Fix</title>
     <style>
         :root { --bg: #0f0f0f; --card: #1a1a1a; --accent: #3b82f6; --text: #e5e5e5; --border: #2d2d2d; --win: #16a34a; --lose: #dc2626; }
         body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
-        .panel { background: var(--card); padding: 15px; border-radius: 8px; margin: 0 auto 15px; max-width: 500px; border: 1px solid var(--border); }
-        .input-row { display: grid; grid-template-columns: 1fr 60px 70px; gap: 8px; margin-bottom: 10px; }
-        input, button { padding: 12px 10px; border-radius: 6px; border: 1px solid var(--border); background: #262626; color: white; font-size: 1rem; }
+        .panel { background: var(--card); padding: 15px; border-radius: 8px; margin: 0 auto 15px; max-width: 500px; border: 1px solid var(--border); box-sizing: border-box; }
+        .input-row { display: flex; gap: 8px; margin-bottom: 10px; width: 100%; }
+        #in-n { flex-grow: 1; min-width: 0; } 
+        #in-h { width: 65px; flex-shrink: 0; } 
+        .add-btn { width: 75px; flex-shrink: 0; background: #444; cursor: pointer; font-weight: bold; }
+        input, button { padding: 12px 10px; border-radius: 6px; border: 1px solid var(--border); background: #262626; color: white; font-size: 1rem; box-sizing: border-box; }
+        .player-list { margin: 15px 0; border-top: 1px solid var(--border); padding-top: 10px; max-height: 200px; overflow-y: auto; }
+        .player-entry { display: flex; justify-content: space-between; padding: 10px; background: #222; margin-bottom: 4px; border-radius: 4px; font-size: 0.95rem; }
         .scroll-box { overflow-x: auto; background: #000; border-radius: 8px; border: 1px solid var(--border); padding: 15px 0; }
-        .bracket-flex { display: flex; gap: 40px; padding: 0 20px; min-width: max-content; }
-        .round-col { display: flex; flex-direction: column; min-width: 170px; }
+        .bracket-flex { display: flex; gap: 40px; padding: 0 20px; min-width: max-content; align-items: flex-start; }
+        .round-col { display: flex; flex-direction: column; min-width: 180px; }
         .round-header { text-align: center; font-size: 0.7rem; color: var(--accent); margin-bottom: 10px; font-weight: 800; text-transform: uppercase; }
         .match { background: #222; border: 1px solid #333; border-radius: 6px; margin: 10px 0; }
-        .slot { padding: 12px; font-size: 0.9rem; cursor: pointer; background: #2a2a2a; display: flex; justify-content: space-between; min-height: 44px; }
+        .slot { padding: 12px; font-size: 0.9rem; cursor: pointer; background: #2a2a2a; display: flex; justify-content: space-between; min-height: 44px; align-items: center; }
         .slot:first-child { border-bottom: 1px solid #111; border-radius: 6px 6px 0 0; }
         .slot:last-child { border-radius: 0 0 6px 6px; }
-        .slot.winner { background: var(--win) !important; color: white; }
-        .slot.loser { opacity: 0.2; }
-        .slot.waiting { background: var(--lose) !important; color: white; font-weight: bold; }
-        .slot.bye { color: #555; pointer-events: none; opacity: 0.5; }
+        .slot.winner { background: var(--win) !important; color: white; font-weight: bold; pointer-events: none; }
+        .slot.loser { opacity: 0.2; pointer-events: none; }
+        .slot.waiting-text { font-style: italic; color: #666; pointer-events: none; background: #1a1a1a; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
     <div id="v-master" class="panel">
         <div class="input-row">
-            <input type="text" id="in-n" placeholder="Name">
+            <input type="text" id="in-n" placeholder="Player Name">
             <input type="number" id="in-h" placeholder="HC">
-            <button onclick="addP()" style="background:#444">ADD</button>
+            <button onclick="addP()" class="add-btn">ADD</button>
         </div>
-        <button onclick="start()" style="width:100%; background: var(--win); color:white; font-weight:bold; cursor:pointer;">START SINGLE ELIM</button>
+        <div id="player-list-container" class="player-list"></div>
+        <button onclick="start()" style="width:100%; background: var(--win); color:white; font-weight:bold; cursor:pointer;">START TOURNAMENT</button>
     </div>
+
     <div id="v-active" class="hidden">
         <div class="scroll-box"><div id="win-cont" class="bracket-flex"></div></div>
-        <button onclick="location.reload()" style="background:var(--lose); margin:20px auto; display:block; padding:10px 20px; color:white; border:none; border-radius:4px; cursor:pointer;">RESET</button>
+        <button onclick="location.reload()" style="background:var(--lose); margin:20px auto; display:block; padding:10px 20px; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">RESET</button>
     </div>
+
 <script>
     let players = [];
-    let tree = [];
+    let rounds = [];
+
     function addP() {
         const n = document.getElementById('in-n'), h = document.getElementById('in-h');
-        if(!n.value || !h.value) return;
-        players.push({ name: n.value, hc: h.value, id: Math.random() });
+        if(!n.value) return;
+        players.push({ name: n.value, hc: h.value || '0', id: Math.random() });
         n.value = ''; h.value = ''; n.focus();
+        showList();
     }
+
+    function showList() {
+        document.getElementById('player-list-container').innerHTML = players.map(p => `
+            <div class="player-entry">${p.name} <span>${p.hc}</span></div>
+        `).reverse().join('');
+    }
+
     function start() {
         if(players.length < 2) return;
         let p = [...players].sort(() => Math.random() - 0.5);
-        const size = Math.pow(2, Math.ceil(Math.log2(p.length)));
-        while(p.length < size) p.push({ name: 'BYE', id: 'bye', isBye: true });
-        tree = build(p);
+        
+        rounds = [[]]; 
+        
+        // Build Round 1
+        for(let i=0; i < p.length; i+=2) {
+            let p1 = p[i];
+            let p2 = p[i+1] || null; // null represents the BYE
+            let match = { p1, p2, w: null };
+            rounds[0].push(match);
+            
+            // If p2 is a BYE, auto-advance p1 immediately
+            if(!p2) {
+                match.w = p1;
+                advanceToNextRound(1, p1);
+            }
+        }
+
         document.getElementById('v-master').classList.add('hidden');
         document.getElementById('v-active').classList.remove('hidden');
-        tree[0].forEach((m, i) => {
-            if(m.p1.isBye) advance(0, i, 'p2');
-            else if(m.p2.isBye) advance(0, i, 'p1');
-        });
         render();
     }
-    function build(p) {
-        let t = []; let r1 = [];
-        for(let i=0; i<p.length; i+=2) r1.push({ p1:p[i], p2:p[i+1], w:null });
-        t.push(r1);
-        let m = r1.length / 2;
-        while(m >= 1) { t.push(Array(m).fill(null).map(() => ({ p1:null, p2:null, w:null }))); m /= 2; }
-        return t;
+
+    function selectWinner(rIdx, mIdx, player) {
+        let match = rounds[rIdx][mIdx];
+        if(!player || match.w) return;
+        
+        match.w = player;
+        advanceToNextRound(rIdx + 1, player);
+        render();
     }
-    function advance(r, mIdx, slot) {
-        const match = tree[r][mIdx];
-        if(match.w || !match[slot] || match[slot].isBye) return;
-        match.w = match[slot];
-        if(r + 1 < tree.length) {
-            const nMatch = tree[r+1][Math.floor(mIdx/2)];
-            if(mIdx % 2 === 0) nMatch.p1 = match.w; else nMatch.p2 = match.w;
+
+    function advanceToNextRound(nextRIdx, player) {
+        if(!rounds[nextRIdx]) rounds[nextRIdx] = [];
+        
+        let round = rounds[nextRIdx];
+        let lastMatch = round[round.length - 1];
+
+        // Fill next available slot
+        if(!lastMatch || lastMatch.p2) {
+            round.push({ p1: player, p2: null, w: null });
+        } else {
+            lastMatch.p2 = player;
         }
-        render();
     }
+
     function render() {
-        document.getElementById('win-cont').innerHTML = tree.map((round, rIdx) => {
-            const mHtml = round.map((m, mIdx) => {
-                if(!m.p1 && !m.p2) return '';
-                const s1 = m.w ? (m.w.id === m.p1?.id ? 'winner' : 'loser') : (m.p1 ? '' : (m.p2 ? 'waiting' : ''));
-                const s2 = m.w ? (m.w.id === m.p2?.id ? 'winner' : 'loser') : (m.p2 ? '' : (m.p1 ? 'waiting' : ''));
-                return `<div class="match">
-                    <div class="slot ${s1} ${m.p1?.isBye?'bye':''}" onclick="advance(${rIdx},${mIdx},'p1')">${m.p1?.name || '---'}</div>
-                    <div class="slot ${s2} ${m.p2?.isBye?'bye':''}" onclick="advance(${rIdx},${mIdx},'p2')">${m.p2?.name || '---'}</div>
-                </div>`;
+        const cont = document.getElementById('win-cont');
+        cont.innerHTML = rounds.map((matches, rIdx) => {
+            let mHtml = matches.map((m, mIdx) => {
+                const s1Class = m.w ? (m.w.id === m.p1.id ? 'winner' : 'loser') : '';
+                const s2Class = m.w ? (m.p2 && m.w.id === m.p2.id ? 'winner' : 'loser') : (m.p2 ? '' : 'waiting-text');
+                
+                return `
+                    <div class="match">
+                        <div class="slot ${s1Class}" onclick="selectWinner(${rIdx}, ${mIdx}, rounds[${rIdx}][${mIdx}].p1)">
+                            ${m.p1.name} <span>${m.p1.hc}</span>
+                        </div>
+                        <div class="slot ${s2Class}" onclick="selectWinner(${rIdx}, ${mIdx}, rounds[${rIdx}][${mIdx}].p2)">
+                            ${m.p2 ? m.p2.name + ' <span>' + m.p2.hc + '</span>' : 'Waiting...'}
+                        </div>
+                    </div>
+                `;
             }).join('');
-            return mHtml ? `<div class="round-col"><div class="round-header">R${rIdx+1}</div>${mHtml}</div>` : '';
+            return `<div class="round-col"><div class="round-header">Round ${rIdx+1}</div>${mHtml}</div>`;
         }).join('');
     }
 </script>
