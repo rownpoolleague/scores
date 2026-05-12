@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>32-Player Pro Bracket - Fixed Slots</title>
+    <style>
+        :root { --bg: #0f0f0f; --card: #1a1a1a; --accent: #3b82f6; --text: #e5e5e5; --border: #2d2d2d; --win: #16a34a; --lose: #dc2626; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
+        .panel { background: var(--card); padding: 15px; border-radius: 8px; margin: 0 auto 15px; max-width: 500px; border: 1px solid var(--border); }
+        .input-row { display: grid; grid-template-columns: 1fr 60px 70px; gap: 8px; margin-bottom: 10px; }
+        input, button { padding: 12px 10px; border-radius: 6px; border: 1px solid var(--border); background: #262626; color: white; font-size: 1rem; }
+        .scroll-box { overflow-x: auto; background: #000; border-radius: 8px; border: 1px solid var(--border); padding: 15px 0; margin-bottom: 20px; }
+        .bracket-flex { display: flex; gap: 30px; padding: 0 20px; min-width: max-content; }
+        .round-col { display: flex; flex-direction: column; min-width: 160px; justify-content: space-around; }
+        .round-header { text-align: center; font-size: 0.7rem; color: var(--accent); margin-bottom: 10px; font-weight: 800; text-transform: uppercase; }
+        .match { background: #222; border: 1px solid #333; border-radius: 6px; margin: 8px 0; width: 160px; }
+        .slot { padding: 10px; font-size: 0.85rem; cursor: pointer; background: #2a2a2a; display: flex; justify-content: space-between; min-height: 40px; align-items: center; }
+        .slot:first-child { border-bottom: 1px solid #111; border-radius: 6px 6px 0 0; }
+        .slot:last-child { border-radius: 0 0 6px 6px; }
+        .slot.winner { background: var(--win) !important; color: white; font-weight: bold; }
+        .slot.loser { opacity: 0.3; }
+        .slot.waiting { background: var(--lose) !important; color: white; font-weight: bold; }
+        .slot.bye { color: #555; pointer-events: none; opacity: 0.5; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div id="v-master" class="panel">
+        <div class="input-row">
+            <input type="text" id="in-n" placeholder="Name">
+            <input type="number" id="in-h" placeholder="HC">
+            <button onclick="addP()" style="background:#444">ADD</button>
+        </div>
+        <button onclick="start()" style="width:100%; background: var(--accent); color:white; font-weight:bold; cursor:pointer;">START DOUBLE ELIM</button>
+    </div>
+
+    <div id="v-active" class="hidden">
+        <div style="font-size:0.75rem; color:var(--accent); font-weight:bold; margin-bottom:5px;">WINNERS</div>
+        <div class="scroll-box"><div id="win-cont" class="bracket-flex"></div></div>
+        
+        <div style="font-size:0.75rem; color:#8b5cf6; font-weight:bold; margin-top:20px; margin-bottom:5px;">LOSERS</div>
+        <div class="scroll-box"><div id="lose-cont" class="bracket-flex"></div></div>
+        
+        <button onclick="location.reload()" style="background:var(--lose); margin:20px auto; display:block; padding:10px 20px; color:white; border:none; border-radius:4px; font-weight:bold;">RESET</button>
+    </div>
+
+<script>
+    let players = [];
+    let wTree = [];
+    let lTree = [];
+
+    function addP() {
+        const n = document.getElementById('in-n'), h = document.getElementById('in-h');
+        if(!n.value) return;
+        players.push({ name: n.value, hc: h.value || '0', id: Math.random() });
+        n.value = ''; h.value = ''; n.focus();
+    }
+
+    function start() {
+        if(players.length < 2) return;
+        let p = [...players].sort(() => Math.random() - 0.5);
+        const size = Math.pow(2, Math.ceil(Math.log2(p.length)));
+        while(p.length < size) p.push({ name: 'BYE', id: 'bye', isBye: true });
+
+        wTree = buildWinners(p);
+        lTree = buildLosers(size);
+        
+        document.getElementById('v-master').classList.add('hidden');
+        document.getElementById('v-active').classList.remove('hidden');
+
+        wTree[0].forEach((m, i) => {
+            if(m.p1.isBye && !m.p2.isBye) advance('win', 0, i, 'p2');
+            else if(m.p2.isBye && !m.p1.isBye) advance('win', 0, i, 'p1');
+        });
+        render();
+    }
+
+    function buildWinners(p) {
+        let tree = [];
+        let r1 = [];
+        for(let i=0; i<p.length; i+=2) r1.push({ p1:p[i], p2:p[i+1], w:null });
+        tree.push(r1);
+        let mCount = r1.length / 2;
+        while(mCount >= 1) {
+            tree.push(Array(mCount).fill(null).map(() => ({ p1:null, p2:null, w:null })));
+            mCount /= 2;
+        }
+        return tree;
+    }
+
+    function buildLosers(size) {
+        let tree = [];
+        let mCount = size / 4; 
+        while(mCount >= 1) {
+            tree.push(Array(mCount).fill(null).map(() => ({ p1:null, p2:null, w:null }))); // Minor (L vs L)
+            tree.push(Array(mCount).fill(null).map(() => ({ p1:null, p2:null, w:null }))); // Major (L vs Winner Dropout)
+            mCount /= 2;
+        }
+        return tree;
+    }
+
+    function advance(side, r, mIdx, slot) {
+        const tree = side === 'win' ? wTree : lTree;
+        const match = tree[r][mIdx];
+        if(match.w || !match[slot] || match[slot].isBye) return;
+
+        const winner = match[slot];
+        const loser = (slot === 'p1') ? match.p2 : match.p1;
+        match.w = winner;
+
+        // DESTINATION LOGIC
+        if(side === 'win' && loser && !loser.isBye) {
+            let lRoundIdx = (r === 0) ? 0 : (r * 2 - 1);
+            if(lRoundIdx < lTree.length) {
+                const targetMatch = lTree[lRoundIdx][mIdx % lTree[lRoundIdx].length];
+                // If it's the very first round of losers, alternate slots. 
+                // If it's a dropout round (r > 0), they ALWAYS take P2.
+                if (r === 0) {
+                    if (mIdx % 2 === 0) targetMatch.p1 = loser; else targetMatch.p2 = loser;
+                } else {
+                    targetMatch.p2 = loser;
+                }
+            }
+        }
+
+        // PUSH WINNER
+        if(r + 1 < tree.length) {
+            const nextMatch = tree[r+1][Math.floor(mIdx/2)];
+            if(side === 'win') {
+                if(mIdx % 2 === 0) nextMatch.p1 = winner; else nextMatch.p2 = winner;
+            } else {
+                // In Losers, minor round winners go to P1 of the next major round
+                if (r % 2 === 0) {
+                    nextMatch.p1 = winner; 
+                } else {
+                    // Major round winners go to the next minor round
+                    if (mIdx % 2 === 0) nextMatch.p1 = winner; else nextMatch.p2 = winner;
+                }
+            }
+        }
+        render();
+    }
+
+    function render() {
+        draw('win-cont', wTree, 'win');
+        draw('lose-cont', lTree, 'lose');
+    }
+
+    function draw(id, tree, side) {
+        document.getElementById(id).innerHTML = tree.map((round, rIdx) => {
+            const matchesHtml = round.map((m, mIdx) => {
+                if(!m.p1 && !m.p2) return '';
+                const s1 = m.w ? (m.w.id === m.p1?.id ? 'winner' : 'loser') : (m.p1 ? '' : (m.p2 ? 'waiting' : ''));
+                const s2 = m.w ? (m.w.id === m.p2?.id ? 'winner' : 'loser') : (m.p2 ? '' : (m.p1 ? 'waiting' : ''));
+                return `
+                    <div class="match">
+                        <div class="slot ${s1} ${m.p1?.isBye?'bye':''}" onclick="advance('${side}',${rIdx},${mIdx},'p1')">${m.p1?.name || '---'}</div>
+                        <div class="slot ${s2} ${m.p2?.isBye?'bye':''}" onclick="advance('${side}',${rIdx},${mIdx},'p2')">${m.p2?.name || '---'}</div>
+                    </div>`;
+            }).join('');
+            return matchesHtml ? `<div class="round-col"><div class="round-header">R${rIdx+1}</div>${matchesHtml}</div>` : '';
+        }).join('');
+    }
+</script>
+</body>
+</html>
