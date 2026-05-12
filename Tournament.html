@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tournament Manager</title>
+    <style>
+        :root {
+            --bg: #1a1a1a;
+            --card-bg: #2a2a2a;
+            --accent: #007bff;
+            --text: #eee;
+            --border: #444;
+            --winner: #28a745;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container { max-width: 500px; margin: 0 auto; width: 100%; }
+
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+        .tab {
+            flex: 1; padding: 15px; background: var(--card-bg);
+            text-align: center; cursor: pointer; border-radius: 6px;
+            font-weight: bold; font-size: 0.9rem;
+        }
+        .tab.active { background: var(--accent); }
+
+        .controls { 
+            background: var(--card-bg); padding: 15px; border-radius: 8px;
+            display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;
+        }
+
+        .input-group { 
+            display: grid; 
+            grid-template-columns: 1fr 60px 70px; 
+            gap: 8px; 
+            width: 100%;
+        }
+
+        input, select, button {
+            padding: 12px 8px; border-radius: 4px; border: 1px solid var(--border);
+            background: #333; color: white; font-size: 1rem; width: 100%;
+        }
+
+        button { cursor: pointer; font-weight: bold; border: none; }
+        button.add-btn { background: #444; }
+        button.pool-btn { background: #555; padding: 15px; border: 1px solid var(--accent); }
+        button.start-btn { background: var(--winner); padding: 15px; }
+        button.reset-btn { background: #c0392b; margin-top: 30px; }
+
+        .check-row { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+        input[type="checkbox"] { width: 20px; height: 20px; margin: 0; }
+
+        .pool-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 5px 0; }
+        .pool-badge { background: #444; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; }
+
+        .match-card {
+            background: var(--card-bg); padding: 12px; border-radius: 8px;
+            margin-bottom: 12px; border-left: 4px solid var(--accent);
+        }
+        .player-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px; margin: 4px 0; background: #333; border-radius: 4px;
+            cursor: pointer;
+        }
+        .player-row.winner { background: var(--winner); font-weight: bold; }
+        .player-row.loser { opacity: 0.4; }
+        .vs { text-align: center; font-size: 0.65rem; color: #888; margin: 2px 0; }
+
+        .hidden { display: none; }
+        .setup-label { font-size: 0.8rem; color: #aaa; margin-bottom: -8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="tabs">
+        <div id="tab0" class="tab active" onclick="switchTourney(0)">Tourney 1</div>
+        <div id="tab1" class="tab" onclick="switchTourney(1)">Tourney 2</div>
+    </div>
+
+    <div id="global-setup" class="controls">
+        <div class="setup-label">Add Players to Master List</div>
+        <div class="input-group">
+            <input type="text" id="p-name" placeholder="Name">
+            <input type="number" id="p-hc" placeholder="HC">
+            <button class="add-btn" onclick="addPlayer()">Add</button>
+        </div>
+        <div class="pool-list" id="master-pool-display"></div>
+        <div class="check-row">
+            <input type="checkbox" id="is-open">
+            <label for="is-open">Open Tournament (No HC split)</label>
+        </div>
+        <button class="pool-btn" onclick="poolPlayers()">POOL PLAYERS</button>
+    </div>
+
+    <div id="local-setup" class="controls hidden">
+        <h3 id="local-title" style="margin:0"></h3>
+        <div class="pool-list" id="local-pool-display"></div>
+        <div class="setup-label">Choose Format</div>
+        <select id="t-format">
+            <option value="Single">Single Elimination</option>
+            <option value="Double">Double Elimination (Simulated)</option>
+        </select>
+        <button class="start-btn" onclick="startTournament()">START THIS BRACKET</button>
+    </div>
+
+    <div id="active-section" class="hidden">
+        <h3 id="tourney-title" style="margin: 0 0 15px 0; color: var(--accent);"></h3>
+        <div id="match-display"></div>
+        <button class="reset-btn" onclick="resetTourney()">End Tournament</button>
+    </div>
+</div>
+
+<script>
+    let activeIdx = 0;
+    let masterPool = [];
+    let tournaments = [
+        { status: 'pre-pool', type: '', pool: [], matches: [], format: '' },
+        { status: 'pre-pool', type: '', pool: [], matches: [], format: '' }
+    ];
+
+    function switchTourney(idx) {
+        activeIdx = idx;
+        document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+        render();
+    }
+
+    function addPlayer() {
+        const nameEl = document.getElementById('p-name');
+        const hcEl = document.getElementById('p-hc');
+        if (!nameEl.value || isNaN(parseInt(hcEl.value))) return;
+
+        masterPool.push({ name: nameEl.value.trim(), hc: parseInt(hcEl.value), id: Date.now() });
+        nameEl.value = ''; hcEl.value = ''; nameEl.focus();
+        render();
+    }
+
+    function poolPlayers() {
+        if (masterPool.length < 2) return alert("Add at least 2 players.");
+        const isOpen = document.getElementById('is-open').checked;
+
+        if (isOpen) {
+            tournaments[0].pool = [...masterPool];
+            tournaments[0].type = "Open Tournament";
+            tournaments[0].status = 'setup';
+            tournaments[1].status = 'pre-pool';
+        } else {
+            tournaments[0].pool = masterPool.filter(p => p.hc <= 4);
+            tournaments[0].type = "4's and Under";
+            tournaments[0].status = tournaments[0].pool.length > 0 ? 'setup' : 'pre-pool';
+
+            tournaments[1].pool = masterPool.filter(p => p.hc >= 5);
+            tournaments[1].type = "5's and Up";
+            tournaments[1].status = tournaments[1].pool.length > 0 ? 'setup' : 'pre-pool';
+        }
+        render();
+    }
+
+    function startTournament() {
+        const t = tournaments[activeIdx];
+        t.format = document.getElementById('t-format').value;
+        const p = [...t.pool].sort(() => Math.random() - 0.5);
+        t.matches = generateRound(p);
+        t.status = 'active';
+        render();
+    }
+
+    function generateRound(players) {
+        let matches = [];
+        for (let i = 0; i < players.length; i += 2) {
+            let p1 = players[i];
+            let p2 = players[i+1] || { name: "BYE", hc: "-", id: 'bye', isBye: true };
+            matches.push({ p1, p2, winner: p2.isBye ? p1 : null });
+        }
+        return matches;
+    }
+
+    function setWinner(matchIdx, playerKey) {
+        const t = tournaments[activeIdx];
+        const match = t.matches[matchIdx];
+        if (match.winner) return;
+        match.winner = match[playerKey];
+        if (t.matches.every(m => m.winner)) {
+            const winners = t.matches.map(m => m.winner);
+            if (winners.length > 1) t.matches = [...t.matches, ...generateRound(winners)];
+        }
+        render();
+    }
+
+    function render() {
+        const t = tournaments[activeIdx];
+        
+        // Master Pool View
+        document.getElementById('master-pool-display').innerHTML = masterPool.map(p => `<span class="pool-badge">${p.name} (${p.hc})</span>`).join('');
+        document.getElementById('global-setup').classList.toggle('hidden', tournaments[0].status !== 'pre-pool' && tournaments[1].status !== 'pre-pool');
+
+        // Local Setup View (Choosing Format)
+        const localSetup = document.getElementById('local-setup');
+        localSetup.classList.toggle('hidden', t.status !== 'setup');
+        if (t.status === 'setup') {
+            document.getElementById('local-title').innerText = t.type;
+            document.getElementById('local-pool-display').innerHTML = t.pool.map(p => `<span class="pool-badge">${p.name} (${p.hc})</span>`).join('');
+        }
+
+        // Active View
+        const activeSec = document.getElementById('active-section');
+        activeSec.classList.toggle('hidden', t.status !== 'active');
+        if (t.status === 'active') {
+            document.getElementById('tourney-title').innerText = `${t.type} (${t.format})`;
+            document.getElementById('match-display').innerHTML = t.matches.map((m, i) => `
+                <div class="match-card">
+                    <div class="player-row ${m.winner && m.winner.id === m.p1.id ? 'winner' : (m.winner ? 'loser' : '')}" onclick="setWinner(${i}, 'p1')">
+                        <span>${m.p1.name}</span> <span>${m.p1.hc}</span>
+                    </div>
+                    <div class="vs">VS</div>
+                    <div class="player-row ${m.winner && m.winner.id === m.p2.id ? 'winner' : (m.winner ? 'loser' : '')}" onclick="setWinner(${i}, 'p2')">
+                        <span>${m.p2.name}</span> <span>${m.p2.hc}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
+    function resetTourney() {
+        if (confirm("Reset this specific tournament?")) {
+            tournaments[activeIdx].status = 'setup';
+            tournaments[activeIdx].matches = [];
+            render();
+        }
+    }
+    render();
+</script>
+</body>
+</html>
