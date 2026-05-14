@@ -393,18 +393,20 @@
         const iconWrapper = document.createElement('div');
         iconWrapper.className = 'badge-icons';
         
-        const badgeInfo = {            
-            "🐣": "Novice (1+ Games)", "📖": "Student (25+ Games)", "🎓": "Graduate (100+ Games)",
-            "🥈": "Professional (200+ Games)", "🥇": "Veteran (300+ Games)", "💎": "Master (400+ Games)",
-            "👑": "Legend (500+ Games)", "🐐": "G.O.A.T. (1000+ Games)", "🤝": "Contributor (1+ Matches Won)",
-            "🥉": "Competitor (10+ Matches Won)", "🎗️": "Valued (20+ Matches Won)", "⚓": "Anchor (50+ Matches Won)",
-            "🧩": "Irreplaceable (100+ Matches Won)", "🌡️": "Heating Up (5+ Streak)", "🔥": "On Fire (10+ Streak)",
-            "☄️": "Burning Up (15+ Streak)", "🚫": "Unstoppable (20+ Streak)", "💥": "Super Nova (32+ Streak)",
-            "🧲": "Lucky (1+ 8 on Break)", "✒️": "Educated (5+ 8 on Break)","🎯": "Skilled (10+ 8 on Break)", "🧙‍♂️": "Master (20+ 8 on Break)",
-            "📸": "Flashy (1+ Break & Run)", "🧱": "Solid (5+ Break & Run)", "😨": "Scary (10+ Break & Run)",
-            "👹": "Monster (20+ Break & Run)", "💀": "Demon (50+ Break & Run)", "⭐": "Stellar (1+ Mini-Slam)",
-            "👽": "Otherwordly (3+ Mini-Slam)", "🌌": "Galactic (5+ Mini-Slam)"          
-        };
+      const badgeInfo = {            
+    "🐣": "Kindergartner (1+ Games)","🎒": "Grade Schooler (25+ Games)","📚": "High Schooler (100+ Games)",
+    "🎓": "Graduate (200+ Games)","📜": "Post-Grad (300+ Games)","🧠": "Professor (400+ Games)",
+    "🏛️": "Dean (500+ Games)","🏫": "Chancellor (1000+ Games)",
+    "♟️": "Beginner (1+ Matches Won)","🛡️": "Intermediate (10+ Matches Won)",
+    "⚔️": "Advanced (20+ Matches Won)","🥇": "Expert (50+ Matches Won)", // Changed to Gold Medal
+    "💎": "Master (100+ Matches Won)","👑": "Grandmaster (200+ Matches Won)",
+    "🌡️": "Heating Up (5+ Streak)", "🔥": "On Fire (10+ Streak)",
+    "☄️": "Burning Up (15+ Streak)", "🚫": "Unstoppable (20+ Streak)", "💥": "Super Nova (32+ Streak)",
+    "🎯": "Bullseye (1+ 8 on Break)","🏹": "Archer (5+ 8 on Break)","🔍": "Sharpshooter (10+ 8 on Break)","🦅": "Eagle Eye (15+ 8 on Break)","🎖️": "Marksman (20+ 8 on Break)",
+    "🪄": "Apprentice (1+ Break & Run)","🔮": "Mage (5+ Break & Run)","🧙‍♂️": "Wizard (10+ Break & Run)","🧙‍♀️": "Archmage (20+ Break & Run)","✨": "Demi-God (50+ Break & Run)",
+    "⭐": "Stellar (1+ Mini-Slam)",
+    "👽": "Otherwordly (3+ Mini-Slam)", "🌌": "Galactic (5+ Mini-Slam)"          
+};
 
         const g = parseInt(player["Games Played"]) || 0;
         const w = parseInt(player["Matches Won"]) || 0;
@@ -416,28 +418,29 @@
         let totalCount = 0;
         let displayIcons = [];
 
-        // --- 1. GAMES PLAYED ---
+      // --- 1. GAMES PLAYED (Academic Ladder) ---
         let gamesBadges = [];
         if (g >= 1) gamesBadges.push("🐣");
-        if (g >= 25) gamesBadges.push("📖");
-        if (g >= 100) gamesBadges.push("🎓");
-        if (g >= 200) gamesBadges.push("🥈");
-        if (g >= 300) gamesBadges.push("🥇");
-        if (g >= 400) gamesBadges.push("💎");
-        if (g >= 500) gamesBadges.push("👑");
-        if (g >= 1000) gamesBadges.push("🐐");
+        if (g >= 25) gamesBadges.push("🎒");
+        if (g >= 100) gamesBadges.push("📚");
+        if (g >= 200) gamesBadges.push("🎓");
+        if (g >= 300) gamesBadges.push("📜");
+        if (g >= 400) gamesBadges.push("🧠");
+        if (g >= 500) gamesBadges.push("🏛️");
+        if (g >= 1000) gamesBadges.push("🏫");
         totalCount += gamesBadges.length;
         if (gamesBadges.length > 0) displayIcons.push(gamesBadges.pop());
 
-        // --- 2. WINS ---
-        let winsBadges = [];
-        if (w >= 1) winsBadges.push("🤝");
-        if (w >= 10) winsBadges.push("🥉");
-        if (w >= 20) winsBadges.push("🎗️");
-        if (w >= 50) winsBadges.push("⚓");
-        if (w >= 100) winsBadges.push("🧩");
-        totalCount += winsBadges.length;
-        if (winsBadges.length > 0) displayIcons.push(winsBadges.pop());
+      // --- 2. WINS ---
+let winsBadges = [];
+if (w >= 1) winsBadges.push("♟️");
+if (w >= 10) winsBadges.push("🛡️");
+if (w >= 20) winsBadges.push("⚔️");
+if (w >= 50) winsBadges.push("🥇"); // Matches new unique icon
+if (w >= 100) winsBadges.push("💎");
+if (w >= 200) winsBadges.push("👑");
+totalCount += winsBadges.length;
+if (winsBadges.length > 0) displayIcons.push(winsBadges.pop());
 
         // --- 3. STREAKS ---
         let streakBadges = [];
@@ -449,22 +452,23 @@
         totalCount += streakBadges.length;
         if (streakBadges.length > 0) displayIcons.push(streakBadges.pop());
 
-        // --- 4. 8 ON BREAK ---
+       // --- 4. 8 ON BREAK (Marksmanship Theme) ---
         let oBadges = [];
-        if (o >= 1) oBadges.push("🧲");
-      if (o >= 5) oBadges.push("✒️");
-        if (o >= 10) oBadges.push("🎯");
-        if (o >= 20) oBadges.push("🧙‍♂️");
+        if (o >= 1) oBadges.push("🎯");
+        if (o >= 5) oBadges.push("🏹");
+        if (o >= 10) oBadges.push("🔍");
+        if (o >= 15) oBadges.push("🦅");
+        if (o >= 20) oBadges.push("🎖️");
         totalCount += oBadges.length;
         if (oBadges.length > 0) displayIcons.push(oBadges.pop());
 
-        // --- 5. BREAK & RUN ---
+        // --- 5. BREAK & RUN (Magical Theme) ---
         let bBadges = [];
-        if (b >= 1) bBadges.push("📸");
-        if (b >= 5) bBadges.push("🧱");
-        if (b >= 10) bBadges.push("😨");
-        if (b >= 20) bBadges.push("👹");
-        if (b >= 50) bBadges.push("💀");
+        if (b >= 1) bBadges.push("🪄");
+        if (b >= 5) bBadges.push("🔮");
+        if (b >= 10) bBadges.push("🧙‍♂️");
+        if (b >= 20) bBadges.push("🧙‍♀️");
+        if (b >= 50) bBadges.push("✨");
         totalCount += bBadges.length;
         if (bBadges.length > 0) displayIcons.push(bBadges.pop());
 
