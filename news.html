@@ -2,6 +2,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
+
+<!-- CRITICAL: Fixes mobile scaling -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>League News</title>
 
 <style>
@@ -15,32 +19,32 @@
 
     header {
         background: #000;
-        padding: 20px;
+        padding: 24px;
         text-align: center;
-        font-size: 28px;
+        font-size: 32px;
         font-weight: bold;
         border-bottom: 2px solid #1e90ff;
         letter-spacing: 1px;
     }
 
     .section-title {
-        font-size: 22px;
-        margin: 20px;
+        font-size: 24px;
+        margin: 25px 15px 10px 15px;
         border-left: 5px solid #1e90ff;
-        padding-left: 10px;
+        padding-left: 12px;
     }
 
     .news-box {
         background: #1b1b1b;
-        margin: 20px;
-        padding: 15px;
-        border-radius: 8px;
+        margin: 15px;
+        padding: 18px;
+        border-radius: 10px;
         border: 1px solid #333;
     }
 
     .news-item {
-        margin-bottom: 18px;
-        padding-bottom: 12px;
+        margin-bottom: 22px;
+        padding-bottom: 14px;
         border-bottom: 1px solid #333;
     }
 
@@ -49,47 +53,46 @@
     }
 
     .news-title {
-        font-size: 18px;
+        font-size: 20px;
         font-weight: bold;
         color: #1e90ff;
-        margin-bottom: 4px;
-    }
-
-    .news-date {
-        font-size: 12px;
-        color: #aaa;
         margin-bottom: 6px;
     }
 
+    .news-date {
+        font-size: 13px;
+        color: #aaa;
+        margin-bottom: 8px;
+    }
+
     .news-body {
-        font-size: 15px;
-        line-height: 1.4;
+        font-size: 17px;
+        line-height: 1.5;
     }
 
     .news-body img {
         max-width: 100%;
         border-radius: 6px;
-        margin-top: 10px;
+        margin-top: 12px;
     }
 
     .news-body iframe {
         width: 100%;
-        max-width: 100%;
-        height: 300px;
+        height: 320px;
         border: none;
-        margin-top: 10px;
+        margin-top: 12px;
         border-radius: 6px;
     }
 
     .read-more {
         display: inline-block;
-        margin-top: 10px;
-        padding: 6px 12px;
+        margin-top: 12px;
+        padding: 8px 14px;
         background: #1e90ff;
         color: #fff;
         border-radius: 6px;
         text-decoration: none;
-        font-size: 14px;
+        font-size: 15px;
     }
 
     .read-more:hover {
@@ -98,18 +101,18 @@
 
     .back-button {
         display: block;
-        margin: 30px auto 30px auto;
-        padding: 8px 16px;
+        margin: 40px auto;
+        padding: 10px 18px;
         background-color: #1e90ff;
         color: #fff;
         border-radius: 6px;
         text-decoration: none;
-        font-size: 22px;
+        font-size: 24px;
         text-align: center;
-        line-height: 30px;
+        width: 260px;
     }
 
-    /* Modal Viewer (optional in-app reading) */
+    /* Modal Viewer */
     #modal {
         display: none;
         position: fixed;
@@ -117,27 +120,28 @@
         width: 100%; height: 100%;
         background: rgba(0,0,0,0.85);
         z-index: 9999;
-        padding: 20px;
+        padding: 10px;
         overflow-y: auto;
     }
 
     #modal-content {
         background: #1b1b1b;
         padding: 20px;
-        border-radius: 8px;
-        max-width: 900px;
+        border-radius: 10px;
+        max-width: 95%;
         margin: auto;
         color: #eee;
     }
 
     #modal-close {
         background: #1e90ff;
-        padding: 8px 14px;
+        padding: 10px 16px;
         border-radius: 6px;
         color: #fff;
         float: right;
         cursor: pointer;
         margin-bottom: 10px;
+        font-size: 16px;
     }
 </style>
 </head>
@@ -162,9 +166,9 @@
         <div class="news-title">Possible Branding/Name Change</div>
         <div class="news-date">2026-07-01</div>
         <div class="news-body">
-            You will now see a new trademark at the bottom of your main menu.
-            The app (not the league) is now owned by &copy Interactive Gaming Systems LLC.
-           I need to LLC the League before fall session and would like to change our name. I am leaning towards Independent Pool League (IPL) but am open to suggestions, maybe a vote on the FB group.
+            The app is now owned by &copy Interactive Gaming Systems LLC.
+            I need to LLC the League before fall session and would like to change our name.
+            Leaning towards Independent Pool League (IPL) but open to suggestions.
         </div>
     </div>
 
@@ -184,10 +188,6 @@
 </div>
 
 <script>
-// ===============================
-// WORLD POOL NEWS (RSS → JSON)
-// ===============================
-
 async function loadWorldNews() {
     const feed = "https://www.azbilliards.com/feed/";
     const url = "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(feed);
@@ -219,10 +219,6 @@ async function loadWorldNews() {
         container.innerHTML = "Unable to load world news.";
     }
 }
-
-// ===============================
-// IN-APP MODAL VIEWER
-// ===============================
 
 function openModal(url) {
     const modal = document.getElementById("modal");
