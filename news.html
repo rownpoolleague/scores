@@ -209,7 +209,7 @@ async function loadWorldNews() {
                 <div class="news-title">${item.title}</div>
                 <div class="news-date">${item.pubDate}</div>
                 <div class="news-body">${item.description}</div>
-                <a class="read-more" href="${item.link}" target="_blank">Read More</a>
+               
                 <a class="read-more" onclick="openModal('${encodeURIComponent(item.link)}')">Open</a>
             `;
 
