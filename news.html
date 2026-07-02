@@ -189,19 +189,35 @@
 
 <script>
 async function loadWorldNews() {
-    const feed = "https://www.azbilliards.com/feed/";
-    const url = "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(feed);
+    const feeds = [
+        "https://www.azbilliards.com/feed/",
+        "https://www.billiardsdigest.com/rss/index.xml",
+        "https://www.insidepoolmag.com/feed/"
+    ];
 
     const container = document.getElementById("worldNews");
     container.innerHTML = "Loading world pool news...";
 
     try {
-        const res = await fetch(url);
-        const data = await res.json();
+        let allItems = [];
 
+        // Fetch each feed and merge results
+        for (const feed of feeds) {
+            const url = "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(feed);
+            const res = await fetch(url);
+            const data = await res.json();
+
+            if (data.items) {
+                allItems = allItems.concat(data.items);
+            }
+        }
+
+        // Sort newest first
+        allItems.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+        // Display top 20 combined items
         container.innerHTML = "";
-
-        data.items.slice(0, 10).forEach(item => {
+        allItems.slice(0, 20).forEach(item => {
             const div = document.createElement("div");
             div.className = "news-item";
 
@@ -209,16 +225,17 @@ async function loadWorldNews() {
                 <div class="news-title">${item.title}</div>
                 <div class="news-date">${item.pubDate}</div>
                 <div class="news-body">${item.description}</div>
-               
                 <a class="read-more" onclick="openModal('${encodeURIComponent(item.link)}')">Open</a>
             `;
 
             container.appendChild(div);
         });
+
     } catch (err) {
         container.innerHTML = "Unable to load world news.";
     }
 }
+
 
 function openModal(url) {
     const modal = document.getElementById("modal");
