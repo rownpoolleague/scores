@@ -1201,7 +1201,7 @@ function updateTimerDisplay() {
     document.getElementById("timerValue").textContent = `${mins}:${secs < 10 ? '0' + secs : secs}`;
 }
     // --- CONNECTION TEST TICKER ENGINE ---
-(function injectTicker() {
+function injectTicker() {
     // 1. Inject Ticker Styles
     const style = document.createElement('style');
     style.textContent = `
