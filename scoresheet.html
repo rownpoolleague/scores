@@ -1221,7 +1221,8 @@ function injectTicker() {
     tickerWrap.id = 'ticker-container';
     tickerWrap.innerHTML = '<div id="ticker-text"></div>';
     document.body.prepend(tickerWrap);
-})();
+}
+
 
 let tickerQueue = [];
 let isTickerRunning = false;
