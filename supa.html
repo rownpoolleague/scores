@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Supabase Test</title>
+</head>
+<body>
+  <h1>Supabase Test</h1>
+  <pre id="output">Loading...</pre>
+
+  <!-- Supabase JS client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const output = document.getElementById("output");
+
+    // Initialize Supabase
+    const supabase = supabase.createClient(
+      "https://igxmphmtovzcntfvucle.supabase.co",
+      "sb_publishable_l9_uFRG7dz7QSSYfpwhsHQ_AQR-udY0"
+    );
+
+    async function loadData() {
+      output.textContent = "Querying Supabase...";
+
+      const { data, error } = await supabase
+        .from("matches")   // <-- CHANGE THIS TO YOUR TABLE NAME
+        .select("*");
+
+      if (error) {
+        output.textContent = "ERROR:\n" + JSON.stringify(error, null, 2);
+      } else {
+        output.textContent = "SUCCESS:\n" + JSON.stringify(data, null, 2);
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
