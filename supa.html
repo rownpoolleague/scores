@@ -24,7 +24,7 @@
       output.textContent = "Querying Supabase...";
 
       const { data, error } = await supabase
-        .from("matches")   // <-- CHANGE THIS TO YOUR TABLE NAME
+        .from("Pool Log")   // <-- CHANGE THIS TO YOUR TABLE NAME
         .select("*");
 
       if (error) {
