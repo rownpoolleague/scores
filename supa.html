@@ -14,8 +14,8 @@
   <script>
     const output = document.getElementById("output");
 
-    // Initialize Supabase
-    const supabase = supabase.createClient(
+    // Initialize Supabase (renamed to client to avoid collision)
+    const client = supabase.createClient(
       "https://igxmphmtovzcntfvucle.supabase.co",
       "sb_publishable_l9_uFRG7dz7QSSYfpwhsHQ_AQR-udY0"
     );
@@ -23,8 +23,8 @@
     async function loadData() {
       output.textContent = "Querying Supabase...";
 
-      const { data, error } = await supabase
-        .from("log")   // <-- CHANGE THIS TO YOUR TABLE NAME
+      const { data, error } = await client
+        .from("log")   // <-- your table name
         .select("*");
 
       if (error) {
