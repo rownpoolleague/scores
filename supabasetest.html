@@ -381,6 +381,18 @@ const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
 let pendingPlayerData = null; 
 let targetScores = {}; 
+async function finalizeMatch(matchid) {
+  await fetch(
+    "https://igxmphmtovzcntfvucle.supabase.co/functions/v1/finalizeMatch",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ matchid })
+    }
+  );
+
+  console.log("Finalize function triggered.");
+}
 
 function establishSeasonBaseline() {
     if (typeof playerData === 'undefined' || !playerData.length) return;
@@ -994,33 +1006,36 @@ fetch("https://script.google.com/macros/s/AKfycbyRjXuYcYphBNsoYk5rD1h8PP1Ae4uph5
 
     // Submit Match Data
    const { data: supaData, error } = await client
+  .from("submissions")
+  .insert([{
+    timestamp: new Date().toISOString(),
+    hometeam: data.team,
+    awayteam: data.opponent,
+    lagwinner: data.lagWinner,
+    lagloser: data.lagLoser,
+    innings: data.matchInnings,
+    lwhc: data.pA.handicap,
+    lwwins: data.pA.wins,
+    lwsafeties: data.pA.safeties,
+    lw8b: data.pA.b8,
+    lwbr: data.pA.br,
+    lwe8: data.pA.e8,
+    llhc: data.pB.handicap,
+    llwins: data.pB.wins,
+    llsafeties: data.pB.safeties,
+    ll8b: data.pB.b8,
+    llbr: data.pB.br,
+    lle8: data.pB.e8,
+    winner: data.matchWinner,
+    matchnotes: data.matchNotes,
+    matchid: matchId,
+    processed: false
+  }])
+  .select();   // ← SELECT MUST BE LAST
 
-    .from("submissions")
-    .insert([{
-        timestamp: new Date().toISOString(),
-        hometeam: data.team,
-        awayteam: data.opponent,
-        lagwinner: data.lagWinner,
-        lagloser: data.lagLoser,
-        innings: data.matchInnings,
-        lwhc: data.pA.handicap,
-        lwwins: data.pA.wins,
-        lwsafeties: data.pA.safeties,
-        lw8b: data.pA.b8,
-        lwbr: data.pA.br,
-        lwe8: data.pA.e8,
-        llhc: data.pB.handicap,
-        llwins: data.pB.wins,
-        llsafeties: data.pB.safeties,
-        ll8b: data.pB.b8,
-        llbr: data.pB.br,
-        lle8: data.pB.e8,
-        winner: data.matchWinner,
-        matchnotes: data.matchNotes,
-        matchid: matchId,
-        processed: false
-    }])
-    .select();  
+// NOW YOU CALL FINALIZE
+await finalizeMatch(matchId);
+
 if (error) {
     console.error("Supabase insert error:", error);
 } else {
