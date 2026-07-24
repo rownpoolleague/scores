@@ -1022,11 +1022,12 @@ fetch("https://script.google.com/macros/s/AKfycbyRjXuYcYphBNsoYk5rD1h8PP1Ae4uph5
     }])
     .select();  
 if (error) {
-    console.error("e insert error:", error);
+    console.error("Supabase insert error:", error);
 } else {
     console.log("Submission saved:", supaData);
 }
-        
+loader.style.display = "none";
+btn.disabled = false;        
         const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
         history.push(data); 
         localStorage.setItem("matchHistory", JSON.stringify(history));
