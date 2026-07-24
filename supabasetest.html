@@ -371,10 +371,11 @@ input[type="number"] {
 <script>
 let isLoading = false;
 const FORM_KEY = "scoresheetData";
-    const supabase = supabase.createClient(
+    const client = supabase.createClient(
     "https://igxmphmtovzcntfvucle.supabase.co",
     "sb_publishable_l9_uFRG7dz7QSSYfpwhsHQ_AQR-udY0"
 );
+
 
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
 let pendingPlayerData = null; 
@@ -1019,7 +1020,7 @@ fetch("https://script.google.com/macros/s/AKfycbyRjXuYcYphBNsoYk5rD1h8PP1Ae4uph5
         processed: false
     }]);
 if (error) {
-    console.error("Supabase insert error:", error);
+    console.error("e insert error:", error);
 } else {
     console.log("Submission saved:", supaData);
 }
