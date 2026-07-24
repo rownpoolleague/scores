@@ -369,11 +369,6 @@ input[type="number"] {
 
 
 <script>
-  const supabase = supabase.createClient(
-    "https://igxmphmtovzcntfvucle.supabase.co",
-    "sb_publishable_l9_uFRG7dz7QSSYfpwhsHQ_AQR-udY0"
-);
-
 let isLoading = false;
 const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
@@ -542,6 +537,19 @@ document.addEventListener("click", e => {
         ]);
     }
 });
+function normalizeName(name) {
+    return name
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "")   // remove punctuation, spaces, periods
+        .trim();
+}
+
+function generateMatchId(date, playerA, playerB) {
+    const nA = normalizeName(playerA);
+    const nB = normalizeName(playerB);
+    const sorted = [nA, nB].sort();  // alphabetical order
+    return `${date}_${sorted[0]}_${sorted[1]}`;
+}
 
 function checkInitialSelection() {
     const gameArea = document.getElementById("gamePlayArea");
@@ -767,19 +775,6 @@ function executeClearHistory() {
     localStorage.removeItem("matchHistory");
     showHistory(); 
 }
-function normalizeName(name) {
-    return name
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, "")   // remove punctuation, spaces, periods
-        .trim();
-}
-
-function generateMatchId(date, playerA, playerB) {
-    const nA = normalizeName(playerA);
-    const nB = normalizeName(playerB);
-    const sorted = [nA, nB].sort();  // alphabetical order
-    return `${date}_${sorted[0]}_${sorted[1]}`;
-}
 
 function saveNow() {
     if (isLoading) return;
@@ -884,12 +879,13 @@ document.getElementById("submitMatch").onclick = async function() {
         announcement: "" 
     };
 // --- CREATE MATCH ID ---
-const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+const todaydate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 const matchId = generateMatchId(
-    today,
+    todaydate,
     data.lagWinner,
     data.lagLoser
 );
+
     const statMap = [
         { idKey: "b8", fileKey: "8 on Break" },
         { idKey: "br", fileKey: "Break and Run" },
@@ -990,38 +986,12 @@ fetch("https://script.google.com/macros/s/AKfycbyRjXuYcYphBNsoYk5rD1h8PP1Ae4uph5
     }
 
     // Submit Match Data
-    const { data: supaData, error } = await supabase
-    .from("submissions")
-    .insert([{
-        timestamp: new Date().toISOString(),
-        hometeam: data.team,
-        awayteam: data.opponent,
-        lagwinner: data.lagWinner,
-        lagloser: data.lagLoser,
-        innings: data.matchInnings,
-        lwhc: data.pA.handicap,
-        lwwins: data.pA.wins,
-        lwsafeties: data.pA.safeties,
-        lw8b: data.pA.b8,
-        lwbr: data.pA.br,
-        lwe8: data.pA.e8,
-        llhc: data.pB.handicap,
-        llwins: data.pB.wins,
-        llsafeties: data.pB.safeties,
-        ll8b: data.pB.b8,
-        llbr: data.pB.br,
-        lle8: data.pB.e8,
-        winner: data.matchWinner,
-        matchnotes: data.matchNotes,
-        matchid: matchId,
-        processed: false
-    }]);
-if (error) {
-    console.error("Supabase insert error:", error);
-} else {
-    console.log("Submission saved:", supaData);
-}
-   
+    fetch("https://script.google.com/macros/s/AKfycbyeGT6H-64w_m4IBkkZfFnRAzmA0NM3PnJQNqFHuiUQwqk2-Y-H7-ernNKKqC95NyXH/exec", {
+        method: "POST",
+        mode: "no-cors", 
+        body: JSON.stringify(data)
+    })
+    .then(() => {
         loader.style.display = "none"; 
         
         const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
@@ -1044,7 +1014,7 @@ if (error) {
         ["team", "opponent", "weekDisplay", "dateDisplay", "teamRoster", "opponentRoster","addPlayerBtn","statusText"].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = "block";
-      
+        });
 
         const fieldsToReset = ["lagWinner", "lagLoser", "matchInnings", "matchWinner", "pA_hc", "pA_wins", "pA_safeties", "pA_b8", "pA_br", "pA_e8", "pB_hc", "pB_wins", "pB_safeties", "pB_b8", "pB_br", "pB_e8"];
         fieldsToReset.forEach(id => {
