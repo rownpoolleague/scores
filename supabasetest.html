@@ -1026,8 +1026,10 @@ if (error) {
 } else {
     console.log("Submission saved:", supaData);
 }
-loader.style.display = "none";
-btn.disabled = false;        
+setTimeout(() => {
+    loader.style.display = "none";
+    btn.disabled = false;
+}, 1000);
         const history = JSON.parse(localStorage.getItem("matchHistory")) || [];
         history.push(data); 
         localStorage.setItem("matchHistory", JSON.stringify(history));
