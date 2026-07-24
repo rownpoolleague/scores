@@ -991,7 +991,8 @@ fetch("https://script.google.com/macros/s/AKfycbyRjXuYcYphBNsoYk5rD1h8PP1Ae4uph5
     }
 
     // Submit Match Data
-    const { data: supaData, error } = await supabase
+   const { data: supaData, error } = await client
+
     .from("submissions")
     .insert([{
         timestamp: new Date().toISOString(),
