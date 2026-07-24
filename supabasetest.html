@@ -382,14 +382,14 @@ let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, a
 let pendingPlayerData = null; 
 let targetScores = {}; 
 async function finalizeMatch(matchid) {
-  await fetch(
-    "https://igxmphmtovzcntfvucle.supabase.co/functions/v1/finalizeMatch",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ matchid })
-    }
-  );
+  fetch("https://igxmphmtovzcntfvucle.supabase.co/functions/v1/finalizeMatch", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "apikey": "sb_publishable_l9_uFRG7dz7QSSYfpwhsHQ_AQR-udY0"
+  },
+  body: JSON.stringify({ matchid })
+});
 
   console.log("Finalize function triggered.");
 }
