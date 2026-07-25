@@ -1557,47 +1557,25 @@ function secretHandshake() {
     }
 }
 
-// 2. The "SHOUT": Send text from your phone to Google A1
-function postAdminTicker() {
-    const input = document.getElementById('adminTickerInput');
-    const msg = input.value.trim();
-    if (!msg) return;
+fetch("https://igxmphmtovzcntfvucle.functions.supabase.co/pushmessage", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: formattedMsg })
+});
 
-    // This adds your prefix to the message before sending it to Google
-    const formattedMsg = `*** League Announcement *** ${msg} .`;
+supabase.channel("ticker")
+  .on("broadcast", { event: "new_ticker" }, payload => {
+      const msg = payload.message;
+      const last = localStorage.getItem("lastSeenBroadcast");
 
-    fetch("https://script.google.com/macros/s/AKfycbw-_XzGIquLxtryGY0CML2ouOZHkdr2N4ZWKqoIusUX7B4wkvCz76UAnnPjk6w5zUOdEQ/exec", {
-        method: "POST",
-        mode: "no-cors", 
-        body: JSON.stringify({ action: "setAnnouncement", message: formattedMsg })
-    }).then(() => {
-        alert("League-Wide Broadcast Sent!");
-        input.value = "";
-    });
-}
+      if (msg && msg !== last) {
+          showTicker(msg);
+          localStorage.setItem("lastSeenBroadcast", msg);
+      }
+  })
+  .subscribe();
 
-// 3. The "LISTEN": All phones check A1 every 60 seconds
-async function syncLeagueBroadcast() {
-    try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbw-_XzGIquLxtryGY0CML2ouOZHkdr2N4ZWKqoIusUX7B4wkvCz76UAnnPjk6w5zUOdEQ/exec");
-        const text = await response.text();
-        const cleanMsg = text.trim();
 
-        // 1. Check the phone's memory
-        const lastSavedMsg = localStorage.getItem('lastSeenBroadcast');
-
-        // 2. Only trigger if message is new and doesn't match memory
-        if (cleanMsg && cleanMsg !== "" && cleanMsg !== "-" && cleanMsg !== lastSavedMsg) {
-            
-            showTicker(cleanMsg); 
-
-            // 3. Save it to memory immediately
-            localStorage.setItem('lastSeenBroadcast', cleanMsg);
-        }
-    } catch (err) {
-        console.warn("Broadcast sync failed:", err);
-    }
-}
 // Initialize Ticker Sync
 setInterval(syncLeagueBroadcast, 60000); // Check every minute
 setTimeout(syncLeagueBroadcast, 2000);   // Check once shortly after load
@@ -1605,40 +1583,6 @@ setTimeout(syncLeagueBroadcast, 2000);   // Check once shortly after load
 function clearTicker() {
     document.getElementById('ticker-container').style.display = 'none';
 }
-// 1. Set the URL of your Google Script (the one with the doGet function)
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-_XzGIquLxtryGY0CML2ouOZHkdr2N4ZWKqoIusUX7B4wkvCz76UAnnPjk6w5zUOdEQ/exec";
-
-let lastG1Value = ""; 
-
-async function watchG1() {
-    try {
-        const response = await fetch(`https://script.google.com/macros/s/AKfycbw-_XzGIquLxtryGY0CML2ouOZHkdr2N4ZWKqoIusUX7B4wkvCz76UAnnPjk6w5zUOdEQ/exec?type=leaders&cb=${Date.now()}`);
-        const currentText = (await response.text()).trim();
-
-        // 1. Pull the persistent memory from the phone's storage
-        const lastSeenG1 = localStorage.getItem("lastSeenG1Value");
-
-        // 2. Only trigger if there's a message AND it's not what we saw last
-        if (currentText && currentText !== "" && currentText !== "-" && currentText !== lastSeenG1) {
-            
-            if (typeof showTicker === "function") {
-                showTicker(currentText);
-            }
-
-            // 3. Save to persistent memory immediately
-            localStorage.setItem("lastSeenG1Value", currentText);
-        }
-    } catch (err) {
-        console.error("G1 Watcher Error:", err);
-    }
-}
-
-// Check every 30 seconds
-setInterval(watchG1, 30000);
-// Initial check on load
-watchG1();
-// --- REFRESH CHECK (Run on Load) ---
-
 </script>
 </div>
 </div>
