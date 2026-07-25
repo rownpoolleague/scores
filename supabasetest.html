@@ -1165,6 +1165,30 @@ function setScoringTeam(myNum) {
         console.error("Lookup failed. Check if team numbers match your Master List.");
     }
 }
+    function postAdminTicker() {
+    const input = document.getElementById('adminTickerInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    // Add your prefix exactly like before
+    const formattedMsg = `*** League Announcement *** ${msg} .`;
+
+    // Send to your Supabase Edge Function
+    fetch("https://igxmphmtovzcntfvucle.functions.supabase.co/pushmessage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: formattedMsg })
+    })
+    .then(() => {
+        alert("League-Wide Broadcast Sent!");
+        input.value = "";
+    })
+    .catch(err => {
+        console.error("Ticker send failed:", err);
+        alert("Failed to send broadcast.");
+    });
+}
+
 function addNewPlayerManual() {
     const homeName = document.getElementById("team").value || "Home Team";
     const awayName = document.getElementById("opponent").value || "Away Team";
