@@ -7,9 +7,19 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="scoresheetrosters.js"></script>
-    <script src="scoresheetinfo.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+       <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script>
+  const client = window.supabase.createClient(
+    "https://cyqbhvprejnomzfvjqva.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5cWJodnByZWpub216ZnZqcXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTI5MjksImV4cCI6MjEwMzY4ODkyOX0.70gJ5uZKAdqSE7AyyA3U6wC6JR1ZRUPVqR8upYmtjII"
+  );
+</script>
+
+<script src="scoresheetrosters.js"></script>
+<script src="scoresheetinfo.js"></script>
+
+
 
 <style>
 /* --- GLOBAL STYLES (Applies to Laptop & Mobile) --- */
@@ -376,7 +386,6 @@ const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
 let pendingPlayerData = null; 
 let targetScores = {}; 
-const client = window.supabase.createClient("https://cyqbhvprejnomzfvjqva.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5cWJodnByZWpub216ZnZqcXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTI5MjksImV4cCI6MjEwMzY4ODkyOX0.70gJ5uZKAdqSE7AyyA3U6wC6JR1ZRUPVqR8upYmtjII");
 function establishSeasonBaseline() {
     if (typeof playerData === 'undefined' || !playerData.length) return;
     
