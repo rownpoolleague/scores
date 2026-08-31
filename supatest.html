@@ -1556,8 +1556,8 @@ let lastG1Value = "";
 
     // STEP 1: Build a stable match_key
     const players = [
-        data.lagWinner(),
-        data.lagLoser()
+        data.pA(),
+        data.pB()
     ].sort();
 
     const match_key = `${data.activeWeek.date}-${players[0]}-${players[1]}`;
