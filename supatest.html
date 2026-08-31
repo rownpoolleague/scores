@@ -1576,7 +1576,7 @@ let lastG1Value = "";
         date: new Date().toISOString()
     };
 
-    const { error } = await supabase
+    const { error } = await client
         .from("match_log")
         .insert([matchRecord]);
 
