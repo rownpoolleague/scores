@@ -439,14 +439,21 @@ window.addEventListener("DOMContentLoaded", () => {
     updateScoreUI();
     
     // 3. UPDATED: Run week/date but DON'T let it trigger the modal yet
-    if (typeof scheduleData !== 'undefined') {
-        const today = new Date();
-        const cutoff = new Date(today);
-        cutoff.setDate(cutoff.getDate() - 2);
-        let activeWeek = scheduleData.find(row => row.date && new Date(row.date) >= cutoff) || scheduleData[scheduleData.length - 1];
-        document.getElementById("weekDisplay").textContent = "-Week " + activeWeek.week + "-";
-        document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
-    }
+if (typeof scheduleData !== 'undefined') {
+    const today = new Date();
+    const cutoff = new Date(today);
+    cutoff.setDate(cutoff.getDate() - 2);
+
+    let activeWeek = scheduleData.find(row => row.date && new Date(row.date) >= cutoff)
+        || scheduleData[scheduleData.length - 1];
+
+    document.getElementById("weekDisplay").textContent = "-Week " + activeWeek.week + "-";
+    document.getElementById("dateDisplay").textContent = " " + activeWeek.date;
+
+    // ⭐ REQUIRED — this is what your onclick handler needs
+    data.activeWeek = activeWeek;
+
+}
 
     // 4. THE MODAL BLOCKER: Final check after everything is settled
     setTimeout(() => {
