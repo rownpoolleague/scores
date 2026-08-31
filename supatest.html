@@ -375,10 +375,7 @@ const FORM_KEY = "scoresheetData";
 let scores = JSON.parse(localStorage.getItem("teamMatchScores")) || { home: 0, away: 0 };
 let pendingPlayerData = null; 
 let targetScores = {}; 
-const supabase = supabase.createClient(
-    "https://cyqbhvprejnomzfvjqva.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5cWJodnByZWpub216ZnZqcXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTI5MjksImV4cCI6MjEwMzY4ODkyOX0.70gJ5uZKAdqSE7AyyA3U6wC6JR1ZRUPVqR8upYmtjII"
-);
+
 function establishSeasonBaseline() {
     if (typeof playerData === 'undefined' || !playerData.length) return;
     
@@ -782,7 +779,10 @@ function saveNow() {
 
     localStorage.setItem(FORM_KEY, JSON.stringify(data));
 }
-
+const supabase = supabase.createClient(
+    "https://cyqbhvprejnomzfvjqva.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5cWJodnByZWpub216ZnZqcXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTI5MjksImV4cCI6MjEwMzY4ODkyOX0.70gJ5uZKAdqSE7AyyA3U6wC6JR1ZRUPVqR8upYmtjII"
+);
 function loadScoresheet() {
     const raw = localStorage.getItem(FORM_KEY);
     if (!raw || raw === "null") return;
