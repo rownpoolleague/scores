@@ -1578,7 +1578,12 @@ console.log("SUBMIT DATA:", data);
 ].sort();
 
 
-   const match_key = `${data.activeWeek.date}-${players[0]}-${players[1]}`;
+  const now = new Date();
+const matchDate = (now.getHours() < 4)
+    ? new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)
+    : now;
+
+const match_key = `${matchDate.toISOString().split('T')[0]}-${players[0]}-${players[1]}`;
 
 
     // STEP 2: Build your record
