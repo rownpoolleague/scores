@@ -1552,9 +1552,19 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-_XzGIquLxtryGY0CM
 let lastG1Value = ""; 
 
 
-  async function submitMatchToSupabase(data) {
+ async function submitMatchToSupabase(data) {
 
+    // STEP 1: Build a stable match_key
+    const players = [
+        data.pA.name.toLowerCase(),
+        data.pB.name.toLowerCase()
+    ].sort();
+
+    const match_key = `${data.matchDate}-${players[0]}-${players[1]}`;
+
+    // STEP 2: Build your record
     const matchRecord = {
+        match_key,   // <-- ADD THIS
         scoringTeam: data.scoringTeam,
         team: data.team,
         opponent: data.opponent,
@@ -1576,6 +1586,7 @@ let lastG1Value = "";
         date: new Date().toISOString()
     };
 
+    // STEP 3: Insert
     const { error } = await client
         .from("match_log")
         .insert([matchRecord]);
