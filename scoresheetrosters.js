@@ -22,6 +22,7 @@ const scoresheetrosters = {
     "Jariel Diaz":3,
     "Javier Mauricio":3,
     "Jay Mitch":2,
+    "Jaz Tripamer":3,
     "Jennifer Wagner":2,
     "Jeremie Ketner":4,
     "Jeronimo Ramirez":4,
