@@ -753,12 +753,12 @@ const history = [
   },
   {
     "name": "Mike Uhlean",
-    "currentHash": "3.320",
+    "currentHash": "3.360",
     "winPct": "90%",
     "hc": 5,
     "history": [
       {"date": "4/7/2026", "gw": 5, "innings": 10, "hash": "2.000", "week": 7},
-      {"date": "9/22/2026", "gw": 5, "innings": 15, "hash": "3.000", "week": 1},
+      {"date": "9/22/2026", "gw": 5, "innings": 16, "hash": "3.200", "week": 1},
       {"date": "3/17/2026", "gw": 5, "innings": 17, "hash": "3.400", "week": 10},
       {"date": "4/14/2026", "gw": 5, "innings": 18, "hash": "3.600", "week": 6},
       {"date": "4/1/2026", "gw": 5, "innings": 23, "hash": "4.600", "week": 8}
