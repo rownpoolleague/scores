@@ -83,11 +83,11 @@ const history = [
     "winPct": "0%",
     "hc": 2,
     "history": [
-      {"date": "4/1/2025", "gw": 1, "innings": 29, "hash": "15.000", "week": 10},
-      {"date": "6/11/2025", "gw": 0, "innings": 17, "hash": "15.000", "week": 9},
-      {"date": "6/25/2025", "gw": 0, "innings": 20, "hash": "15.000", "week": 8},
-      {"date": "10/7/2025", "gw": 0, "innings": 18, "hash": "15.000", "week": 7},
-      {"date": "11/25/2025", "gw": 0, "innings": 19, "hash": "15.000", "week": 6}
+      {"date": "3/11/2025", "gw": 0, "innings": 10, "hash": "15.000", "week": 10},
+      {"date": "4/1/2025", "gw": 1, "innings": 29, "hash": "15.000", "week": 9},
+      {"date": "6/11/2025", "gw": 0, "innings": 17, "hash": "15.000", "week": 8},
+      {"date": "6/25/2025", "gw": 0, "innings": 20, "hash": "15.000", "week": 7},
+      {"date": "10/7/2025", "gw": 0, "innings": 18, "hash": "15.000", "week": 6}
     ]
   },
   {
@@ -407,15 +407,15 @@ const history = [
   },
   {
     "name": "Chuck Feager",
-    "currentHash": "4.833",
+    "currentHash": "6.833",
     "winPct": "60%",
-    "hc": 4,
+    "hc": 3,
     "history": [
-      {"date": "9/23/2026", "gw": 3, "innings": 0, "hash": "0.000", "week": 1},
-      {"date": "3/24/2026", "gw": 2, "innings": 7, "hash": "3.500", "week": 7},
-      {"date": "3/10/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 9},
-      {"date": "4/7/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 5},
-      {"date": "2/24/2026", "gw": 2, "innings": 15, "hash": "7.500", "week": 10}
+      {"date": "3/24/2026", "gw": 2, "innings": 7, "hash": "3.500", "week": 6},
+      {"date": "3/10/2026", "gw": 2, "innings": 13, "hash": "6.500", "week": 8},
+      {"date": "4/7/2026", "gw": 3, "innings": 20, "hash": "6.667", "week": 4},
+      {"date": "2/24/2026", "gw": 2, "innings": 15, "hash": "7.500", "week": 9},
+      {"date": "3/17/2026", "gw": 1, "innings": 10, "hash": "10.000", "week": 7}
     ]
   },
   {
@@ -510,16 +510,16 @@ const history = [
     ]
   },
   {
-    "name": "Danny Plowman*",
-    "currentHash": "3.960",
+    "name": "Danny Plowman",
+    "currentHash": "4.040",
     "winPct": "60%",
     "hc": 5,
     "history": [
-      {"date": "12/23/2025", "gw": 3, "innings": 9, "hash": "3.000", "week": 8},
-      {"date": "11/25/2025", "gw": 5, "innings": 20, "hash": "4.000", "week": 10},
-      {"date": "12/16/2025", "gw": 5, "innings": 20, "hash": "4.000", "week": 9},
+      {"date": "12/23/2025", "gw": 3, "innings": 9, "hash": "3.000", "week": 7},
+      {"date": "11/25/2025", "gw": 5, "innings": 20, "hash": "4.000", "week": 9},
+      {"date": "12/16/2025", "gw": 5, "innings": 20, "hash": "4.000", "week": 8},
       {"date": "9/9/2026", "gw": 5, "innings": 22, "hash": "4.400", "week": 1},
-      {"date": "9/9/2026", "gw": 5, "innings": 22, "hash": "4.400", "week": 1}
+      {"date": "11/4/2025", "gw": 5, "innings": 24, "hash": "4.800", "week": 10}
     ]
   },
   {
