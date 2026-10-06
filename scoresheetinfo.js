@@ -4,9 +4,9 @@ const scoresheetinfo = {
     "3 Lynn's Amigos":["Francisco Ibarra","Noe Castana","Enrique Meza","Tomas Ramirez","Ignasio Gutierrez","Jose Munoz"],
     "4 Only Here For an Alibi":["Jim Bullock","Patti Bullock","Tito Sanchez","Jack Sedivy","Tom Rourke","Joe Cooper","Jay Mitch","Jaz Tripamer"],
     "5 Dirty Ballers":["Rocky Oiler Sr.","Kevin Pattenaude","Greg Wood","Javier Mauricio","Peggy Wood","Chuck Feager","John Schoiber"],
-    "6 8 on Break":["Doc Halek","Juergen Jackert","Danny Plowman","John Amrein","Kevin Ward","Shawn Mcbride","Don Murphy","Kenny Esposito"],
+    "6 8 on Break":["Doc Halek","Juergen Jackert","Danny Plowman","Brian Martello","Kevin Ward","Shawn Mcbride","Don Murphy","Kenny Esposito"],
     "7 Five Amigos":["Francisco Tinajero","Sergio Sanchez","Mario Orenday","Felipe Ochoa","Jeronimo Ramirez","Kevin Joyner","Tony Perez","Jose Noe"],
-    "8 Frank's Pizza":["Jose Gonzalez","Luis Asavedo","Ricardo Urvina","Jariel Diaz","Miguel Arias","Jose Silva","Joey Sanchez"],
+    "8 Frank's Pizza":["Jose Gonzalez","Luis Asavedo","Ricardo Urvina","Jariel Diaz","Miguel Arias","Jose Silva","Joey Sanchez","Garanta Rodriguez"],
     "9 Killer Instinct":["Mike Uhlean","Jim Berger","Shawn Vitolka","Mike Zbonski Jr.","Luke Valenzuela","Doug Andrus","Jim Nevin","Tom Nevin"],
     "10 Pete's Bunch":["Tom Schroeder","Chuck Harding","Dan Schroeder","Rob Zwart","Pete Steele","Buster Fuller","Geneva Izguerre","Roger Gault"]
 };
