@@ -35,6 +35,7 @@ const scoresheetrosters = {
     "Joe Cooper":2,
     "Joe Neal":4,
     "Joey Sanchez":3,
+    "John Jester":3,
     "John Schoiber":2,
     "Jose Gonzalez":3,
     "Jose Munoz":2,
