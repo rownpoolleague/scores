@@ -8,7 +8,7 @@ const masterme = [
 {"Player #":"216","Player Name":"Crutchfield, Joe","HC":4},
 {"Player #":"224","Player Name":"Ketner, Jeremie","HC":3},
 {"Player #":"225","Player Name":"Marinopoulos, Yani","HC":4},
-{"Player #":"226","Player Name":"Guthrie, Tony","HC":7},
+{"Player #":"226","Player Name":"Guthrie, Tony","HC":6},
 {"Player #":"240","Player Name":"Schroeder, Tom","HC":3},
 {"Player #":"266","Player Name":"Gore, Mike","HC":2},
 {"Player #":"281","Player Name":"Castillo, Miguel","HC":5},
@@ -81,8 +81,8 @@ const masterme = [
 {"Player #":"890","Player Name":"Piper, Bob","HC":4},
 {"Player #":"898","Player Name":"Pattenaude, Kevin","HC":3},
 {"Player #":"919","Player Name":"Schroeder, Jim","HC":4},
-{"Player #":"951","Player Name":"Feager, Chuck","HC":3},
-{"Player #":"953","Player Name":"Mcbride, Shawn","HC":3},
+{"Player #":"951","Player Name":"Feager, Chuck","HC":4},
+{"Player #":"953","Player Name":"Mcbride, Shawn","HC":2},
 {"Player #":"970","Player Name":"Neal, Joe","HC":4},
 {"Player #":"971","Player Name":"Misner, Doug","HC":4},
 {"Player #":"990","Player Name":"Herrera, Jorge","HC":2},
@@ -117,7 +117,7 @@ const masterme = [
 {"Player #":"1030","Player Name":"Gottwald, Andrew","HC":3},
 {"Player #":"1032","Player Name":"Lal, Harnaik","HC":4},
 {"Player #":"1033","Player Name":"Jr., Mike","HC":3},
-{"Player #":"1044","Player Name":"Ibarra, Francisco","HC":4},
+{"Player #":"1044","Player Name":"Ibarra, Francisco","HC":3},
 {"Player #":"1045","Player Name":"Castana, Noe","HC":3},
 {"Player #":"1046","Player Name":"Asavedo, Luis","HC":2},
 {"Player #":"1047","Player Name":"Gonzalez, Jose","HC":3},
@@ -186,5 +186,7 @@ const masterme = [
 {"Player #":"1112","Player Name":"McDonough, Kevin","HC":2},
 {"Player #":"1113","Player Name":"Mitch, Jay","HC":2},
 {"Player #":"1114","Player Name":"Noe, Jose","HC":3},
-{"Player #":"1115","Player Name":"Tripamer, Jaz","HC":2}
+{"Player #":"1115","Player Name":"Tripamer, Jaz","HC":2},
+{"Player #":"1116","Player Name":"Martello, Brian","HC":3},
+{"Player #":"1117","Player Name":"Rodriguez, Garanta","HC":3}
 ];
