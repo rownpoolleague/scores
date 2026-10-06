@@ -3,7 +3,7 @@ const scoresheetrosters = {
     "Brian Martello":3,
     "Brooke Bridges":2,
     "Buster Fuller":3,
-    "Chuck Feager":4,
+    "Chuck Feager":3,
     "Chuck Harding":3,
     "Dan Foster":3,
     "Dan Schroeder":5,
