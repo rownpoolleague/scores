@@ -81,7 +81,7 @@ const masterme = [
 {"Player #":"890","Player Name":"Piper, Bob","HC":4},
 {"Player #":"898","Player Name":"Pattenaude, Kevin","HC":3},
 {"Player #":"919","Player Name":"Schroeder, Jim","HC":4},
-{"Player #":"951","Player Name":"Feager, Chuck","HC":4},
+{"Player #":"951","Player Name":"Feager, Chuck","HC":3},
 {"Player #":"953","Player Name":"Mcbride, Shawn","HC":2},
 {"Player #":"970","Player Name":"Neal, Joe","HC":4},
 {"Player #":"971","Player Name":"Misner, Doug","HC":4},
@@ -185,8 +185,9 @@ const masterme = [
 {"Player #":"1111","Player Name":"Rourke, Tom","HC":3},
 {"Player #":"1112","Player Name":"McDonough, Kevin","HC":2},
 {"Player #":"1113","Player Name":"Mitch, Jay","HC":2},
-{"Player #":"1114","Player Name":"Noe, Jose","HC":3},
+{"Player #":"1114","Player Name":"Noe, Jose","HC":2},
 {"Player #":"1115","Player Name":"Tripamer, Jaz","HC":2},
 {"Player #":"1116","Player Name":"Martello, Brian","HC":3},
-{"Player #":"1117","Player Name":"Rodriguez, Garanta","HC":3}
+{"Player #":"1117","Player Name":"Rodriguez, Garanta","HC":2},
+{"Player #":"1118","Player Name":"Jester, John","HC":3}
 ];
