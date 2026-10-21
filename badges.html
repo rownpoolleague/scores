@@ -83,7 +83,14 @@
         <div id="badge-m-1" class="badge"><div class="badge-icon">⭐</div><span class="badge-name">Stellar</span><div class="badge-desc">1+ Slam</div></div>
         <div id="badge-m-3" class="badge"><div class="badge-icon">👽</div><span class="badge-name">Otherworldly</span><div class="badge-desc">3+ Slams</div></div>
         <div id="badge-m-5" class="badge"><div class="badge-icon">🌌</div><span class="badge-name">Galactic</span><div class="badge-desc">5+ Slams</div></div>
-    </div>
+
+       <div class="section-label">Rackless</div>
+        <div id="badge-r-1" class="badge"><div class="badge-icon">📈</div><span class="badge-name">On The Charts</span><div class="badge-desc">1+ Rackless</div></div>
+        <div id="badge-r-10" class="badge"><div class="badge-icon">🚀</div><span class="badge-name">Taking Off</span><div class="badge-desc">10+ Rackless</div></div>
+        <div id="badge-r-25" class="badge"><div class="badge-icon">🏔️</div><span class="badge-name">King of the Mountain</span><div class="badge-desc">25+ Rackless</div></div>
+        <div id="badge-r-50" class="badge"><div class="badge-icon">👑</div><span class="badge-name">Dominant Force</span><div class="badge-desc">50+ Rackless</div></div>
+        <div id="badge-r-100" class="badge"><div class="badge-icon">🧠</div><span class="badge-name">Apex Predator</span><div class="badge-desc">100+ Rackless</div></div>
+</div>
 
     <a href="allstatssplash.html" class="back-btn">Back to Stats</a>
 </div>
@@ -134,7 +141,8 @@
         const o = parseInt(player["8 on Break"]) || 0;
         const b = parseInt(player["Break and Run"]) || 0;
         const m = parseInt(player["Mini-Slam"]) || 0;
-
+  const r = parseInt(player["Mini-Slam"]) || 0;
+        
         if (g >= 1)    document.getElementById('badge-g-1').classList.add('unlocked');
         if (g >= 25)   document.getElementById('badge-g-25').classList.add('unlocked');
         if (g >= 100)  document.getElementById('badge-g-100').classList.add('unlocked');
@@ -172,6 +180,12 @@
         if (m >= 1)   document.getElementById('badge-m-1').classList.add('unlocked');
         if (m >= 3)   document.getElementById('badge-m-3').classList.add('unlocked');
         if (m >= 5)   document.getElementById('badge-m-5').classList.add('unlocked');
+
+         if (r >= 1)   document.getElementById('badge-r-1').classList.add('unlocked');
+        if (r >= 10)  document.getElementById('badge-r-10').classList.add('unlocked');
+        if (r >= 25)  document.getElementById('badge-r-25').classList.add('unlocked');
+        if (r >= 50)  document.getElementById('badge-r-50').classList.add('unlocked');
+        if (r >= 100)  document.getElementById('badge-r-100').classList.add('unlocked');
     }
 </script>
 </body>
