@@ -29,16 +29,6 @@
 
         .back-btn { display: inline-block; margin-top: 25px; color: #1e90ff; text-decoration: none; font-weight: bold; font-size: 0.8rem; border: 1px solid #1e90ff; padding: 8px 16px; border-radius: 4px; text-transform: uppercase; }
     </style>
-    <script>
-        /**
-         * Helper function to return high-res image HTML.
-         * Usage: badgeImg('bullseye.png')
-         */
-        function badgeImg(fileName) {
-            const baseUrl = 'https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/';
-            return `<img src="${baseUrl}${fileName}" alt="${fileName}">`;
-        }
-    </script>
 </head>
 <body>
 
@@ -77,9 +67,9 @@
         <div id="badge-s-32" class="badge"><div class="badge-icon">💥</div><span class="badge-name">Super Nova</span><div class="badge-desc">32+ Streak</div></div>
 
         <div class="section-label">8 on Break</div>
-        <div id="badge-o-1" class="badge"><div class="badge-icon"><script>document.write(badgeImg('bullseye.png'));</script></div><span class="badge-name">Bullseye</span><div class="badge-desc">1+ 8OB</div></div>
-        <div id="badge-o-5" class="badge"><div class="badge-icon"><script>document.write(badgeImg('archer.png'));</script></div><span class="badge-name">Archer</span><div class="badge-desc">5+ 8OB</div></div>
-        <div id="badge-o-10" class="badge"><div class="badge-icon"><script>document.write(badgeImg('sharpshooter.png'));</script></div><span class="badge-name">Sharp Shooter</span><div class="badge-desc">10+ 8OB</div></div>
+        <div id="badge-o-1" class="badge"><div class="badge-icon"><img src="https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/bullseye.png" alt="Bullseye"></div><span class="badge-name">Bullseye</span><div class="badge-desc">1+ 8OB</div></div>
+        <div id="badge-o-5" class="badge"><div class="badge-icon"><img src="https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/archer.png" alt="Archer"></div><span class="badge-name">Archer</span><div class="badge-desc">5+ 8OB</div></div>
+        <div id="badge-o-10" class="badge"><div class="badge-icon"><img src="https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/sharpshooter.png" alt="Sharp Shooter"></div><span class="badge-name">Sharp Shooter</span><div class="badge-desc">10+ 8OB</div></div>
         <div id="badge-o-15" class="badge"><div class="badge-icon">🦅</div><span class="badge-name">Eagle Eye</span><div class="badge-desc">15+ 8OB</div></div>
         <div id="badge-o-20" class="badge"><div class="badge-icon">🎖️</div><span class="badge-name">Marksman</span><div class="badge-desc">20+ 8OB</div></div>
 
