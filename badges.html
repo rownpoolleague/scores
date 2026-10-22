@@ -20,7 +20,8 @@
         .badge { background: #111; border: 1px solid #222; border-radius: 8px; padding: 10px 2px; opacity: 0.5; filter: grayscale(1); transition: all 0.4s ease; }
         .badge.unlocked { opacity: 1; filter: grayscale(0); border-color: #ffd700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); background: #151515; }
         
-        .badge-icon { font-size: 1.8rem; margin-bottom: 4px; }
+        .badge-icon { width: 48px; height: 48px; margin: 0 auto 4px auto; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+        .badge-icon img { width: 100%; height: 100%; object-fit: contain; }
         .badge-name { font-weight: bold; color: #fff; font-size: 0.55rem; text-transform: uppercase; display: block; height: 14px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
         .badge-desc { font-size: 0.5rem; color: #aaa; margin-top: 2px; line-height: 1.1; }
 
@@ -28,6 +29,16 @@
 
         .back-btn { display: inline-block; margin-top: 25px; color: #1e90ff; text-decoration: none; font-weight: bold; font-size: 0.8rem; border: 1px solid #1e90ff; padding: 8px 16px; border-radius: 4px; text-transform: uppercase; }
     </style>
+    <script>
+        /**
+         * Helper function to return high-res image HTML.
+         * Usage: badgeImg('bullseye.png')
+         */
+        function badgeImg(fileName) {
+            const baseUrl = 'https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/';
+            return `<img src="${baseUrl}${fileName}" alt="${fileName}">`;
+        }
+    </script>
 </head>
 <body>
 
@@ -66,9 +77,9 @@
         <div id="badge-s-32" class="badge"><div class="badge-icon">💥</div><span class="badge-name">Super Nova</span><div class="badge-desc">32+ Streak</div></div>
 
         <div class="section-label">8 on Break</div>
-        <div id="badge-o-1" class="badge"><div class="badge-icon">🎯</div><span class="badge-name">Bullseye</span><div class="badge-desc">1+ 8OB</div></div>
-        <div id="badge-o-5" class="badge"><div class="badge-icon">🏹</div><span class="badge-name">Archer</span><div class="badge-desc">5+ 8OB</div></div>
-        <div id="badge-o-10" class="badge"><div class="badge-icon">🔍</div><span class="badge-name">Sharp Shooter</span><div class="badge-desc">10+ 8OB</div></div>
+        <div id="badge-o-1" class="badge"><div class="badge-icon"><script>document.write(badgeImg('bullseye.png'));</script></div><span class="badge-name">Bullseye</span><div class="badge-desc">1+ 8OB</div></div>
+        <div id="badge-o-5" class="badge"><div class="badge-icon"><script>document.write(badgeImg('archer.png'));</script></div><span class="badge-name">Archer</span><div class="badge-desc">5+ 8OB</div></div>
+        <div id="badge-o-10" class="badge"><div class="badge-icon"><script>document.write(badgeImg('sharpshooter.png'));</script></div><span class="badge-name">Sharp Shooter</span><div class="badge-desc">10+ 8OB</div></div>
         <div id="badge-o-15" class="badge"><div class="badge-icon">🦅</div><span class="badge-name">Eagle Eye</span><div class="badge-desc">15+ 8OB</div></div>
         <div id="badge-o-20" class="badge"><div class="badge-icon">🎖️</div><span class="badge-name">Marksman</span><div class="badge-desc">20+ 8OB</div></div>
 
@@ -84,19 +95,19 @@
         <div id="badge-m-3" class="badge"><div class="badge-icon">👽</div><span class="badge-name">Otherworldly</span><div class="badge-desc">3+ Slams</div></div>
         <div id="badge-m-5" class="badge"><div class="badge-icon">🌌</div><span class="badge-name">Galactic</span><div class="badge-desc">5+ Slams</div></div>
 
-       <div class="section-label">Rackless</div>
+        <div class="section-label">Rackless</div>
         <div id="badge-r-1" class="badge"><div class="badge-icon">📈</div><span class="badge-name">On The Charts</span><div class="badge-desc">1+ Rackless</div></div>
         <div id="badge-r-10" class="badge"><div class="badge-icon">🚀</div><span class="badge-name">Taking Off</span><div class="badge-desc">10+ Rackless</div></div>
         <div id="badge-r-25" class="badge"><div class="badge-icon">🏔️</div><span class="badge-name">King of the Mountain</span><div class="badge-desc">25+ Rackless</div></div>
         <div id="badge-r-50" class="badge"><div class="badge-icon">👑</div><span class="badge-name">Dominant Force</span><div class="badge-desc">50+ Rackless</div></div>
         <div id="badge-r-100" class="badge"><div class="badge-icon">🧠</div><span class="badge-name">Apex Predator</span><div class="badge-desc">100+ Rackless</div></div>
 
-    <div class="section-label">Undefeated</div>
-<div id="badge-u-1" class="badge" data-category="u" data-target="1"><div class="badge-icon">🛡️</div><span class="badge-name">Unblemished</span><div class="badge-desc">1+ Undefeated</div></div>
-<div id="badge-u-5" class="badge" data-category="u" data-target="5"><div class="badge-icon">🦁</div><span class="badge-name">Untouchable</span><div class="badge-desc">5+ Undefeated</div></div>
-<div id="badge-u-10" class="badge" data-category="u" data-target="10"><div class="badge-icon">🏰</div><span class="badge-name">Fortress</span><div class="badge-desc">10+ Undefeated</div></div>
-<div id="badge-u-25" class="badge" data-category="u" data-target="25"><div class="badge-icon">⚓</div><span class="badge-name">Impenetrable</span><div class="badge-desc">25+ Undefeated</div></div>
-<div id="badge-u-50" class="badge" data-category="u" data-target="50"><div class="badge-icon">🦾</div><span class="badge-name">Invincible</span><div class="badge-desc">50+ Undefeated</div></div>
+        <div class="section-label">Undefeated</div>
+        <div id="badge-u-1" class="badge" data-category="u" data-target="1"><div class="badge-icon">🛡️</div><span class="badge-name">Unblemished</span><div class="badge-desc">1+ Undefeated</div></div>
+        <div id="badge-u-5" class="badge" data-category="u" data-target="5"><div class="badge-icon">🦁</div><span class="badge-name">Untouchable</span><div class="badge-desc">5+ Undefeated</div></div>
+        <div id="badge-u-10" class="badge" data-category="u" data-target="10"><div class="badge-icon">🏰</div><span class="badge-name">Fortress</span><div class="badge-desc">10+ Undefeated</div></div>
+        <div id="badge-u-25" class="badge" data-category="u" data-target="25"><div class="badge-icon">⚓</div><span class="badge-name">Impenetrable</span><div class="badge-desc">25+ Undefeated</div></div>
+        <div id="badge-u-50" class="badge" data-category="u" data-target="50"><div class="badge-icon">🦾</div><span class="badge-name">Invincible</span><div class="badge-desc">50+ Undefeated</div></div>
     </div>
 
     <a href="allstatssplash.html" class="back-btn">Back to Stats</a>
@@ -148,7 +159,7 @@
         const o = parseInt(player["8 on Break"]) || 0;
         const b = parseInt(player["Break and Run"]) || 0;
         const m = parseInt(player["Mini-Slam"]) || 0;
-  const r = parseInt(player["Rackless"]) || 0;
+        const r = parseInt(player["Rackless"]) || 0;
         const u = parseInt(player["Undefeated"]) || 0;
         
         if (g >= 1)    document.getElementById('badge-g-1').classList.add('unlocked');
@@ -189,14 +200,14 @@
         if (m >= 3)   document.getElementById('badge-m-3').classList.add('unlocked');
         if (m >= 5)   document.getElementById('badge-m-5').classList.add('unlocked');
 
-         if (r >= 1)   document.getElementById('badge-r-1').classList.add('unlocked');
+        if (r >= 1)   document.getElementById('badge-r-1').classList.add('unlocked');
         if (r >= 10)  document.getElementById('badge-r-10').classList.add('unlocked');
         if (r >= 25)  document.getElementById('badge-r-25').classList.add('unlocked');
         if (r >= 50)  document.getElementById('badge-r-50').classList.add('unlocked');
-        if (r >= 100)  document.getElementById('badge-r-100').classList.add('unlocked');
+        if (r >= 100) document.getElementById('badge-r-100').classList.add('unlocked');
 
-         if (u >= 1)   document.getElementById('badge-u-1').classList.add('unlocked');
-        if (u >= 5)  document.getElementById('badge-u-5').classList.add('unlocked');
+        if (u >= 1)   document.getElementById('badge-u-1').classList.add('unlocked');
+        if (u >= 5)   document.getElementById('badge-u-5').classList.add('unlocked');
         if (u >= 10)  document.getElementById('badge-u-10').classList.add('unlocked');
         if (u >= 25)  document.getElementById('badge-u-25').classList.add('unlocked');
         if (u >= 50)  document.getElementById('badge-u-50').classList.add('unlocked');
