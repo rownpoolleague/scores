@@ -17,15 +17,16 @@
 
         .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
         
-        .badge { background: #000; border: 1px solid #222; border-radius: 8px;  opacity: 0.5; filter: grayscale(1); transition: all 0.4s ease; }
-        .badge.unlocked { opacity: 1; filter: grayscale(0); border-color: #ffd700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); background: #151515; }
+        /* Card container styled to match artwork background seamlessly */
+        .badge { background: #050505; border: 1px solid #222; border-radius: 8px; padding: 4px 2px 8px 2px; opacity: 0.5; filter: grayscale(1); transition: all 0.4s ease; overflow: hidden; }
+        .badge.unlocked { opacity: 1; filter: grayscale(0); border-color: #ffd700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.25); background: #050505; }
         
-        /* Expanded image container size from 48px -> 72px */
-        .badge-icon { width: 72px; height: 72px; margin: 0 auto 4px auto; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; }
-        .badge-icon img { width: 100%; height: 100%; object-fit: contain; cursor: pointer; transition: transform 0.2s ease; }
-        .badge-icon img:hover { transform: scale(1.05); }
+        /* Expand image icon container to fill full available width */
+        .badge-icon { width: 100%; aspect-ratio: 1; margin: 0 auto 2px auto; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; }
+        .badge-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px 6px 0 0; cursor: pointer; transition: transform 0.2s ease; }
+        .badge-icon img:hover { transform: scale(1.03); }
 
-        .badge-name { font-weight: bold; color: #fff; font-size: 0.55rem; text-transform: uppercase; display: block; height: 14px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
+        .badge-name { font-weight: bold; color: #fff; font-size: 0.6rem; text-transform: uppercase; display: block; height: 14px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; margin-top: 2px;}
         .badge-desc { font-size: 0.5rem; color: #aaa; margin-top: 2px; line-height: 1.1; }
 
         .section-label { grid-column: span 3; color: #1e90ff; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin: 15px 0 5px; border-bottom: 1px solid #1e90ff; padding-bottom: 3px; text-align: left;}
