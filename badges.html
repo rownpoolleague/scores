@@ -17,17 +17,24 @@
 
         .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
         
-        .badge { background: #111; border: 1px solid #222; border-radius: 8px; padding: 10px 2px; opacity: 0.5; filter: grayscale(1); transition: all 0.4s ease; }
+        .badge { background: #111; border: 1px solid #222; border-radius: 8px; padding: 6px 2px; opacity: 0.5; filter: grayscale(1); transition: all 0.4s ease; }
         .badge.unlocked { opacity: 1; filter: grayscale(0); border-color: #ffd700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); background: #151515; }
         
-        .badge-icon { width: 48px; height: 48px; margin: 0 auto 4px auto; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
-        .badge-icon img { width: 100%; height: 100%; object-fit: contain; }
+        /* Expanded image container size from 48px -> 72px */
+        .badge-icon { width: 72px; height: 72px; margin: 0 auto 4px auto; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; }
+        .badge-icon img { width: 100%; height: 100%; object-fit: contain; cursor: pointer; transition: transform 0.2s ease; }
+        .badge-icon img:hover { transform: scale(1.05); }
+
         .badge-name { font-weight: bold; color: #fff; font-size: 0.55rem; text-transform: uppercase; display: block; height: 14px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
         .badge-desc { font-size: 0.5rem; color: #aaa; margin-top: 2px; line-height: 1.1; }
 
         .section-label { grid-column: span 3; color: #1e90ff; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin: 15px 0 5px; border-bottom: 1px solid #1e90ff; padding-bottom: 3px; text-align: left;}
 
         .back-btn { display: inline-block; margin-top: 25px; color: #1e90ff; text-decoration: none; font-weight: bold; font-size: 0.8rem; border: 1px solid #1e90ff; padding: 8px 16px; border-radius: 4px; text-transform: uppercase; }
+
+        /* Lightbox Modal for Enlarging Images */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(4px); justify-content: center; align-items: center; }
+        .modal-content { max-width: 85%; max-height: 80%; border-radius: 12px; border: 2px solid #ffd700; box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); }
     </style>
 </head>
 <body>
@@ -67,11 +74,11 @@
         <div id="badge-s-32" class="badge"><div class="badge-icon">💥</div><span class="badge-name">Super Nova</span><div class="badge-desc">32+ Streak</div></div>
 
         <div class="section-label">8 on Break</div>
-        <div id="badge-o-1" class="badge"><div class="badge-icon"><img src="https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/bullseye.png" alt="Bullseye"></div><span class="badge-name">Bullseye</span><div class="badge-desc">1+ 8OB</div></div>
-        <div id="badge-o-5" class="badge"><div class="badge-icon"><img src="https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/archer.png" alt="Archer"></div><span class="badge-name">Archer</span><div class="badge-desc">5+ 8OB</div></div>
-        <div id="badge-o-10" class="badge"><div class="badge-icon"><img src="https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/sharpshooter.png" alt="Sharp Shooter"></div><span class="badge-name">Sharp Shooter</span><div class="badge-desc">10+ 8OB</div></div>
-        <div id="badge-o-15" class="badge"><div class="badge-icon">🦅</div><span class="badge-name">Eagle Eye</span><div class="badge-desc">15+ 8OB</div></div>
-        <div id="badge-o-20" class="badge"><div class="badge-icon">🎖️</div><span class="badge-name">Marksman</span><div class="badge-desc">20+ 8OB</div></div>
+        <div id="badge-o-1" class="badge"><div class="badge-icon"><img src="https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/bullseye.png" alt="Bullseye" onclick="openBadgeModal(this.src)"></div><span class="badge-name">Bullseye</span><div class="badge-desc">1+ 8OB</div></div>
+        <div id="badge-o-5" class="badge"><div class="badge-icon"><img src="https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/archer.png" alt="Archer" onclick="openBadgeModal(this.src)"></div><span class="badge-name">Archer</span><div class="badge-desc">5+ 8OB</div></div>
+        <div id="badge-o-10" class="badge"><div class="badge-icon"><img src="https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/sharpshooter.png" alt="Sharp Shooter" onclick="openBadgeModal(this.src)"></div><span class="badge-name">Sharp Shooter</span><div class="badge-desc">10+ 8OB</div></div>
+        <div id="badge-o-15" class="badge"><div class="badge-icon"><img src="https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/eagleeye.png" alt="Eagle Eye" onclick="openBadgeModal(this.src)"></div><span class="badge-name">Eagle Eye</span><div class="badge-desc">15+ 8OB</div></div>
+        <div id="badge-o-20" class="badge"><div class="badge-icon"><img src="https://raw.githubusercontent.com/rownpoolleague/scores/main/photos/badges/marksman.png" alt="Marksman" onclick="openBadgeModal(this.src)"></div><span class="badge-name">Marksman</span><div class="badge-desc">20+ 8OB</div></div>
 
         <div class="section-label">Break and Run</div>
         <div id="badge-b-1" class="badge"><div class="badge-icon">🪄</div><span class="badge-name">Apprentice</span><div class="badge-desc">1+ B&R</div></div>
@@ -101,6 +108,11 @@
     </div>
 
     <a href="allstatssplash.html" class="back-btn">Back to Stats</a>
+</div>
+
+<!-- Modal for enlarged image view -->
+<div id="badge-modal" class="modal" onclick="closeBadgeModal()">
+    <img id="modal-img" class="modal-content" src="" alt="Enlarged Badge">
 </div>
 
 <script src="playerdata.js"></script>
@@ -136,6 +148,17 @@
             if (e.target !== input) list.innerHTML = '';
         });
     };
+
+    function openBadgeModal(src) {
+        const modal = document.getElementById('badge-modal');
+        const modalImg = document.getElementById('modal-img');
+        modalImg.src = src;
+        modal.style.display = 'flex';
+    }
+
+    function closeBadgeModal() {
+        document.getElementById('badge-modal').style.display = 'none';
+    }
 
     function loadBadges(selectedName) {
         const player = playerData.find(p => p["Player Name"] === selectedName);
