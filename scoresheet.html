@@ -31,7 +31,23 @@ input[type="number"] { width: 35px; padding: 4px 6px; font-size: 20px; backgroun
 .uiButton { padding: 10px 20px; font-size: 20px; cursor: pointer; border-radius: 6px; border: none; background-color: #1e90ff; color: white; display: block; margin: 20px auto; }
 .back-button { display: block; background-color:transparent; color: #fff; text-decoration: none; font-size: 24px; text-align: center; padding: 10px 0; width: 100%; max-width: 550px; margin: 10px auto; height: 30px; }
 .uiText { font-size: 22px; text-align: center; margin: 10px auto; display: block; color: gold; }
-.button-row { border: 1px solid transparent;outline: none;box-shadow: none;display: flex; justify-content: space-between; gap: 4px; width: 100%; margin-top: 20px; box-sizing: border-box; }
+.button-row button {
+  flex: 1;
+  height: 40px;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 0;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  background: transparent;
+  color: gold;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
 .button-row button { flex: 1; height: 40px; font-size: 16px; font-weight:bold;padding: 0; text-align: center; white-space: nowrap; cursor: pointer; background-color:transparent; color: gold; }
 #timerBox { display: none; position: fixed; width: 130px; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #000; color: #fff; padding: 15px; border-radius: 8px; border: 2px solid #1e90ff; box-shadow: 0 4px 20px rgba(0,0,0,0.8); z-index: 10000; text-align: center; }
 #timerValue { font-size: 1.8em; font-weight: bold; display: block; margin-bottom: 5px; }
