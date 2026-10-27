@@ -48,6 +48,7 @@ const scoresheetrosters = {
     "Miguel Arias":2,
     "Mike Uhlean":5,
     "Mike Zbonski Jr.":4,
+    "Patti Bullock":2,
     "Peggy Wood":2,
     "Pete Steele":2,
     "Phil Nelson":2,
