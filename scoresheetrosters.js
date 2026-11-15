@@ -3,6 +3,7 @@ const scoresheetrosters = {
     "Brett Boger":4,
     "Brian Martello":2,
     "Buster Fuller":4,
+    "Bye":0,
     "Carlos Meza":2,
     "Chuck Feager":3,
     "Chuck Harding":2,
